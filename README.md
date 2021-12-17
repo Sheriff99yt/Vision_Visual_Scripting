@@ -1,0 +1,2 @@
+# Vision_Visual_Scripting
+This software stats as a collage graduation project aimed to create an all in one software that allows anyone to just hop in and start programing using visual modular code blocks, kind of like ((  Unreal Engines Blueprint Graph System )).. It will simply have the code translated from the visual Scripting graph into any language the user sets, and it aims to do so by making use of arguments.
