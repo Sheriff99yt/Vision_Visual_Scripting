@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-12-22T12:10:19.672Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="4h_yE6dHAuGTJG6iFvhH" version="16.0.3" type="github">
+<mxfile host="app.diagrams.net" modified="2021-12-22T12:11:13.553Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="NmaN6hJNWVuZnzjsrXyJ" version="16.0.3" type="github">
   <diagram id="hCC37PdxLk1hiNzJ39LI" name="Page-1">
-    <mxGraphModel dx="1185" dy="628" grid="1" gridSize="31" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1497" dy="794" grid="1" gridSize="30" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -26,7 +26,7 @@
           <mxGeometry x="480" y="390" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="CaGoJxjw2hJIUdzqTwTn-20" value="&lt;h1&gt;Vision Visual Scripting&lt;/h1&gt;&lt;p&gt;&lt;font style=&quot;font-size: 14px&quot;&gt;This Project aims to achieve a software that enables programing through an interactive visual approach.&lt;/font&gt;&lt;/p&gt;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontColor=#1A1A1A;" vertex="1" parent="1">
-          <mxGeometry x="80" y="130" width="780" height="90" as="geometry" />
+          <mxGeometry x="120" y="90" width="780" height="90" as="geometry" />
         </mxCell>
         <mxCell id="CaGoJxjw2hJIUdzqTwTn-22" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;fontColor=#E6E6E6;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-21" target="CaGoJxjw2hJIUdzqTwTn-13">
           <mxGeometry relative="1" as="geometry">
