@@ -2,13 +2,13 @@ import sys
 
 from PyQt5.QtWidgets import *
 
-from scriptEditor import ScriptEditor
+from Script_Editor_WND import ScriptEditorWND
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
 
-    mainWindow = ScriptEditor()
+    mainWindow = ScriptEditorWND()
 
     mainWindow.initUI()
 

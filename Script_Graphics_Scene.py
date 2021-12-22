@@ -5,8 +5,9 @@ from PyQt5.QtGui import *
 
 
 class MyGraphicsScene(QGraphicsScene):
-    def __init__(self, parent=None):
+    def __init__(self, scene, parent=None):
         super().__init__(parent)
+        self.scene = scene
 
         # settings
         self.gridSize = 30
@@ -21,15 +22,10 @@ class MyGraphicsScene(QGraphicsScene):
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
 
-        self.scene_width, self.scene_height = 64000, 64000
-        self.setSceneRect(-self.scene_width//2, -self.scene_height//2, self.scene_width, self.scene_height)
-
-
-
-
-
         self.setBackgroundBrush(self._color_background)
 
+    def setScriptEditor(self, width, height):
+        self.setSceneRect(-width // 2, -height // 2, width, height)
 
     def drawBackground(self, painter, rect):
         super().drawBackground(painter, rect)
