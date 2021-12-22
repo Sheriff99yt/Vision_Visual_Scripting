@@ -1,19 +1,13 @@
-<mxfile host="app.diagrams.net" modified="2021-12-22T09:55:23.885Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="x41taBAjVdlQGRe_Xro2" version="16.0.3" type="github">
+<mxfile host="app.diagrams.net" modified="2021-12-22T12:05:37.325Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="ANOxe8NYH9cLDDZnU6Ju" version="16.0.3" type="github">
   <diagram id="hCC37PdxLk1hiNzJ39LI" name="Page-1">
-    <mxGraphModel dx="981" dy="520" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#4D4D4D" math="0" shadow="0">
+    <mxGraphModel dx="981" dy="520" grid="1" gridSize="20" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1200" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="mb9BTXo8A0_jGZtF6IZj-8" value="Main" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="420" y="250" width="240" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="CaGoJxjw2hJIUdzqTwTn-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-10" target="CaGoJxjw2hJIUdzqTwTn-11">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="CaGoJxjw2hJIUdzqTwTn-10" value="Q Widget" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="480" y="610" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="CaGoJxjw2hJIUdzqTwTn-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-11" target="CaGoJxjw2hJIUdzqTwTn-13">
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-14" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-11" target="CaGoJxjw2hJIUdzqTwTn-13">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="CaGoJxjw2hJIUdzqTwTn-11" value="Q Graphics View" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
@@ -22,8 +16,40 @@
         <mxCell id="CaGoJxjw2hJIUdzqTwTn-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-13" target="mb9BTXo8A0_jGZtF6IZj-8">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-29" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;fontSize=16;fontColor=#FFFFFF;startArrow=classic;startFill=1;endArrow=none;endFill=0;verticalAlign=middle;horizontal=1;align=center;strokeColor=none;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-13" target="CaGoJxjw2hJIUdzqTwTn-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-32" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;fontSize=16;fontColor=#FFFFFF;startArrow=none;startFill=0;endArrow=classic;endFill=1;strokeColor=default;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-13" target="CaGoJxjw2hJIUdzqTwTn-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="CaGoJxjw2hJIUdzqTwTn-13" value="Q Graphics Scene" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="480" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-20" value="&lt;h1&gt;Heading&lt;/h1&gt;&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/p&gt;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontColor=#E6E6E6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="190" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-22" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;fontColor=#E6E6E6;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-21" target="CaGoJxjw2hJIUdzqTwTn-13">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-21" value="مسئول عن انشاء الخلفية" style="text;align=center;verticalAlign=middle;rounded=0;imageWidth=24;imageHeight=24;arcSize=12;strokeWidth=1;sketch=0;shadow=0;glass=0;perimeterSpacing=0;fontSize=16;fillColor=#FFFFFF;strokeColor=#1A1A1A;fontColor=#1A1A1A;labelBackgroundColor=none;labelBorderColor=none;whiteSpace=wrap;html=1;fontStyle=1;gradientColor=none;gradientDirection=radial;" vertex="1" parent="1">
+          <mxGeometry x="220" y="405" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-25" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;fontSize=16;fontColor=#E6E6E6;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-24" target="CaGoJxjw2hJIUdzqTwTn-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-24" value="مسئول عن التحرك فى الصفحة" style="text;align=center;verticalAlign=middle;rounded=0;imageWidth=24;imageHeight=24;arcSize=12;strokeWidth=1;sketch=0;shadow=0;glass=0;perimeterSpacing=0;fontSize=16;fillColor=#FFFFFF;strokeColor=#1A1A1A;fontColor=#1A1A1A;labelBackgroundColor=none;labelBorderColor=none;whiteSpace=wrap;html=1;fontStyle=1;gradientColor=none;gradientDirection=radial;" vertex="1" parent="1">
+          <mxGeometry x="220" y="525" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-34" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;fontSize=16;fontColor=#FFFFFF;startArrow=none;startFill=0;endArrow=classic;endFill=1;strokeColor=default;" edge="1" parent="1" source="CaGoJxjw2hJIUdzqTwTn-28" target="CaGoJxjw2hJIUdzqTwTn-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-28" value="Script Manager" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CaGoJxjw2hJIUdzqTwTn-33" value="مسئول عن انشاء، حذف و تعديل الكود المرئى" style="text;align=center;verticalAlign=middle;rounded=0;imageWidth=24;imageHeight=24;arcSize=12;strokeWidth=1;sketch=0;shadow=0;glass=0;perimeterSpacing=0;fontSize=16;fillColor=#FFFFFF;strokeColor=#1A1A1A;fontColor=#1A1A1A;labelBackgroundColor=none;labelBorderColor=none;whiteSpace=wrap;html=1;fontStyle=1;gradientColor=none;gradientDirection=radial;" vertex="1" parent="1">
+          <mxGeometry x="615" y="330" width="250" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
