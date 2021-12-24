@@ -1,15 +1,12 @@
 import sys
-
 from PyQt5.QtWidgets import *
 
-from Script_Editor_WND import ScriptEditorWND
+from node_editor_wnd import NodeEditorWnd
+
 
 if __name__ == '__main__':
-
     app = QApplication(sys.argv)
 
-    mainWindow = ScriptEditorWND()
-
-    mainWindow.initUI()
+    wnd = NodeEditorWnd()
 
     sys.exit(app.exec_())

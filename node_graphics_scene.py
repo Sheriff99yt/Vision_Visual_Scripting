@@ -4,9 +4,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 
-class MyGraphicsScene(QGraphicsScene):
+class QDMGraphicsScene(QGraphicsScene):
     def __init__(self, scene, parent=None):
         super().__init__(parent)
+
         self.scene = scene
 
         # settings
@@ -24,7 +25,8 @@ class MyGraphicsScene(QGraphicsScene):
 
         self.setBackgroundBrush(self._color_background)
 
-    def setScriptEditor(self, width, height):
+
+    def setGrScene(self, width, height):
         self.setSceneRect(-width // 2, -height // 2, width, height)
 
     def drawBackground(self, painter, rect):

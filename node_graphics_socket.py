@@ -3,11 +3,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 
-class MyGraphicsSocket(QGraphicsItem):
-    def __init__(self, parent=None, socket_type=1):
-        super().__init__(parent)
+class QDMGraphicsSocket(QGraphicsItem):
+    def __init__(self, socket, socket_type=1):
+        self.socket = socket
+        super().__init__(socket.node.grNode)
 
-        self.radius = 6
+        self.radius = 8
         self.outline_width = 1
         self._colors = [
             QColor("#FFFF7700"),
