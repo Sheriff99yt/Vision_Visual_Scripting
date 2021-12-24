@@ -28,12 +28,10 @@ class QDMGraphicsView(QGraphicsView):
 
         self.mode = MODE_NOOP
 
-        self.zoomInFactor = 1.25
-        self.zoomClamp = True
-        self.zoom = 10
-        self.zoomStep = 1
-        self.zoomRange = [0, 10]
-
+        self.zoomInFactor = 1.1
+        self.maxZoom = 20
+        self.minZoom = 1
+        self.zoomSteps = self.maxZoom // 2
 
     def initUI(self):
         self.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
@@ -209,23 +207,18 @@ class QDMGraphicsView(QGraphicsView):
 
 
     def wheelEvent(self, event):
-        # calculate our zoom Factor
-        zoomOutFactor = 1 / self.zoomInFactor
 
-        # calculate zoom
         if event.angleDelta().y() > 0:
-            zoomFactor = self.zoomInFactor
-            self.zoom += self.zoomStep
+            if self.zoomSteps >= self.maxZoom:
+                print("Can't")
+            else:
+                self.zoomSteps += 1
+                print("Zoom In", self.zoomSteps)
+                self.scale(1 * self.zoomInFactor, 1 * self.zoomInFactor)
         else:
-            zoomFactor = zoomOutFactor
-            self.zoom -= self.zoomStep
-
-
-        clamped = False
-        if self.zoom < self.zoomRange[0]: self.zoom, clamped = self.zoomRange[0], True
-        if self.zoom > self.zoomRange[1]: self.zoom, clamped = self.zoomRange[1], True
-
-        # set scene scale
-        if not clamped or self.zoomClamp is False:
-            self.scale(zoomFactor, zoomFactor)
-
+            if self.zoomSteps <= self.minZoom:
+                print("Can't")
+            else:
+                self.zoomSteps -= 1
+                print("Zoom Out", self.zoomSteps)
+                self.scale(1 / self.zoomInFactor, 1 / self.zoomInFactor)

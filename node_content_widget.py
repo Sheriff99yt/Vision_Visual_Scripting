@@ -9,7 +9,7 @@ class QDMNodeContentWidget(QWidget):
 
     def initUI(self):
         self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0,0,0,0)
+        self.layout.setContentsMargins(6, 6, 6, 6)
         self.setLayout(self.layout)
 
         self.wdg_label = QLabel("Some Title")
