@@ -93,11 +93,11 @@ class QDMGraphicsView(QGraphicsView):
         self.grScene.addItem(self.cutline)
 
         self.last_scene_mouse_position = QPoint(0,0)
-        self.zoomInFactor = 1.25
-        self.zoomClamp = True
-        self.zoom = 10
-        self.zoomStep = 1
-        self.zoomRange = [0, 10]
+
+        self.zoomInFactor = 1.1
+        self.ZoomInSteps = 5
+        self.ZoomOutSteps = 15
+        self.CurrentZoom = 0
 
         # listeners
         self._drag_enter_listeners = []
@@ -532,23 +532,19 @@ class QDMGraphicsView(QGraphicsView):
 
     def wheelEvent(self, event: QWheelEvent):
         """overridden Qt's ``wheelEvent``. This handles zooming"""
-        # calculate our zoom Factor
-        zoomOutFactor = 1 / self.zoomInFactor
-
-        # calculate zoom
         if event.angleDelta().y() > 0:
-            zoomFactor = self.zoomInFactor
-            self.zoom += self.zoomStep
+            if self.CurrentZoom <= -1 * self.ZoomInSteps:
+                print("Can't")
+            else:
+                self.CurrentZoom -= 1
+                print("Zoom In", self.CurrentZoom)
+                self.scale(1 * self.zoomInFactor, 1 * self.zoomInFactor)
         else:
-            zoomFactor = zoomOutFactor
-            self.zoom -= self.zoomStep
+            if self.CurrentZoom >= self.ZoomOutSteps:
+                print("Can't")
+            else:
+                self.CurrentZoom += 1
+                print("Zoom Out", self.CurrentZoom)
+                self.scale(1 / self.zoomInFactor, 1 / self.zoomInFactor)
 
-
-        clamped = False
-        if self.zoom < self.zoomRange[0]: self.zoom, clamped = self.zoomRange[0], True
-        if self.zoom > self.zoomRange[1]: self.zoom, clamped = self.zoomRange[1], True
-
-        # set scene scale
-        if not clamped or self.zoomClamp is False:
-            self.scale(zoomFactor, zoomFactor)
 
