@@ -214,7 +214,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.windowMenu.addAction(self.actCloseAll)
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.actTile)
-        self.windowMenu.addAction(self.actCascade)
+        #self.windowMenu.addAction(self.actCascade)
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.actNext)
         self.windowMenu.addAction(self.actPrevious)
