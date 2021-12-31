@@ -6,7 +6,9 @@ from qtpy.QtCore import Qt, QSignalMapper
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from examples.example_calculator.calc_sub_window import CalculatorSubWindow
-from examples.example_calculator.calc_drag_listbox import QDMDragListbox
+from examples.example_calculator.calc_drag_node_listbox import QDMNodeListbox
+from examples.example_calculator.calc_drag_var_listbox import QDMVarListbox
+
 from nodeeditor.utils import dumpException, pp
 from examples.example_calculator.calc_conf import CALC_NODES
 
@@ -32,8 +34,8 @@ DEBUG = False
 class CalculatorWindow(NodeEditorWindow):
 
     def initUI(self):
-        self.name_company = 'Blenderfreak'
-        self.name_product = 'Calculator NodeEditor'
+        self.name_company = 'MyTeam'
+        self.name_product = 'Vision Visual Scripting'
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor.qss")
         loadStylesheets(
@@ -62,6 +64,8 @@ class CalculatorWindow(NodeEditorWindow):
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
         self.createNodesDock()
+        #Create Variable List
+        self.CreateVariablesDock()
 
         self.createActions()
         self.createMenus()
@@ -71,7 +75,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.readSettings()
 
-        self.setWindowTitle("Calculator NodeEditor Example")
+        self.setWindowTitle("Vision Visual Scripting")
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -194,6 +198,10 @@ class CalculatorWindow(NodeEditorWindow):
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
+        toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
+        toolbar_vars.setCheckable(True)
+        toolbar_vars.triggered.connect(self.onWindowVarsToolbar)
+        toolbar_vars.setChecked(self.varsDock.isVisible())
 
         toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
         toolbar_nodes.setCheckable(True)
@@ -228,23 +236,40 @@ class CalculatorWindow(NodeEditorWindow):
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
+
+
     def onWindowNodesToolbar(self):
         if self.nodesDock.isVisible():
             self.nodesDock.hide()
         else:
             self.nodesDock.show()
 
+    def onWindowVarsToolbar(self):
+        if self.varsDock.isVisible():
+            self.varsDock.hide()
+        else:
+            self.varsDock.show()
+
     def createToolBars(self):
         pass
 
     def createNodesDock(self):
-        self.nodesListWidget = QDMDragListbox()
+        self.nodesListWidget = QDMNodeListbox()
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFloating(False)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
+
+    def CreateVariablesDock(self):
+        self.varsListWidget = QDMVarListbox()
+
+        self.varsDock = QDockWidget("Variables")
+        self.varsDock.setWidget(self.varsListWidget)
+        self.varsDock.setFloating(False)
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")

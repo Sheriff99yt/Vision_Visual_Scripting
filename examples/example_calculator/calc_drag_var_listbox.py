@@ -1,12 +1,12 @@
-from qtpy.QtGui import QPixmap, QIcon, QDrag
-from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
-from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
+from qtpy.QtGui import *
+from qtpy.QtCore import *
+from qtpy.QtWidgets import *
 
-from examples.example_calculator.calc_conf import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
+from examples.example_calculator.calc_conf import CALC_NODES, VAR_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
-class QDMDragListbox(QListWidget):
+class QDMVarListbox(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
@@ -21,12 +21,11 @@ class QDMDragListbox(QListWidget):
 
 
     def addMyItems(self):
-        keys = list(CALC_NODES.keys())
+        keys = list(VAR_NODES.keys())
         keys.sort()
         for key in keys:
             node = get_class_from_opcode(key)
             self.addMyItem(node.op_title, node.icon, node.op_code)
-
 
     def addMyItem(self, name, icon=None, op_code=0):
         item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
