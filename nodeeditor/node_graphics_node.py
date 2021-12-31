@@ -79,7 +79,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._title_color = Qt.white
         self._title_font = QFont("Ubuntu", 10)
 
-        self._color = QColor("#7F000000")
+        self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")
         self._color_hovered = QColor("#FF37A6FF")
 
@@ -91,7 +91,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_hovered.setWidthF(3.0)
 
         self._brush_title = QBrush(QColor("#FF313131"))
-        self._brush_background = QBrush(QColor("#E3212121"))
+        self._brush_background = QBrush(QColor("#FF212121"))
 
     def onSelected(self):
         """Our event handling when the node was selected"""
