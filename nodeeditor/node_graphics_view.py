@@ -16,7 +16,7 @@ from nodeeditor.node_graphics_cutline import QDMCutLine
 from nodeeditor.utils import dumpException, pp
 
 
-MODE_NOOP = 1               #: Mode representing ready state
+MODE_READY = 1               #: Mode representing ready state
 MODE_EDGE_DRAG = 2          #: Mode representing when we drag edge state
 MODE_EDGE_CUT = 3           #: Mode representing when we draw a cutting edge
 MODE_EDGES_REROUTING = 4    #: Mode representing when we re-route existing edges
@@ -72,7 +72,7 @@ class QDMGraphicsView(QGraphicsView):
 
         self.setScene(self.grScene)
 
-        self.mode = MODE_NOOP
+        self.mode = MODE_READY
         self.editingFlag = False
         self.rubberBandDraggingRectangle = False
 
@@ -125,7 +125,7 @@ class QDMGraphicsView(QGraphicsView):
 
     def resetMode(self):
         """Helper function to re-set the grView's State Machine state to the default"""
-        self.mode = MODE_NOOP
+        self.mode = MODE_READY
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         """Trigger our registered `Drag Enter` events"""
@@ -250,7 +250,7 @@ class QDMGraphicsView(QGraphicsView):
 
         if hasattr(item, "node"):
             if DEBUG_EDGE_INTERSECT: print('View::leftMouseButtonPress - Start dragging a node')
-            if self.mode == MODE_NOOP:
+            if self.mode == MODE_READY:
                 self.mode = MODE_NODE_DRAG
                 self.edgeIntersect.enterState(item.node)
                 if DEBUG_EDGE_INTERSECT: print(">> edgeIntersect start:", self.edgeIntersect.draggedNode)
@@ -260,14 +260,14 @@ class QDMGraphicsView(QGraphicsView):
             item = self.snapping.getSnappedSocketItem(event)
 
         if isinstance(item, QDMGraphicsSocket):
-            if self.mode == MODE_NOOP and event.modifiers() & Qt.CTRL:
+            if self.mode == MODE_READY and event.modifiers() & Qt.CTRL:
                 socket = item.socket
                 if socket.hasAnyEdge():
                     self.mode = MODE_EDGES_REROUTING
                     self.rerouting.startRerouting(socket)
                     return
 
-            if self.mode == MODE_NOOP:
+            if self.mode == MODE_READY:
                 self.mode = MODE_EDGE_DRAG
                 self.dragging.edgeDragStart(item)
                 return
@@ -331,20 +331,20 @@ class QDMGraphicsView(QGraphicsView):
 
                 # don't forget to end the REROUTING MODE
 
-                self.mode = MODE_NOOP
+                self.mode = MODE_READY
 
             if self.mode == MODE_EDGE_CUT:
                 self.cutIntersectingEdges()
                 self.cutline.line_points = []
                 self.cutline.update()
                 QApplication.setOverrideCursor(Qt.ArrowCursor)
-                self.mode = MODE_NOOP
+                self.mode = MODE_READY
                 return
 
             if self.mode == MODE_NODE_DRAG:
                 scenepos = self.mapToScene(event.pos())
                 self.edgeIntersect.leaveState(scenepos.x(), scenepos.y())
-                self.mode = MODE_NOOP
+                self.mode = MODE_READY
                 self.update()
 
             if self.rubberBandDraggingRectangle:

@@ -56,7 +56,7 @@ class NodeEditorWindow(QMainWindow):
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
-        self.actNew = QAction('&New', self, shortcut='Ctrl+N', statusTip="Create new graph", triggered=self.onFileNew)
+        self.actNew = QAction('&New Graph', self, shortcut='Ctrl+N', statusTip="Create new graph", triggered=self.onFileNew)
         self.actOpen = QAction('&Open', self, shortcut='Ctrl+O', statusTip="Open file", triggered=self.onFileOpen)
         self.actSave = QAction('&Save', self, shortcut='Ctrl+S', statusTip="Save file", triggered=self.onFileSave)
         self.actSaveAs = QAction('Save &As...', self, shortcut='Ctrl+Shift+S', statusTip="Save file as...", triggered=self.onFileSaveAs)
@@ -274,7 +274,7 @@ class NodeEditorWindow(QMainWindow):
         """Read the permanent profile settings for this app"""
         settings = QSettings(self.name_company, self.name_product)
         pos = settings.value('pos', QPoint(200, 200))
-        size = settings.value('size', QSize(400, 400))
+        size = settings.value('size', QSize(600, 1200))
         self.move(pos)
         self.resize(size)
 
