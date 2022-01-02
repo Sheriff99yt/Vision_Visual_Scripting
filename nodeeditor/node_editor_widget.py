@@ -5,7 +5,7 @@ A module containing ``NodeEditorWidget`` class
 import os
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QBrush, QPen, QFont, QColor
-from qtpy.QtWidgets import QWidget, QVBoxLayout, QApplication, QMessageBox, QLabel, QGraphicsItem, QTextEdit, QPushButton
+from qtpy.QtWidgets import *
 
 from nodeeditor.node_scene import Scene, InvalidFile
 from nodeeditor.node_node import Node
@@ -30,15 +30,20 @@ class NodeEditorWidget(QWidget):
         """
         super().__init__(parent)
 
+
         self.filename = None
 
         self.initUI()
 
 
     def initUI(self):
+
         """Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`"""
-        self.layout = QVBoxLayout()
+
+
+
+        self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
@@ -49,6 +54,19 @@ class NodeEditorWidget(QWidget):
         self.view = self.__class__.GraphicsView_class(self.scene.grScene, self)
         self.layout.addWidget(self.view)
 
+        # 5 Lines of Code that took me for EVER !
+        # Added the Placeholder for a Text Code Viewer
+
+        self.GraphWnd = self.view
+        self.TextCodeWnd = QTextEdit()
+
+        self.SplitterWnd = QSplitter(Qt.Horizontal)
+
+        self.SplitterWnd.addWidget(self.GraphWnd)
+        self.SplitterWnd.addWidget(self.TextCodeWnd)
+
+        self.layout.addWidget(self.SplitterWnd)
+        ##
 
     def isModified(self) -> bool:
         """Has the `Scene` been modified?
