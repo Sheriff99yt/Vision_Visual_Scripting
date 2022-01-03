@@ -3,8 +3,8 @@
 A module containing the Main Window class
 """
 import os, json
-from qtpy.QtCore import QSize, QSettings, QPoint
-from qtpy.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
+from qtpy.QtCore import *
+from qtpy.QtWidgets import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 
 
@@ -13,6 +13,7 @@ class NodeEditorWindow(QMainWindow):
 
     """Class representing NodeEditor's Main Window"""
     def __init__(self):
+
         """
         :Instance Attributes:
 
@@ -23,11 +24,11 @@ class NodeEditorWindow(QMainWindow):
 
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
-
         self.initUI()
 
 
     def initUI(self):
+
         """Set up this ``QMainWindow``. Create :class:`~nodeeditor.node_editor_widget.NodeEditorWidget`, Actions and Menus"""
         self.createActions()
         self.createMenus()
@@ -37,6 +38,7 @@ class NodeEditorWindow(QMainWindow):
         self.nodeeditor.scene.addHasBeenModifiedListener(self.setTitle)
         self.setCentralWidget(self.nodeeditor)
 
+
         self.createStatusBar()
 
         # set window properties
@@ -44,10 +46,14 @@ class NodeEditorWindow(QMainWindow):
         self.setTitle()
         self.show()
 
+
+
+
     def sizeHint(self):
         return QSize(800, 600)
 
     def createStatusBar(self):
+
         """Create Status bar and connect to `Graphics View` scenePosChanged event"""
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")

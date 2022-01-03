@@ -90,6 +90,7 @@ class Scene(Serializable):
         self.grScene = QDMGraphicsScene(self)
         self.grScene.setGrScene(self.scene_width, self.scene_height)
 
+
     def getNodeByID(self, node_id: int):
         """
         Find node in the scene according to provided `node_id`

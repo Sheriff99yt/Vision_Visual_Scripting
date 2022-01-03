@@ -3,8 +3,7 @@
 an overridden Text Widget, which can pass a notification to it's parent about being modified."""
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
-from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
-
+from qtpy.QtWidgets import *
 
 class QDMNodeContentWidget(QWidget, Serializable):
     """Base class for representation of the Node's graphics content. This class also provides layout
@@ -28,8 +27,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
     def initUI(self):
         """Sets up layouts and widgets to be rendered in :py:class:`~nodeeditor.node_graphics_node.QDMGraphicsNode` class.
         """
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0,0,0,0)
+        self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(1,1,1,1)
         self.setLayout(self.layout)
 
         self.wdg_label = QLabel("Some Title")
