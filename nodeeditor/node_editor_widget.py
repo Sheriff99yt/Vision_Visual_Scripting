@@ -59,7 +59,7 @@ class NodeEditorWidget(QWidget):
 
         self.GraphWnd = self.view
         self.TextCodeWnd = QTextEdit()
-
+        self.TextCodeWnd.resize(1000,1000)
         self.SplitterWnd = QSplitter(Qt.Horizontal)
 
         self.SplitterWnd.addWidget(self.GraphWnd)
