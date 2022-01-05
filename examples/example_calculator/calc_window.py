@@ -63,8 +63,14 @@ class CalculatorWindow(NodeEditorWindow):
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
+
+        # Create Details List Window
+        self.CreateDetailsDock()
+
+        # Create Nodes List
         self.createNodesDock()
-        #Create Variable List
+
+        # Create Variable List
         self.CreateVariablesDock()
 
         self.createActions()
@@ -270,6 +276,16 @@ class CalculatorWindow(NodeEditorWindow):
         self.varsDock.setFloating(False)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
+
+    def CreateDetailsDock(self):
+        self.DetialsWidget = QDMVarListbox()
+
+        self.DetailssDock = QDockWidget("Details")
+        self.DetailssDock.setWidget(self.DetialsWidget)
+        self.DetailssDock.setFloating(False)
+
+        self.addDockWidget(Qt.RightDockWidgetArea, self.DetailssDock)
+
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
