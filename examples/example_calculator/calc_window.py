@@ -73,6 +73,7 @@ class CalculatorWindow(NodeEditorWindow):
         # Create Variable List
         self.CreateVariablesDock()
 
+
         self.createActions()
         self.createMenus()
         self.createToolBars()
