@@ -59,6 +59,8 @@ class NodeEditorWidget(QWidget):
 
         self.GraphWnd = self.view
         self.TextCodeWnd = QTextEdit()
+        self.TextCodeWnd.setFontPointSize(16)
+        self.TextCodeWnd.setFontFamily("JetBrains Mono")
         self.TextCodeWnd.resize(1000,1000)
         self.SplitterWnd = QSplitter(Qt.Horizontal)
 

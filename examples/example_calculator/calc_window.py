@@ -205,6 +205,12 @@ class CalculatorWindow(NodeEditorWindow):
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
+
+        toolbar_details = self.windowMenu.addAction("Details Toolbar")
+        toolbar_details.setCheckable(True)
+        toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
+        toolbar_details.setChecked(self.detailsDock.isVisible())
+
         toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
         toolbar_vars.setCheckable(True)
         toolbar_vars.triggered.connect(self.onWindowVarsToolbar)
@@ -257,6 +263,12 @@ class CalculatorWindow(NodeEditorWindow):
         else:
             self.varsDock.show()
 
+    def onWindowDetailsToolbar(self):
+        if self.detailsDock.isVisible():
+            self.detailsDock.hide()
+        else:
+            self.detailsDock.show()
+
     def createToolBars(self):
         pass
 
@@ -265,7 +277,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
-        self.nodesDock.setFloating(False)
+        self.nodesDock.setFeatures(self.nodesDock.DockWidgetClosable | self.nodesDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
 
@@ -274,18 +286,18 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.varsDock = QDockWidget("Variables")
         self.varsDock.setWidget(self.varsListWidget)
-        self.varsDock.setFloating(False)
+        self.varsDock.setFeatures(self.varsDock.DockWidgetClosable | self.varsDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
     def CreateDetailsDock(self):
         self.DetialsWidget = QDMVarListbox()
 
-        self.DetailssDock = QDockWidget("Details")
-        self.DetailssDock.setWidget(self.DetialsWidget)
-        self.DetailssDock.setFloating(False)
+        self.detailsDock = QDockWidget("Details")
+        self.detailsDock.setWidget(self.DetialsWidget)
+        self.detailsDock.setFeatures(self.detailsDock.DockWidgetClosable | self.detailsDock.DockWidgetMovable)
 
-        self.addDockWidget(Qt.RightDockWidgetArea, self.DetailssDock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.detailsDock)
 
 
     def createStatusBar(self):

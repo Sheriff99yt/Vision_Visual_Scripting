@@ -14,7 +14,7 @@ class CalcGraphicsNode(QDMGraphicsNode):
         super().initSizes()
         self.width = 160
         self.height = 74
-        self.edge_roundness = 6
+        self.edge_roundness = 4
         self.edge_padding = 0
         self.title_horizontal_padding = 8
         self.title_vertical_padding = 10

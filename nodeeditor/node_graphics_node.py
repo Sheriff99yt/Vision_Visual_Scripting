@@ -81,14 +81,14 @@ class QDMGraphicsNode(QGraphicsItem):
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")
-        self._color_hovered = QColor("#FF37A6FF")
+        self._color_hovered = QColor("#FFFFFFFF")
 
         self._pen_default = QPen(self._color)
-        self._pen_default.setWidthF(2.0)
+        self._pen_default.setWidthF(1.5)
         self._pen_selected = QPen(self._color_selected)
         self._pen_selected.setWidthF(2.0)
         self._pen_hovered = QPen(self._color_hovered)
-        self._pen_hovered.setWidthF(3.0)
+        self._pen_hovered.setWidthF(1)
 
         self._brush_title = QBrush(QColor("#FF313131"))
         self._brush_background = QBrush(QColor("#FF212121"))
@@ -221,7 +221,7 @@ class QDMGraphicsNode(QGraphicsItem):
         if self.hovered:
             painter.setPen(self._pen_hovered)
             painter.drawPath(path_outline.simplified())
-            painter.setPen(self._pen_default)
+            #painter.setPen(self._pen_default)
             painter.drawPath(path_outline.simplified())
         else:
             painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)

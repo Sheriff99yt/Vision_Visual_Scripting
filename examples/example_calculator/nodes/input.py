@@ -1,4 +1,4 @@
-from qtpy.QtWidgets import QLineEdit
+from qtpy.QtWidgets import *
 from qtpy.QtCore import Qt
 from examples.example_calculator.calc_conf import register_node, OP_NODE_INPUT
 from examples.example_calculator.calc_node_base import CalcNode, CalcGraphicsNode
