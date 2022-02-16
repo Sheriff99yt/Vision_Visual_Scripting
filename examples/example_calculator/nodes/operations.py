@@ -1,5 +1,5 @@
-from examples.example_calculator.calc_conf import register_node, OP_NODE_ADD, OP_NODE_SUB, OP_NODE_MUL, OP_NODE_DIV
-from examples.example_calculator.calc_node_base import CalcNode
+from examples.example_calculator.calc_conf import *
+from examples.example_calculator.editor_node_base import *
 
 
 @register_node(OP_NODE_ADD)
@@ -50,3 +50,14 @@ class CalcNode_Div(CalcNode):
 
 # way how to register by function call
 # register_node_now(OP_NODE_ADD, CalcNode_Add)
+
+@register_node(OP_NODE_IF)
+class CalcNode_If(CalcNode):
+    icon = "icons/if.png"
+    op_code = OP_NODE_IF
+    op_title = "If Statment"
+    content_label = ""
+    content_label_objname = "function_if"
+
+    def evalOperation(self, input1):
+        return input1

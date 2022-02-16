@@ -2,6 +2,7 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
+from examples.example_calculator.icons import *
 from examples.example_calculator.calc_conf import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
@@ -12,7 +13,7 @@ DEBUG = False
 DEBUG_CONTEXT = False
 
 
-class CalculatorSubWindow(NodeEditorWidget):
+class NodeDesignerSubWindow(NodeEditorWidget):
     def __init__(self):
         super().__init__()
         # self.setAttribute(Qt.WA_DeleteOnClose)
@@ -20,7 +21,6 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.setTitle()
 
         self.initNewNodeActions()
-
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)

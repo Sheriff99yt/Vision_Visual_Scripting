@@ -1,19 +1,19 @@
-from qtpy.QtGui import *
-from qtpy.QtCore import *
-from qtpy.QtWidgets import *
+from qtpy.QtGui import QPixmap, QIcon, QDrag
+from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
+from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
-from examples.example_calculator.calc_conf import CALC_NODES, VAR_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
+from examples.example_calculator.calc_conf import *
 from nodeeditor.utils import dumpException
 
 
-class QDMVarListbox(QListWidget):
+class QDMNodeListbox(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
 
     def initUI(self):
         # init
-        self.setIconSize(QSize(32, 32))
+        self.setIconSize(QSize(24, 24))
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
 
@@ -21,17 +21,18 @@ class QDMVarListbox(QListWidget):
 
 
     def addMyItems(self):
-        keys = list(VAR_NODES.keys())
+        keys = list(CALC_NODES.keys())
         keys.sort()
         for key in keys:
             node = get_class_from_opcode(key)
             self.addMyItem(node.op_title, node.icon, node.op_code)
 
+
     def addMyItem(self, name, icon=None, op_code=0):
         item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(32, 32))
+        item.setSizeHint(QSize(24, 24))
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 

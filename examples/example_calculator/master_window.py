@@ -1,13 +1,14 @@
 import os
 from qtpy.QtGui import QIcon, QKeySequence
-from qtpy.QtWidgets import QMdiArea, QWidget, QDockWidget, QAction, QMessageBox, QFileDialog
+from qtpy.QtWidgets import *
 from qtpy.QtCore import Qt, QSignalMapper
 
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from examples.example_calculator.calc_sub_window import CalculatorSubWindow
-from examples.example_calculator.calc_drag_node_listbox import QDMNodeListbox
-from examples.example_calculator.calc_drag_var_listbox import QDMVarListbox
+from examples.example_calculator.master_node_editor import NodeEditorSubWindow
+from examples.example_calculator.master_node_designer import *
+from examples.example_calculator.editor_drag_node_listbox import QDMNodeListbox
+from examples.example_calculator.editor_drag_var_listbox import QDMVarListbox
 
 from nodeeditor.utils import dumpException, pp
 from examples.example_calculator.calc_conf import CALC_NODES
@@ -31,7 +32,7 @@ import examples.example_calculator.qss.nodeeditor_dark_resources
 DEBUG = False
 
 
-class CalculatorWindow(NodeEditorWindow):
+class MasterWindow(NodeEditorWindow):
 
     def initUI(self):
         self.name_company = 'MyTeam'
@@ -50,14 +51,19 @@ class CalculatorWindow(NodeEditorWindow):
             pp(CALC_NODES)
 
 
+        self.masterDisplay = QStackedWidget()
         self.mdiArea = QMdiArea()
+        self.nodeDesigner = NodeDesignerSubWindow()
+
+        self.masterDisplay.addWidget(self.mdiArea)
+        self.masterDisplay.addWidget(self.nodeDesigner)
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setViewMode(QMdiArea.TabbedView)
         self.mdiArea.setDocumentMode(True)
         self.mdiArea.setTabsClosable(True)
         self.mdiArea.setTabsMovable(True)
-        self.setCentralWidget(self.mdiArea)
+        self.setCentralWidget(self.masterDisplay)
 
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
@@ -69,6 +75,9 @@ class CalculatorWindow(NodeEditorWindow):
 
         # Create Nodes List
         self.createNodesDock()
+        self.createToolsDock()
+
+        #self.createGraphsDock()
 
         # Create Variable List
         self.CreateVariablesDock()
@@ -83,7 +92,8 @@ class CalculatorWindow(NodeEditorWindow):
         self.readSettings()
 
         self.setWindowTitle("Vision Visual Scripting")
-
+        self.NodeDesignerBtn.setChecked(True)
+        self.updateActiveWnd()
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
@@ -137,7 +147,7 @@ class CalculatorWindow(NodeEditorWindow):
                         self.mdiArea.setActiveSubWindow(existing)
                     else:
                         # we need to create new subWindow and open the file
-                        nodeeditor = CalculatorSubWindow()
+                        nodeeditor = NodeEditorSubWindow()
                         if nodeeditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
                             nodeeditor.setTitle()
@@ -157,10 +167,10 @@ class CalculatorWindow(NodeEditorWindow):
     def createMenus(self):
         super().createMenus()
 
+
         self.windowMenu = self.menuBar().addMenu("&Window")
         self.updateWindowMenu()
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
-
+        #self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
         self.menuBar().addSeparator()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
@@ -204,22 +214,28 @@ class CalculatorWindow(NodeEditorWindow):
 
 
     def updateWindowMenu(self):
-        self.windowMenu.clear()
 
-        toolbar_details = self.windowMenu.addAction("Details Toolbar")
-        toolbar_details.setCheckable(True)
-        toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
-        toolbar_details.setChecked(self.detailsDock.isVisible())
+        self.toolbar_tools = self.windowMenu.addAction("Tools Toolbar")
+        self.toolbar_tools.setCheckable(False)
+        self.toolbar_tools.setChecked(self.toolsDock.isVisible())
 
-        toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
-        toolbar_vars.setCheckable(True)
-        toolbar_vars.triggered.connect(self.onWindowVarsToolbar)
-        toolbar_vars.setChecked(self.varsDock.isVisible())
 
-        toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
-        toolbar_nodes.setCheckable(True)
-        toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
-        toolbar_nodes.setChecked(self.nodesDock.isVisible())
+        self.toolbar_details = self.windowMenu.addAction("Details Toolbar")
+        self.toolbar_details.setCheckable(True)
+        self.toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
+        self.toolbar_details.setChecked(not self.detailsDock.isVisible())
+
+
+        self.toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
+        self.toolbar_vars.setCheckable(True)
+        self.toolbar_vars.triggered.connect(self.onWindowVarsToolbar)
+        self.toolbar_vars.setChecked(not self.varsDock.isVisible())
+
+
+        self.toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
+        self.toolbar_nodes.setCheckable(True)
+        self.toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
+        self.toolbar_nodes.setChecked(not self.nodesDock.isVisible())
 
         self.windowMenu.addSeparator()
 
@@ -257,6 +273,7 @@ class CalculatorWindow(NodeEditorWindow):
         else:
             self.nodesDock.show()
 
+
     def onWindowVarsToolbar(self):
         if self.varsDock.isVisible():
             self.varsDock.hide()
@@ -269,16 +286,69 @@ class CalculatorWindow(NodeEditorWindow):
         else:
             self.detailsDock.show()
 
+
     def createToolBars(self):
         pass
 
+    def createGraphsDock(self):
+        self.graphsDock = QDockWidget("Graphs")
+        self.graphsDock.setWidget(self.mdiArea)
+        self.graphsDock.setFeatures(self.graphsDock.DockWidgetClosable | self.graphsDock.DockWidgetMovable)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.graphsDock)
+
+
+    def createToolsDock(self):
+
+        self.NodeDesignerBtn = QPushButton(self)
+        self.NodeDesignerBtn.setCheckable(True)
+        self.NodeDesignerBtn.setMinimumSize(60, 60)
+        self.NodeDesignerBtn.setMaximumSize(60, 60)
+
+        self.toolsDock = QDockWidget("Tools")
+        self.addDockWidget(Qt.TopDockWidgetArea, self.toolsDock)
+        self.toolsDock.setLayoutDirection(Qt.LeftToRight)
+        self.dockedWidget = QWidget(self)
+        self.toolsDock.setWidget(self.dockedWidget)
+        self.dockedWidget.setLayout(QHBoxLayout())
+        self.dockedWidget.layout().addWidget(self.NodeDesignerBtn)
+
+        self.dockedWidget.layout().addItem(QSpacerItem(20, 60, QSizePolicy.Expanding))
+        self.dockedWidget.layout().setContentsMargins(4, 4, 4, 0)
+
+        self.toolsDock.setFeatures(self.toolsDock.NoDockWidgetFeatures)
+
+        self.NodeDesignerBtn.clicked.connect(self.updateActiveWnd)
+
+
+
+    def updateActiveWnd(self):
+        if self.NodeDesignerBtn.isChecked():
+            # self.nodesDock.hide()
+            # self.varsDock.hide()
+            # self.detailsDock.hide()
+            # self.toolbar_details.setVisible(False)
+            # self.toolbar_vars.setVisible(False)
+            # self.toolbar_nodes.setVisible(False)
+            self.masterDisplay.setCurrentIndex(1)
+
+
+        else:
+            # self.nodesDock.show()
+            # self.varsDock.show()
+            # self.detailsDock.show()
+            # self.toolbar_details.setVisible(True)
+            # self.toolbar_vars.setVisible(True)
+            # self.toolbar_nodes.setVisible(True)
+            self.masterDisplay.setCurrentIndex(0)
+
+
     def createNodesDock(self):
+
         self.nodesListWidget = QDMNodeListbox()
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFeatures(self.nodesDock.DockWidgetClosable | self.nodesDock.DockWidgetMovable)
-
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
 
     def CreateVariablesDock(self):
@@ -287,7 +357,6 @@ class CalculatorWindow(NodeEditorWindow):
         self.varsDock = QDockWidget("Variables")
         self.varsDock.setWidget(self.varsListWidget)
         self.varsDock.setFeatures(self.varsDock.DockWidgetClosable | self.varsDock.DockWidgetMovable)
-
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
     def CreateDetailsDock(self):
@@ -304,7 +373,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def createMdiChild(self, child_widget=None):
-        nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
+        nodeeditor = child_widget if child_widget is not None else NodeEditorSubWindow()
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)

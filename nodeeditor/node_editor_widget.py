@@ -4,7 +4,7 @@ A module containing ``NodeEditorWidget`` class
 """
 import os
 from qtpy.QtCore import Qt
-from qtpy.QtGui import QBrush, QPen, QFont, QColor
+from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 
 from nodeeditor.node_scene import Scene, InvalidFile
@@ -29,6 +29,7 @@ class NodeEditorWidget(QWidget):
         - **filename** - currently graph's filename or ``None``
         """
         super().__init__(parent)
+        #self.graphImage = QImage("icons/if.png")
 
 
         self.filename = None
@@ -61,6 +62,8 @@ class NodeEditorWidget(QWidget):
         self.TextCodeWnd = QTextEdit()
         self.TextCodeWnd.setFontPointSize(16)
         self.TextCodeWnd.setFontFamily("JetBrains Mono")
+        self.TextCodeWnd.setReadOnly(True)
+        self.TextCodeWnd.setText("This is a test Text")
         self.TextCodeWnd.resize(1000,1000)
         self.SplitterWnd = QSplitter(Qt.Horizontal)
 

@@ -1,7 +1,7 @@
 from qtpy.QtWidgets import QLabel
 from qtpy.QtCore import Qt
 from examples.example_calculator.calc_conf import register_node, OP_NODE_OUTPUT
-from examples.example_calculator.calc_node_base import CalcNode, CalcGraphicsNode
+from examples.example_calculator.editor_node_base import *
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 
 
