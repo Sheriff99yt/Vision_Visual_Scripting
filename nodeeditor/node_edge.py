@@ -6,6 +6,7 @@ from collections import OrderedDict
 from nodeeditor.node_graphics_edge import QDMGraphicsEdge
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.utils import dumpException
+from nodeeditor.node_edge_validators import *
 
 
 EDGE_TYPE_DIRECT = 1        #:
@@ -21,7 +22,8 @@ class Edge(Serializable):
     Class for representing Edge in NodeEditor.
     """
 
-    edge_validators = []        #: class variable containing list of registered edge validators
+    edge_validators = [edge_cannot_connect_input_and_output_of_different_type]
+    #: class variable containing list of registered edge validators
 
     def __init__(self, scene:'Scene', start_socket:'Socket'=None, end_socket:'Socket'=None, edge_type=EDGE_TYPE_DIRECT):
         """
@@ -310,4 +312,4 @@ class Edge(Serializable):
 # Edge.registerEdgeValidator(edge_validator_debug)
 # Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 # Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
-# Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_color)
+# Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_type)

@@ -2,7 +2,7 @@ from qtpy.QtGui import *
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
-from examples.example_calculator.calc_conf import *
+from examples.example_calculator.nodes_configuration import *
 from nodeeditor.utils import dumpException
 
 

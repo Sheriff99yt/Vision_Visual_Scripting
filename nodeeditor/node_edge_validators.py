@@ -21,6 +21,8 @@ application start with calling this:
 
 """
 
+from nodeeditor.node_socket import *
+
 DEBUG = False
 
 
@@ -61,7 +63,7 @@ def edge_cannot_connect_input_and_output_of_same_node(input: 'Socket', output:'S
 def edge_cannot_connect_input_and_output_of_different_type(input: 'Socket', output: 'Socket') -> bool:
     """Edge is invalid if it connects sockets with different colors"""
 
-    if input.socket_type != output.socket_type:
+    if input.grSocket._current_color != output.grSocket._current_color:
         print_error("Connecting sockets with different colors")
         return False
 

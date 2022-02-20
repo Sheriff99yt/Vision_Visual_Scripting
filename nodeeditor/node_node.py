@@ -42,7 +42,7 @@ class Node(Serializable):
         super().__init__()
         self._title = title
         self.scene = scene
-
+        self.nodeOrder = None
         # just to be sure, init these variables
         self.content = None
         self.grNode = None
@@ -120,8 +120,8 @@ class Node(Serializable):
     def initSettings(self):
         """Initialize properties and socket information"""
         self.socket_spacing = 22
-
-        self.input_socket_position = LEFT_BOTTOM
+        self.LR_offset = 8
+        self.input_socket_position = LEFT_TOP
         self.output_socket_position = RIGHT_TOP
         self.input_multi_edged = False
         self.output_multi_edged = True
@@ -198,7 +198,8 @@ class Node(Serializable):
 
     def onDeserialized(self, data: dict):
         """Event manually called when this node was deserialized. Currently called when node is deserialized from scene
-        Passing `data` containing the data which have been deserialized """
+        Passing `data` containing the data which have been deserialized
+        """
         pass
 
     def onDoubleClicked(self, event):
@@ -239,7 +240,8 @@ class Node(Serializable):
         :return: Position of described Socket on the `Node`
         :rtype: ``x, y``
         """
-        x = self.socket_offsets[position] if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[position]
+
+        x = self.socket_offsets[position] + self.LR_offset if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[position] - self.LR_offset
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
             # start from bottom
@@ -593,5 +595,8 @@ class Node(Serializable):
             res = self.content.deserialize(data['content'], hashmap)
             return res
 
-
         return True
+
+
+    def getNodeCode(self):
+        return None

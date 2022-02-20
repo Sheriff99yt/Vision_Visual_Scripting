@@ -2,9 +2,118 @@
 """
 A module containing NodeEditor's class for representing Socket and Socket Position Constants.
 """
+from qtpy.QtGui import *
+from qtpy.QtCore import *
+from qtpy.QtWidgets import *
+
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
-from nodeeditor.node_graphics_socket import QDMGraphicsSocket
+
+
+DEBUG = False
+DEBUG_REMOVE_WARNINGS = False
+
+
+# Graphical Socket Classes
+# -*- coding: utf-8 -*-
+"""
+A module containing Graphics representation of a :class:`~nodeeditor.node_socket.Socket`
+"""
+
+
+# Exectuable = 0
+
+
+
+SOCKET_COLORS = [
+    QColor("white"),
+    QColor("#00f204"),
+    QColor("#00bfff"),
+    QColor("#e00d0d"),
+    QColor("#790cc2")]
+
+class QDMGraphicsSocket(QGraphicsItem):
+    """Class representing Graphic `Socket` in ``QGraphicsScene``"""
+    def __init__(self, socket:'Socket'):
+        """
+        :param socket: reference to :class:`~nodeeditor.node_socket.Socket`
+        :type socket: :class:`~nodeeditor.node_socket.Socket`
+        """
+        super().__init__(socket.node.grNode)
+
+        self.socket = socket
+
+        self.isHighlighted = False
+
+        self.radius = 6
+        self.outline_width = 1
+        self.initAssets()
+
+    @property
+    def socket_type(self):
+        return self.socket.socket_type
+
+    def getSocketColor(self, key):
+        """Returns the ``QColor`` for this ``key``"""
+        if type(key) == int:
+            return SOCKET_COLORS[key]
+        elif type(key) == str:
+            return QColor(key)
+        return Qt.transparent
+
+    def changeSocketType(self):
+        """Change the Socket Type"""
+        self._current_color = self.getSocketColor(self.socket_type)
+        self._brush = QBrush(self._current_color)
+        # print("Socket changed to:", self._color_background.getRgbF())
+        self.update()
+
+    def initAssets(self):
+        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
+
+        # determine socket color
+        self._current_color = self.getSocketColor(self.socket_type)
+        self._color_outline = QColor("#FF000000")
+        self._color_highlight = QColor("#FF37A6FF")
+
+        self._pen = QPen(self._color_outline)
+        self._pen.setWidthF(self.outline_width)
+        self._pen_highlight = QPen(self._color_highlight)
+        self._pen_highlight.setWidthF(2.0)
+        self._brush = QBrush(self._current_color)
+
+    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
+        """Painting a circle"""
+        painter.setBrush(self._brush)
+        painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
+
+        if self.socket_type == 0:
+            painter.drawPolygon(QPoint(-self.radius, self.radius),QPoint(self.radius, 0), QPoint(-self.radius, -self.radius))
+
+        elif self.socket_type == 1 or 2 or 3 or 4:
+            painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+        else:
+            painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+
+    def boundingRect(self) -> QRectF:
+        """Defining Qt' bounding rectangle"""
+        return QRectF(
+            - self.radius - self.outline_width,
+            - self.radius - self.outline_width,
+            2 * (self.radius + self.outline_width),
+            2 * (self.radius + self.outline_width),
+        )
+
+
+
+# Functional Socket Classes
+
+# -*- coding: utf-8 -*-
+"""
+A module containing NodeEditor's class for representing Socket and Socket Position Constants.
+"""
+from collections import OrderedDict
+from nodeeditor.node_serializable import Serializable
 
 
 LEFT_TOP = 1        #:

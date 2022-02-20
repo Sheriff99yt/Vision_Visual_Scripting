@@ -11,7 +11,7 @@ from examples.example_calculator.editor_drag_node_listbox import QDMNodeListbox
 from examples.example_calculator.editor_drag_var_listbox import QDMVarListbox
 
 from nodeeditor.utils import dumpException, pp
-from examples.example_calculator.calc_conf import CALC_NODES
+from examples.example_calculator.nodes_configuration import CALC_NODES
 
 # Enabling edge validators
 from nodeeditor.node_edge import Edge
@@ -92,8 +92,12 @@ class MasterWindow(NodeEditorWindow):
         self.readSettings()
 
         self.setWindowTitle("Vision Visual Scripting")
-        self.NodeDesignerBtn.setChecked(True)
-        self.updateActiveWnd()
+
+
+        # self.NodeDesignerBtn.setChecked(True)
+        # self.updateActiveWnd()
+
+
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():

@@ -12,7 +12,6 @@ from nodeeditor.node_edge import Edge
 from nodeeditor.node_scene_history import SceneHistory
 from nodeeditor.node_scene_clipboard import SceneClipboard
 
-
 DEBUG_REMOVE_WARNINGS = False
 
 
@@ -246,6 +245,8 @@ class Scene(Serializable):
         :rtype: ``QGraphicsItem``
         """
         return self.getView().itemAt(pos)
+
+
 
     def addNode(self, node: Node):
         """Add :class:`~nodeeditor.node_node.Node` to this `Scene`

@@ -1,9 +1,9 @@
-from examples.example_calculator.calc_conf import *
+from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.editor_node_base import *
 
 
 @register_node(OP_NODE_ADD)
-class CalcNode_Add(CalcNode):
+class MasterNode_Add(MasterNode):
     icon = "icons/add.png"
     op_code = OP_NODE_ADD
     op_title = "Add"
@@ -15,7 +15,7 @@ class CalcNode_Add(CalcNode):
 
 
 @register_node(OP_NODE_SUB)
-class CalcNode_Sub(CalcNode):
+class MasterNode_Sub(MasterNode):
     icon = "icons/sub.png"
     op_code = OP_NODE_SUB
     op_title = "Substract"
@@ -26,7 +26,7 @@ class CalcNode_Sub(CalcNode):
         return input1 - input2
 
 @register_node(OP_NODE_MUL)
-class CalcNode_Mul(CalcNode):
+class MasterNode_Mul(MasterNode):
     icon = "icons/mul.png"
     op_code = OP_NODE_MUL
     op_title = "Multiply"
@@ -38,7 +38,7 @@ class CalcNode_Mul(CalcNode):
         return input1 * input2
 
 @register_node(OP_NODE_DIV)
-class CalcNode_Div(CalcNode):
+class MasterNode_Div(MasterNode):
     icon = "icons/divide.png"
     op_code = OP_NODE_DIV
     op_title = "Divide"
@@ -51,13 +51,13 @@ class CalcNode_Div(CalcNode):
 # way how to register by function call
 # register_node_now(OP_NODE_ADD, CalcNode_Add)
 
-@register_node(OP_NODE_IF)
-class CalcNode_If(CalcNode):
-    icon = "icons/if.png"
-    op_code = OP_NODE_IF
-    op_title = "If Statment"
-    content_label = ""
-    content_label_objname = "function_if"
-
-    def evalOperation(self, input1):
-        return input1
+# @register_node(OP_NODE_IF)
+# class CalcNode_If(CalcNode):
+#     icon = "icons/if.png"
+#     op_code = OP_NODE_IF
+#     op_title = "If Statment"
+#     content_label = ""
+#     content_label_objname = "function_if"
+#
+#     def evalOperation(self, input1):
+#         return input1

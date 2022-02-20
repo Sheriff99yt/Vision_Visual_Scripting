@@ -1,7 +1,7 @@
 from qtpy.QtWidgets import *
 from qtpy.QtCore import Qt
-from examples.example_calculator.calc_conf import register_node, OP_NODE_INPUT
-from examples.example_calculator.editor_node_base import CalcNode, CalcGraphicsNode
+from examples.example_calculator.nodes_configuration import register_node, OP_NODE_INPUT
+from examples.example_calculator.editor_node_base import MasterNode, MasterGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 
@@ -29,7 +29,7 @@ class CalcInputContent(QDMNodeContentWidget):
 
 
 @register_node(OP_NODE_INPUT)
-class CalcNode_Input(CalcNode):
+class MasterNode_Input(MasterNode):
     icon = "icons/in.png"
     op_code = OP_NODE_INPUT
     op_title = "Input"
@@ -41,7 +41,7 @@ class CalcNode_Input(CalcNode):
 
     def initInnerClasses(self):
         self.content = CalcInputContent(self)
-        self.grNode = CalcGraphicsNode(self)
+        self.grNode = MasterGraphicsNode(self)
         self.content.edit.textChanged.connect(self.onInputChanged)
 
     def evalImplementation(self):

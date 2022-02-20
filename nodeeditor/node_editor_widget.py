@@ -3,21 +3,21 @@
 A module containing ``NodeEditorWidget`` class
 """
 import os
+
 from qtpy.QtCore import Qt
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 
-from nodeeditor.node_scene import Scene, InvalidFile
-from nodeeditor.node_node import Node
 from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
 from nodeeditor.node_graphics_view import QDMGraphicsView
+from nodeeditor.node_node import Node
+from nodeeditor.node_scene import Scene, InvalidFile
 from nodeeditor.utils import dumpException
 
 
 class NodeEditorWidget(QWidget):
     Scene_class = Scene
     GraphicsView_class = QDMGraphicsView
-
     """The ``NodeEditorWidget`` class"""
     def __init__(self, parent:QWidget=None):
         """
@@ -29,13 +29,11 @@ class NodeEditorWidget(QWidget):
         - **filename** - currently graph's filename or ``None``
         """
         super().__init__(parent)
-        #self.graphImage = QImage("icons/if.png")
 
 
         self.filename = None
 
         self.initUI()
-
 
     def initUI(self):
 
@@ -55,15 +53,18 @@ class NodeEditorWidget(QWidget):
         self.view = self.__class__.GraphicsView_class(self.scene.grScene, self)
         self.layout.addWidget(self.view)
 
-        # 5 Lines of Code that took me for EVER !
-        # Added the Placeholder for a Text Code Viewer
+        # Went through hell and back \/
 
         self.GraphWnd = self.view
+
         self.TextCodeWnd = QTextEdit()
         self.TextCodeWnd.setFontPointSize(16)
         self.TextCodeWnd.setFontFamily("JetBrains Mono")
         self.TextCodeWnd.setReadOnly(True)
-        self.TextCodeWnd.setText("This is a test Text")
+
+
+        # self.TextCodeWnd.setText("This is a test Text")
+
         self.TextCodeWnd.resize(1000,1000)
         self.SplitterWnd = QSplitter(Qt.Horizontal)
 
@@ -72,6 +73,8 @@ class NodeEditorWidget(QWidget):
 
         self.layout.addWidget(self.SplitterWnd)
         ##
+
+
 
     def isModified(self) -> bool:
         """Has the `Scene` been modified?
@@ -193,8 +196,6 @@ class NodeEditorWidget(QWidget):
 
     def addCustomNode(self):
         """Testing method to create a custom Node with custom content"""
-        from nodeeditor.node_content_widget import QDMNodeContentWidget
-        from nodeeditor.node_serializable import Serializable
 
         class NNodeContent(QLabel):  # , Serializable):
             def __init__(self, node, parent=None):

@@ -2,7 +2,7 @@ from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
-from examples.example_calculator.calc_conf import *
+from examples.example_calculator.nodes_configuration import *
 from nodeeditor.utils import dumpException
 
 

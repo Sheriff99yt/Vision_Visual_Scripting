@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import QLabel
 from qtpy.QtCore import Qt
-from examples.example_calculator.calc_conf import register_node, OP_NODE_OUTPUT
+from examples.example_calculator.nodes_configuration import register_node, OP_NODE_OUTPUT
 from examples.example_calculator.editor_node_base import *
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 
@@ -13,7 +13,7 @@ class CalcOutputContent(QDMNodeContentWidget):
 
 
 @register_node(OP_NODE_OUTPUT)
-class CalcNode_Output(CalcNode):
+class MasterNode_Output(MasterNode):
     icon = "icons/out.png"
     op_code = OP_NODE_OUTPUT
     op_title = "Output"
@@ -24,7 +24,7 @@ class CalcNode_Output(CalcNode):
 
     def initInnerClasses(self):
         self.content = CalcOutputContent(self)
-        self.grNode = CalcGraphicsNode(self)
+        self.grNode = MasterGraphicsNode(self)
 
     def evalImplementation(self):
         input_node = self.getInput(0)

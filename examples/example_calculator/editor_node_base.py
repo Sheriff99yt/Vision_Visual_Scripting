@@ -5,18 +5,17 @@ from qtpy.QtWidgets import QLabel
 from nodeeditor.node_node import Node
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.node_graphics_node import QDMGraphicsNode
-from nodeeditor.node_socket import LEFT_CENTER, RIGHT_CENTER
 from nodeeditor.utils import dumpException
 
 
-class CalcGraphicsNode(QDMGraphicsNode):
+class MasterGraphicsNode(QDMGraphicsNode):
     def initSizes(self):
         super().initSizes()
         self.width = 160
         self.height = 74
-        self.edge_roundness = 4
+        self.edge_roundness = 2
         self.edge_padding = 0
-        self.title_horizontal_padding = 8
+        self.title_horizontal_padding = 24
         self.title_vertical_padding = 10
 
     def initAssets(self):
@@ -31,27 +30,27 @@ class CalcGraphicsNode(QDMGraphicsNode):
         if self.node.isInvalid(): offset = 48
 
         painter.drawImage(
-            QRectF(-10, -10, 24, 24),
+            QRectF(1, 0, 24, 24),
             self.icons,
             QRectF(offset, 0, 24, 24)
         )
 
 
-class CalcContent(QDMNodeContentWidget):
+class MasterContent(QDMNodeContentWidget):
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
 
 
-class CalcNode(Node):
+class MasterNode(Node):
     icon = ""
     op_code = 0
     op_title = "Undefined"
     content_label = ""
     content_label_objname = "calc_node_bg"
 
-    GraphicsNode_class = CalcGraphicsNode
-    NodeContent_class = CalcContent
+    GraphicsNode_class = MasterGraphicsNode
+    NodeContent_class = MasterContent
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
@@ -59,13 +58,12 @@ class CalcNode(Node):
         self.value = None
 
         # it's really important to mark all nodes Dirty by default
-        self.markDirty()
+        self.markDirty(True)
 
 
     def initSettings(self):
         super().initSettings()
-        self.input_socket_position = LEFT_CENTER
-        self.output_socket_position = RIGHT_CENTER
+        pass
 
     def evalOperation(self, input1, input2):
         return 123

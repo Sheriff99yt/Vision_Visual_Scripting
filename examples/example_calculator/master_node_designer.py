@@ -3,7 +3,7 @@ from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from examples.example_calculator.icons import *
-from examples.example_calculator.calc_conf import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
+from examples.example_calculator.nodes_configuration import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from nodeeditor.node_graphics_view import MODE_EDGE_DRAG
@@ -81,6 +81,7 @@ class NodeDesignerSubWindow(NodeEditorWidget):
             # print(" ... denied drag enter event")
             event.setAccepted(False)
 
+
     def onDrop(self, event):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             eventData = event.mimeData().data(LISTBOX_MIMETYPE)
@@ -98,6 +99,7 @@ class NodeDesignerSubWindow(NodeEditorWidget):
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
+
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
             except Exception as e: dumpException(e)
 

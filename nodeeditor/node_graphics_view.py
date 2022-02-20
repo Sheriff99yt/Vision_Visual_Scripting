@@ -6,7 +6,7 @@ from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 from qtpy.QtGui import *
 
-from nodeeditor.node_graphics_socket import QDMGraphicsSocket
+from nodeeditor.node_socket import QDMGraphicsSocket
 from nodeeditor.node_graphics_edge import QDMGraphicsEdge
 from nodeeditor.node_edge_dragging import EdgeDragging
 from nodeeditor.node_edge_rerouting import EdgeRerouting
