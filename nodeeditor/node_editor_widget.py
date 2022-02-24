@@ -4,20 +4,20 @@ A module containing ``NodeEditorWidget`` class
 """
 import os
 
-from qtpy.QtCore import Qt
+from qtpy.QtCore import *
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 
 from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
-from nodeeditor.node_graphics_view import QDMGraphicsView
+from nodeeditor.node_graph_graphics import GraphGraphics
 from nodeeditor.node_node import Node
-from nodeeditor.node_scene import Scene, InvalidFile
+from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
 
 
 class NodeEditorWidget(QWidget):
-    Scene_class = Scene
-    GraphicsView_class = QDMGraphicsView
+    Scene_class = NodeScene
+    GraphicsView_class = GraphGraphics
     """The ``NodeEditorWidget`` class"""
     def __init__(self, parent:QWidget=None):
         """
@@ -50,16 +50,14 @@ class NodeEditorWidget(QWidget):
         self.scene = self.__class__.Scene_class()
 
         # create graphics view
-        self.view = self.__class__.GraphicsView_class(self.scene.grScene, self)
-        self.layout.addWidget(self.view)
+        self.GraphView = self.__class__.GraphicsView_class(self.scene.grScene, self)
+        self.layout.addWidget(self.GraphView)
 
         # Went through hell and back \/
 
-        self.GraphWnd = self.view
-
         self.TextCodeWnd = QTextEdit()
         self.TextCodeWnd.setFontPointSize(16)
-        self.TextCodeWnd.setFontFamily("JetBrains Mono")
+        self.TextCodeWnd.setFontFamily("Arial")
         self.TextCodeWnd.setReadOnly(True)
 
 
@@ -68,7 +66,7 @@ class NodeEditorWidget(QWidget):
         self.TextCodeWnd.resize(1000,1000)
         self.SplitterWnd = QSplitter(Qt.Horizontal)
 
-        self.SplitterWnd.addWidget(self.GraphWnd)
+        self.SplitterWnd.addWidget(self.GraphView)
         self.SplitterWnd.addWidget(self.TextCodeWnd)
 
         self.layout.addWidget(self.SplitterWnd)
@@ -241,4 +239,6 @@ class NodeEditorWidget(QWidget):
         line = self.grScene.addLine(-200, -200, 400, -100, outlinePen)
         line.setFlag(QGraphicsItem.ItemIsMovable)
         line.setFlag(QGraphicsItem.ItemIsSelectable)
+
+
 

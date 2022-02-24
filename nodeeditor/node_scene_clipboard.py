@@ -18,7 +18,7 @@ class SceneClipboard():
     def __init__(self, scene: 'Scene'):
         """
         :param scene: Reference to the :class:`~nodeeditor.node_scene.Scene`
-        :type scene: :class:`~nodeeditor.node_scene.Scene`
+        :type scene: :class:`~nodeeditor.node_scene.NodeScene`
 
         :Instance Attributes:
 

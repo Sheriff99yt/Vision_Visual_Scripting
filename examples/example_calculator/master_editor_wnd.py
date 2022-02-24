@@ -2,18 +2,17 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
-from examples.example_calculator.icons import *
 from examples.example_calculator.nodes_configuration import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
-from nodeeditor.node_graphics_view import MODE_EDGE_DRAG
+from nodeeditor.node_graph_graphics import MODE_EDGE_DRAG
 from nodeeditor.utils import dumpException
 
 DEBUG = False
 DEBUG_CONTEXT = False
 
 
-class NodeDesignerSubWindow(NodeEditorWidget):
+class MasterEditorWnd(NodeEditorWidget):
     def __init__(self):
         super().__init__()
         # self.setAttribute(Qt.WA_DeleteOnClose)
@@ -21,6 +20,7 @@ class NodeDesignerSubWindow(NodeEditorWidget):
         self.setTitle()
 
         self.initNewNodeActions()
+
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)
@@ -99,6 +99,7 @@ class NodeDesignerSubWindow(NodeEditorWidget):
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
+                self.GenerateTextCode()
 
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
             except Exception as e: dumpException(e)
@@ -213,3 +214,12 @@ class NodeDesignerSubWindow(NodeEditorWidget):
 
             else:
                 self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
+
+
+    def GenerateTextCode(self):
+        self.TextCodeWnd.clear()
+        for item in self.scene.nodes:
+            if item.getNodeCode() != None:
+                self.TextCodeWnd.append(item.getNodeCode())
+            else:
+                pass

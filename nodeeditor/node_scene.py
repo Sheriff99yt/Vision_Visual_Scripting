@@ -18,7 +18,7 @@ DEBUG_REMOVE_WARNINGS = False
 class InvalidFile(Exception): pass
 
 
-class Scene(Serializable):
+class NodeScene(Serializable):
     """Class representing NodeEditor's `Scene`"""
     def __init__(self):
         """
@@ -38,8 +38,8 @@ class Scene(Serializable):
         # current filename assigned to this scene
         self.filename = None
 
-        self.scene_width = 64000
-        self.scene_height = 64000
+        self.scene_width = 8000
+        self.scene_height = 8000
 
         # custom flag used to suppress triggering onItemSelected which does a bunch of stuff
         self._silent_selection_events = False
@@ -446,5 +446,6 @@ class Scene(Serializable):
             edge = all_edges.pop()
             edge.remove()
 
-
         return True
+
+

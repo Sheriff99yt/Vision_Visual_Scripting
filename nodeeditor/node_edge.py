@@ -29,7 +29,7 @@ class Edge(Serializable):
         """
 
         :param scene: Reference to the :py:class:`~nodeeditor.node_scene.Scene`
-        :type scene: :py:class:`~nodeeditor.node_scene.Scene`
+        :type scene: :py:class:`~nodeeditor.node_scene.NodeScene`
         :param start_socket: Reference to the starting socket
         :type start_socket: :py:class:`~nodeeditor.node_socket.Socket`
         :param end_socket: Reference to the End socket or ``None``

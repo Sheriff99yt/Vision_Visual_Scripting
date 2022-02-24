@@ -24,7 +24,7 @@ class Node(Serializable):
         """
 
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
-        :type scene: :class:`~nodeeditor.node_scene.Scene`
+        :type scene: :class:`~nodeeditor.node_scene.NodeScene`
         :param title: Node Title shown in Scene
         :type title: str
         :param inputs: list of :class:`~nodeeditor.node_socket.Socket` types from which the `Sockets` will be auto created

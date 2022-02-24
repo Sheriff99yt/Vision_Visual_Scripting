@@ -41,7 +41,7 @@ DEBUG_EDGE_INTERSECT = False
 DEBUG_STATE = False
 
 
-class QDMGraphicsView(QGraphicsView):
+class GraphGraphics(QGraphicsView):
     """Class representing NodeEditor's `Graphics View`"""
     #: pyqtSignal emitted when cursor position on the `Scene` has changed
     scenePosChanged = Signal(int, int)
@@ -483,7 +483,10 @@ class QDMGraphicsView(QGraphicsView):
                 item.edge.remove()
             elif hasattr(item, 'node'):
                 item.node.remove()
+
         self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
+        # self.
+
 
     def debug_modifiers(self, event):
         """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""
@@ -533,3 +536,4 @@ class QDMGraphicsView(QGraphicsView):
                 self.CurrentZoom += 1
                 print("Zoom Out", self.CurrentZoom)
                 self.scale(1 / self.zoomInFactor, 1 / self.zoomInFactor)
+

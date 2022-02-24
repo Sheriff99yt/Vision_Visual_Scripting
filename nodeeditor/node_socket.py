@@ -24,13 +24,16 @@ A module containing Graphics representation of a :class:`~nodeeditor.node_socket
 # Exectuable = 0
 
 
+# SOCKET_COLORS must be at least 7 in this version
 
 SOCKET_COLORS = [
     QColor("white"),
     QColor("#00f204"),
     QColor("#00bfff"),
     QColor("#e00d0d"),
-    QColor("#790cc2")]
+    QColor("#790cc2"),
+    QColor("#d2d2d2"),
+    QColor("#a2a2a2")]
 
 class QDMGraphicsSocket(QGraphicsItem):
     """Class representing Graphic `Socket` in ``QGraphicsScene``"""

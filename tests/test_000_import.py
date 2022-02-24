@@ -6,7 +6,7 @@
 
 import unittest
 
-from nodeeditor.node_scene import Scene
+from nodeeditor.node_scene import NodeScene
 
 
 class TestTemplate(unittest.TestCase):
@@ -20,4 +20,4 @@ class TestTemplate(unittest.TestCase):
 
     def test_000_something(self):
         """Test if Scene got has_been_modified property."""
-        assert(hasattr(Scene, 'has_been_modified'))
+        assert(hasattr(NodeScene, 'has_been_modified'))

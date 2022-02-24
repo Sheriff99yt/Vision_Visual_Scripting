@@ -3,11 +3,11 @@
 A module containing Graphic representation of :class:`~nodeeditor.node_scene.Scene`
 """
 import math
-from qtpy.QtWidgets import QGraphicsScene, QWidget
-from qtpy.QtCore import Signal, QRect, QLine, Qt
-from qtpy.QtGui import QColor, QPen, QFont, QPainter
+from qtpy.QtWidgets import *
+from qtpy.QtCore import *
+from qtpy.QtGui import *
 from nodeeditor.utils import dumpException
-from nodeeditor.node_graphics_view import STATE_STRING, DEBUG_STATE
+from nodeeditor.node_graph_graphics import STATE_STRING, DEBUG_STATE
 
 
 class QDMGraphicsScene(QGraphicsScene):
@@ -20,7 +20,7 @@ class QDMGraphicsScene(QGraphicsScene):
     def __init__(self, scene: 'Scene', parent: QWidget=None):
         """
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
-        :type scene: :class:`~nodeeditor.node_scene.Scene`
+        :type scene: :class:`~nodeeditor.node_scene.NodeScene`
         :param parent: parent widget
         :type parent: QWidget
         """
@@ -45,6 +45,11 @@ class QDMGraphicsScene(QGraphicsScene):
 
         self.initAssets()
         self.setBackgroundBrush(self._color_background)
+
+        # self.GraphText = QLabel("Node Editor")
+        # self.GraphText.setFont(QFont("Arial",100))
+        # self.GraphText.setStyleSheet("QLabel { background-color : Transparent; color : #30FFFFFF; }")
+        # self.addWidget(self.GraphText)
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""

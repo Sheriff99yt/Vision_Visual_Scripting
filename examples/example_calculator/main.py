@@ -13,6 +13,6 @@ if __name__ == '__main__':
     app.setStyle('Fusion')
 
     wnd = MasterWindow()
-    wnd.show()
+    wnd.showMaximized()
 
     sys.exit(app.exec_())

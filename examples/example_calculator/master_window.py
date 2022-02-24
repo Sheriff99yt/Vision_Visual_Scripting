@@ -1,12 +1,12 @@
 import os
-from qtpy.QtGui import QIcon, QKeySequence
+from qtpy.QtGui import *
 from qtpy.QtWidgets import *
-from qtpy.QtCore import Qt, QSignalMapper
+from qtpy.QtCore import *
 
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from examples.example_calculator.master_node_editor import NodeEditorSubWindow
-from examples.example_calculator.master_node_designer import *
+from examples.example_calculator.master_editor_wnd import MasterEditorWnd
+from examples.example_calculator.master_designer_wnd import MasterDesignerWnd
 from examples.example_calculator.editor_drag_node_listbox import QDMNodeListbox
 from examples.example_calculator.editor_drag_var_listbox import QDMVarListbox
 
@@ -53,7 +53,8 @@ class MasterWindow(NodeEditorWindow):
 
         self.masterDisplay = QStackedWidget()
         self.mdiArea = QMdiArea()
-        self.nodeDesigner = NodeDesignerSubWindow()
+        # Create Node Designer Window
+        self.nodeDesigner = MasterDesignerWnd()
 
         self.masterDisplay.addWidget(self.mdiArea)
         self.masterDisplay.addWidget(self.nodeDesigner)
@@ -151,7 +152,7 @@ class MasterWindow(NodeEditorWindow):
                         self.mdiArea.setActiveSubWindow(existing)
                     else:
                         # we need to create new subWindow and open the file
-                        nodeeditor = NodeEditorSubWindow()
+                        nodeeditor = MasterEditorWnd()
                         if nodeeditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
                             nodeeditor.setTitle()
@@ -221,7 +222,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.toolbar_tools = self.windowMenu.addAction("Tools Toolbar")
         self.toolbar_tools.setCheckable(False)
-        self.toolbar_tools.setChecked(self.toolsDock.isVisible())
+        self.toolbar_tools.setChecked(not self.toolsDock.isVisible())
 
 
         self.toolbar_details = self.windowMenu.addAction("Details Toolbar")
@@ -304,6 +305,10 @@ class MasterWindow(NodeEditorWindow):
     def createToolsDock(self):
 
         self.NodeDesignerBtn = QPushButton(self)
+        self.BtnIcon = QIcon("icons/Pencil_1.png")
+        self.NodeDesignerBtn.setIcon(self.BtnIcon)
+        self.NodeDesignerBtn.setIconSize(self.NodeDesignerBtn.size())
+
         self.NodeDesignerBtn.setCheckable(True)
         self.NodeDesignerBtn.setMinimumSize(60, 60)
         self.NodeDesignerBtn.setMaximumSize(60, 60)
@@ -352,7 +357,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
-        self.nodesDock.setFeatures(self.nodesDock.DockWidgetClosable | self.nodesDock.DockWidgetMovable)
+        self.nodesDock.setFeatures(self.nodesDock.DockWidgetMovable)
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
 
     def CreateVariablesDock(self):
@@ -360,7 +365,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.varsDock = QDockWidget("Variables")
         self.varsDock.setWidget(self.varsListWidget)
-        self.varsDock.setFeatures(self.varsDock.DockWidgetClosable | self.varsDock.DockWidgetMovable)
+        self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
     def CreateDetailsDock(self):
@@ -368,7 +373,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.detailsDock = QDockWidget("Details")
         self.detailsDock.setWidget(self.DetialsWidget)
-        self.detailsDock.setFeatures(self.detailsDock.DockWidgetClosable | self.detailsDock.DockWidgetMovable)
+        self.detailsDock.setFeatures(self.detailsDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.detailsDock)
 
@@ -377,7 +382,7 @@ class MasterWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def createMdiChild(self, child_widget=None):
-        nodeeditor = child_widget if child_widget is not None else NodeEditorSubWindow()
+        nodeeditor = child_widget if child_widget is not None else MasterEditorWnd()
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)

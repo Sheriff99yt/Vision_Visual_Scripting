@@ -36,7 +36,7 @@ else:
 
 @register_node(OP_NODE_FOR_LOOP)
 class For_Loop(MasterNode):
-    icon = "icons/if.png"
+    icon = "icons/Loop.png"
     op_code = OP_NODE_FOR_LOOP
     op_title = "For Loop"
     content_label_objname = "calc_node_for_loop"
