@@ -5,11 +5,11 @@ A module containing the Main Window class
 import os, json
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
-from nodeeditor.node_editor_widget import NodeEditorWidget
+# from nodeeditor.node_editor_widget import NodeEditorWidget
 
 
 class NodeEditorWindow(QMainWindow):
-    NodeEditorWidget_class = NodeEditorWidget
+    # NodeEditorWidget_class = NodeEditorWidget
 
     """Class representing NodeEditor's Main Window"""
     def __init__(self):
@@ -34,9 +34,10 @@ class NodeEditorWindow(QMainWindow):
         self.createMenus()
 
         # create node editor widget
-        self.nodeeditor = self.__class__.NodeEditorWidget_class(self)
-        self.nodeeditor.scene.addHasBeenModifiedListener(self.setTitle)
-        self.setCentralWidget(self.nodeeditor)
+
+        # self.nodeeditor = self.__class__.NodeEditorWidget_class(self)
+        # self.nodeeditor.scene.addHasBeenModifiedListener(self.setTitle)
+        # self.setCentralWidget(self.nodeeditor)
 
 
         self.createStatusBar()
@@ -58,7 +59,7 @@ class NodeEditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")
         self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        self.nodeeditor.GraphView.scenePosChanged.connect(self.onScenePosChanged)
+        # self.nodeeditor.GraphView.scenePosChanged.connect(self.onScenePosChanged)
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
@@ -128,13 +129,13 @@ class NodeEditorWindow(QMainWindow):
         nodeeditor = self.getCurrentNodeEditorWidget()
         return nodeeditor.scene.isModified() if nodeeditor else False
 
-    def getCurrentNodeEditorWidget(self) -> NodeEditorWidget:
-        """get current :class:`~nodeeditor.node_editor_widget`
-
-        :return: get current :class:`~nodeeditor.node_editor_widget`
-        :rtype: :class:`~nodeeditor.node_editor_widget`
-        """
-        return self.centralWidget()
+    # def getCurrentNodeEditorWidget(self) -> NodeEditorWidget:
+    #     """get current :class:`~nodeeditor.node_editor_widget`
+    #
+    #     :return: get current :class:`~nodeeditor.node_editor_widget`
+    #     :rtype: :class:`~nodeeditor.node_editor_widget`
+    #     """
+    #     return self.centralWidget()
 
     def maybeSave(self) -> bool:
         """If current `Scene` is modified, ask a dialog to save the changes. Used before

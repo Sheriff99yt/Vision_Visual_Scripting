@@ -5,7 +5,7 @@ from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 from examples.example_calculator.nodes_configuration import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
-from nodeeditor.node_graph_graphics import MODE_EDGE_DRAG
+from nodeeditor.graph_graphics import MODE_EDGE_DRAG
 from nodeeditor.utils import dumpException
 
 DEBUG = False
@@ -99,7 +99,6 @@ class MasterEditorWnd(NodeEditorWidget):
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
-                self.GenerateTextCode()
 
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
             except Exception as e: dumpException(e)
@@ -214,12 +213,3 @@ class MasterEditorWnd(NodeEditorWidget):
 
             else:
                 self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
-
-
-    def GenerateTextCode(self):
-        self.TextCodeWnd.clear()
-        for item in self.scene.nodes:
-            if item.getNodeCode() != None:
-                self.TextCodeWnd.append(item.getNodeCode())
-            else:
-                pass

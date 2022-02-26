@@ -43,6 +43,7 @@ class Node(Serializable):
         self._title = title
         self.scene = scene
         self.nodeOrder = None
+
         # just to be sure, init these variables
         self.content = None
         self.grNode = None
@@ -288,9 +289,8 @@ class Node(Serializable):
                 edge.updatePositions()
 
     def remove(self):
-        """
-        Safely remove this Node
-        """
+        """Safely remove this Node"""
+
         if DEBUG: print("> Removing Node", self)
         if DEBUG: print(" - remove all edges from sockets")
         for socket in (self.inputs+self.outputs):
@@ -304,6 +304,7 @@ class Node(Serializable):
         if DEBUG: print(" - remove node from the scene")
         self.scene.removeNode(self)
         if DEBUG: print(" - everything was done.")
+
 
 
     # node evaluation stuff

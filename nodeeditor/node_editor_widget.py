@@ -9,15 +9,16 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 
 from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
-from nodeeditor.node_graph_graphics import GraphGraphics
+from nodeeditor.graph_graphics import GraphGraphics
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
 
 
+
 class NodeEditorWidget(QWidget):
     Scene_class = NodeScene
-    GraphicsView_class = GraphGraphics
+    GraphGraphics_class = GraphGraphics
     """The ``NodeEditorWidget`` class"""
     def __init__(self, parent:QWidget=None):
         """
@@ -36,12 +37,10 @@ class NodeEditorWidget(QWidget):
         self.initUI()
 
     def initUI(self):
-
-        """Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
-        :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`"""
-
-
-
+        """
+        Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
+        :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
+        """
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
@@ -50,28 +49,28 @@ class NodeEditorWidget(QWidget):
         self.scene = self.__class__.Scene_class()
 
         # create graphics view
-        self.GraphView = self.__class__.GraphicsView_class(self.scene.grScene, self)
-        self.layout.addWidget(self.GraphView)
+        self.GraphGraphicsView = self.__class__.GraphGraphics_class(self.scene.grScene, self)
+        self.layout.addWidget(self.GraphGraphicsView)
 
         # Went through hell and back \/
-
         self.TextCodeWnd = QTextEdit()
         self.TextCodeWnd.setFontPointSize(16)
         self.TextCodeWnd.setFontFamily("Arial")
         self.TextCodeWnd.setReadOnly(True)
-
 
         # self.TextCodeWnd.setText("This is a test Text")
 
         self.TextCodeWnd.resize(1000,1000)
         self.SplitterWnd = QSplitter(Qt.Horizontal)
 
-        self.SplitterWnd.addWidget(self.GraphView)
+        self.SplitterWnd.addWidget(self.GraphGraphicsView)
         self.SplitterWnd.addWidget(self.TextCodeWnd)
 
         self.layout.addWidget(self.SplitterWnd)
-        ##
 
+        # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
+        self.scene.setNodeEditorWidget(self)
+        self.GraphGraphicsView.setNodeEditorWidget(self)
 
 
     def isModified(self) -> bool:
@@ -240,5 +239,10 @@ class NodeEditorWidget(QWidget):
         line.setFlag(QGraphicsItem.ItemIsMovable)
         line.setFlag(QGraphicsItem.ItemIsSelectable)
 
-
-
+    def UpdateTextCode(self):
+        self.TextCodeWnd.clear()
+        for item in self.scene.nodes:
+            if item.getNodeCode() != None:
+                self.TextCodeWnd.append(item.getNodeCode())
+            else:
+                pass

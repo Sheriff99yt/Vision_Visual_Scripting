@@ -6,7 +6,7 @@ from examples.example_calculator.icons import *
 from examples.example_calculator.nodes_configuration import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
-from nodeeditor.node_graph_graphics import MODE_EDGE_DRAG
+from nodeeditor.graph_graphics import MODE_EDGE_DRAG
 from nodeeditor.utils import dumpException
 
 DEBUG = False

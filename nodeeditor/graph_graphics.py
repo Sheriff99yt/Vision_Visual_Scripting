@@ -15,6 +15,7 @@ from nodeeditor.node_edge_snapping import EdgeSnapping
 from nodeeditor.node_graphics_cutline import QDMCutLine
 from nodeeditor.utils import dumpException, pp
 
+
 MODE_READY = 1  #: Mode representing ready state
 MODE_EDGE_DRAG = 2  #: Mode representing when we drag edge state
 MODE_EDGE_CUT = 3  #: Mode representing when we draw a cutting edge
@@ -46,10 +47,10 @@ class GraphGraphics(QGraphicsView):
     #: pyqtSignal emitted when cursor position on the `Scene` has changed
     scenePosChanged = Signal(int, int)
 
-    def __init__(self, grScene: 'QDMGraphicsScene', parent: 'QWidget' = None):
+    def __init__(self, grScene: 'NodeGraphicsScene', parent: 'QWidget' = None):
         """
         :param grScene: reference to the :class:`~nodeeditor.node_graphics_scene.QDMGraphicsScene`
-        :type grScene: :class:`~nodeeditor.node_graphics_scene.QDMGraphicsScene`
+        :type grScene: :class:`~nodeeditor.node_graphics_scene.NodeGraphicsScene`
         :param parent: parent widget
         :type parent: ``QWidget``
 
@@ -476,6 +477,9 @@ class GraphGraphics(QGraphicsView):
         for grSocket in items: grSocket.isHighlighted = highlighted
         return items
 
+    def setNodeEditorWidget(self, NodeEditor: None):
+        self.NodeEditor = NodeEditor
+
     def deleteSelected(self):
         """Shortcut for safe deleting every object selected in the `Scene`."""
         for item in self.grScene.selectedItems():
@@ -485,8 +489,7 @@ class GraphGraphics(QGraphicsView):
                 item.node.remove()
 
         self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
-        # self.
-
+        self.NodeEditor.UpdateTextCode()
 
     def debug_modifiers(self, event):
         """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""
@@ -536,4 +539,5 @@ class GraphGraphics(QGraphicsView):
                 self.CurrentZoom += 1
                 print("Zoom Out", self.CurrentZoom)
                 self.scale(1 / self.zoomInFactor, 1 / self.zoomInFactor)
+
 

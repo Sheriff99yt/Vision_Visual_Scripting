@@ -6,11 +6,13 @@ import os, sys, json
 from collections import OrderedDict
 from nodeeditor.utils import dumpException, pp
 from nodeeditor.node_serializable import Serializable
-from nodeeditor.node_graphics_scene import QDMGraphicsScene
+from nodeeditor.node_graphics_scene import NodeGraphicsScene
 from nodeeditor.node_node import Node
 from nodeeditor.node_edge import Edge
+# from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_scene_history import SceneHistory
 from nodeeditor.node_scene_clipboard import SceneClipboard
+from qtpy.QtWidgets import *
 
 DEBUG_REMOVE_WARNINGS = False
 
@@ -62,6 +64,9 @@ class NodeScene(Serializable):
         self.grScene.itemSelected.connect(self.onItemSelected)
         self.grScene.itemsDeselected.connect(self.onItemsDeselected)
 
+    def setNodeEditorWidget(self, NodeEditor: None):
+        self.NodeEditor = NodeEditor
+
     @property
     def has_been_modified(self):
         """
@@ -86,7 +91,7 @@ class NodeScene(Serializable):
 
     def initUI(self):
         """Set up Graphics Scene Instance"""
-        self.grScene = QDMGraphicsScene(self)
+        self.grScene = NodeGraphicsScene(self)
         self.grScene.setGrScene(self.scene_width, self.scene_height)
 
 
@@ -247,7 +252,6 @@ class NodeScene(Serializable):
         return self.getView().itemAt(pos)
 
 
-
     def addNode(self, node: Node):
         """Add :class:`~nodeeditor.node_node.Node` to this `Scene`
 
@@ -255,6 +259,7 @@ class NodeScene(Serializable):
         :type node: :class:`~nodeeditor.node_node.Node`
         """
         self.nodes.append(node)
+        self.NodeEditor.UpdateTextCode()
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodeeditor.node_edge.Edge` to this `Scene`
@@ -270,7 +275,8 @@ class NodeScene(Serializable):
         :param node: :class:`~nodeeditor.node_node.Node` to be removed from this `Scene`
         :type node: :class:`~nodeeditor.node_node.Node`
         """
-        if node in self.nodes: self.nodes.remove(node)
+        if node in self.nodes:
+            self.nodes.remove(node)
         else:
             if DEBUG_REMOVE_WARNINGS: print("!W:", "Scene::removeNode", "wanna remove nodeeditor", node,
                                             "from self.nodes but it's not in the list!")

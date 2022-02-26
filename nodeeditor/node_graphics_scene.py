@@ -7,10 +7,10 @@ from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 from qtpy.QtGui import *
 from nodeeditor.utils import dumpException
-from nodeeditor.node_graph_graphics import STATE_STRING, DEBUG_STATE
+from nodeeditor.graph_graphics import STATE_STRING, DEBUG_STATE
 
 
-class QDMGraphicsScene(QGraphicsScene):
+class NodeGraphicsScene(QGraphicsScene):
     """Class representing Graphic of :class:`~nodeeditor.node_scene.Scene`"""
     #: pyqtSignal emitted when some item is selected in the `Scene`
     itemSelected = Signal()
@@ -37,6 +37,7 @@ class QDMGraphicsScene(QGraphicsScene):
         # https://bugreports.qt.io/browse/QTBUG-18021
         # https://bugreports.qt.io/browse/QTBUG-50691
         # Affected versions: 4.7.1, 4.7.2, 4.8.0, 5.5.1, 5.7.0 - LOL!
+
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
         # settings
