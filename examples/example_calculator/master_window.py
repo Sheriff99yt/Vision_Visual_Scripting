@@ -40,9 +40,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor.qss")
         loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark.qss"),
-            self.stylesheet_filename
-        )
+            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-night.qss"), self.stylesheet_filename)
 
         self.empty_icon = QIcon(".")
 
@@ -72,10 +70,10 @@ class MasterWindow(NodeEditorWindow):
 
 
         # Create Details List Window
-        self.CreateDetailsDock()
+        self.CreatePropertiesDock()
 
         # Create Nodes List
-        self.createNodesDock()
+        self.createFunctionsDock()
         self.createToolsDock()
 
         #self.createGraphsDock()
@@ -228,7 +226,7 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_details = self.windowMenu.addAction("Details Toolbar")
         self.toolbar_details.setCheckable(True)
         self.toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
-        self.toolbar_details.setChecked(not self.detailsDock.isVisible())
+        self.toolbar_details.setChecked(not self.propertiesDock.isVisible())
 
 
         self.toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
@@ -286,10 +284,10 @@ class MasterWindow(NodeEditorWindow):
             self.varsDock.show()
 
     def onWindowDetailsToolbar(self):
-        if self.detailsDock.isVisible():
-            self.detailsDock.hide()
+        if self.propertiesDock.isVisible():
+            self.propertiesDock.hide()
         else:
-            self.detailsDock.show()
+            self.propertiesDock.show()
 
 
     def createToolBars(self):
@@ -351,11 +349,11 @@ class MasterWindow(NodeEditorWindow):
             self.masterDisplay.setCurrentIndex(0)
 
 
-    def createNodesDock(self):
+    def createFunctionsDock(self):
 
         self.nodesListWidget = QDMNodeListbox()
 
-        self.nodesDock = QDockWidget("Nodes")
+        self.nodesDock = QDockWidget("Functions")
         self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFeatures(self.nodesDock.DockWidgetMovable)
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
@@ -368,14 +366,14 @@ class MasterWindow(NodeEditorWindow):
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
-    def CreateDetailsDock(self):
+    def CreatePropertiesDock(self):
         self.DetialsWidget = QDMVarListbox()
 
-        self.detailsDock = QDockWidget("Details")
-        self.detailsDock.setWidget(self.DetialsWidget)
-        self.detailsDock.setFeatures(self.detailsDock.DockWidgetMovable)
+        self.propertiesDock = QDockWidget("Properties")
+        self.propertiesDock.setWidget(self.DetialsWidget)
+        self.propertiesDock.setFeatures(self.propertiesDock.DockWidgetMovable)
 
-        self.addDockWidget(Qt.RightDockWidgetArea, self.detailsDock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.propertiesDock)
 
 
     def createStatusBar(self):

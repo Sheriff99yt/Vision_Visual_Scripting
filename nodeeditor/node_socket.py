@@ -21,10 +21,17 @@ A module containing Graphics representation of a :class:`~nodeeditor.node_socket
 """
 
 
-# Exectuable = 0
 
 
 # SOCKET_COLORS must be at least 7 in this version
+
+# Executable
+# Float
+# Intager
+# Boolean
+# String
+# Holder 6
+# Holder 7
 
 SOCKET_COLORS = [
     QColor("white"),
@@ -52,6 +59,16 @@ class QDMGraphicsSocket(QGraphicsItem):
         self.outline_width = 1
         self.initAssets()
 
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setXOffset(-2)
+        shadow.setYOffset(2)
+        # setting blur radius (optional step)
+        shadow.setBlurRadius(6)
+        shadow.setColor(QColor(6,6,6))
+        # adding shadow to the labelq
+        self.setGraphicsEffect(shadow)
+
+
     @property
     def socket_type(self):
         return self.socket.socket_type
@@ -76,6 +93,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         # determine socket color
         self._current_color = self.getSocketColor(self.socket_type)
+        print(self._current_color)
         self._color_outline = QColor("#FF000000")
         self._color_highlight = QColor("#FF37A6FF")
 
@@ -181,8 +199,10 @@ class Socket(Serializable):
 
 
         self.grSocket = self.__class__.Socket_GR_Class(self)
+        self.SocketColor = self.grSocket._current_color
 
         self.setSocketPosition()
+
 
         self.edges = []
 
@@ -237,6 +257,15 @@ class Socket(Serializable):
         :rtype: ``bool``
         """
         return len(self.edges) > 0
+
+    def hasOneEdge(self) -> bool:
+        """
+        Returns ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
+
+        :return: ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
+        :rtype: ``bool``
+        """
+        return len(self.edges) > 1
 
     def isConnected(self, edge: 'Edge') -> bool:
         """

@@ -37,25 +37,25 @@ class MasterNode_Input(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
-        self.eval()
+        # self.eval()
 
     def initInnerClasses(self):
         self.content = CalcInputContent(self)
         self.grNode = MasterGraphicsNode(self)
         self.content.edit.textChanged.connect(self.onInputChanged)
 
-    def evalImplementation(self):
-        u_value = self.content.edit.text()
-        s_value = int(u_value)
-        self.value = s_value
-        self.markDirty(False)
-        self.markInvalid(False)
-
-        self.markDescendantsInvalid(False)
-        self.markDescendantsDirty()
-
-        self.grNode.setToolTip("")
-
-        self.evalChildren()
-
-        return self.value
+    # def evalImplementation(self):
+    #     u_value = self.content.edit.text()
+    #     s_value = int(u_value)
+    #     self.value = s_value
+    #     self.markDirty(False)
+    #     self.markInvalid(False)
+    #
+    #     self.markDescendantsInvalid(False)
+    #     self.markDescendantsDirty()
+    #
+    #     self.grNode.setToolTip("")
+    #
+    #     self.evalChildren()
+    #
+    #     return self.value

@@ -4,6 +4,7 @@ A module containing NodeEditor's class for representing `Node`.
 """
 from collections import OrderedDict
 from nodeeditor.node_graphics_node import QDMGraphicsNode
+from PyQt5.QtGui import QColor
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
@@ -64,6 +65,8 @@ class Node(Serializable):
         # dirty and evaluation
         self._is_dirty = False
         self._is_invalid = False
+
+
 
     def __str__(self):
         return "<%s:%s %s..%s>" % (self.title, self.__class__.__name__,hex(id(self))[2:5], hex(id(self))[-3:])
@@ -162,18 +165,29 @@ class Node(Serializable):
             socket = self.__class__.Socket_class(
                 node=self, index=counter, position=self.input_socket_position,
                 socket_type=item, multi_edges=self.input_multi_edged,
-                count_on_this_node_side=len(inputs), is_input=True
-            )
+                count_on_this_node_side=len(inputs), is_input=True)
+
+            if socket.SocketColor == QColor("white"):
+                socket.is_multi_edges = True
+            else:
+                socket.is_multi_edges = False
+
             counter += 1
             self.inputs.append(socket)
 
         counter = 0
         for item in outputs:
+
             socket = self.__class__.Socket_class(
                 node=self, index=counter, position=self.output_socket_position,
                 socket_type=item, multi_edges=self.output_multi_edged,
-                count_on_this_node_side=len(outputs), is_input=False
-            )
+                count_on_this_node_side=len(outputs), is_input=False)
+
+            if socket.SocketColor == QColor("white"):
+                socket.is_multi_edges = False
+            else:
+                socket.is_multi_edges = True
+
             counter += 1
             self.outputs.append(socket)
 
@@ -194,8 +208,9 @@ class Node(Serializable):
         :param socket: reference to the changed :class:`~nodeeditor.node_socket.Socket`
         :type socket: :class:`~nodeeditor.node_socket.Socket`
         """
-        self.markDirty()
-        self.markDescendantsDirty()
+        # self.markDirty()
+        # self.markDescendantsDirty()
+        pass
 
     def onDeserialized(self, data: dict):
         """Event manually called when this node was deserialized. Currently called when node is deserialized from scene
@@ -309,96 +324,96 @@ class Node(Serializable):
 
     # node evaluation stuff
 
-    def isDirty(self) -> bool:
-        """Is this node marked as `Dirty`
-
-        :return: ``True`` if `Node` is marked as `Dirty`
-        :rtype: ``bool``
-        """
-        return self._is_dirty
-
-    def markDirty(self, new_value: bool=True):
-        """Mark this `Node` as `Dirty`. See :ref:`evaluation` for more
-
-        :param new_value: ``True`` if this `Node` should be `Dirty`. ``False`` if you want to un-dirty this `Node`
-        :type new_value: ``bool``
-        """
-        self._is_dirty = new_value
-        if self._is_dirty: self.onMarkedDirty()
-
-    def onMarkedDirty(self):
-        """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
-        pass
-
-    def markChildrenDirty(self, new_value: bool=True):
-        """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
-
-        :param new_value: ``True`` if children should be `Dirty`. ``False`` if you want to un-dirty children
-        :type new_value: ``bool``
-        """
-        for other_node in self.getChildrenNodes():
-            other_node.markDirty(new_value)
-
-    def markDescendantsDirty(self, new_value: bool=True):
-        """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
-
-        :param new_value: ``True`` if children and descendants should be `Dirty`. ``False`` if you want to un-dirty children and descendants
-        :type new_value: ``bool``
-        """
-        for other_node in self.getChildrenNodes():
-            other_node.markDirty(new_value)
-            other_node.markDescendantsDirty(new_value)
-
-    def isInvalid(self) -> bool:
-        """Is this node marked as `Invalid`?
-
-        :return: ``True`` if `Node` is marked as `Invalid`
-        :rtype: ``bool``
-        """
-        return self._is_invalid
-
-    def markInvalid(self, new_value: bool=True):
-        """Mark this `Node` as `Invalid`. See :ref:`evaluation` for more
-
-        :param new_value: ``True`` if this `Node` should be `Invalid`. ``False`` if you want to make this `Node` valid
-        :type new_value: ``bool``
-        """
-        self._is_invalid = new_value
-        if self._is_invalid: self.onMarkedInvalid()
-
-    def onMarkedInvalid(self):
-        """Called when this `Node` has been marked as `Invalid`. This method is supposed to be overridden"""
-        pass
-
-    def markChildrenInvalid(self, new_value: bool=True):
-        """Mark all first level children of this `Node` to be `Invalid`. Not this `Node` it self. Not other descendants
-
-        :param new_value: ``True`` if children should be `Invalid`. ``False`` if you want to make children valid
-        :type new_value: ``bool``
-        """
-        for other_node in self.getChildrenNodes():
-            other_node.markInvalid(new_value)
-
-    def markDescendantsInvalid(self, new_value: bool=True):
-        """Mark all children and descendants of this `Node` to be `Invalid`. Not this `Node` it self
-
-        :param new_value: ``True`` if children and descendants should be `Invalid`. ``False`` if you want to make children and descendants valid
-        :type new_value: ``bool``
-        """
-        for other_node in self.getChildrenNodes():
-            other_node.markInvalid(new_value)
-            other_node.markDescendantsInvalid(new_value)
-
-    def eval(self, index=0):
-        """Evaluate this `Node`. This is supposed to be overridden. See :ref:`evaluation` for more"""
-        self.markDirty(False)
-        self.markInvalid(False)
-        return 0
-
-    def evalChildren(self):
-        """Evaluate all children of this `Node`"""
-        for node in self.getChildrenNodes():
-            node.eval()
+    # def isDirty(self) -> bool:
+    #     """Is this node marked as `Dirty`
+    #
+    #     :return: ``True`` if `Node` is marked as `Dirty`
+    #     :rtype: ``bool``
+    #     """
+    #     return self._is_dirty
+    #
+    # def markDirty(self, new_value: bool=True):
+    #     """Mark this `Node` as `Dirty`. See :ref:`evaluation` for more
+    #
+    #     :param new_value: ``True`` if this `Node` should be `Dirty`. ``False`` if you want to un-dirty this `Node`
+    #     :type new_value: ``bool``
+    #     """
+    #     self._is_dirty = new_value
+    #     if self._is_dirty: self.onMarkedDirty()
+    #
+    # def onMarkedDirty(self):
+    #     """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
+    #     pass
+    #
+    # def markChildrenDirty(self, new_value: bool=True):
+    #     """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
+    #
+    #     :param new_value: ``True`` if children should be `Dirty`. ``False`` if you want to un-dirty children
+    #     :type new_value: ``bool``
+    #     """
+    #     for other_node in self.getChildrenNodes():
+    #         other_node.markDirty(new_value)
+    #
+    # def markDescendantsDirty(self, new_value: bool=True):
+    #     """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
+    #
+    #     :param new_value: ``True`` if children and descendants should be `Dirty`. ``False`` if you want to un-dirty children and descendants
+    #     :type new_value: ``bool``
+    #     """
+    #     for other_node in self.getChildrenNodes():
+    #         other_node.markDirty(new_value)
+    #         other_node.markDescendantsDirty(new_value)
+    #
+    # def isInvalid(self) -> bool:
+    #     """Is this node marked as `Invalid`?
+    #
+    #     :return: ``True`` if `Node` is marked as `Invalid`
+    #     :rtype: ``bool``
+    #     """
+    #     return self._is_invalid
+    #
+    # def markInvalid(self, new_value: bool=True):
+    #     """Mark this `Node` as `Invalid`. See :ref:`evaluation` for more
+    #
+    #     :param new_value: ``True`` if this `Node` should be `Invalid`. ``False`` if you want to make this `Node` valid
+    #     :type new_value: ``bool``
+    #     """
+    #     self._is_invalid = new_value
+    #     if self._is_invalid: self.onMarkedInvalid()
+    #
+    # def onMarkedInvalid(self):
+    #     """Called when this `Node` has been marked as `Invalid`. This method is supposed to be overridden"""
+    #     pass
+    #
+    # def markChildrenInvalid(self, new_value: bool=True):
+    #     """Mark all first level children of this `Node` to be `Invalid`. Not this `Node` it self. Not other descendants
+    #
+    #     :param new_value: ``True`` if children should be `Invalid`. ``False`` if you want to make children valid
+    #     :type new_value: ``bool``
+    #     """
+    #     for other_node in self.getChildrenNodes():
+    #         other_node.markInvalid(new_value)
+    #
+    # def markDescendantsInvalid(self, new_value: bool=True):
+    #     """Mark all children and descendants of this `Node` to be `Invalid`. Not this `Node` it self
+    #
+    #     :param new_value: ``True`` if children and descendants should be `Invalid`. ``False`` if you want to make children and descendants valid
+    #     :type new_value: ``bool``
+    #     """
+    #     for other_node in self.getChildrenNodes():
+    #         other_node.markInvalid(new_value)
+    #         other_node.markDescendantsInvalid(new_value)
+    #
+    # def eval(self, index=0):
+    #     """Evaluate this `Node`. This is supposed to be overridden. See :ref:`evaluation` for more"""
+    #     self.markDirty(False)
+    #     self.markInvalid(False)
+    #     return 0
+    #
+    # def evalChildren(self):
+    #     """Evaluate all children of this `Node`"""
+    #     for node in self.getChildrenNodes():
+    #         node.eval()
 
 
     # traversing nodes functions
@@ -417,6 +432,9 @@ class Node(Serializable):
                 other_node = edge.getOtherSocket(self.outputs[ix]).node
                 other_nodes.append(other_node)
         return other_nodes
+
+    def updateTextCode(self):
+        self.getChildrenNodes()
 
 
     def getInput(self, index: int=0) -> ['Node', None]:
@@ -600,4 +618,5 @@ class Node(Serializable):
 
 
     def getNodeCode(self):
-        return None
+        code = None
+        return code

@@ -16,8 +16,6 @@ class If_Statement(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
-        pass
-
 
     def getNodeCode(self):
         self.conditionCode = 'bool'

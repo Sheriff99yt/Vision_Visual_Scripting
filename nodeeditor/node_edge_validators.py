@@ -66,5 +66,5 @@ def edge_cannot_connect_input_and_output_of_different_type(input: 'Socket', outp
     if input.grSocket._current_color != output.grSocket._current_color:
         print_error("Connecting sockets with different colors")
         return False
-
-    return True
+    else:
+        return True

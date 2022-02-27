@@ -2,7 +2,7 @@
 """
 A module containing Graphics representation of :class:`~nodeeditor.node_node.Node`
 """
-from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem
+from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem,QGraphicsDropShadowEffect
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 from qtpy.QtCore import Qt, QRectF
 
@@ -31,6 +31,17 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initSizes()
         self.initAssets()
         self.initUI()
+
+        # creating a QGraphicsDropShadowEffect object
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setColor(QColor(14,14,14))
+
+        shadow.setXOffset(-6)
+        shadow.setYOffset(6)
+        # setting blur radius (optional step)
+        shadow.setBlurRadius(12)
+        # adding shadow to the labelq
+        self.setGraphicsEffect(shadow)
 
     @property
     def content(self):
