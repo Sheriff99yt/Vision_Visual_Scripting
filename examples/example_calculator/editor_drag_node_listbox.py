@@ -13,26 +13,26 @@ class QDMNodeListbox(QListWidget):
 
     def initUI(self):
         # init
-        self.setIconSize(QSize(24, 24))
+        self.setIconSize(QSize(28, 28))
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
 
-        self.addMyItems()
+        self.addMyFunctions()
 
 
-    def addMyItems(self):
-        keys = list(CALC_NODES.keys())
-        keys.sort()
-        for key in keys:
-            node = get_class_from_opcode(key)
-            self.addMyItem(node.op_title, node.icon, node.op_code)
+    def addMyFunctions(self):
+        Funs = list(FUNCTIONS.keys())
+        Funs.sort()
+        for key in Funs:
+            node = get_class_from_nodesID(key)
+            self.addMyItem(node.op_title, node.icon, node.node_ID)
 
 
     def addMyItem(self, name, icon=None, op_code=0):
         item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(24, 24))
+        item.setSizeHint(pixmap.size())
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
@@ -66,3 +66,5 @@ class QDMNodeListbox(QListWidget):
             drag.exec_(Qt.MoveAction)
 
         except Exception as e: dumpException(e)
+
+

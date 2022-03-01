@@ -1,4 +1,4 @@
-from qtpy.QtGui import QImage
+from qtpy.QtGui import QImage,QColor
 from qtpy.QtCore import QRectF
 from qtpy.QtWidgets import QLabel
 
@@ -13,22 +13,20 @@ class MasterGraphicsNode(QDMGraphicsNode):
         super().initSizes()
         self.width = 160
         self.height = 74
-        self.edge_roundness = 2
-        self.edge_padding = 0
-        self.title_horizontal_padding = 24
-        self.title_vertical_padding = 10
+        # self.node_color=QColor("")
 
-    def initAssets(self):
-        super().initAssets()
-        pass
+    # def initAssets(self):
+    #     super().initAssets()
+    #     pass
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         super().paint(painter, QStyleOptionGraphicsItem, widget)
         # if self.node.isDirty(): offset = 0
         # if self.node.isInvalid(): offset = 48
         offset = 0
-        self.icons = QImage("icons/Loop.png")
+        self.icons = QImage("")
         painter.drawImage(QRectF(offset, 0, 24, 24), self.icons)
+
     
     def UpdateIcon(self, icon: None):
         self.icons = QImage(icon)
@@ -42,22 +40,23 @@ class MasterContent(QDMNodeContentWidget):
 
 class MasterNode(Node):
     icon = ""
-    op_code = 0
+    node_ID = 0
     op_title = "Undefined"
     content_label = ""
     content_label_objname = "calc_node_bg"
 
     GraphicsNode_class = MasterGraphicsNode
     NodeContent_class = MasterContent
+
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
         self.value = None
         # it's really important to mark all nodes Dirty by default
         # self.markDirty(True)
 
-    def initSettings(self):
-        super().initSettings()
-
+    # def initSettings(self):
+    #     super().initSettings()
+    #     pass
     # def evalOperation(self, input1, input2):
     #     return 123
     #
@@ -101,7 +100,6 @@ class MasterNode(Node):
     #         self.grNode.setToolTip(str(e))
     #         dumpException(e)
 
-
     def onInputChanged(self, socket=None):
         # print("%s::__onInputChanged" % self.__class__.__name__)
         # self.markDirty()
@@ -110,7 +108,7 @@ class MasterNode(Node):
 
     def serialize(self):
         res = super().serialize()
-        res['op_code'] = self.__class__.op_code
+        res['op_code'] = self.__class__.node_ID
         return res
 
     def deserialize(self, data, hashmap={}, restore_id=True):

@@ -21,7 +21,7 @@ class Node(Serializable):
     NodeContent_class = QDMNodeContentWidget
     Socket_class = Socket
 
-    def __init__(self, scene: 'Scene', title: str="Undefined Node", inputs: list=[], outputs: list=[]):
+    def __init__(self, scene: 'Scene', title: str= "Undefined Node", inputs: list=[], outputs: list=[]):
         """
 
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
@@ -49,6 +49,8 @@ class Node(Serializable):
         self.content = None
         self.grNode = None
 
+
+
         self.initInnerClasses()
         self.initSettings()
 
@@ -57,14 +59,16 @@ class Node(Serializable):
         self.scene.addNode(self)
         self.scene.grScene.addItem(self.grNode)
 
+
         # create socket for inputs and outputs
         self.inputs = []
         self.outputs = []
         self.initSockets(inputs, outputs)
 
+
         # dirty and evaluation
-        self._is_dirty = False
-        self._is_invalid = False
+        # self._is_dirty = False
+        # self._is_invalid = False
 
 
 

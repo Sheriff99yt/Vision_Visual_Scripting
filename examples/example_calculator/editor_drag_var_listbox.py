@@ -17,21 +17,22 @@ class QDMVarListbox(QListWidget):
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
 
-        self.addMyItems()
+        self.addMyVariables()
 
 
-    def addMyItems(self):
-        keys = list(VAR_NODES.keys())
-        keys.sort()
-        for key in keys:
-            node = get_class_from_opcode(key)
-            self.addMyItem(node.op_title, node.icon, node.op_code)
+    def addMyVariables(self):
+        Vars = list(VARIABLES.keys())
+        Vars.sort()
+        for key in Vars:
+            node = get_class_from_nodesID(key)
+            self.addMyItem(node.op_title, node.icon, node.node_ID)
+
 
     def addMyItem(self, name, icon=None, op_code=0):
         item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(32, 32))
+        item.setSizeHint(pixmap.size())
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 

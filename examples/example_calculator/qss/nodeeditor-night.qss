@@ -1,5 +1,5 @@
 QFrame,QDialog,QMainWindow,QSplitter,QStatusBar,QMainWindow::separator{background:#282828}
-
+QFrame{background-color:#565656}
 QTabBar,QStatusBar{background:#282828;color:#FFFFFF}
 
 QTabWidget{border:0}

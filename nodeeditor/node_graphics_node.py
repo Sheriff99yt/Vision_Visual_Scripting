@@ -77,13 +77,14 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def initSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
-        self.width = 180
-        self.height = 240
-        self.edge_roundness = 10
-        self.edge_padding = 10
+        self.width = 160
+        self.height = 160
+        self.edge_roundness = 2
+        self.edge_padding = 0
         self.title_height = 24
-        self.title_horizontal_padding = 4
-        self.title_vertical_padding = 4
+        self.title_horizontal_padding = 24
+        self.title_vertical_padding = 10
+
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
@@ -101,7 +102,8 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(1)
 
-        self._brush_title = QBrush(QColor("#FF313131"))
+        self.node_color = QColor("#FF313131")
+        self._brush_title = QBrush(self.node_color)
         self._brush_background = QBrush(QColor("#FF212121"))
 
     def onSelected(self):

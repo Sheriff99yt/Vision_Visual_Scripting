@@ -1,7 +1,7 @@
 from qtpy.QtWidgets import QLabel
 from qtpy.QtCore import Qt
-from examples.example_calculator.nodes_configuration import register_node, OP_NODE_OUTPUT
-from examples.example_calculator.editor_node_base import *
+from examples.example_calculator.nodes_configuration import register_node, FUN_OUTPUT
+from examples.example_calculator.master_node import *
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 
 
@@ -12,10 +12,10 @@ class CalcOutputContent(QDMNodeContentWidget):
         self.lbl.setObjectName(self.node.content_label_objname)
 
 
-@register_node(OP_NODE_OUTPUT)
+@register_node(FUN_OUTPUT)
 class MasterNode_Output(MasterNode):
     icon = "icons/out.png"
-    op_code = OP_NODE_OUTPUT
+    op_code = FUN_OUTPUT
     op_title = "Output"
     content_label_objname = "calc_node_output"
 

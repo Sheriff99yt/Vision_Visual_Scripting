@@ -3,7 +3,7 @@ from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from examples.example_calculator.icons import *
-from examples.example_calculator.nodes_configuration import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
+from examples.example_calculator.nodes_configuration import FUNCTIONS, get_class_from_nodesID, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from nodeeditor.graph_graphics import MODE_EDGE_DRAG
@@ -31,7 +31,7 @@ class MasterDesignerWnd(NodeEditorWidget):
 
     def getNodeClassFromData(self, data):
         if 'op_code' not in data: return Node
-        return get_class_from_opcode(data['op_code'])
+        return get_class_from_nodesID(data['op_code'])
 
     def doEvalOutputs(self):
         # eval all output nodes
@@ -51,16 +51,16 @@ class MasterDesignerWnd(NodeEditorWidget):
 
     def initNewNodeActions(self):
         self.node_actions = {}
-        keys = list(CALC_NODES.keys())
+        keys = list(FUNCTIONS.keys())
         keys.sort()
         for key in keys:
-            node = CALC_NODES[key]
-            self.node_actions[node.op_code] = QAction(QIcon(node.icon), node.op_title)
-            self.node_actions[node.op_code].setData(node.op_code)
+            node = FUNCTIONS[key]
+            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.op_title)
+            self.node_actions[node.node_ID].setData(node.node_ID)
 
     def initNodesContextMenu(self):
         context_menu = QMenu(self)
-        keys = list(CALC_NODES.keys())
+        keys = list(FUNCTIONS.keys())
         keys.sort()
         for key in keys: context_menu.addAction(self.node_actions[key])
         return context_menu
@@ -97,7 +97,7 @@ class MasterDesignerWnd(NodeEditorWidget):
             if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
-                node = get_class_from_opcode(op_code)(self.scene)
+                node = get_class_from_nodesID(op_code)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
 
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
@@ -199,7 +199,7 @@ class MasterDesignerWnd(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_calc_node = get_class_from_opcode(action.data())(self.scene)
+            new_calc_node = get_class_from_nodesID(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_calc_node.setPos(scene_pos.x(), scene_pos.y())
             if DEBUG_CONTEXT: print("Selected node:", new_calc_node)

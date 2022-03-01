@@ -9,9 +9,10 @@ from examples.example_calculator.master_editor_wnd import MasterEditorWnd
 from examples.example_calculator.master_designer_wnd import MasterDesignerWnd
 from examples.example_calculator.editor_drag_node_listbox import QDMNodeListbox
 from examples.example_calculator.editor_drag_var_listbox import QDMVarListbox
+from examples.example_calculator.editor_proterties_list import PropertiesList
 
 from nodeeditor.utils import dumpException, pp
-from examples.example_calculator.nodes_configuration import CALC_NODES
+# from examples.example_calculator.nodes_configuration import FUNCTIONS
 
 # Enabling edge validators
 from nodeeditor.node_edge import Edge
@@ -46,7 +47,7 @@ class MasterWindow(NodeEditorWindow):
 
         if DEBUG:
             print("Registered nodes:")
-            pp(CALC_NODES)
+            # pp(FUNCTIONS)
 
 
         self.masterDisplay = QStackedWidget()
@@ -367,10 +368,10 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
     def CreatePropertiesDock(self):
-        self.DetialsWidget = QDMVarListbox()
+        self.propertiesListWidget = PropertiesList()
 
         self.propertiesDock = QDockWidget("Properties")
-        self.propertiesDock.setWidget(self.DetialsWidget)
+        self.propertiesDock.setWidget(self.propertiesListWidget)
         self.propertiesDock.setFeatures(self.propertiesDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.propertiesDock)

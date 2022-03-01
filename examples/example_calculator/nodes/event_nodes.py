@@ -1,17 +1,12 @@
-from qtpy.QtWidgets import *
-from qtpy.QtCore import Qt
 from examples.example_calculator.nodes_configuration import *
-from nodeeditor.node_socket import *
-from examples.example_calculator.editor_node_base import MasterNode, MasterGraphicsNode
-from nodeeditor.node_content_widget import QDMNodeContentWidget
-from nodeeditor.utils import dumpException
+from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from nodeeditor.node_editor_widget import *
 
 
-@register_node(EXECUTION_EVENT)
+@register_node(FUN_EVENT)
 class Event(MasterNode):
-    icon = "icons/if.png"
-    op_code = EXECUTION_EVENT
+    icon = ""
+    op_code = FUN_EVENT
     op_title = "Event"
     content_label_objname = "calc_node_event"
 
@@ -21,8 +16,8 @@ class Event(MasterNode):
 
 
     def getNodeCode(self):
-        self.eventName = 'Event 01'
-        self.connectedCode = 'print("Test")'
+        self.eventName = "Event 01"
+        self.connectedCode = """print("Test")"""
         code = """def {}(self):
     {}""".format(self.eventName, self.connectedCode)
         return code
