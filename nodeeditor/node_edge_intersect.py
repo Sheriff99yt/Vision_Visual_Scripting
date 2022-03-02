@@ -106,7 +106,8 @@ class EdgeIntersect:
         """
         rect = self.hotZoneRect(self.draggedNode)
         grItems = self.grScene.items(rect)
-        for grEdge in self.hoveredList: grEdge.hovered = False
+        for grEdge in self.hoveredList:
+            grEdge.hovered = False
         self.hoveredList = []
         for grItem in grItems:
             if hasattr(grItem, 'edge') and not self.draggedNode.hasConnectedEdge(grItem.edge):
@@ -138,7 +139,8 @@ class EdgeIntersect:
         :return:
         """
         # Nodes with only inputs or outputs are excluded
-        if node.inputs == [] or node.outputs == []: return True
+        if node.inputs == [] or node.outputs == []:
+            return True
 
         # Check if the node has edges connected
         return node.getInput() or node.getOutputs()

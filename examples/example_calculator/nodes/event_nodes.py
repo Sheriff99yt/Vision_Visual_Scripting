@@ -3,10 +3,10 @@ from examples.example_calculator.master_node import MasterNode, MasterGraphicsNo
 from nodeeditor.node_editor_widget import *
 
 
-@register_node(FUN_EVENT)
+@register_node(FUN_EVENT,Fun=True)
 class Event(MasterNode):
     icon = ""
-    op_code = FUN_EVENT
+    node_ID = FUN_EVENT
     op_title = "Event"
     content_label_objname = "calc_node_event"
 

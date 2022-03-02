@@ -108,7 +108,7 @@ class MasterNode(Node):
 
     def serialize(self):
         res = super().serialize()
-        res['op_code'] = self.__class__.node_ID
+        res['node_ID'] = self.__class__.node_ID
         return res
 
     def deserialize(self, data, hashmap={}, restore_id=True):

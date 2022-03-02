@@ -2,10 +2,10 @@ from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 
 
-@register_node(FUN_IF)
+@register_node(FUN_IF,Fun=True)
 class If_Statement(MasterNode):
     icon = "icons/if.png"
-    op_code = FUN_IF
+    node_ID = FUN_IF
     op_title = "IF Statement"
     content_label_objname = "calc_node_if_statement"
 
@@ -27,10 +27,10 @@ else:
 
 
 
-@register_node(FUN_FOR_LOOP)
+@register_node(FUN_FOR_LOOP,Fun=True)
 class For_Loop(MasterNode):
     icon = "icons/Loop.png"
-    op_code = FUN_FOR_LOOP
+    node_ID = FUN_FOR_LOOP
     op_title = "For Loop"
     content_label_objname = "calc_node_for_loop"
 
@@ -50,10 +50,10 @@ class For_Loop(MasterNode):
 
 
 
-@register_node(FUN_PRINT)
+@register_node(FUN_PRINT,Fun=True)
 class Print(MasterNode):
     icon = "icons/if.png"
-    op_code = FUN_PRINT
+    node_ID = FUN_PRINT
     op_title = "Print"
     content_label_objname = "calc_node_print"
 
@@ -68,10 +68,10 @@ class Print(MasterNode):
 
 
 
-@register_node(FUN_ADD)
+@register_node(FUN_ADD,Fun=True)
 class MasterNode_Add(MasterNode):
     icon = "icons/add.png"
-    op_code = FUN_ADD
+    node_ID = FUN_ADD
     op_title = "Add"
     content_label = "+"
     content_label_objname = "calc_node_bg"
@@ -82,10 +82,10 @@ class MasterNode_Add(MasterNode):
 
 
 
-@register_node(FUN_SUB)
+@register_node(FUN_SUB,Fun=True)
 class MasterNode_Sub(MasterNode):
     icon = "icons/sub.png"
-    op_code = FUN_SUB
+    node_ID = FUN_SUB
     op_title = "Substract"
     content_label = "-"
     content_label_objname = "calc_node_bg"
@@ -96,10 +96,10 @@ class MasterNode_Sub(MasterNode):
 
 
 
-@register_node(FUN_MUL)
+@register_node(FUN_MUL,Fun=True)
 class MasterNode_Mul(MasterNode):
     icon = "icons/mul.png"
-    op_code = FUN_MUL
+    node_ID = FUN_MUL
     op_title = "Multiply"
     content_label = "*"
     content_label_objname = "calc_node_mul"
@@ -110,10 +110,10 @@ class MasterNode_Mul(MasterNode):
 
 
 
-@register_node(FUN_DIV)
+@register_node(FUN_DIV,Fun=True)
 class MasterNode_Div(MasterNode):
     icon = "icons/divide.png"
-    op_code = FUN_DIV
+    node_ID = FUN_DIV
     op_title = "Divide"
     content_label = "/"
     content_label_objname = "calc_node_div"

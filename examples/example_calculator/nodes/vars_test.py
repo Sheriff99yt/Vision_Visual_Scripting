@@ -1,7 +1,7 @@
 from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 
-@register_node(VAR_FLOAT)
+@register_node(VAR_FLOAT,Fun=False)
 class Float_Var(MasterNode):
     icon = ""
     node_ID = VAR_FLOAT
@@ -18,7 +18,7 @@ class Float_Var(MasterNode):
         return code
 
 
-@register_node(VAR_INTEGER)
+@register_node(VAR_INTEGER,Fun=False)
 class Integer_Var(MasterNode):
     icon = ""
     node_ID = VAR_INTEGER
@@ -35,7 +35,7 @@ class Integer_Var(MasterNode):
         return code
 
 
-@register_node(VAR_BOOLEAN)
+@register_node(VAR_BOOLEAN,Fun=False)
 class Boolean_Var(MasterNode):
     icon = ""
     node_ID = VAR_BOOLEAN
@@ -52,7 +52,7 @@ class Boolean_Var(MasterNode):
         return code
 
 
-@register_node(VAR_STRING)
+@register_node(VAR_STRING,Fun=False)
 class String_Var(MasterNode):
     icon = ""
     node_ID = VAR_STRING

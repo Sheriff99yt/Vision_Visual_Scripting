@@ -30,10 +30,10 @@ class MasterEditorWnd(NodeEditorWidget):
         self._close_event_listeners = []
 
     def getNodeClassFromData(self, data):
-        if 'nodeID' not in data:
+        if 'node_ID' not in data:
             return Node
         else:
-            return get_class_from_nodesID(data['nodeID'])
+            return get_class_from_nodesID(data['node_ID'])
 
     def doEvalOutputs(self):
         # eval all output nodes
@@ -101,20 +101,21 @@ class MasterEditorWnd(NodeEditorWidget):
             dataStream = QDataStream(eventData, QIODevice.ReadOnly)
             pixmap = QPixmap()
             dataStream >> pixmap
-            op_code = dataStream.readInt()
+            node_ID = dataStream.readInt()
             text = dataStream.readQString()
 
             mouse_position = event.pos()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
 
-            if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
+            if DEBUG: print("GOT DROP: [%d] '%s'" % (node_ID, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
-                node = get_class_from_nodesID(op_code)(self.scene)
+                node = get_class_from_nodesID(node_ID)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
 
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
-            except Exception as e: dumpException(e)
+            except Exception as e:
+                dumpException(e)
 
 
             event.setDropAction(Qt.MoveAction)

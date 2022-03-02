@@ -28,10 +28,10 @@ class CalcInputContent(QDMNodeContentWidget):
         return res
 
 
-@register_node(FUN_INPUT)
+@register_node(FUN_INPUT,Fun=True)
 class MasterNode_Input(MasterNode):
     icon = "icons/in.png"
-    op_code = FUN_INPUT
+    node_ID = FUN_INPUT
     op_title = "Input"
     content_label_objname = "calc_node_input"
 

@@ -12,10 +12,10 @@ class CalcOutputContent(QDMNodeContentWidget):
         self.lbl.setObjectName(self.node.content_label_objname)
 
 
-@register_node(FUN_OUTPUT)
+@register_node(FUN_OUTPUT,Fun=True)
 class MasterNode_Output(MasterNode):
     icon = "icons/out.png"
-    op_code = FUN_OUTPUT
+    node_ID = FUN_OUTPUT
     op_title = "Output"
     content_label_objname = "calc_node_output"
 
