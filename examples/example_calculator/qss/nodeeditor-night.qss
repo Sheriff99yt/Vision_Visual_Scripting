@@ -4,6 +4,44 @@ QTabBar,QStatusBar{background:#282828;color:#FFFFFF}
 
 QTabWidget{border:0}
 
+QComboBox {
+    background-color: #1F1F1F;
+    color: #FFFFFF;
+    selection-background-color: #565656;
+    background-style: solid;
+    border: 1px solid #1F1F1F;
+    border-radius: 1px;}
+
+QComboBox:hover, QComboBox:focus {
+    border: 2px solid #1F1F1F;
+    background-color: #282828;}
+
+QComboBox QAbstractItemView{
+    background-color: #1F1F1F;}
+
+QComboBox::drop-down {
+    background-color: #1F1F1F;
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 0px;
+
+    border-left-width: 0px;
+    border-left-color: #FFFFFF;
+    border-left-style: solid;}
+
+QPushButton {
+    background-color: #1F1F1F;
+    border: 1px solid #828282;
+    color: #FFFFFF;
+    text-align: center;
+    border-radius: 1px;}
+
+QPushButton:hover {
+    border: 1px solid #FFFFFF;}
+QPushButton:pressed {
+    background-color: #828282;
+    border: 2px solid #1F1F1F;}
+
 QMdiArea QTabBar,QMdiArea QTabWidget,QMdiArea QTabWidget::pane,QMdiArea QTabWidget::tab-bar,QMdiArea QTabBar::tab{height:20px}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover{border-top-left-radius:0px;border-top-right-radius:0px;padding:0px 0px;padding-top:0;padding-bottom:0px;min-width:8ex;border:1px solid #282828;border-bottom:0}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover{background:#1F1F1F;color:#FFFFFF}
@@ -42,7 +80,6 @@ QListView::item:hover{background:#828282}
 QListView::item::active:hover{color:#FFFFFF}
 QListView::item:selected,QListView::item::active:selected{color:#FFFFFF;background:#282828;border:0}
 
-QPushButton{color:#FFFFFF;background:#565656;border-color:#FFFFFF}
 
 QLabel{color:#FFFFFF}
 

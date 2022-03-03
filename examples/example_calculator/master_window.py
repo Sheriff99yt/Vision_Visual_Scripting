@@ -367,6 +367,8 @@ class MasterWindow(NodeEditorWindow):
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
+
+
     def CreatePropertiesDock(self):
         self.propertiesListWidget = PropertiesList()
 

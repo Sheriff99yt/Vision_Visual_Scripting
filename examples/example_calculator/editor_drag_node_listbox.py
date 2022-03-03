@@ -30,7 +30,7 @@ class QDMNodeListbox(QListWidget):
         item = QListWidgetItem(name, self)  # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(32,32))
+        item.setSizeHint(QSize(28,28))
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 

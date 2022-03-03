@@ -6,7 +6,7 @@ from examples.example_calculator.nodes_configuration import VARIABLES, get_class
 from nodeeditor.utils import dumpException
 
 
-class QDMVarListbox(QScrollArea):
+class QDMVarListbox(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -19,13 +19,17 @@ class QDMVarListbox(QScrollArea):
         self.addBtn = QPushButton("Add Variable")
         self.Hlayout = QHBoxLayout()
 
+        self.myCompoBox.setMinimumHeight(28)
+        self.addBtn.setMinimumHeight(28)
+
         self.Hlayout.addWidget(self.myCompoBox)
         self.Hlayout.addWidget(self.addBtn)
+        self.Hlayout.setContentsMargins(2, 2, 2, 2)
 
         self.mylayout.addLayout(self.Hlayout)
         self.mylayout.addWidget(self.VarList)
 
-        self.VarList.setIconSize(QSize(32, 32))
+        self.VarList.setIconSize(QSize(28, 28))
         self.VarList.setSelectionMode(QAbstractItemView.SingleSelection)
         self.VarList.setDragEnabled(True)
 
@@ -57,7 +61,7 @@ class QDMVarListbox(QScrollArea):
         item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(32, 32))
+        item.setSizeHint(QSize(28, 28))
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
