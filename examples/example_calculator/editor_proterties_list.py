@@ -7,20 +7,8 @@ class PropertiesList(QScrollArea):
         super().__init__(parent)
 
         self.ListOfItems = None
-        self.myLayout = QHBoxLayout()
+        self.myLayout = QFormLayout()
         self.setLayout(self.myLayout)
-
-        self.nameList = QVBoxLayout()
-        self.optionList = QVBoxLayout()
-        self.nameList.setAlignment(Qt.AlignTop)
-        self.optionList.setAlignment(Qt.AlignTop)
-        self.myLayout.addLayout(self.nameList)
-        self.myWidget = QFrame()
-
-        self.nameList.addWidget(self.myWidget)
-
-        self.myLayout.addLayout(self.optionList)
-
         self.initUI()
 
     def initUI(self):
@@ -34,13 +22,11 @@ class PropertiesList(QScrollArea):
 
     # @TODO: To Be Coded
 
+
     def UpdateDetailsList(self):
         for Item in self.ListOfItems:
             lbl = QLabel(Item.get("name"))
             lbl2 = QLabel(Item.get("color"))
 
-            # lbl.adjustSize()
-            # lbl2.adjustSize()
+            self.myLayout.addRow(lbl, lbl2)
 
-            self.nameList.addWidget(lbl)
-            self.optionList.addWidget(lbl2)

@@ -1,38 +1,63 @@
-from qtpy.QtGui import QPixmap, QIcon, QDrag
-from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
-from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
+from qtpy.QtGui import *
+from qtpy.QtCore import *
+from qtpy.QtWidgets import *
 
-from examples.example_calculator.nodes_configuration import VARIABLES,get_class_from_nodesID,LISTBOX_MIMETYPE
+from examples.example_calculator.nodes_configuration import VARIABLES, get_class_from_nodesID, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
-class QDMVarListbox(QListWidget):
+class QDMVarListbox(QScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.initUI()
 
-    def initUI(self):
-        # init
-        self.setIconSize(QSize(32, 32))
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setDragEnabled(True)
+        self.mylayout = QVBoxLayout()
+        self.mylayout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(self.mylayout)
 
-        self.addMyVariables()
+        self.myCompoBox = QComboBox()
+        self.VarList = QListWidget()
+        self.addBtn = QPushButton("Add Variable")
+        self.Hlayout = QHBoxLayout()
+
+        self.Hlayout.addWidget(self.myCompoBox)
+        self.Hlayout.addWidget(self.addBtn)
+
+        self.mylayout.addLayout(self.Hlayout)
+        self.mylayout.addWidget(self.VarList)
+
+        self.VarList.setIconSize(QSize(32, 32))
+        self.VarList.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.VarList.setDragEnabled(True)
+
+        self.VarList.startDrag = self.startDrag
+
+        self.IDs = []
+        self.addAllVars()
 
 
-    def addMyVariables(self):
+    def addAllVars(self):
         Vars = list(VARIABLES.keys())
         Vars.sort()
         for item in Vars:
             node = get_class_from_nodesID(item)
-            self.addMyItem(node.op_title, node.icon, node.node_ID)
-            print("WEEEEEE")
+
+            self.myCompoBox.addItem(node.op_title)
+            # print(node.node_ID)
+            self.IDs.append(node.node_ID)
+
+        self.addBtn.clicked.connect(self.addVariable)
+
+
+    def addVariable(self):
+        node = get_class_from_nodesID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
+        self.addMyItem(node.op_title, node.icon, node.node_ID)
+
 
     def addMyItem(self, name, icon=None, node_ID=0):
-        item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
+        item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(32,32))
+        item.setSizeHint(QSize(32, 32))
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
@@ -43,11 +68,11 @@ class QDMVarListbox(QListWidget):
 
     def startDrag(self, *args, **kwargs):
         try:
-            item = self.currentItem()
+            item = self.VarList.currentItem()
+            print(item.text())
             node_ID = item.data(Qt.UserRole + 1)
 
             pixmap = QPixmap(item.data(Qt.UserRole))
-
 
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
@@ -65,4 +90,6 @@ class QDMVarListbox(QListWidget):
 
             drag.exec_(Qt.MoveAction)
 
-        except Exception as e: dumpException(e)
+        except Exception as e:
+            dumpException(e)
+
