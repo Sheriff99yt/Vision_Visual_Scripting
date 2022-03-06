@@ -4,6 +4,7 @@ A module containing the representation of the NodeEditor's Scene
 """
 import os, sys, json
 from collections import OrderedDict
+
 from nodeeditor.utils import dumpException, pp
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_graphics_scene import NodeGraphicsScene
@@ -89,6 +90,7 @@ class NodeScene(Serializable):
             for callback in self._has_been_modified_listeners: callback()
 
         self._has_been_modified = value
+
 
     def initUI(self):
         """Set up Graphics Scene Instance"""
@@ -256,7 +258,6 @@ class NodeScene(Serializable):
         :type node: :class:`~nodeeditor.node_node.Node`
         """
         self.nodes.append(node)
-        self.NodeEditor.UpdateTextCode()
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodeeditor.node_edge.Edge` to this `Scene`

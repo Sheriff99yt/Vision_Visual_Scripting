@@ -188,9 +188,9 @@ class GraphGraphics(QGraphicsView):
 
             if isinstance(item, QDMGraphicsSocket):
                 print("MMB DEBUG:", item.socket, "socket_type:", item.socket.socket_type,
-                      "has edges:", "no" if item.socket.edges == [] else "")
-                if item.socket.edges:
-                    for edge in item.socket.edges: print("\t", edge)
+                      "has edges:", "no" if item.socket.socketEdges == [] else "")
+                if item.socket.socketEdges:
+                    for edge in item.socket.socketEdges: print("\t", edge)
                 return
 
         if DEBUG_MMB_SCENE_ITEMS and (item is None or self.mode == MODE_EDGES_REROUTING):
@@ -247,12 +247,12 @@ class GraphGraphics(QGraphicsView):
                 super().mousePressEvent(fakeEvent)
                 return
 
-        if hasattr(item, "node"):
-            if DEBUG_EDGE_INTERSECT: print('View::leftMouseButtonPress - Start dragging a node')
-            if self.mode == MODE_READY:
-                self.mode = MODE_NODE_DRAG
-                self.edgeIntersect.enterState(item.node)
-                if DEBUG_EDGE_INTERSECT: print(">> edgeIntersect start:", self.edgeIntersect.draggedNode)
+        # if hasattr(item, "node"):
+        #     if DEBUG_EDGE_INTERSECT: print('View::leftMouseButtonPress - Start dragging a node')
+        #     if self.mode == MODE_READY:
+        #         self.mode = MODE_NODE_DRAG
+        #         self.edgeIntersect.enterState(item.node)
+        #         if DEBUG_EDGE_INTERSECT: print(">> edgeIntersect start:", self.edgeIntersect.draggedNode)
 
         # support for snapping
         if self.isSnappingEnabled(event):

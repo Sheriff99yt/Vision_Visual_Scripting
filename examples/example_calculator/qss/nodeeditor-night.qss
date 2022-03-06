@@ -1,8 +1,26 @@
 QFrame,QDialog,QMainWindow,QSplitter,QStatusBar,QMainWindow::separator{background:#282828}
-QFrame{background-color:#565656}
+QFrame {background-color:#565656}
+QToolBar {
+    background: #282828;
+    spacing: 4px;}
 QTabBar,QStatusBar{background:#282828;color:#FFFFFF}
 
 QTabWidget{border:0}
+
+QToolButton {
+    border: 1px solid #828282;
+    border-radius: 1px;
+    background-color: #565656;}
+
+QToolButton:checked {
+    border: 1px solid #FFFFFF;
+    border-radius: 1px;
+    background-color: #1f1f1f;}
+
+QToolButton:hover {
+    border: 1px solid #FFFFFF;
+    border-radius: 1px;
+    background-color: #828282;}
 
 QComboBox {
     background-color: #1F1F1F;
@@ -38,6 +56,7 @@ QPushButton {
 
 QPushButton:hover {
     border: 1px solid #FFFFFF;}
+
 QPushButton:pressed {
     background-color: #828282;
     border: 2px solid #1F1F1F;}
@@ -53,9 +72,12 @@ QMdiArea QTabBar QToolButton::right-arrow{image:url(":icons/small_arrow_right-li
 QMdiArea QTabBar::close-button:selected{image:url(":icons/tab_close_nonselected_btn.png");origin:border;subcontrol-origin:border;subcontrol-position:right bottom}
 QMdiArea QTabBar::close-button:!selected{image:url(":icons/tab_close_nonselected_btn.png")}
 
+
 QMdiSubWindow{border-size:1px;border-style:solid;background:#FFFFFF}
 
+
 QTabBar::tab:selected,QTabBar::tab:hover{color:#FFFFFF}
+
 
 QDockWidget{color:#FFFFFF;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}
 QDockWidget::title{background:#1F1F1F;color:#ccc;padding-top:5px;padding-right:22px;font-weight:bold}
@@ -63,9 +85,11 @@ QDockWidget::close-button,QDockWidget::float-button{subcontrol-position:top righ
 QDockWidget::close-button{right:4px}
 QDockWidget::float-button{right:18px}
 
+
 QMenuBar{background:#282828}
 QMenuBar::item{spacing:3px;padding:6px 12px;color:#FFFFFF;background:#1F1F1F}
 QMenuBar::item:selected,QMenuBar::item:pressed{background:#565656}
+
 
 QMenu{background:#1F1F1F;border:4px solid #1F1F1F}
 QMenu::item{background:#1F1F1F;color:#FFFFFF}
@@ -74,6 +98,7 @@ QMenu::active{background:#565656;color:#FFFFFF}
 QMenu::separator{height:6px;background:#828282}
 QMenu::disabled,QMenu::item:disabled{color:#828282}
 
+
 QListView{background-color:#565656;alternate-background-color:#282828}
 QListView::item{height:22px;color:#e6e6e6}
 QListView::item:hover{background:#828282}
@@ -81,10 +106,9 @@ QListView::item::active:hover{color:#FFFFFF}
 QListView::item:selected,QListView::item::active:selected{color:#FFFFFF;background:#282828;border:0}
 
 
-QLabel{color:#FFFFFF}
-
 QLineEdit,QTextEdit{color:#FFFFFF;background:#565656}
 QLineEdit{border:1px solid #FFFFFF;border-radius:1px;padding:1px 1px}
+
 
 QDMNodeContentWidget{background:#FFFFFF;}
 QDMNodeContentWidget QFrame{background:#FFFFFF}
@@ -93,3 +117,4 @@ QDMNodeContentWidget QLabel{color:#FFFFFF}
 
 QGraphicsView{selection-background-color:#FFFFFF}
 
+QLabel{color:#FFFFFF;}

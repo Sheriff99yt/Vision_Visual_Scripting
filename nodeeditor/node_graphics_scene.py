@@ -48,7 +48,7 @@ class NodeGraphicsScene(QGraphicsScene):
         self.setBackgroundBrush(self._color_background)
 
         # self.GraphText = QLabel("Node Editor")
-        # self.GraphText.setFont(QFont("Arial",100))
+        # self.GraphText.setFont(QFont("Roboto",100))
         # self.GraphText.setStyleSheet("QLabel { background-color : Transparent; color : #30FFFFFF; }")
         # self.addWidget(self.GraphText)
 
@@ -65,7 +65,7 @@ class NodeGraphicsScene(QGraphicsScene):
         self._pen_dark.setWidth(2)
 
         self._pen_state = QPen(self._color_state)
-        self._font_state = QFont("Ubuntu", 16)
+        self._font_state = QFont("Roboto", 16)
 
 
     # the drag events won't be allowed until dragMoveEvent is overriden

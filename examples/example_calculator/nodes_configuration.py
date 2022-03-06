@@ -1,17 +1,19 @@
 LISTBOX_MIMETYPE = "application/x-item"
 
-FUN_INPUT = 1
-FUN_OUTPUT = 2
-FUN_ADD = 3
-FUN_SUB = 4
-FUN_MUL = 5
-FUN_DIV = 6
-FUN_IF = 7
-FUN_FOR_LOOP = 8
-FUN_EXECUTION_EVENT = 9
-FUN_PRINT = 10
-FUN_EVENT = 11
-
+FUN_INPUT = 25
+FUN_OUTPUT = 26
+FUN_ADD = 20
+FUN_SUB = 21
+FUN_MUL = 23
+FUN_DIV = 24
+FUN_IF = 2
+FUN_FOR_LOOP = 3
+FUN_PRINT = 4
+FUN_EVENT = 1
+FUN_GREATER_THAN = 17
+FUN_LESS_THAN = 18
+FUN_Equal = 16
+FUN_AND = 19
 ####################
 
 VAR_FLOAT = 12
@@ -45,13 +47,17 @@ def register_node_now(node_ID, class_reference, Fun):
             raise InvalidNodeRegistration(
                 "Duplicate node registration of '%s'. There is already %s" % (node_ID, FUNCTIONS[node_ID]))
         else:
+            class_reference.isFun = Fun
             FUNCTIONS[node_ID] = class_reference
+
     else:
         if node_ID in VARIABLES:
             raise InvalidNodeRegistration(
                 "Duplicate node registration of '%s'. There is already %s" % (node_ID, VARIABLES[node_ID]))
         else:
+            class_reference.isFun = Fun
             VARIABLES[node_ID] = class_reference
+
 
 
 def register_node(node_ID, Fun=True):

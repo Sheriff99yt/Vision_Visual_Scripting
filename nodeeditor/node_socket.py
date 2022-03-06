@@ -55,7 +55,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.isHighlighted = False
 
-        self.radius = 6
+        self.radius = 8
         self.outline_width = 1
         self.initAssets()
 
@@ -93,7 +93,6 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         # determine socket color
         self._current_color = self.getSocketColor(self.socket_type)
-        print(self._current_color)
         self._color_outline = QColor("#FF000000")
         self._color_highlight = QColor("#FF37A6FF")
 
@@ -193,7 +192,10 @@ class Socket(Serializable):
         self.is_multi_edges = multi_edges
         self.is_input = is_input
         self.is_output = not self.is_input
+        self.socketName = self.node.title
+        self.socketValue = True
 
+        self.socketCode = "{}={}".format(self.socketName, self.socketValue)
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for nodeeditor", self.node)
 
@@ -204,7 +206,16 @@ class Socket(Serializable):
         self.setSocketPosition()
 
 
-        self.edges = []
+        self.socketEdges = []
+
+
+    def updateSocketCode(self):
+        if len(self.socketEdges) == 0: return ""
+        connecting_edge = self.socketEdges[0]
+        other_socket = connecting_edge.getOtherSocket(self)
+        return other_socket.socketName
+
+
 
     def __str__(self):
         return "<Socket #%d %s %s..%s>" % (
@@ -256,16 +267,8 @@ class Socket(Serializable):
         :return: ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
         :rtype: ``bool``
         """
-        return len(self.edges) > 0
+        return len(self.socketEdges) > 0
 
-    def hasOneEdge(self) -> bool:
-        """
-        Returns ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
-
-        :return: ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
-        :rtype: ``bool``
-        """
-        return len(self.edges) > 1
 
     def isConnected(self, edge: 'Edge') -> bool:
         """
@@ -276,7 +279,7 @@ class Socket(Serializable):
         :return: ``True`` if `Edge` is connected to this socket
         :rtype: ``bool``
         """
-        return edge in self.edges
+        return edge in self.socketEdges
 
     def addEdge(self, edge: 'Edge'):
         """
@@ -285,7 +288,7 @@ class Socket(Serializable):
         :param edge: :class:`~nodeeditor.node_edge.Edge` to connect to this `Socket`
         :type edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        self.edges.append(edge)
+        self.socketEdges.append(edge)
 
     def removeEdge(self, edge: 'Edge'):
         """
@@ -293,7 +296,7 @@ class Socket(Serializable):
         :param edge: :class:`~nodeeditor.node_edge.Edge` to disconnect
         :type edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        if edge in self.edges: self.edges.remove(edge)
+        if edge in self.socketEdges: self.socketEdges.remove(edge)
         else:
             if DEBUG_REMOVE_WARNINGS:
                 print("!W:", "Socket::removeEdge", "wanna remove edge", edge,
@@ -301,8 +304,8 @@ class Socket(Serializable):
 
     def removeAllEdges(self, silent: bool=False):
         """Disconnect all `Edges` from this `Socket`"""
-        while self.edges:
-            edge = self.edges.pop(0)
+        while self.socketEdges:
+            edge = self.socketEdges.pop(0)
             if silent:
                 edge.remove(silent_for_socket=self)
             else:
@@ -322,8 +325,13 @@ class Socket(Serializable):
         if 'multi_edges' in data:
             return data['multi_edges']
         else:
-            # probably older version of file, make RIGHT socket multiedged by default
+            # probably older version of file, make RIGHT socket multi edged by default
             return data['position'] in (RIGHT_BOTTOM, RIGHT_TOP)
+
+    def setSocketCode(self, name: str, code: str):
+        self.socketCode = "{}={}".format(name, code)
+
+
 
     def serialize(self) -> OrderedDict:
         return OrderedDict([

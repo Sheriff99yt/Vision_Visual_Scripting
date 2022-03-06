@@ -112,7 +112,7 @@ class MasterEditorWnd(NodeEditorWidget):
             try:
                 node = get_class_from_nodesID(node_ID)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
-
+                self.scene.NodeEditor.UpdateTextCode()
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
             except Exception as e:
                 dumpException(e)

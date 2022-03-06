@@ -38,7 +38,6 @@ class QDMVarListbox(QWidget):
         self.IDs = []
         self.addAllVars()
 
-
     def addAllVars(self):
         Vars = list(VARIABLES.keys())
         Vars.sort()
@@ -51,11 +50,9 @@ class QDMVarListbox(QWidget):
 
         self.addBtn.clicked.connect(self.addVariable)
 
-
     def addVariable(self):
         node = get_class_from_nodesID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
         self.addMyItem(node.op_title, node.icon, node.node_ID)
-
 
     def addMyItem(self, name, icon=None, node_ID=0):
         item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
@@ -68,7 +65,6 @@ class QDMVarListbox(QWidget):
         # setup data
         item.setData(Qt.UserRole, pixmap)
         item.setData(Qt.UserRole + 1, node_ID)
-
 
     def startDrag(self, *args, **kwargs):
         try:

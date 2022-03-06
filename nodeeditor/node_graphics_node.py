@@ -28,7 +28,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._was_moved = False
         self._last_selected_state = False
 
-        self.initSizes()
+        self.updateSizes()
         self.initAssets()
         self.initUI()
 
@@ -75,13 +75,13 @@ class QDMGraphicsNode(QGraphicsItem):
 
         self.initContent()
 
-    def initSizes(self):
+    def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
         self.width = 160
-        self.height = 160
+        self.height = 80
         self.edge_roundness = 2
         self.edge_padding = 0
-        self.title_height = 24
+        self.title_height = 30
         self.title_horizontal_padding = 24
         self.title_vertical_padding = 10
 
@@ -89,7 +89,7 @@ class QDMGraphicsNode(QGraphicsItem):
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Ubuntu", 10)
+        self._title_font = QFont("Roboto", 14)
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")

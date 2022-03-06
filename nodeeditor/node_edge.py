@@ -154,8 +154,8 @@ class Edge(Serializable):
         :param end_socket: Target/End :class:`~nodeeditor.node_socket.Socket` of Edge to check
         :type end_socket: :class:`~nodeeditor.node_socket.Socket`
         :return: ``True`` if the Edge is valid or ``False`` if not
-        :rtype: ``bool``
-        """
+        :rtype: ``bool``"""
+
         for validator in cls.getEdgeValidators():
             if not validator(start_socket, end_socket):
                 return False
@@ -284,7 +284,8 @@ class Edge(Serializable):
 
                     # notify Socket's Node
                     socket.node.onEdgeConnectionChanged(self)
-                    if socket.is_input: socket.node.onInputChanged(socket)
+                    if socket.is_input:
+                        socket.node.onInputChanged(socket)
 
         except Exception as e: dumpException(e)
 

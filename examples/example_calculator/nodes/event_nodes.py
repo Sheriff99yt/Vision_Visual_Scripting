@@ -1,3 +1,5 @@
+import textwrap
+
 from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from nodeeditor.node_editor_widget import *
@@ -5,7 +7,7 @@ from nodeeditor.node_editor_widget import *
 
 @register_node(FUN_EVENT,Fun=True)
 class Event(MasterNode):
-    icon = ""
+    icon = "icons/event.png"
     node_ID = FUN_EVENT
     op_title = "Event"
     content_label_objname = "calc_node_event"
@@ -16,8 +18,15 @@ class Event(MasterNode):
 
 
     def getNodeCode(self):
-        self.eventName = "Event 01"
-        self.connectedCode = """print("Test")"""
-        code = """def {}(self):
-    {}""".format(self.eventName, self.connectedCode)
+        EventName = "Event 01"
+
+        childCode = self.getConnectedNodeAtOutput(0)
+        if childCode is None:
+            childCode = ""
+        else:
+            childCode = childCode.getNodeCode()
+        code = f"""\
+def {EventName}(self):
+{textwrap.indent(childCode, '     ')}"""
+
         return code

@@ -21,7 +21,7 @@ class Node(Serializable):
     NodeContent_class = QDMNodeContentWidget
     Socket_class = Socket
 
-    def __init__(self, scene: 'Scene', title: str= "Undefined Node", inputs: list=[], outputs: list=[]):
+    def __init__(self, scene: 'Scene', title: str = "Undefined Node", inputs: list = [], outputs: list = []):
         """
 
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
@@ -43,13 +43,15 @@ class Node(Serializable):
         super().__init__()
         self._title = title
         self.scene = scene
+
+        # Additional Uni Code
+        self.isVar = None
         self.nodeOrder = None
+        self.nodeCode = True
 
         # just to be sure, init these variables
         self.content = None
         self.grNode = None
-
-
 
         self.initInnerClasses()
         self.initSettings()
@@ -59,21 +61,17 @@ class Node(Serializable):
         self.scene.addNode(self)
         self.scene.grScene.addItem(self.grNode)
 
-
-        # create socket for inputs and outputs
         self.inputs = []
         self.outputs = []
+
         self.initSockets(inputs, outputs)
 
-
-        # dirty and evaluation
-        # self._is_dirty = False
-        # self._is_invalid = False
-
-
+    def getSocketCode(self, socketID):
+        print(len(self.inputs))
+        return self.inputs[socketID].socketCode
 
     def __str__(self):
-        return "<%s:%s %s..%s>" % (self.title, self.__class__.__name__,hex(id(self))[2:5], hex(id(self))[-3:])
+        return "<%s:%s %s..%s>" % (self.title, self.__class__.__name__, hex(id(self))[2:5], hex(id(self))[-3:])
 
     @property
     def title(self):
@@ -99,7 +97,7 @@ class Node(Serializable):
         :return: Node position
         :rtype: ``QPointF``
         """
-        return self.grNode.pos()        # QPointF
+        return self.grNode.pos()  # QPointF
 
     def setPos(self, x: float, y: float):
         """
@@ -109,7 +107,6 @@ class Node(Serializable):
         :param y: Y `Scene` position
         """
         self.grNode.setPos(x, y)
-
 
     def initInnerClasses(self):
         """Sets up graphics Node (PyQt) and Content Widget"""
@@ -127,8 +124,8 @@ class Node(Serializable):
 
     def initSettings(self):
         """Initialize properties and socket information"""
-        self.socket_spacing = 22
-        self.LR_offset = 8
+        self.socket_spacing = 28
+        self.LR_offset = 9
         self.input_socket_position = LEFT_TOP
         self.output_socket_position = RIGHT_TOP
         self.input_multi_edged = False
@@ -142,7 +139,7 @@ class Node(Serializable):
             RIGHT_TOP: 1,
         }
 
-    def initSockets(self, inputs: list, outputs: list, reset: bool=True):
+    def initSockets(self, inputs: list, outputs: list, reset: bool = True):
         """
         Create sockets for inputs and outputs
 
@@ -158,7 +155,7 @@ class Node(Serializable):
             # clear old sockets
             if hasattr(self, 'inputs') and hasattr(self, 'outputs'):
                 # remove grSockets from scene
-                for socket in (self.inputs+self.outputs):
+                for socket in (self.inputs + self.outputs):
                     self.scene.grScene.removeItem(socket.grSocket)
                 self.inputs = []
                 self.outputs = []
@@ -195,7 +192,6 @@ class Node(Serializable):
             counter += 1
             self.outputs.append(socket)
 
-
     def onEdgeConnectionChanged(self, new_edge: 'Edge'):
         """
         Event handling that any connection (`Edge`) has changed. Currently not used...
@@ -203,7 +199,7 @@ class Node(Serializable):
         :param new_edge: reference to the changed :class:`~nodeeditor.node_edge.Edge`
         :type new_edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        pass
+        self.scene.NodeEditor.UpdateTextCode()
 
     def onInputChanged(self, socket: 'Socket'):
         """Event handling when Node's input Edge has changed. We auto-mark this `Node` to be `Dirty` with all it's
@@ -212,8 +208,7 @@ class Node(Serializable):
         :param socket: reference to the changed :class:`~nodeeditor.node_socket.Socket`
         :type socket: :class:`~nodeeditor.node_socket.Socket`
         """
-        # self.markDirty()
-        # self.markDescendantsDirty()
+
         pass
 
     def onDeserialized(self, data: dict):
@@ -226,7 +221,7 @@ class Node(Serializable):
         """Event handling double click on Graphics Node in `Scene`"""
         pass
 
-    def doSelect(self, new_state: bool=True):
+    def doSelect(self, new_state: bool = True):
         """Shortcut method for selecting/deselecting the `Node`
 
         :param new_state: ``True`` if you want to select the `Node`. ``False`` if you want to deselect the `Node`
@@ -245,8 +240,7 @@ class Node(Serializable):
                 return True
         return False
 
-
-    def getSocketPosition(self, index: int, position: int, num_out_of: int=1) -> '(x, y)':
+    def getSocketPosition(self, index: int, position: int, num_out_of: int = 1) -> '(x, y)':
         """
         Get the relative `x, y` position of a :class:`~nodeeditor.node_socket.Socket`. This is used for placing
         the `Graphics Sockets` on `Graphics Node`.
@@ -261,7 +255,9 @@ class Node(Serializable):
         :rtype: ``x, y``
         """
 
-        x = self.socket_offsets[position] + self.LR_offset if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[position] - self.LR_offset
+        x = self.socket_offsets[position] + self.LR_offset if (
+                    position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[
+            position] - self.LR_offset
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
             # start from bottom
@@ -276,9 +272,9 @@ class Node(Serializable):
             new_top = available_height - total_height_of_all_sockets
 
             # y = top_offset + index * self.socket_spacing + new_top / 2
-            y = top_offset + available_height/2.0 + (index-0.5)*self.socket_spacing
+            y = top_offset + available_height / 2.0 + (index - 0.5) * self.socket_spacing
             if num_sockets > 1:
-                y -= self.socket_spacing * (num_sockets-1)/2
+                y -= self.socket_spacing * (num_sockets - 1) / 2
 
         elif position in (LEFT_TOP, RIGHT_TOP):
             # start from top
@@ -304,7 +300,7 @@ class Node(Serializable):
         """Recalculate (Refresh) positions of all connected `Edges`. Used for updating Graphics Edges"""
         for socket in self.inputs + self.outputs:
             # if socket.hasEdge():
-            for edge in socket.edges:
+            for edge in socket.socketEdges:
                 edge.updatePositions()
 
     def remove(self):
@@ -312,9 +308,9 @@ class Node(Serializable):
 
         if DEBUG: print("> Removing Node", self)
         if DEBUG: print(" - remove all edges from sockets")
-        for socket in (self.inputs+self.outputs):
+        for socket in (self.inputs + self.outputs):
             # if socket.hasEdge():
-            for edge in socket.edges.copy():
+            for edge in socket.socketEdges.copy():
                 if DEBUG: print("    - removing from socket:", socket, "edge:", edge)
                 edge.remove()
         if DEBUG: print(" - remove grNode")
@@ -323,8 +319,6 @@ class Node(Serializable):
         if DEBUG: print(" - remove node from the scene")
         self.scene.removeNode(self)
         if DEBUG: print(" - everything was done.")
-
-
 
     # node evaluation stuff
 
@@ -419,7 +413,6 @@ class Node(Serializable):
     #     for node in self.getChildrenNodes():
     #         node.eval()
 
-
     # traversing nodes functions
 
     def getChildrenNodes(self) -> 'List[Node]':
@@ -432,16 +425,47 @@ class Node(Serializable):
         if self.outputs == []: return []
         other_nodes = []
         for ix in range(len(self.outputs)):
-            for edge in self.outputs[ix].edges:
+            for edge in self.outputs[ix].socketEdges:
                 other_node = edge.getOtherSocket(self.outputs[ix]).node
                 other_nodes.append(other_node)
         return other_nodes
 
-    def updateTextCode(self):
-        self.getChildrenNodes()
+    def getConnectedSocketNodeCode(self, index: int = 0):
+        input_socket = self.inputs[index]
+        if len(input_socket.socketEdges) == 0: return None
+        connecting_edge = input_socket.socketEdges[0]
+        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+        return other_socket.node.getNodeCode()
 
+    def getConnectedSocketNode(self, index: int = 0):
+        input_socket = self.inputs[index]
+        if len(input_socket.socketEdges) == 0: return None
+        connecting_edge = input_socket.socketEdges[0]
+        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+        return other_socket.node
 
-    def getInput(self, index: int=0) -> ['Node', None]:
+    def getConnectedSocketCode(self, index: int = 0):
+        input_socket = self.inputs[index]
+        if len(input_socket.socketEdges) == 0: return None
+        connecting_edge = input_socket.socketEdges[0]
+        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+        return other_socket.socketCode
+
+    def getConnectedSocketName(self, index: int = 0):
+        input_socket = self.inputs[index]
+        if len(input_socket.socketEdges) == 0: return None
+        connecting_edge = input_socket.socketEdges[0]
+        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+        return other_socket.socketName
+
+    def getConnectedSocketValue(self, index: int = 0):
+        input_socket = self.inputs[index]
+        if len(input_socket.socketEdges) == 0: return None
+        connecting_edge = input_socket.socketEdges[0]
+        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+        return other_socket.socketValue
+
+    def getInput(self, index: int = 0) -> ['Node', None]:
         """
         Get the **first**  `Node` connected to the  Input specified by `index`
 
@@ -453,15 +477,15 @@ class Node(Serializable):
         """
         try:
             input_socket = self.inputs[index]
-            if len(input_socket.edges) == 0: return None
-            connecting_edge = input_socket.edges[0]
+            if len(input_socket.socketEdges) == 0: return None
+            connecting_edge = input_socket.socketEdges[0]
             other_socket = connecting_edge.getOtherSocket(self.inputs[index])
             return other_socket.node
         except Exception as e:
             dumpException(e)
             return None
 
-    def getInputWithSocket(self, index: int=0) -> [('Node', 'Socket'), (None, None)]:
+    def getInputWithSocket(self, index: int = 0) -> [('Node', 'Socket'), (None, None)]:
         """
         Get the **first**  `Node` connected to the Input specified by `index` and the connection `Socket`
 
@@ -473,15 +497,15 @@ class Node(Serializable):
         """
         try:
             input_socket = self.inputs[index]
-            if len(input_socket.edges) == 0: return None, None
-            connecting_edge = input_socket.edges[0]
+            if len(input_socket.socketEdges) == 0: return None, None
+            connecting_edge = input_socket.socketEdges[0]
             other_socket = connecting_edge.getOtherSocket(self.inputs[index])
             return other_socket.node, other_socket
         except Exception as e:
             dumpException(e)
             return None, None
 
-    def getInputWithSocketIndex(self, index: int=0) -> ('Node', int):
+    def getInputWithSocketIndex(self, index: int = 0) -> ('Node', int):
         """
         Get the **first**  `Node` connected to the Input specified by `index` and the connection `Socket`
 
@@ -492,7 +516,7 @@ class Node(Serializable):
         :rtype: (:class:`~nodeeditor.node_node.Node`, int)
         """
         try:
-            edge = self.inputs[index].edges[0]
+            edge = self.inputs[index].socketEdges[0]
             socket = edge.getOtherSocket(self.inputs[index])
             return socket.node, socket.index
         except IndexError:
@@ -502,7 +526,28 @@ class Node(Serializable):
             dumpException(e)
             return None, None
 
-    def getInputs(self, index: int=0) -> 'List[Node]':
+    def getConnectedNodeAtOutput(self, index: int = 0) -> 'Node':
+        """
+        Get the **first**  `Node` connected to the output specified by `index` and the connection `Socket`
+
+        :param index: Order number of the `Input Socket`
+        :type index: ``int``
+        :return: Tuple containing :class:`~nodeeditor.node_node.Node` and :class:`~nodeeditor.node_socket.Socket` which
+            is connected to the specified `Input` or ``None`` if there is no connection or the index is out of range
+        :rtype: (:class:`~nodeeditor.node_node.Node`, int)
+        """
+        try:
+            edge = self.outputs[index].socketEdges[0]
+            socket = edge.getOtherSocket(self.outputs[index])
+            return socket.node
+        except IndexError:
+            # print("EXC: Trying to get input with socket index %d, but none is attached to" % index, self)
+            return None
+        except Exception as e:
+            dumpException(e)
+            return None
+
+    def getInputs(self, index: int = 0) -> 'List[Node]':
         """
         Get **all** `Nodes` connected to the Input specified by `index`
 
@@ -513,12 +558,12 @@ class Node(Serializable):
         :rtype: List[:class:`~nodeeditor.node_node.Node`]
         """
         ins = []
-        for edge in self.inputs[index].edges:
+        for edge in self.inputs[index].socketEdges:
             other_socket = edge.getOtherSocket(self.inputs[index])
             ins.append(other_socket.node)
         return ins
 
-    def getOutputs(self, index: int=0) -> 'List[Node]':
+    def getOutputs(self, index: int = 0) -> 'List[Node]':
         """
         Get **all** `Nodes` connected to the Output specified by `index`
 
@@ -529,11 +574,10 @@ class Node(Serializable):
         :rtype: List[:class:`~nodeeditor.node_node.Node`]
         """
         outs = []
-        for edge in self.outputs[index].edges:
+        for edge in self.outputs[index].socketEdges:
             other_socket = edge.getOtherSocket(self.outputs[index])
             outs.append(other_socket.node)
         return outs
-
 
     # serialization functions
 
@@ -552,7 +596,7 @@ class Node(Serializable):
             ('content', ser_content),
         ])
 
-    def deserialize(self, data: dict, hashmap: dict={}, restore_id: bool=True, *args, **kwargs) -> bool:
+    def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
         try:
             if restore_id: self.id = data['id']
             hashmap[data['id']] = self
@@ -560,10 +604,10 @@ class Node(Serializable):
             self.setPos(data['pos_x'], data['pos_y'])
             self.title = data['title']
 
-            data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000 )
-            data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000 )
-            num_inputs = len( data['inputs'] )
-            num_outputs = len( data['outputs'] )
+            data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
+            data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
+            num_inputs = len(data['inputs'])
+            num_outputs = len(data['outputs'])
 
             # print("> deserialize node,   num inputs:", num_inputs, "num outputs:", num_outputs)
             # pp(data)
@@ -590,7 +634,6 @@ class Node(Serializable):
                     self.inputs.append(found)  # append newly created input to the list
                 found.deserialize(socket_data, hashmap, restore_id)
 
-
             for socket_data in data['outputs']:
                 found = None
                 for socket in self.outputs:
@@ -610,7 +653,8 @@ class Node(Serializable):
                     self.outputs.append(found)  # append newly created output to the list
                 found.deserialize(socket_data, hashmap, restore_id)
 
-        except Exception as e: dumpException(e)
+        except Exception as e:
+            dumpException(e)
 
         # also deserialize the content of the node
         # so far the rest was ok, now as last step the content...
@@ -620,7 +664,5 @@ class Node(Serializable):
 
         return True
 
-
     def getNodeCode(self):
-        code = None
-        return code
+        return None

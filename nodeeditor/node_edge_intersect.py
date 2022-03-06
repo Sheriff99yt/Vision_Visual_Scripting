@@ -57,6 +57,7 @@ class EdgeIntersect:
 
         if self.isConnected(node): return
 
+
         # determine the order of start and end
         if edge.start_socket.is_output:
             socket_start = edge.start_socket
@@ -64,6 +65,8 @@ class EdgeIntersect:
         else:
             socket_start = edge.end_socket
             socket_end = edge.start_socket
+
+        #
 
         # The new edges will have the same edge_type as the intersected edge
         edge_type = edge.edge_type
@@ -76,7 +79,6 @@ class EdgeIntersect:
         Edge(self.grScene.scene, new_node_socket_out, socket_end, edge_type=edge_type)
 
         self.grView.grScene.scene.history.storeHistory('Created new edges by dropping node', setModified=True)
-
 
     def hotZoneRect(self, node: 'Node') -> 'QRectF':
         """

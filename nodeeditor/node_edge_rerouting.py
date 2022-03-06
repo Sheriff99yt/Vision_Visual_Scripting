@@ -33,7 +33,7 @@ class EdgeRerouting:
         if self.start_socket is None:
             return []       # no starting socket assigned, so no edges for us
         # return edges connected to the socket
-        return self.start_socket.edges.copy()
+        return self.start_socket.socketEdges.copy()
 
     def setAffectedEdgesVisible(self, visibility: bool=True):
         """

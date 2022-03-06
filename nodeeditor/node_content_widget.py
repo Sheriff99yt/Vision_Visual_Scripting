@@ -28,7 +28,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """Sets up layouts and widgets to be rendered in :py:class:`~nodeeditor.node_graphics_node.QDMGraphicsNode` class.
         """
         self.layout = QHBoxLayout()
-        self.layout.setContentsMargins(1,1,1,1)
+        self.layout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self.layout)
 
         self.wdg_label = QLabel("Some Title")

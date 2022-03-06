@@ -8,6 +8,7 @@ from nodeeditor.node_editor_window import NodeEditorWindow
 from examples.example_calculator.master_editor_wnd import MasterEditorWnd
 from examples.example_calculator.master_designer_wnd import MasterDesignerWnd
 from examples.example_calculator.editor_drag_node_listbox import QDMNodeListbox
+from examples.example_calculator.editor_files_wdg import FilesWDG
 from examples.example_calculator.editor_drag_var_listbox import QDMVarListbox
 from examples.example_calculator.editor_proterties_list import PropertiesList
 
@@ -21,14 +22,13 @@ from nodeeditor.node_edge_validators import (
     edge_cannot_connect_two_outputs_or_two_inputs,
     edge_cannot_connect_input_and_output_of_same_node
 )
+
 Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
-
 # images for the dark skin
 import examples.example_calculator.qss.nodeeditor_dark_resources
-
 
 DEBUG = False
 
@@ -49,7 +49,6 @@ class MasterWindow(NodeEditorWindow):
             print("Registered nodes:")
             # pp(FUNCTIONS)
 
-
         self.masterDisplay = QStackedWidget()
         self.mdiArea = QMdiArea()
         # Create Node Designer Window
@@ -69,19 +68,15 @@ class MasterWindow(NodeEditorWindow):
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
-
         # Create Details List Window
         self.CreatePropertiesDock()
 
         # Create Nodes List
         self.createFunctionsDock()
-        self.createToolsDock()
 
-        #self.createGraphsDock()
-
+        self.CreateFilesDock()
         # Create Variable List
         self.CreateVariablesDock()
-
 
         self.createActions()
         self.createMenus()
@@ -91,12 +86,26 @@ class MasterWindow(NodeEditorWindow):
 
         self.readSettings()
 
-        self.setWindowTitle("Vision Visual Scripting")
+        self.CreateToolBar()
 
+        self.setWindowTitle("Vision Visual Scripting")
 
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
 
+    def CreateToolBar(self):
+        self.nodeDesignerBtn = QAction(QIcon("icons/Pencil_1.png"), "&Toggle Designer", self)
+        self.editToolBar = QToolBar("Tools", self)
+        # self.editToolBar.setContentsMargins(2, 2, 2, 2)
+        self.editToolBar.setIconSize(QSize(36, 36))
+        self.editToolBar.setFloatable(False)
+
+        self.addToolBar(self.editToolBar)
+        self.editToolBar.addAction(self.nodeDesignerBtn)
+
+        self.nodeDesignerBtn.setCheckable(True)
+        self.nodeDesignerBtn.triggered.connect(self.updateActiveWnd)
+        self.nodeDesignerBtn.setShortcut(QKeySequence("`"))
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -109,16 +118,22 @@ class MasterWindow(NodeEditorWindow):
             import sys
             sys.exit(0)
 
-
     def createActions(self):
         super().createActions()
 
-        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
-        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.mdiArea.closeAllSubWindows)
+        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
+                                triggered=self.mdiArea.closeActiveSubWindow)
+        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",
+                                   triggered=self.mdiArea.closeAllSubWindows)
         self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.mdiArea.tileSubWindows)
-        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows", triggered=self.mdiArea.cascadeSubWindows)
-        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild, statusTip="Move the focus to the next window", triggered=self.mdiArea.activateNextSubWindow)
-        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild, statusTip="Move the focus to the previous window", triggered=self.mdiArea.activatePreviousSubWindow)
+        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows",
+                                  triggered=self.mdiArea.cascadeSubWindows)
+        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild,
+                               statusTip="Move the focus to the next window",
+                               triggered=self.mdiArea.activateNextSubWindow)
+        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild,
+                                   statusTip="Move the focus to the previous window",
+                                   triggered=self.mdiArea.activatePreviousSubWindow)
 
         self.actSeparator = QAction(self)
         self.actSeparator.setSeparator(True)
@@ -137,11 +152,12 @@ class MasterWindow(NodeEditorWindow):
             subwnd = self.createMdiChild()
             subwnd.widget().fileNew()
             subwnd.show()
-        except Exception as e: dumpException(e)
-
+        except Exception as e:
+            dumpException(e)
 
     def onFileOpen(self):
-        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(),
+                                                      self.getFileDialogFilter())
 
         try:
             for fname in fnames:
@@ -159,22 +175,21 @@ class MasterWindow(NodeEditorWindow):
                             subwnd.show()
                         else:
                             nodeeditor.close()
-        except Exception as e: dumpException(e)
-
+        except Exception as e:
+            dumpException(e)
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",
-                "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                "document interface applications using PyQt5 and NodeEditor. For more information visit: "
-                "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
+                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
+                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
+                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
 
     def createMenus(self):
         super().createMenus()
 
-
         self.windowMenu = self.menuBar().addMenu("&Window")
         self.updateWindowMenu()
-        #self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
         self.menuBar().addSeparator()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
@@ -213,28 +228,20 @@ class MasterWindow(NodeEditorWindow):
 
             self.actUndo.setEnabled(hasMdiChild and active.canUndo())
             self.actRedo.setEnabled(hasMdiChild and active.canRedo())
-        except Exception as e: dumpException(e)
-
-
+        except Exception as e:
+            dumpException(e)
 
     def updateWindowMenu(self):
-
-        self.toolbar_tools = self.windowMenu.addAction("Tools Toolbar")
-        self.toolbar_tools.setCheckable(False)
-        self.toolbar_tools.setChecked(not self.toolsDock.isVisible())
-
 
         self.toolbar_details = self.windowMenu.addAction("Details Toolbar")
         self.toolbar_details.setCheckable(True)
         self.toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
         self.toolbar_details.setChecked(not self.propertiesDock.isVisible())
 
-
         self.toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
         self.toolbar_vars.setCheckable(True)
         self.toolbar_vars.triggered.connect(self.onWindowVarsToolbar)
         self.toolbar_vars.setChecked(not self.varsDock.isVisible())
-
 
         self.toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
         self.toolbar_nodes.setCheckable(True)
@@ -247,7 +254,7 @@ class MasterWindow(NodeEditorWindow):
         self.windowMenu.addAction(self.actCloseAll)
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.actTile)
-        #self.windowMenu.addAction(self.actCascade)
+        # self.windowMenu.addAction(self.actCascade)
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.actNext)
         self.windowMenu.addAction(self.actPrevious)
@@ -269,14 +276,11 @@ class MasterWindow(NodeEditorWindow):
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
-
-
     def onWindowNodesToolbar(self):
         if self.nodesDock.isVisible():
             self.nodesDock.hide()
         else:
             self.nodesDock.show()
-
 
     def onWindowVarsToolbar(self):
         if self.varsDock.isVisible():
@@ -290,7 +294,6 @@ class MasterWindow(NodeEditorWindow):
         else:
             self.propertiesDock.show()
 
-
     def createToolBars(self):
         pass
 
@@ -300,55 +303,12 @@ class MasterWindow(NodeEditorWindow):
         self.graphsDock.setFeatures(self.graphsDock.DockWidgetClosable | self.graphsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.graphsDock)
 
-
-    def createToolsDock(self):
-
-        self.NodeDesignerBtn = QPushButton(self)
-        self.BtnIcon = QIcon("icons/Pencil_1.png")
-        self.NodeDesignerBtn.setIcon(self.BtnIcon)
-        self.NodeDesignerBtn.setIconSize(self.NodeDesignerBtn.size())
-
-        self.NodeDesignerBtn.setCheckable(True)
-        self.NodeDesignerBtn.setMinimumSize(60, 60)
-        self.NodeDesignerBtn.setMaximumSize(60, 60)
-
-        self.toolsDock = QDockWidget("Tools")
-        self.addDockWidget(Qt.TopDockWidgetArea, self.toolsDock)
-        self.toolsDock.setLayoutDirection(Qt.LeftToRight)
-        self.dockedWidget = QWidget(self)
-        self.toolsDock.setWidget(self.dockedWidget)
-        self.dockedWidget.setLayout(QHBoxLayout())
-        self.dockedWidget.layout().addWidget(self.NodeDesignerBtn)
-
-        self.dockedWidget.layout().addItem(QSpacerItem(20, 60, QSizePolicy.Expanding))
-        self.dockedWidget.layout().setContentsMargins(4, 4, 4, 0)
-
-        self.toolsDock.setFeatures(self.toolsDock.NoDockWidgetFeatures)
-
-        self.NodeDesignerBtn.clicked.connect(self.updateActiveWnd)
-
-
-
     def updateActiveWnd(self):
-        if self.NodeDesignerBtn.isChecked():
-            # self.nodesDock.hide()
-            # self.varsDock.hide()
-            # self.detailsDock.hide()
-            # self.toolbar_details.setVisible(False)
-            # self.toolbar_vars.setVisible(False)
-            # self.toolbar_nodes.setVisible(False)
+        if self.nodeDesignerBtn.isChecked():
             self.masterDisplay.setCurrentIndex(1)
 
-
         else:
-            # self.nodesDock.show()
-            # self.varsDock.show()
-            # self.detailsDock.show()
-            # self.toolbar_details.setVisible(True)
-            # self.toolbar_vars.setVisible(True)
-            # self.toolbar_nodes.setVisible(True)
             self.masterDisplay.setCurrentIndex(0)
-
 
     def createFunctionsDock(self):
 
@@ -359,6 +319,14 @@ class MasterWindow(NodeEditorWindow):
         self.nodesDock.setFeatures(self.nodesDock.DockWidgetMovable)
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
 
+    def CreateFilesDock(self):
+        self.filesWidget = FilesWDG()
+
+        self.filesDock = QDockWidget("Project Files")
+        self.filesDock.setWidget(self.filesWidget)
+        self.filesDock.setFeatures(self.filesDock.DockWidgetMovable)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
+
     def CreateVariablesDock(self):
         self.varsListWidget = QDMVarListbox()
 
@@ -366,8 +334,6 @@ class MasterWindow(NodeEditorWindow):
         self.varsDock.setWidget(self.varsListWidget)
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
-
-
 
     def CreatePropertiesDock(self):
         self.propertiesListWidget = PropertiesList()
@@ -377,7 +343,6 @@ class MasterWindow(NodeEditorWindow):
         self.propertiesDock.setFeatures(self.propertiesDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.propertiesDock)
-
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
@@ -401,13 +366,11 @@ class MasterWindow(NodeEditorWindow):
         else:
             event.ignore()
 
-
     def findMdiChild(self, filename):
         for window in self.mdiArea.subWindowList():
             if window.widget().filename == filename:
                 return window
         return None
-
 
     def setActiveSubWindow(self, window):
         if window:
