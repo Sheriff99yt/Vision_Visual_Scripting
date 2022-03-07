@@ -215,7 +215,6 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_title)
         painter.drawPath(path_title.simplified())
 
-
         # content
         path_content = QPainterPath()
         path_content.setFillRule(Qt.WindingFill)
@@ -226,12 +225,12 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_background)
         painter.drawPath(path_content.simplified())
 
-
         # outline
         path_outline = QPainterPath()
         path_outline.addRoundedRect(-1, -1, self.width+2, self.height+2, self.edge_roundness, self.edge_roundness)
         painter.setBrush(Qt.NoBrush)
         if self.hovered:
+            painter.setBrush(QColor("#10FFFFFF"))
             painter.setPen(self._pen_hovered)
             painter.drawPath(path_outline.simplified())
             #painter.setPen(self._pen_default)
@@ -239,3 +238,5 @@ class QDMGraphicsNode(QGraphicsItem):
         else:
             painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
             painter.drawPath(path_outline.simplified())
+
+

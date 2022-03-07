@@ -1,3 +1,5 @@
+from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
+
 from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 import textwrap
@@ -12,6 +14,8 @@ class IfStatement(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
         self.isVar = False
+
+        self.grNode._brush_title = QBrush(QColor("#3E0B0B"))
 
     def getNodeCode(self):
         self.nodeCode = not self.inputs[0].hasAnyEdge()
@@ -39,6 +43,8 @@ else:
 
         return code
 
+    
+
 
 @register_node(FUN_FOR_LOOP, Fun=True)
 class ForLoop(MasterNode):
@@ -51,6 +57,7 @@ class ForLoop(MasterNode):
         super().__init__(scene, inputs=[0, 2, 2], outputs=[0])
         self.isVar = False
         self.grNode.height = 120
+        self.grNode._brush_title = QBrush(QColor("#0A3C67"))
 
 
     def getNodeCode(self):
@@ -82,6 +89,7 @@ class Print(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 4], outputs=[0])
         self.isVar = False
+        self.grNode._brush_title = QBrush(QColor("#401447"))
 
     def getNodeCode(self):
         self.nodeCode = not self.inputs[0].hasAnyEdge()
@@ -111,6 +119,8 @@ class Add(MasterNode):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
+        self.grNode._brush_title = QBrush(QColor("#16602E"))
+
     def getNodeCode(self):
         A = self.getConnectedSocketNodeCode(0) if not None else ""
         B = self.getConnectedSocketNodeCode(1) if not None else ""
@@ -133,6 +143,7 @@ class Sub(MasterNode):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
+        self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
         A = self.getConnectedSocketNodeCode(0) if not None else ""
@@ -156,6 +167,7 @@ class Mul(MasterNode):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
+        self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
         A = self.getConnectedSocketNodeCode(0) if not None else ""
@@ -179,6 +191,7 @@ class Div(MasterNode):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
+        self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
         A = self.getConnectedSocketNodeCode(0) if not None else ""

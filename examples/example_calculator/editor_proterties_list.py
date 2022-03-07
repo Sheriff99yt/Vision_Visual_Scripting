@@ -13,12 +13,18 @@ class PropertiesList(QScrollArea):
 
 
     def varUpdate(self,name,type):
-        self.myForm = QFormLayout()
-        self.myForm.setAlignment(Qt.AlignTop)
-        self.widget.setLayout(self.myForm)
+        def initVar(self):
+            start = False
+            if start == False:
+                start = True
+                self.myForm = QFormLayout()
+                self.myForm.setAlignment(Qt.AlignTop)
+                self.widget.setLayout(self.myForm)
+                self.myForm.addRow(QLabel(f"{name}"), type)
+            else:
+                self.myForm.addRow(QLabel(f"{name}"), type)
 
-        self.myForm.addRow(QLabel(f" {name}"), type)
 
 
     def infoUpdate(self):
-        pass
+        self.myInfo = QLabel()

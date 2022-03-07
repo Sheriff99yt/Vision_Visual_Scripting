@@ -34,6 +34,8 @@ class QDMVarListbox(QWidget):
         self.VarList.setDragEnabled(True)
 
         self.VarList.startDrag = self.startDrag
+        self.VarList.startDrag = self.startDrag
+        self.VarList.itemClicked = self.itemClicked
 
         self.IDs = []
         self.addAllVars()
@@ -56,15 +58,19 @@ class QDMVarListbox(QWidget):
 
     def addMyItem(self, name, icon=None, node_ID=0):
         item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
+
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
         item.setSizeHint(QSize(28, 28))
-
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
         # setup data
         item.setData(Qt.UserRole, pixmap)
         item.setData(Qt.UserRole + 1, node_ID)
+
+    def itemClicked(self, *args, **kwargs):
+        print("WWWWWWeeeeeeeeeeeeeeee")
+
 
     def startDrag(self, *args, **kwargs):
         try:

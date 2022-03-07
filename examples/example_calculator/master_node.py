@@ -18,6 +18,7 @@ class MasterGraphicsNode(QDMGraphicsNode):
         super().initAssets()
         pass
 
+
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         super().paint(painter, QStyleOptionGraphicsItem, widget)
         # if self.node.isDirty(): offset = 0

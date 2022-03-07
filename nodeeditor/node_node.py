@@ -666,3 +666,7 @@ class Node(Serializable):
 
     def getNodeCode(self):
         return None
+
+    def updateProperties(self):
+        return None
+

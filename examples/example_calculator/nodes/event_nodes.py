@@ -14,11 +14,10 @@ class Event(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[0])
-        pass
-
+        self.grNode._brush_title = QBrush(QColor("#C16401"))
 
     def getNodeCode(self):
-        EventName = "Event 01"
+        EventName = "Event"
 
         childCode = self.getConnectedNodeAtOutput(0)
         if childCode is None:
