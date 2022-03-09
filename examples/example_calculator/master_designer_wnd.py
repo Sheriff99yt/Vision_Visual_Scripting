@@ -55,7 +55,7 @@ class MasterDesignerWnd(NodeEditorWidget):
         keys.sort()
         for key in keys:
             node = FUNCTIONS[key]
-            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.op_title)
+            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.name)
             self.node_actions[node.node_ID].setData(node.node_ID)
 
     def initNodesContextMenu(self):

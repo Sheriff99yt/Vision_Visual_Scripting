@@ -7,9 +7,9 @@ from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from examples.example_calculator.master_editor_wnd import MasterEditorWnd
 from examples.example_calculator.master_designer_wnd import MasterDesignerWnd
-from examples.example_calculator.editor_drag_node_listbox import QDMNodeListbox
+from examples.example_calculator.editor_node_list import NodeList
 from examples.example_calculator.editor_files_wdg import FilesWDG
-from examples.example_calculator.editor_drag_var_listbox import QDMVarListbox
+from examples.example_calculator.editor_var_list import VarList
 from examples.example_calculator.editor_proterties_list import PropertiesList
 
 from nodeeditor.utils import dumpException, pp
@@ -312,7 +312,7 @@ class MasterWindow(NodeEditorWindow):
 
     def createFunctionsDock(self):
 
-        self.nodesListWidget = QDMNodeListbox()
+        self.nodesListWidget = NodeList()
 
         self.nodesDock = QDockWidget("Functions")
         self.nodesDock.setWidget(self.nodesListWidget)
@@ -327,14 +327,6 @@ class MasterWindow(NodeEditorWindow):
         self.filesDock.setFeatures(self.filesDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
-    def CreateVariablesDock(self):
-        self.varsListWidget = QDMVarListbox()
-
-        self.varsDock = QDockWidget("Variables")
-        self.varsDock.setWidget(self.varsListWidget)
-        self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
-
     def CreatePropertiesDock(self):
         self.propertiesListWidget = PropertiesList()
 
@@ -343,6 +335,14 @@ class MasterWindow(NodeEditorWindow):
         self.propertiesDock.setFeatures(self.propertiesDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.propertiesDock)
+
+    def CreateVariablesDock(self):
+        self.varsListWidget = VarList()
+        self.varsListWidget.properiesRef(self.propertiesListWidget)
+        self.varsDock = QDockWidget("Variables")
+        self.varsDock.setWidget(self.varsListWidget)
+        self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")

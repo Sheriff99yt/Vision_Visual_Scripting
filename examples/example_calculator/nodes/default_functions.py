@@ -8,7 +8,7 @@ import textwrap
 class IfStatement(MasterNode):
     icon = "icons/if.png"
     node_ID = FUN_IF
-    op_title = "IF Statement"
+    name = "IF Statement"
     content_label_objname = "node_if_statement"
 
     def __init__(self, scene):
@@ -50,7 +50,7 @@ else:
 class ForLoop(MasterNode):
     icon = "icons/Loop.png"
     node_ID = FUN_FOR_LOOP
-    op_title = "For Loop"
+    name = "For Loop"
     content_label_objname = "node_for_loop"
 
     def __init__(self, scene):
@@ -83,7 +83,7 @@ for {firstIndex} in {lastIndex}:
 class Print(MasterNode):
     icon = "icons/print.png"
     node_ID = FUN_PRINT
-    op_title = "Print"
+    name = "Print"
     content_label_objname = "node_print"
 
     def __init__(self, scene):
@@ -111,7 +111,7 @@ print({printCode})
 class Add(MasterNode):
     icon = "icons/add.png"
     node_ID = FUN_ADD
-    op_title = "Add"
+    name = "Add"
     content_label = "+"
     content_label_objname = "node_add"
 
@@ -135,7 +135,7 @@ class Add(MasterNode):
 class Sub(MasterNode):
     icon = "icons/sub.png"
     node_ID = FUN_SUB
-    op_title = "Subtract"
+    name = "Subtract"
     content_label = "-"
     content_label_objname = "node_subtract"
 
@@ -159,7 +159,7 @@ class Sub(MasterNode):
 class Mul(MasterNode):
     icon = "icons/mul.png"
     node_ID = FUN_MUL
-    op_title = "Multiply"
+    name = "Multiply"
     content_label = "*"
     content_label_objname = "node_mul"
 
@@ -183,7 +183,7 @@ class Mul(MasterNode):
 class Div(MasterNode):
     icon = "icons/divide.png"
     node_ID = FUN_DIV
-    op_title = "Divide"
+    name = "Divide"
     content_label = "/"
     content_label_objname = "node_div"
 
@@ -207,7 +207,7 @@ class Div(MasterNode):
 class GreaterThan(MasterNode):
     icon = "icons/more_than.png"
     node_ID = FUN_GREATER_THAN
-    op_title = "Greater Than"
+    name = "Greater Than"
     content_label = ">"
     content_label_objname = "node_greater_than"
 
@@ -230,7 +230,7 @@ class GreaterThan(MasterNode):
 class LessThan(MasterNode):
     icon = "icons/less_than.png"
     node_ID = FUN_LESS_THAN
-    op_title = "Less Than"
+    name = "Less Than"
     content_label = "<"
     content_label_objname = "node_less_than"
 
@@ -253,7 +253,7 @@ class LessThan(MasterNode):
 class Equal(MasterNode):
     icon = "icons/equal.png"
     node_ID = FUN_Equal
-    op_title = "Equal"
+    name = "Equal"
     content_label = "<"
     content_label_objname = "node_equal"
 
@@ -276,7 +276,7 @@ class Equal(MasterNode):
 class And(MasterNode):
     icon = "icons/and.png"
     node_ID = FUN_AND
-    op_title = "And"
+    name = "And"
     content_label = "&"
     content_label_objname = "node_and"
 

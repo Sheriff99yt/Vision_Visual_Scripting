@@ -41,7 +41,7 @@ class MasterContent(QDMNodeContentWidget):
 class MasterNode(Node):
     icon = ""
     node_ID = 0
-    op_title = "Undefined"
+    name = "Undefined"
     content_label = ""
     content_label_objname = "calc_node_bg"
 
@@ -49,7 +49,7 @@ class MasterNode(Node):
     NodeContent_class = MasterContent
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
-        super().__init__(scene, self.__class__.op_title, inputs, outputs)
+        super().__init__(scene, self.__class__.name, inputs, outputs)
 
     def initSettings(self):
         super().initSettings()

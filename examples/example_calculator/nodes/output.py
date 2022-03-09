@@ -16,7 +16,7 @@ class CalcOutputContent(QDMNodeContentWidget):
 class MasterNode_Output(MasterNode):
     icon = "icons/out.png"
     node_ID = FUN_OUTPUT
-    op_title = "Output"
+    name = "Output"
     content_label_objname = "calc_node_output"
 
     def __init__(self, scene):

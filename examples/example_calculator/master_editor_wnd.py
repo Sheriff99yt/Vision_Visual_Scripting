@@ -59,11 +59,11 @@ class MasterEditorWnd(NodeEditorWidget):
         Vars.sort()
         for key in Funs:
             node = FUNCTIONS[key]
-            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.op_title)
+            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.name)
             self.node_actions[node.node_ID].setData(node.node_ID)
         for key in Vars:
             node = VARIABLES[key]
-            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.op_title)
+            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.name)
             self.node_actions[node.node_ID].setData(node.node_ID)
 
     def initNodesContextMenu(self):

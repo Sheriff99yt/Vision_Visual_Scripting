@@ -1,5 +1,9 @@
 import turtle
 
+from PyQt5.QtCore import QRectF, QPoint
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QGraphicsItem
+
 turtle.forward(100)  # draw base
 
 turtle.left(120)
@@ -24,6 +28,9 @@ socket_type =[
     QColor("#blue"),
     QColor("#red"),
     QColor("#purple")]
+
+
+
 
 
 class QDMGraphicsSocket(QGraphicsItem):

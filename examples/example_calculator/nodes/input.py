@@ -32,7 +32,7 @@ class CalcInputContent(QDMNodeContentWidget):
 class MasterNode_Input(MasterNode):
     icon = "icons/in.png"
     node_ID = FUN_INPUT
-    op_title = "Input"
+    name = "Input"
     content_label_objname = "calc_node_input"
 
     def __init__(self, scene):

@@ -6,7 +6,7 @@ from examples.example_calculator.nodes_configuration import FUNCTIONS,get_class_
 from nodeeditor.utils import dumpException
 
 
-class QDMNodeListbox(QListWidget):
+class NodeList(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
@@ -19,12 +19,15 @@ class QDMNodeListbox(QListWidget):
 
         self.addMyFunctions()
 
+
+
+
     def addMyFunctions(self):
         Funs = list(FUNCTIONS.keys())
         Funs.sort()
         for item in Funs:
             node = get_class_from_nodesID(item)
-            self.addMyItem(node.op_title, node.icon, node.node_ID)
+            self.addMyItem(node.name, node.icon, node.node_ID)
 
     def addMyItem(self, name, icon=None, node_ID=0):
         item = QListWidgetItem(name, self)  # can be (icon, text, parent, <int>type)

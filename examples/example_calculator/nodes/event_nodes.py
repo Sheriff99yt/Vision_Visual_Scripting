@@ -9,7 +9,7 @@ from nodeeditor.node_editor_widget import *
 class Event(MasterNode):
     icon = "icons/event.png"
     node_ID = FUN_EVENT
-    op_title = "Event"
+    name = "Event"
     content_label_objname = "calc_node_event"
 
     def __init__(self, scene):
