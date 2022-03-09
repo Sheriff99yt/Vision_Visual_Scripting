@@ -57,7 +57,7 @@ class VarList(QWidget):
             self.myCompoBox.addItem(node.name)
             self.IDs.append(node.node_ID)
 
-        self.loadVars(self.userData.LoadData())
+        # self.loadVars(self.userData.LoadData())
 
         self.addBtn.clicked.connect(self.addVariable)
 
@@ -80,10 +80,10 @@ class VarList(QWidget):
     def addVariable(self):
         node = get_class_from_nodesID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
         self.addMyItem(self.autoVarRename(node), node.icon, node.node_ID)
-        self.userData.SaveVar(node)
+        # self.userData.SaveVar(node)
 
-    def loadVars(self, vars:list):
-        for var in vars:
+    def loadVars(self, Vars: list):
+        for var in Vars:
             currentVar = get_class_from_nodesID(var[1])
             self.addMyItem(var[0], currentVar.icon, var.node_ID)
 
@@ -117,6 +117,7 @@ class VarList(QWidget):
         item = self.VarList.currentItem()
         name = QLineEdit()
         name.setText(f"{item.data(91)}")
+
         if item.data(90) == 12:
             value = QDoubleSpinBox()
             self.proretiesRef.varUpdate("Variable Name", name)
