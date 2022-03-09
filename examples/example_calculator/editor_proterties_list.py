@@ -19,6 +19,7 @@ class PropertiesList(QScrollArea):
             self.setWidgetResizable(True)
             self.setWidget(self.widget)
             self.myForm = QFormLayout()
+            self.myForm.setSpacing(8)
             self.myForm.setAlignment(Qt.AlignTop)
             self.widget.setLayout(self.myForm)
             self.myForm.addRow(QLabel(f"{name}"), type)
