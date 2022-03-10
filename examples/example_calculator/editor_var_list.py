@@ -70,6 +70,10 @@ class VarList(QWidget):
         node = get_node_by_ID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
         newVar = deepcopy(node)
         # Save new Variable Info to user Local Files
+        a = A(38)
+
+        # Deepcopy
+        a2 = copy.deepcopy(a)
 
         varData = self.userData.AddVar(newVar)
 
