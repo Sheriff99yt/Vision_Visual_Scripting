@@ -97,16 +97,16 @@ class NodeScene(Serializable):
         self.grScene = NodeGraphicsScene(self)
         self.grScene.setGrScene(self.scene_width, self.scene_height)
 
-    def getNodeByID(self, node_ID: int):
+    def getNodeByID(self, node_type: int):
         """
-        Find node in the scene according to provided `node_ID`
+        Find node in the scene according to provided `node_type`
 
-        :param node_ID: ID of the node we are looking for
-        :type node_ID: ``int``
+        :param node_type: ID of the node we are looking for
+        :type node_type: ``int``
         :return: Found ``Node`` or ``None``
         """
         for node in self.nodes:
-            if node.id == node_ID:
+            if node.id == node_type:
                 return node
         return None
 

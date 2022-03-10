@@ -1,13 +1,16 @@
+from PyQt5.QtCore import QRectF
+from PyQt5.QtGui import QImage
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 
 from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 import textwrap
 
-@register_node(FUN_IF, Fun=True)
+@set_node_ID(FUN_IF, Fun=True)
 class IfStatement(MasterNode):
+
     icon = "icons/if.png"
-    node_ID = FUN_IF
+    node_type = FUN_IF
     name = "IF Statement"
     content_label_objname = "node_if_statement"
 
@@ -16,6 +19,7 @@ class IfStatement(MasterNode):
         self.isVar = False
 
         self.grNode._brush_title = QBrush(QColor("#3E0B0B"))
+
 
     def getNodeCode(self):
         self.nodeCode = not self.inputs[0].hasAnyEdge()
@@ -46,10 +50,10 @@ else:
     
 
 
-@register_node(FUN_FOR_LOOP, Fun=True)
+@set_node_ID(FUN_FOR_LOOP, Fun=True)
 class ForLoop(MasterNode):
     icon = "icons/Loop.png"
-    node_ID = FUN_FOR_LOOP
+    node_type = FUN_FOR_LOOP
     name = "For Loop"
     content_label_objname = "node_for_loop"
 
@@ -79,10 +83,10 @@ for {firstIndex} in {lastIndex}:
         return code
 
 
-@register_node(FUN_PRINT, Fun=True)
+@set_node_ID(FUN_PRINT, Fun=True)
 class Print(MasterNode):
     icon = "icons/print.png"
-    node_ID = FUN_PRINT
+    node_type = FUN_PRINT
     name = "Print"
     content_label_objname = "node_print"
 
@@ -107,10 +111,10 @@ print({printCode})
         return code
 
 
-@register_node(FUN_ADD, Fun=True)
+@set_node_ID(FUN_ADD, Fun=True)
 class Add(MasterNode):
     icon = "icons/add.png"
-    node_ID = FUN_ADD
+    node_type = FUN_ADD
     name = "Add"
     content_label = "+"
     content_label_objname = "node_add"
@@ -131,10 +135,10 @@ class Add(MasterNode):
         return code
 
 
-@register_node(FUN_SUB, Fun=True)
+@set_node_ID(FUN_SUB, Fun=True)
 class Sub(MasterNode):
     icon = "icons/sub.png"
-    node_ID = FUN_SUB
+    node_type = FUN_SUB
     name = "Subtract"
     content_label = "-"
     content_label_objname = "node_subtract"
@@ -155,10 +159,10 @@ class Sub(MasterNode):
         return code
 
 
-@register_node(FUN_MUL, Fun=True)
+@set_node_ID(FUN_MUL, Fun=True)
 class Mul(MasterNode):
     icon = "icons/mul.png"
-    node_ID = FUN_MUL
+    node_type = FUN_MUL
     name = "Multiply"
     content_label = "*"
     content_label_objname = "node_mul"
@@ -179,10 +183,10 @@ class Mul(MasterNode):
         return code
 
 
-@register_node(FUN_DIV, Fun=True)
+@set_node_ID(FUN_DIV, Fun=True)
 class Div(MasterNode):
     icon = "icons/divide.png"
-    node_ID = FUN_DIV
+    node_type = FUN_DIV
     name = "Divide"
     content_label = "/"
     content_label_objname = "node_div"
@@ -203,10 +207,10 @@ class Div(MasterNode):
         return code
 
 
-@register_node(FUN_GREATER_THAN, Fun=True)
+@set_node_ID(FUN_GREATER_THAN, Fun=True)
 class GreaterThan(MasterNode):
     icon = "icons/more_than.png"
-    node_ID = FUN_GREATER_THAN
+    node_type = FUN_GREATER_THAN
     name = "Greater Than"
     content_label = ">"
     content_label_objname = "node_greater_than"
@@ -226,10 +230,10 @@ class GreaterThan(MasterNode):
         return code
 
 
-@register_node(FUN_LESS_THAN, Fun=True)
+@set_node_ID(FUN_LESS_THAN, Fun=True)
 class LessThan(MasterNode):
     icon = "icons/less_than.png"
-    node_ID = FUN_LESS_THAN
+    node_type = FUN_LESS_THAN
     name = "Less Than"
     content_label = "<"
     content_label_objname = "node_less_than"
@@ -249,10 +253,10 @@ class LessThan(MasterNode):
         return code
 
 
-@register_node(FUN_Equal, Fun=True)
+@set_node_ID(FUN_Equal, Fun=True)
 class Equal(MasterNode):
     icon = "icons/equal.png"
-    node_ID = FUN_Equal
+    node_type = FUN_Equal
     name = "Equal"
     content_label = "<"
     content_label_objname = "node_equal"
@@ -272,10 +276,10 @@ class Equal(MasterNode):
         return code
 
 
-@register_node(FUN_AND, Fun=True)
+@set_node_ID(FUN_AND, Fun=True)
 class And(MasterNode):
     icon = "icons/and.png"
-    node_ID = FUN_AND
+    node_type = FUN_AND
     name = "And"
     content_label = "&"
     content_label_objname = "node_and"

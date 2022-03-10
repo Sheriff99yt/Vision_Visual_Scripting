@@ -21,7 +21,7 @@
             "content": {
                 "value": "4"
             },
-            "node_ID": 1
+            "node_type": 1
         },
         {
             "id": 1729764534472,
@@ -41,7 +41,7 @@
             "content": {
                 "value": "1"
             },
-            "node_ID": 1
+            "node_type": 1
         },
         {
             "id": 1729764567368,
@@ -61,7 +61,7 @@
             "content": {
                 "value": "2"
             },
-            "node_ID": 1
+            "node_type": 1
         },
         {
             "id": 1729764568712,
@@ -94,7 +94,7 @@
                 }
             ],
             "content": {},
-            "node_ID": 3
+            "node_type": 3
         },
         {
             "id": 1729855419720,
@@ -127,7 +127,7 @@
                 }
             ],
             "content": {},
-            "node_ID": 4
+            "node_type": 4
         },
         {
             "id": 1729855552136,
@@ -145,7 +145,7 @@
             ],
             "outputs": [],
             "content": {},
-            "node_ID": 2
+            "node_type": 2
         },
         {
             "id": 1729856276936,
@@ -178,7 +178,7 @@
                 }
             ],
             "content": {},
-            "node_ID": 5
+            "node_type": 5
         }
     ],
     "edges": [

@@ -21,13 +21,10 @@ class MasterGraphicsNode(QDMGraphicsNode):
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         super().paint(painter, QStyleOptionGraphicsItem, widget)
-        # if self.node.isDirty(): offset = 0
-        # if self.node.isInvalid(): offset = 48
-        offset = 0
-        self.icons = QImage("")
-        painter.drawImage(QRectF(offset, 0, 24, 24), self.icons)
+        self.icons = QImage("icons/if.png")
+        painter.drawImage(QRectF(0, 0, 30, 30), self.icons)
 
-    
+
     def UpdateIcon(self, icon: None):
         self.icons = QImage(icon)
         print(self.icons)
@@ -40,13 +37,16 @@ class MasterContent(QDMNodeContentWidget):
 
 class MasterNode(Node):
     icon = ""
-    node_ID = 0
+    node_type = 0
     name = "Undefined"
     content_label = ""
     content_label_objname = "calc_node_bg"
+    node_value = None
 
     GraphicsNode_class = MasterGraphicsNode
     NodeContent_class = MasterContent
+
+
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         super().__init__(scene, self.__class__.name, inputs, outputs)
@@ -60,7 +60,7 @@ class MasterNode(Node):
 
     def serialize(self):
         res = super().serialize()
-        res['node_ID'] = self.__class__.node_ID
+        res['node_type'] = self.__class__.node_type
         return res
 
     def deserialize(self, data, hashmap={}, restore_id=True):

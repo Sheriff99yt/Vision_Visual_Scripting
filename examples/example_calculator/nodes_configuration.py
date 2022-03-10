@@ -14,7 +14,7 @@ FUN_GREATER_THAN = 17
 FUN_LESS_THAN = 18
 FUN_Equal = 16
 FUN_AND = 19
-####################
+######################
 
 VAR_FLOAT = 12
 VAR_INTEGER = 13
@@ -25,6 +25,11 @@ VAR_STRING = 15
 
 FUNCTIONS = {}
 VARIABLES = {}
+######################
+
+USERVARS = {}
+
+######################
 
 
 class ConfException(Exception):
@@ -35,45 +40,67 @@ class InvalidNodeRegistration(ConfException):
     pass
 
 
+class InvalidUserVarRegistration(ConfException):
+    pass
+
+
 class OpCodeNotRegistered(ConfException):
     pass
 
 
-# Functions
+######################
+# Nodes setup
 
-def register_node_now(node_ID, class_reference, Fun):
-    if Fun is True:
-        if node_ID in FUNCTIONS:
-            raise InvalidNodeRegistration(
-                "Duplicate node registration of '%s'. There is already %s" % (node_ID, FUNCTIONS[node_ID]))
-        else:
-            class_reference.isFun = Fun
-            FUNCTIONS[node_ID] = class_reference
-
-    else:
-        if node_ID in VARIABLES:
-            raise InvalidNodeRegistration(
-                "Duplicate node registration of '%s'. There is already %s" % (node_ID, VARIABLES[node_ID]))
-        else:
-            class_reference.isFun = Fun
-            VARIABLES[node_ID] = class_reference
-
-
-
-def register_node(node_ID, Fun=True):
+def set_node_ID(node_type, Fun=True):
     def decorator(original_class):
-        register_node_now(node_ID, original_class, Fun)
+        set_node_ID_now(node_type, original_class, Fun)
         return original_class
-
     return decorator
 
+def set_node_ID_now(node_type, class_reference, Fun):
+    if Fun is True:
+        if node_type in FUNCTIONS:
+            raise InvalidNodeRegistration(
+                "Duplicate node registration of '%s'. There is already %s" % (node_type, FUNCTIONS[node_type]))
+        else:
+            class_reference.isFun = Fun
+            FUNCTIONS[node_type] = class_reference
 
-def get_class_from_nodesID(node_ID):
-    NODES = {**FUNCTIONS, **VARIABLES}
-    if node_ID not in NODES:
-        raise OpCodeNotRegistered("node_ID '%d' is not registered" % node_ID)
     else:
-        return NODES[node_ID]
+        if node_type in VARIABLES:
+            raise InvalidNodeRegistration(
+                "Duplicate node registration of '%s'. There is already %s" % (node_type, VARIABLES[node_type]))
+        else:
+            class_reference.isFun = Fun
+            VARIABLES[node_type] = class_reference
+
+def get_node_by_ID(node_type):
+    NODES = {**FUNCTIONS, **VARIABLES}
+    if node_type not in NODES:
+        raise OpCodeNotRegistered("node_type '%d' is not registered" % node_type)
+    else:
+        return NODES[node_type]
+
+######################
+
+# User Variables setup
+
+
+def set_user_var_ID_now(var_ID, class_reference):
+    if var_ID in USERVARS:
+        raise InvalidNodeRegistration(
+            "Duplicate node registration of '%s'. There is already %s" % (var_ID, USERVARS[var_ID]))
+    else:
+        USERVARS[var_ID] = class_reference
+
+def get_var_by_ID(var_ID):
+    if var_ID not in USERVARS:
+        raise OpCodeNotRegistered("node_type '%d' is not registered" % var_ID)
+    else:
+        return USERVARS[var_ID]
+
+######################
+
 
 
 # import all nodes and register them

@@ -5,12 +5,13 @@ from examples.example_calculator.master_node import MasterNode
 from examples.example_calculator.editor_proterties_list import PropertiesList
 
 
-@register_node(VAR_FLOAT, Fun=False)
+@set_node_ID(VAR_FLOAT, Fun=False)
 class FloatVar(MasterNode):
     icon = ""
-    node_ID = VAR_FLOAT
+    node_type = VAR_FLOAT
     name = "Float Var"
     content_label_objname = "var_node_float"
+    node_value = float
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[1])
@@ -27,12 +28,13 @@ class FloatVar(MasterNode):
         PropertiesList.varUpdate("Variable Value", QDoubleSpinBox().setValue(self.value))
 
 
-@register_node(VAR_INTEGER, Fun=False)
+@set_node_ID(VAR_INTEGER, Fun=False)
 class IntegerVar(MasterNode):
     icon = ""
-    node_ID = VAR_INTEGER
+    node_type = VAR_INTEGER
     name = "Integer Var"
     content_label_objname = "var_node_integer"
+    node_value = int
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[2])
@@ -47,12 +49,13 @@ class IntegerVar(MasterNode):
         return name
 
 
-@register_node(VAR_BOOLEAN, Fun=False)
+@set_node_ID(VAR_BOOLEAN, Fun=False)
 class BooleanVar(MasterNode):
     icon = ""
-    node_ID = VAR_BOOLEAN
+    node_type = VAR_BOOLEAN
     name = "Boolean Var"
     content_label_objname = "var_node_boolean"
+    node_value = bool
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[3])
@@ -66,12 +69,13 @@ class BooleanVar(MasterNode):
         return name
 
 
-@register_node(VAR_STRING, Fun=False)
+@set_node_ID(VAR_STRING, Fun=False)
 class StringVar(MasterNode):
     icon = ""
-    node_ID = VAR_STRING
+    node_type = VAR_STRING
     name = "String Var"
     content_label_objname = "var_node_string"
+    node_value = str
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[4])

@@ -3,7 +3,7 @@ from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from examples.example_calculator.icons import *
-from examples.example_calculator.nodes_configuration import FUNCTIONS, get_class_from_nodesID, LISTBOX_MIMETYPE
+from examples.example_calculator.nodes_configuration import FUNCTIONS, get_node_by_ID, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from nodeeditor.graph_graphics import MODE_EDGE_DRAG
@@ -30,8 +30,8 @@ class MasterDesignerWnd(NodeEditorWidget):
         self._close_event_listeners = []
 
     def getNodeClassFromData(self, data):
-        if 'node_ID' not in data: return Node
-        return get_class_from_nodesID(data['node_ID'])
+        if 'node_type' not in data: return Node
+        return get_node_by_ID(data['node_type'])
 
     def doEvalOutputs(self):
         # eval all output nodes
@@ -55,8 +55,8 @@ class MasterDesignerWnd(NodeEditorWidget):
         keys.sort()
         for key in keys:
             node = FUNCTIONS[key]
-            self.node_actions[node.node_ID] = QAction(QIcon(node.icon), node.name)
-            self.node_actions[node.node_ID].setData(node.node_ID)
+            self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
+            self.node_actions[node.node_type].setData(node.node_type)
 
     def initNodesContextMenu(self):
         context_menu = QMenu(self)
@@ -88,16 +88,16 @@ class MasterDesignerWnd(NodeEditorWidget):
             dataStream = QDataStream(eventData, QIODevice.ReadOnly)
             pixmap = QPixmap()
             dataStream >> pixmap
-            node_ID = dataStream.readInt()
+            node_type = dataStream.readInt()
             text = dataStream.readQString()
 
             mouse_position = event.pos()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
 
-            if DEBUG: print("GOT DROP: [%d] '%s'" % (node_ID, text), "mouse:", mouse_position, "scene:", scene_position)
+            if DEBUG: print("GOT DROP: [%d] '%s'" % (node_type, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
-                node = get_class_from_nodesID(node_ID)(self.scene)
+                node = get_node_by_ID(node_type)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
 
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
@@ -199,7 +199,7 @@ class MasterDesignerWnd(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_calc_node = get_class_from_nodesID(action.data())(self.scene)
+            new_calc_node = get_node_by_ID(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_calc_node.setPos(scene_pos.x(), scene_pos.y())
             if DEBUG_CONTEXT: print("Selected node:", new_calc_node)

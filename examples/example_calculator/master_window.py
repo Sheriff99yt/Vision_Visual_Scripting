@@ -236,7 +236,7 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_details = self.windowMenu.addAction("Details Toolbar")
         self.toolbar_details.setCheckable(True)
         self.toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
-        self.toolbar_details.setChecked(not self.propertiesDock.isVisible())
+        self.toolbar_details.setChecked(not self.proprietiesDock.isVisible())
 
         self.toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
         self.toolbar_vars.setCheckable(True)
@@ -289,10 +289,10 @@ class MasterWindow(NodeEditorWindow):
             self.varsDock.show()
 
     def onWindowDetailsToolbar(self):
-        if self.propertiesDock.isVisible():
-            self.propertiesDock.hide()
+        if self.proprietiesDock.isVisible():
+            self.proprietiesDock.hide()
         else:
-            self.propertiesDock.show()
+            self.proprietiesDock.show()
 
     def createToolBars(self):
         pass
@@ -328,17 +328,17 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
     def CreatePropertiesDock(self):
-        self.propertiesListWidget = PropertiesList()
+        self.proprietiesListWidget = PropertiesList()
 
-        self.propertiesDock = QDockWidget("Properties")
-        self.propertiesDock.setWidget(self.propertiesListWidget)
-        self.propertiesDock.setFeatures(self.propertiesDock.DockWidgetMovable)
+        self.proprietiesDock = QDockWidget("Properties")
+        self.proprietiesDock.setWidget(self.proprietiesListWidget)
+        self.proprietiesDock.setFeatures(self.proprietiesDock.DockWidgetMovable)
 
-        self.addDockWidget(Qt.RightDockWidgetArea, self.propertiesDock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
     def CreateVariablesDock(self):
         self.varsListWidget = VarList()
-        self.varsListWidget.properiesRef(self.propertiesListWidget)
+        self.varsListWidget.proprietiesRef = self.proprietiesListWidget
         self.varsDock = QDockWidget("Variables")
         self.varsDock.setWidget(self.varsListWidget)
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)

@@ -1,9 +1,10 @@
 from qtpy.QtGui import *
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
+from copy import *
 
-from examples.example_calculator.editor_proterties_list import PropertiesList
-from examples.example_calculator.nodes_configuration import VARIABLES, get_class_from_nodesID, LISTBOX_MIMETYPE
+
+from examples.example_calculator.nodes_configuration import VARIABLES, get_node_by_ID, LISTBOX_MIMETYPE, set_user_var_ID_now
 from nodeeditor.utils import dumpException
 from examples.example_calculator.user_data import UserData
 
@@ -37,58 +38,53 @@ class VarList(QWidget):
         self.VarList.setSelectionMode(QAbstractItemView.SingleSelection)
         self.VarList.setDragEnabled(True)
 
+        self.proprietiesRef = None
+
         self.VarList.startDrag = self.startDrag
         self.VarList.startDrag = self.startDrag
-        self.VarList.itemClicked.connect(self.myClick)
+        self.VarList.itemClicked.connect(self.selectionChanged)
 
         self.IDs = []
-        self.varNames = []
 
         self.InitList()
 
-    def properiesRef(self, Ref: None):
-        self.proretiesRef = Ref
 
     def InitList(self):
         Vars = list(VARIABLES.keys())
         Vars.sort()
-        for node_ID in Vars:
-            node = get_class_from_nodesID(node_ID)
+        for node_type in Vars:
+            node = get_node_by_ID(node_type)
             self.myCompoBox.addItem(node.name)
-            self.IDs.append(node.node_ID)
+            self.IDs.append(node.node_type)
 
         # self.loadVars(self.userData.LoadData())
 
-        self.addBtn.clicked.connect(self.addVariable)
+        self.addBtn.clicked.connect(self.addNewVariable)
 
-    def autoVarRename(self, node: 'Node'):
-        newName = node.name
-        x = 0
-        # does a variable already has this name ?
-        while self.varNames.__contains__(newName):
-            # change the name
-            x = + 1
-            newName = f"{newName}{x}"
-        else:
-            node.name = newName
-            self.varNames.append(newName)
-            return newName
 
     def tryVarRename(self, node: None):
         pass
 
-    def addVariable(self):
-        node = get_class_from_nodesID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
-        self.addMyItem(self.autoVarRename(node), node.icon, node.node_ID)
-        # self.userData.SaveVar(node)
+    def addNewVariable(self):
+        # Get new Variable type and construct new Variable object
+        node = get_node_by_ID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
+        newVar = deepcopy(node)
+        # Save new Variable Info to user Local Files
 
-    def loadVars(self, Vars: list):
-        for var in Vars:
-            currentVar = get_class_from_nodesID(var[1])
-            self.addMyItem(var[0], currentVar.icon, var.node_ID)
+        varData = self.userData.AddVar(newVar)
+
+        print(node.name,node.node_type)
+        print(newVar.name,node.node_type)
+        # Add new copy of Var class Info to Dict of USERVARS
+        set_user_var_ID_now(varData[2], newVar)
 
 
-    def addMyItem(self, name, icon=None, node_ID=0):
+        # Add new QListItem to the UI List using Init Data
+        self.addMyItem(newVar.name, newVar.icon, varData[2])
+
+
+
+    def addMyItem(self, name, icon=None, node_type=0):
         item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else ".")
@@ -98,21 +94,14 @@ class VarList(QWidget):
 
         # setup data
         item.setData(Qt.UserRole, pixmap)
-        item.setData(Qt.UserRole + 1, node_ID)
 
-        item.setData(90, node_ID)
+        item.setData(90, node_type)
+
         item.setData(91, name)
 
-        # if node_ID == 12:
-        #
-        # elif node_ID == 13:
-        #
-        # elif node_ID == 14:
-        #
-        # elif node_ID == 15:
 
-    def myClick(self, *args, **kwargs):
-        self.proretiesRef.start = True
+    def selectionChanged(self, *args, **kwargs):
+        self.proprietiesRef.start = True
 
         item = self.VarList.currentItem()
         name = QLineEdit()
@@ -120,43 +109,42 @@ class VarList(QWidget):
 
         if item.data(90) == 12:
             value = QDoubleSpinBox()
-            self.proretiesRef.varUpdate("Variable Name", name)
-            self.proretiesRef.varUpdate("Variable Value", value)
+            self.proprietiesRef.varUpdate("Variable Name", name)
+            self.proprietiesRef.varUpdate("Variable Value", value)
 
         elif item.data(90) == 13:
             value = QSpinBox()
-            self.proretiesRef.varUpdate("Variable Name", name)
-            self.proretiesRef.varUpdate("Variable Value", value)
+            self.proprietiesRef.varUpdate("Variable Name", name)
+            self.proprietiesRef.varUpdate("Variable Value", value)
 
         elif item.data(90) == 14:
             value = QCheckBox()
-            self.proretiesRef.varUpdate("Variable Name", name)
-            self.proretiesRef.varUpdate("Variable Value", value)
+            self.proprietiesRef.varUpdate("Variable Name", name)
+            self.proprietiesRef.varUpdate("Variable Value", value)
 
         elif item.data(90) == 15:
             value = QLineEdit()
-            self.proretiesRef.varUpdate("Variable Name", name)
-            self.proretiesRef.varUpdate("Variable Value", value)
+            self.proprietiesRef.varUpdate("Variable Name", name)
+            self.proprietiesRef.varUpdate("Variable Value", value)
 
     def startDrag(self, *args, **kwargs):
         try:
+
             item = self.VarList.currentItem()
-
-            print(item.text())
-            node_ID = item.data(Qt.UserRole + 1)
-
+            node_type = item.data(90)
             pixmap = QPixmap(item.data(Qt.UserRole))
-
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+            mimeData = QMimeData()
+            drag = QDrag(self)
+
             dataStream << pixmap
-            dataStream.writeInt(node_ID)
+            dataStream.writeInt(node_type)
+            dataStream.writeBool(True)
             dataStream.writeQString(item.text())
 
-            mimeData = QMimeData()
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
-            drag = QDrag(self)
             drag.setMimeData(mimeData)
             drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
             drag.setPixmap(pixmap)
@@ -165,3 +153,8 @@ class VarList(QWidget):
 
         except Exception as e:
             dumpException(e)
+
+    def loadVars(self, Vars: list):
+        for var in Vars:
+            currentVar = get_node_by_ID(var[1])
+            self.addMyItem(var[0], currentVar.icon, var.node_type)
