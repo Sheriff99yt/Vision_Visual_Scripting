@@ -1,12 +1,29 @@
+from typing import TypeVar
+from copy import deepcopy
+
 from qtpy.QtGui import *
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from copy import *
 
-
+from examples.example_calculator.nodes.default_functions import *
 from examples.example_calculator.nodes_configuration import VARIABLES, get_node_by_ID, LISTBOX_MIMETYPE, set_user_var_ID_now
 from nodeeditor.utils import dumpException
 from examples.example_calculator.user_data import UserData
+
+Cls = TypeVar('Cls')
+
+
+def copy_class(cls: Cls) -> Cls:
+    newVar = type("NewVar", cls.__bases__, dict(cls.__dict__))
+    for name, attr in cls.__dict__.items():
+        try:
+            hash(attr)
+        except TypeError:
+            # Assume lack of __hash__ implies mutability. This is NOT
+            # a bullet proof assumption but good in many cases.
+            setattr(cls, name, deepcopy(attr))
+    return cls
 
 
 class VarList(QWidget):
@@ -48,7 +65,6 @@ class VarList(QWidget):
 
         self.InitList()
 
-
     def InitList(self):
         Vars = list(VARIABLES.keys())
         Vars.sort()
@@ -61,32 +77,28 @@ class VarList(QWidget):
 
         self.addBtn.clicked.connect(self.addNewVariable)
 
-
     def tryVarRename(self, node: None):
         pass
+
+
 
     def addNewVariable(self):
         # Get new Variable type and construct new Variable object
         node = get_node_by_ID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
-        newVar = deepcopy(node)
-        # Save new Variable Info to user Local Files
-        a = A(38)
 
-        # Deepcopy
-        a2 = copy.deepcopy(a)
+        newVar = copy_class(node)
+
+        print(node.node_type)
+
+        print(newVar.node_type)
 
         varData = self.userData.AddVar(newVar)
 
-        print(node.name,node.node_type)
-        print(newVar.name,node.node_type)
         # Add new copy of Var class Info to Dict of USERVARS
         set_user_var_ID_now(varData[2], newVar)
 
-
         # Add new QListItem to the UI List using Init Data
         self.addMyItem(newVar.name, newVar.icon, varData[2])
-
-
 
     def addMyItem(self, name, icon=None, node_type=0):
         item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
@@ -102,7 +114,6 @@ class VarList(QWidget):
         item.setData(90, node_type)
 
         item.setData(91, name)
-
 
     def selectionChanged(self, *args, **kwargs):
         self.proprietiesRef.start = True

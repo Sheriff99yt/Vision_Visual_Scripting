@@ -103,5 +103,6 @@ def get_var_by_ID(var_ID):
 
 
 
-# import all nodes and register them
-from examples.example_calculator.nodes import *
+# This comment was originally here before it was removed for better init performance and moved
+    # import all nodes and register them
+    # from examples.example_calculator.nodes import *

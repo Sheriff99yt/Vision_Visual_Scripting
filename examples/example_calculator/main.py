@@ -1,5 +1,6 @@
 import os, sys
 from qtpy.QtWidgets import QApplication
+from examples.example_calculator.nodes import *
 
 sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
 
