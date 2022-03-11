@@ -91,9 +91,8 @@ class MasterEditorWnd(NodeEditorWidget):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.acceptProposedAction()
         else:
-            # print(" ... denied drag enter event")
+            if DEBUG: print(" ... denied drag enter event")
             event.setAccepted(False)
-
 
     def onDrop(self, event):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
@@ -102,36 +101,48 @@ class MasterEditorWnd(NodeEditorWidget):
             pixmap = QPixmap()
             dataStream >> pixmap
             node_type = dataStream.readInt()
-            isVar = dataStream.readBool()
             text = dataStream.readQString()
+            type = dataStream.readBool()
+
+            print(type)
+            isEvent = None
+            isVar = None
+            if type == True:
+                isEvent = True
+            elif type == True:
+                isVar = True
+
             mouse_position = event.pos()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
 
             if DEBUG: print("GOT DROP: [%d] '%s'" % (node_type, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
-                if isVar is False:
-                    node = get_node_by_ID(node_type)(self.scene)
-                    node.setPos(scene_position.x(), scene_position.y())
-                    self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
-                else:
+                if isEvent:
+                    userEvent = get_event_by_ID(node_type)(self.scene)
+                    userEvent.setPos(scene_position.x(), scene_position.y())
+                    self.scene.history.storeHistory("Created user Event %s" % userEvent.__class__.__name__)
+
+                elif isVar:
                     userVar = get_var_by_ID(node_type)(self.scene)
                     userVar.setPos(scene_position.x(), scene_position.y())
-                    self.scene.history.storeHistory("Created node %s" % userVar.__class__.__name__)
+                    self.scene.history.storeHistory("Created user Variable %s" % userVar.__class__.__name__)
 
+                else:
+                    node = get_node_by_ID(node_type)(self.scene)
+                    node.setPos(scene_position.x(), scene_position.y())
+                    self.scene.history.storeHistory("Created Node %s" % node.__class__.__name__)
 
                 self.scene.NodeEditor.UpdateTextCode()
 
             except Exception as e:
                 dumpException(e)
 
-
             event.setDropAction(Qt.MoveAction)
             event.accept()
         else:
             # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
-
 
     def contextMenuEvent(self, event):
         try:
@@ -145,12 +156,13 @@ class MasterEditorWnd(NodeEditorWidget):
                 self.handleNodeContextMenu(event)
             elif hasattr(item, 'edge'):
                 self.handleEdgeContextMenu(event)
-            #elif item is None:
+            # elif item is None:
             else:
                 self.handleNewNodeContextMenu(event)
 
             return super().contextMenuEvent(event)
-        except Exception as e: dumpException(e)
+        except Exception as e:
+            dumpException(e)
 
     def handleNodeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: NODE")
@@ -169,7 +181,6 @@ class MasterEditorWnd(NodeEditorWidget):
             selected = item.node
         if hasattr(item, 'socket'):
             selected = item.socket.node
-
 
     def handleEdgeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: EDGE")
@@ -202,7 +213,6 @@ class MasterEditorWnd(NodeEditorWidget):
         new_node.grNode.doSelect(True)
         new_node.grNode.onSelected()
 
-
     def handleNewNodeContextMenu(self, event):
 
         if DEBUG_CONTEXT: print("CONTEXT: EMPTY SPACE")
@@ -217,7 +227,8 @@ class MasterEditorWnd(NodeEditorWidget):
 
             if self.scene.getView().mode == MODE_EDGE_DRAG:
                 # if we were dragging an edge...
-                target_socket = self.determine_target_socket_of_node(self.scene.getView().dragging.drag_start_socket.is_output, new_node)
+                target_socket = self.determine_target_socket_of_node(
+                    self.scene.getView().dragging.drag_start_socket.is_output, new_node)
                 if target_socket is not None:
                     self.scene.getView().dragging.edgeDragEnd(target_socket.grSocket)
                     self.finish_new_node_state(new_node)

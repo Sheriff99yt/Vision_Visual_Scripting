@@ -16,7 +16,6 @@ class PropertiesList(QScrollArea):
         if self.start == True:
             self.start = False
             self.widget = QFrame()
-            self.setWidgetResizable(True)
             self.setWidget(self.widget)
             self.myForm = QFormLayout()
             self.myForm.setSpacing(8)
@@ -30,5 +29,14 @@ class PropertiesList(QScrollArea):
         pass
 
 
-    def infoUpdate(self):
-        self.myInfo = QLabel()
+    def infoUpdate(self, Info):
+        if self.start == True:
+            self.start = False
+            widget = QFrame()
+            self.setWidget(widget)
+            self.infoLayout = QHBoxLayout()
+            widget.setLayout(self.infoLayout)
+            self.infoLayout.addWidget(Info)
+        else:
+            self.infoLayout.addWidget(Info)
+

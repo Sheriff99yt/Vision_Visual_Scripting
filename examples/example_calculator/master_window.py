@@ -9,7 +9,7 @@ from examples.example_calculator.master_editor_wnd import MasterEditorWnd
 from examples.example_calculator.master_designer_wnd import MasterDesignerWnd
 from examples.example_calculator.editor_node_list import NodeList
 from examples.example_calculator.editor_files_wdg import FilesWDG
-from examples.example_calculator.editor_var_list import VarList
+from examples.example_calculator.editor_var_events_lists import VarEventList
 from examples.example_calculator.editor_proterties_list import PropertiesList
 
 from nodeeditor.utils import dumpException, pp
@@ -337,7 +337,7 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
     def CreateVariablesDock(self):
-        self.varsListWidget = VarList()
+        self.varsListWidget = VarEventList()
         self.varsListWidget.proprietiesRef = self.proprietiesListWidget
         self.varsDock = QDockWidget("Variables")
         self.varsDock.setWidget(self.varsListWidget)
