@@ -31,7 +31,7 @@ class UserData():
         newName = var.name
         # does a variable already has this name ?
         while self.varNames.__contains__(newName):
-            x = + 1
+            x += 1
             newName = f"{var.name}{x}"
 
         else:

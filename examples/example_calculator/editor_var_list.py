@@ -7,23 +7,10 @@ from qtpy.QtWidgets import *
 from copy import *
 
 from examples.example_calculator.nodes.default_functions import *
-from examples.example_calculator.nodes_configuration import VARIABLES, get_node_by_ID, LISTBOX_MIMETYPE, set_user_var_ID_now
+from examples.example_calculator.nodes_configuration import VARIABLES, get_node_by_ID, LISTBOX_MIMETYPE, \
+    set_user_var_ID_now
 from nodeeditor.utils import dumpException
 from examples.example_calculator.user_data import UserData
-
-Cls = TypeVar('Cls')
-
-
-def copy_class(cls: Cls) -> Cls:
-    newVar = type("NewVar", cls.__bases__, dict(cls.__dict__))
-    for name, attr in cls.__dict__.items():
-        try:
-            hash(attr)
-        except TypeError:
-            # Assume lack of __hash__ implies mutability. This is NOT
-            # a bullet proof assumption but good in many cases.
-            setattr(cls, name, deepcopy(attr))
-    return cls
 
 
 class VarList(QWidget):
@@ -65,6 +52,12 @@ class VarList(QWidget):
 
         self.InitList()
 
+    def newVarFrom(self, var):
+        class newVar(var):
+            pass
+
+        return newVar
+
     def InitList(self):
         Vars = list(VARIABLES.keys())
         Vars.sort()
@@ -80,27 +73,25 @@ class VarList(QWidget):
     def tryVarRename(self, node: None):
         pass
 
-
-
     def addNewVariable(self):
         # Get new Variable type and construct new Variable object
         node = get_node_by_ID(self.IDs.__getitem__(self.myCompoBox.currentIndex()))
 
-        newVar = copy_class(node)
+        newVar = self.newVarFrom(node)
+
+        varData = self.userData.AddVar(newVar)
 
         print(node.node_type)
 
         print(newVar.node_type)
 
-        varData = self.userData.AddVar(newVar)
-
         # Add new copy of Var class Info to Dict of USERVARS
         set_user_var_ID_now(varData[2], newVar)
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newVar.name, newVar.icon, varData[2])
+        self.addMyItem(newVar.name, newVar.icon, varData[2], node.node_type)
 
-    def addMyItem(self, name, icon=None, node_type=0):
+    def addMyItem(self, name, icon=None, var_ID=0, var_type=int):
         item = QListWidgetItem(name, self.VarList)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else ".")
@@ -111,7 +102,9 @@ class VarList(QWidget):
         # setup data
         item.setData(Qt.UserRole, pixmap)
 
-        item.setData(90, node_type)
+        item.setData(80, var_type)
+
+        item.setData(90, var_ID)
 
         item.setData(91, name)
 
@@ -122,22 +115,22 @@ class VarList(QWidget):
         name = QLineEdit()
         name.setText(f"{item.data(91)}")
 
-        if item.data(90) == 12:
+        if item.data(80) == 12:
             value = QDoubleSpinBox()
             self.proprietiesRef.varUpdate("Variable Name", name)
             self.proprietiesRef.varUpdate("Variable Value", value)
 
-        elif item.data(90) == 13:
+        elif item.data(80) == 13:
             value = QSpinBox()
             self.proprietiesRef.varUpdate("Variable Name", name)
             self.proprietiesRef.varUpdate("Variable Value", value)
 
-        elif item.data(90) == 14:
+        elif item.data(80) == 14:
             value = QCheckBox()
             self.proprietiesRef.varUpdate("Variable Name", name)
             self.proprietiesRef.varUpdate("Variable Value", value)
 
-        elif item.data(90) == 15:
+        elif item.data(80) == 15:
             value = QLineEdit()
             self.proprietiesRef.varUpdate("Variable Name", name)
             self.proprietiesRef.varUpdate("Variable Value", value)
@@ -146,7 +139,7 @@ class VarList(QWidget):
         try:
 
             item = self.VarList.currentItem()
-            node_type = item.data(90)
+            var_ID = item.data(90)
             pixmap = QPixmap(item.data(Qt.UserRole))
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
@@ -154,7 +147,7 @@ class VarList(QWidget):
             drag = QDrag(self)
 
             dataStream << pixmap
-            dataStream.writeInt(node_type)
+            dataStream.writeInt(var_ID)
             dataStream.writeBool(True)
             dataStream.writeQString(item.text())
 
