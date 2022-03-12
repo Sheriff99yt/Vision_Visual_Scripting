@@ -26,6 +26,7 @@ VAR_STRING = 23
 
 FUNCTIONS = {}
 VARIABLES = {}
+EVENTS = {}
 
 ######################
 
@@ -43,48 +44,74 @@ class InvalidNodeRegistration(ConfException):
     pass
 
 
-class InvalidUserVarRegistration(ConfException):
-    pass
-
-
-class OpCodeNotRegistered(ConfException):
+class NodeTypeNotRegistered(ConfException):
     pass
 
 
 ######################
 # Nodes setup
 
-def set_node_ID(node_type, Fun=True):
+def set_function_ID(node_type):
     def decorator(original_class):
-        set_node_ID_now(node_type, original_class, Fun)
+        set_function_ID_now(node_type, original_class)
         return original_class
+
     return decorator
 
-def set_node_ID_now(node_type, class_reference, Fun):
-    if Fun is True:
-        if node_type in FUNCTIONS:
-            raise InvalidNodeRegistration(
-                "Duplicate node registration of '%s'. There is already %s" % (node_type, FUNCTIONS[node_type]))
-        else:
-            class_reference.isFun = Fun
-            FUNCTIONS[node_type] = class_reference
 
+def set_var_ID(node_type):
+    def decorator(original_class):
+        set_var_ID_now(node_type, original_class)
+        return original_class
+
+    return decorator
+
+
+def set_event_ID(node_type):
+    def decorator(original_class):
+        set_event_ID_now(node_type, original_class)
+        return original_class
+
+    return decorator
+
+
+def set_function_ID_now(node_type, class_reference):
+    if node_type in FUNCTIONS:
+        raise InvalidNodeRegistration(
+            "Duplicate node registration of '%s'. There is already %s" % (node_type, FUNCTIONS[node_type]))
     else:
-        if node_type in VARIABLES:
-            raise InvalidNodeRegistration(
-                "Duplicate node registration of '%s'. There is already %s" % (node_type, VARIABLES[node_type]))
-        else:
-            class_reference.isFun = Fun
-            VARIABLES[node_type] = class_reference
+        FUNCTIONS[node_type] = class_reference
+
+
+def set_var_ID_now(node_type, class_reference):
+    if node_type in VARIABLES:
+        raise InvalidNodeRegistration(
+            "Duplicate node registration of '%s'. There is already %s" % (node_type, VARIABLES[node_type]))
+    else:
+        VARIABLES[node_type] = class_reference
+
+
+def set_event_ID_now(node_type, class_reference):
+    if node_type in EVENTS:
+        raise InvalidNodeRegistration(
+            "Duplicate node registration of '%s'. There is already %s" % (node_type, EVENTS[node_type]))
+    else:
+        EVENTS[node_type] = class_reference
+
 
 def get_node_by_ID(node_type):
-    NODES = {**FUNCTIONS, **VARIABLES}
+    NODES = {**FUNCTIONS, **VARIABLES, **EVENTS}
     if node_type not in NODES:
-        raise OpCodeNotRegistered("node_type '%d' is not registered" % node_type)
+        raise NodeTypeNotRegistered("node_type '%d' is not registered" % node_type)
     else:
         return NODES[node_type]
 
+
 ######################
+
+
+##############################################################################################################
+##############################################################################################################
 
 # User Variables setup
 
@@ -96,11 +123,13 @@ def set_user_var_ID_now(var_ID, class_reference):
     else:
         USERVARS[var_ID] = class_reference
 
+
 def get_var_by_ID(var_ID):
     if var_ID not in USERVARS:
-        raise OpCodeNotRegistered("node_type '%d' is not registered" % var_ID)
+        raise NodeTypeNotRegistered("node_type '%d' is not registered" % var_ID)
     else:
         return USERVARS[var_ID]
+
 
 ######################
 
@@ -116,14 +145,14 @@ def set_user_event_ID_now(event_ID, class_reference):
 
 def get_event_by_ID(event_ID):
     if event_ID not in USEREVENTS:
-        raise OpCodeNotRegistered("Event '%d' is not registered" % event_ID)
+        raise NodeTypeNotRegistered("Event '%d' is not registered" % event_ID)
     else:
         return USEREVENTS[event_ID]
 
-######################
-
+##############################################################################################################
+##############################################################################################################
 
 
 # This comment was originally here before it was removed for better init performance and moved
-    # import all nodes and register them
-    # from examples.example_calculator.nodes import *
+# import all nodes and register them
+# from examples.example_calculator.nodes import *

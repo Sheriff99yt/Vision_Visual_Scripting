@@ -9,19 +9,14 @@ from qtpy.QtWidgets import *
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
 
-
 DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
-
 
 # Graphical Socket Classes
 # -*- coding: utf-8 -*-
 """
 A module containing Graphics representation of a :class:`~nodeeditor.node_socket.Socket`
 """
-
-
-
 
 # SOCKET_COLORS must be at least 7 in this version
 
@@ -34,7 +29,16 @@ A module containing Graphics representation of a :class:`~nodeeditor.node_socket
 # Holder 7
 
 SOCKET_COLORS = [
-    QColor("white"),
+    QColor("#70FFFFFF"),
+    QColor("#7000f204"),
+    QColor("#7000bfff"),
+    QColor("#70e00d0d"),
+    QColor("#70790cc2"),
+    QColor("#70d2d2d2"),
+    QColor("#70a2a2a2")]
+
+SOCKET_COLORS_HOVERED = [
+    QColor("#FFFFFF"),
     QColor("#00f204"),
     QColor("#00bfff"),
     QColor("#e00d0d"),
@@ -42,15 +46,28 @@ SOCKET_COLORS = [
     QColor("#d2d2d2"),
     QColor("#a2a2a2")]
 
+SOCKET_COLORS_CONNECTED = [
+    QColor("#FFFFFF"),
+    QColor("#00f204"),
+    QColor("#00bfff"),
+    QColor("#e00d0d"),
+    QColor("#790cc2"),
+    QColor("#d2d2d2"),
+    QColor("#a2a2a2")]
+
+
 class QDMGraphicsSocket(QGraphicsItem):
     """Class representing Graphic `Socket` in ``QGraphicsScene``"""
-    def __init__(self, socket:'Socket'):
+
+    def __init__(self, socket: 'Socket'):
         """
         :param socket: reference to :class:`~nodeeditor.node_socket.Socket`
         :type socket: :class:`~nodeeditor.node_socket.Socket`
         """
         super().__init__(socket.node.grNode)
 
+        self.isConnected = False
+        self.hovered = None
         self.socket = socket
 
         self.isHighlighted = False
@@ -64,10 +81,19 @@ class QDMGraphicsSocket(QGraphicsItem):
         shadow.setYOffset(2)
         # setting blur radius (optional step)
         shadow.setBlurRadius(6)
-        shadow.setColor(QColor(6,6,6))
-        # adding shadow to the labelq
+        shadow.setColor(QColor(6, 6, 6))
+        # adding shadow to the Socket
         self.setGraphicsEffect(shadow)
 
+    def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
+        """Handle hover effect"""
+        self.hovered = True
+        self.update()
+
+    def hoverLeaveEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
+        """Handle hover effect"""
+        self.hovered = False
+        self.update()
 
     @property
     def socket_type(self):
@@ -81,6 +107,14 @@ class QDMGraphicsSocket(QGraphicsItem):
             return QColor(key)
         return Qt.transparent
 
+    def getHoveredSocketColor(self, key):
+        """Returns the ``QColor`` for this ``key``"""
+        if type(key) == int:
+            return SOCKET_COLORS_HOVERED[key]
+        elif type(key) == str:
+            return QColor(key)
+        return Qt.transparent
+
     def changeSocketType(self):
         """Change the Socket Type"""
         self._current_color = self.getSocketColor(self.socket_type)
@@ -90,28 +124,40 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
+        self.setAcceptHoverEvents(True)
 
         # determine socket color
         self._current_color = self.getSocketColor(self.socket_type)
-        self._color_outline = QColor("#FF000000")
-        self._color_highlight = QColor("#FF37A6FF")
+        self._color_outline = QColor("#FF101010")
 
         self._pen = QPen(self._color_outline)
         self._pen.setWidthF(self.outline_width)
-        self._pen_highlight = QPen(self._color_highlight)
-        self._pen_highlight.setWidthF(2.0)
-        self._brush = QBrush(self._current_color)
+        self._brush = QBrush(self.getSocketColor(self.socket_type))
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting a circle"""
         painter.setBrush(self._brush)
-        painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
+        painter.setPen(self._pen)
+
+        if self.hovered:
+            painter.setPen(QPen(QColor("#FFFFFF")))
+
+        if self.hovered or self.isConnected:
+            painter.setBrush(self.getHoveredSocketColor(self.socket_type))
+
+        else:
+            painter.setBrush(self.getSocketColor(self.socket_type))
 
         if self.socket_type == 0:
-            painter.drawPolygon(QPoint(-self.radius, self.radius),QPoint(self.radius, 0), QPoint(-self.radius, -self.radius))
+            painter.drawPolygon(QPoint(-self.radius, self.radius), QPoint(self.radius, 0),
+                                QPoint(-self.radius, -self.radius))
 
         elif self.socket_type == 1 or 2 or 3 or 4:
             painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+            painter.setBrush(QBrush(QColor("#FF101010")))
+
+            if not self.isConnected:
+                painter.drawEllipse(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
         else:
             painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
 
@@ -125,7 +171,6 @@ class QDMGraphicsSocket(QGraphicsItem):
         )
 
 
-
 # Functional Socket Classes
 
 # -*- coding: utf-8 -*-
@@ -135,14 +180,12 @@ A module containing NodeEditor's class for representing Socket and Socket Positi
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
 
-
-LEFT_TOP = 1        #:
-LEFT_CENTER =2      #:
-LEFT_BOTTOM = 3     #:
-RIGHT_TOP = 4       #:
-RIGHT_CENTER = 5    #:
-RIGHT_BOTTOM = 6    #:
-
+LEFT_TOP = 1  #:
+LEFT_CENTER = 2  #:
+LEFT_BOTTOM = 3  #:
+RIGHT_TOP = 4  #:
+RIGHT_CENTER = 5  #:
+RIGHT_BOTTOM = 6  #:
 
 DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
@@ -153,8 +196,9 @@ class Socket(Serializable):
 
     """Class representing Socket."""
 
-    def __init__(self, node: 'Node', index: int=0, position: int=LEFT_TOP, socket_type: int=1, multi_edges: bool=True,
-                 count_on_this_node_side: int=1, is_input: bool=False):
+    def __init__(self, node: 'Node', index: int = 0, position: int = LEFT_TOP, socket_type: int = 1,
+                 multi_edges: bool = True,
+                 count_on_this_node_side: int = 1, is_input: bool = False):
         """
         :param node: reference to the :class:`~nodeeditor.node_node.Node` containing this `Socket`
         :type node: :class:`~nodeeditor.node_node.Node`
@@ -199,23 +243,18 @@ class Socket(Serializable):
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for nodeeditor", self.node)
 
-
         self.grSocket = self.__class__.Socket_GR_Class(self)
         self.SocketColor = self.grSocket._current_color
 
         self.setSocketPosition()
 
-
         self.socketEdges = []
-
 
     def updateSocketCode(self):
         if len(self.socketEdges) == 0: return ""
         connecting_edge = self.socketEdges[0]
         other_socket = connecting_edge.getOtherSocket(self)
         return other_socket.socketName
-
-
 
     def __str__(self):
         return "<Socket #%d %s %s..%s>" % (
@@ -259,7 +298,6 @@ class Socket(Serializable):
         if DEBUG: print("  res", res)
         return res
 
-
     def hasAnyEdge(self) -> bool:
         """
         Returns ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
@@ -268,7 +306,6 @@ class Socket(Serializable):
         :rtype: ``bool``
         """
         return len(self.socketEdges) > 0
-
 
     def isConnected(self, edge: 'Edge') -> bool:
         """
@@ -289,6 +326,7 @@ class Socket(Serializable):
         :type edge: :class:`~nodeeditor.node_edge.Edge`
         """
         self.socketEdges.append(edge)
+        self.grSocket.isConnected = self.hasAnyEdge()
 
     def removeEdge(self, edge: 'Edge'):
         """
@@ -296,20 +334,24 @@ class Socket(Serializable):
         :param edge: :class:`~nodeeditor.node_edge.Edge` to disconnect
         :type edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        if edge in self.socketEdges: self.socketEdges.remove(edge)
+        if edge in self.socketEdges:
+            self.socketEdges.remove(edge)
+            self.grSocket.isConnected = self.hasAnyEdge()
         else:
             if DEBUG_REMOVE_WARNINGS:
                 print("!W:", "Socket::removeEdge", "wanna remove edge", edge,
                       "from self.edges but it's not in the list!")
+            self.grSocket.isConnected = self.hasAnyEdge()
 
-    def removeAllEdges(self, silent: bool=False):
+    def removeAllEdges(self, silent: bool = False):
         """Disconnect all `Edges` from this `Socket`"""
         while self.socketEdges:
             edge = self.socketEdges.pop(0)
             if silent:
                 edge.remove(silent_for_socket=self)
             else:
-                edge.remove()       # just remove all with notifications
+                edge.remove()  # just remove all with notifications
+        self.grSocket.isConnected = self.hasAnyEdge()
 
     def determineMultiEdges(self, data: dict) -> bool:
         """
@@ -331,8 +373,6 @@ class Socket(Serializable):
     def setSocketCode(self, name: str, code: str):
         self.socketCode = "{}={}".format(name, code)
 
-
-
     def serialize(self) -> OrderedDict:
         return OrderedDict([
             ('id', self.id),
@@ -342,7 +382,7 @@ class Socket(Serializable):
             ('socket_type', self.socket_type),
         ])
 
-    def deserialize(self, data: dict, hashmap: dict={}, restore_id: bool=True) -> bool:
+    def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True) -> bool:
         if restore_id: self.id = data['id']
         self.is_multi_edges = self.determineMultiEdges(data)
         self.changeSocketType(data['socket_type'])

@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import QLabel
 from qtpy.QtCore import Qt
-from examples.example_calculator.nodes_configuration import set_node_ID, FUN_OUTPUT
+from examples.example_calculator.nodes_configuration import set_function_ID, FUN_OUTPUT
 from examples.example_calculator.master_node import *
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 
@@ -12,7 +12,7 @@ class CalcOutputContent(QDMNodeContentWidget):
         self.lbl.setObjectName(self.node.content_label_objname)
 
 
-@set_node_ID(FUN_OUTPUT, Fun=True)
+@set_function_ID(FUN_OUTPUT)
 class MasterNode_Output(MasterNode):
     icon = "icons/out.png"
     node_type = FUN_OUTPUT
@@ -28,21 +28,4 @@ class MasterNode_Output(MasterNode):
 
     def evalImplementation(self):
         input_node = self.getInput(0)
-        if not input_node:
-            self.grNode.setToolTip("Input is not connected")
-            self.markInvalid()
-            return
-
-        val = input_node.eval()
-
-        if val is None:
-            self.grNode.setToolTip("Input is NaN")
-            self.markInvalid()
-            return
-
-        self.content.lbl.setText("%d" % val)
-        self.markInvalid(False)
-        self.markDirty(False)
-        self.grNode.setToolTip("")
-
-        return val
+        return

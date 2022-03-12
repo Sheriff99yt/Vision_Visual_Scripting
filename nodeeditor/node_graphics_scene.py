@@ -17,7 +17,7 @@ class NodeGraphicsScene(QGraphicsScene):
     #: pyqtSignal emitted when items are deselected in the `Scene`
     itemsDeselected = Signal()
 
-    def __init__(self, scene: 'Scene', parent: QWidget=None):
+    def __init__(self, scene: 'Scene', parent: QWidget = None):
         """
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
         :type scene: :class:`~nodeeditor.node_scene.NodeScene`
@@ -67,7 +67,6 @@ class NodeGraphicsScene(QGraphicsScene):
         self._pen_state = QPen(self._color_state)
         self._font_state = QFont("Roboto", 16)
 
-
     # the drag events won't be allowed until dragMoveEvent is overriden
     def dragMoveEvent(self, event):
         """Overriden Qt's dragMoveEvent to enable Qt's Drag Events"""
@@ -77,7 +76,7 @@ class NodeGraphicsScene(QGraphicsScene):
         """Set `width` and `height` of the `Graphics Scene`"""
         self.setSceneRect(-width // 2, -height // 2, width, height)
 
-    def drawBackground(self, painter:QPainter, rect:QRect):
+    def drawBackground(self, painter: QPainter, rect: QRect):
         """Draw background scene grid"""
         super().drawBackground(painter, rect)
 
@@ -93,22 +92,29 @@ class NodeGraphicsScene(QGraphicsScene):
         # compute all lines to be drawn
         lines_light, lines_dark = [], []
         for x in range(first_left, right, self.gridSize):
-            if (x % (self.gridSize*self.gridSquares) != 0): lines_light.append(QLine(x, top, x, bottom))
-            else: lines_dark.append(QLine(x, top, x, bottom))
+            if (x % (self.gridSize * self.gridSquares) != 0):
+                lines_light.append(QLine(x, top, x, bottom))
+            else:
+                lines_dark.append(QLine(x, top, x, bottom))
 
         for y in range(first_top, bottom, self.gridSize):
-            if (y % (self.gridSize*self.gridSquares) != 0): lines_light.append(QLine(left, y, right, y))
-            else: lines_dark.append(QLine(left, y, right, y))
-
+            if (y % (self.gridSize * self.gridSquares) != 0):
+                lines_light.append(QLine(left, y, right, y))
+            else:
+                lines_dark.append(QLine(left, y, right, y))
 
         # draw the lines
         painter.setPen(self._pen_light)
-        try: painter.drawLines(*lines_light)                    # supporting PyQt5
-        except TypeError: painter.drawLines(lines_light)        # supporting PySide2
+        try:
+            painter.drawLines(*lines_light)  # supporting PyQt5
+        except TypeError:
+            painter.drawLines(lines_light)  # supporting PySide2
 
         painter.setPen(self._pen_dark)
-        try: painter.drawLines(*lines_dark)                     # supporting PyQt5
-        except TypeError: painter.drawLines(lines_dark)         # supporting PySide2
+        try:
+            painter.drawLines(*lines_dark)  # supporting PyQt5
+        except TypeError:
+            painter.drawLines(lines_dark)  # supporting PySide2
 
         if DEBUG_STATE:
             try:
@@ -116,6 +122,8 @@ class NodeGraphicsScene(QGraphicsScene):
                 painter.setPen(self._pen_state)
                 painter.setRenderHint(QPainter.TextAntialiasing)
                 offset = 14
-                rect_state = QRect(rect.x()+offset, rect.y()+offset, rect.width()-2*offset, rect.height()-2*offset)
+                rect_state = QRect(rect.x() + offset, rect.y() + offset, rect.width() - 2 * offset,
+                                   rect.height() - 2 * offset)
                 painter.drawText(rect_state, Qt.AlignRight | Qt.AlignTop, STATE_STRING[self.views()[0].mode].upper())
-            except: dumpException()
+            except:
+                dumpException()

@@ -2,7 +2,7 @@ from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
-from examples.example_calculator.nodes_configuration import FUNCTIONS,get_node_by_ID,LISTBOX_MIMETYPE
+from examples.example_calculator.nodes_configuration import FUNCTIONS, get_node_by_ID, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
@@ -19,9 +19,6 @@ class NodeList(QListWidget):
 
         self.addMyFunctions()
 
-
-
-
     def addMyFunctions(self):
         Funs = list(FUNCTIONS.keys())
         Funs.sort()
@@ -33,7 +30,7 @@ class NodeList(QListWidget):
         item = QListWidgetItem(name, self)  # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(28,28))
+        item.setSizeHint(QSize(28, 28))
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
@@ -53,6 +50,7 @@ class NodeList(QListWidget):
             dataStream << pixmap
             dataStream.writeInt(node_type)
             dataStream.writeQString(item.text())
+            dataStream.writeQStringList(["N"])
 
             mimeData = QMimeData()
             mimeData.setData(LISTBOX_MIMETYPE, itemData)

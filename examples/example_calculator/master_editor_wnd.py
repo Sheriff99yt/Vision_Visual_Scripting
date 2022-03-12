@@ -102,14 +102,18 @@ class MasterEditorWnd(NodeEditorWidget):
             dataStream >> pixmap
             node_type = dataStream.readInt()
             text = dataStream.readQString()
-            type = dataStream.readBool()
+            type = dataStream.readQStringList()[0]
 
             print(type)
-            isEvent = None
-            isVar = None
-            if type == True:
+            isEvent = False
+            isVar = False
+            isNode = False
+
+            if type == "E":
                 isEvent = True
-            elif type == True:
+            elif type == "N":
+                isNode = True
+            elif type == "V":
                 isVar = True
 
             mouse_position = event.pos()
@@ -133,6 +137,11 @@ class MasterEditorWnd(NodeEditorWidget):
                     node.setPos(scene_position.x(), scene_position.y())
                     self.scene.history.storeHistory("Created Node %s" % node.__class__.__name__)
 
+
+                isEvent = False
+                isVar = False
+                isNode = False
+
                 self.scene.NodeEditor.UpdateTextCode()
 
             except Exception as e:
@@ -143,6 +152,26 @@ class MasterEditorWnd(NodeEditorWidget):
         else:
             # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
+
+    def contextMenuEvent(self, event):
+        try:
+            item = self.scene.getItemAt(event.pos())
+            if DEBUG_CONTEXT: print(item)
+
+            if type(item) == QGraphicsProxyWidget:
+                item = item.widget()
+
+            if hasattr(item, 'node') or hasattr(item, 'socket'):
+                self.handleNodeContextMenu(event)
+            elif hasattr(item, 'edge'):
+                self.handleEdgeContextMenu(event)
+            # elif item is None:
+            else:
+                self.handleNewNodeContextMenu(event)
+
+            return super().contextMenuEvent(event)
+        except Exception as e:
+            dumpException(e)
 
     def contextMenuEvent(self, event):
         try:

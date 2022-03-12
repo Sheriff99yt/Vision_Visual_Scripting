@@ -197,9 +197,9 @@ class VarEventList(QTabWidget):
             drag = QDrag(self)
 
             dataStream << pixmap
-            dataStream.writeBool(True)
             dataStream.writeInt(var_ID)
             dataStream.writeQString(item.text())
+            dataStream.writeQStringList(["V"])
 
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
@@ -223,9 +223,9 @@ class VarEventList(QTabWidget):
             drag = QDrag(self)
 
             dataStream << pixmap
-            dataStream.writeBool(True)
             dataStream.writeInt(event_ID)
             dataStream.writeQString(item.text())
+            dataStream.writeQStringList(["E"])
 
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 

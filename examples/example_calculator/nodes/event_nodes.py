@@ -5,7 +5,7 @@ from examples.example_calculator.master_node import MasterNode, MasterGraphicsNo
 from nodeeditor.node_editor_widget import *
 
 
-@set_node_ID(FUN_EVENT, Fun=True)
+@set_event_ID(FUN_EVENT)
 class Event(MasterNode):
     icon = "icons/event.png"
     node_type = FUN_EVENT
@@ -29,3 +29,4 @@ def {EventName}(self):
 {textwrap.indent(childCode, '     ')}"""
 
         return code
+

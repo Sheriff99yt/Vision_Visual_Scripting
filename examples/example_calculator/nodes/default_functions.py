@@ -6,7 +6,7 @@ from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 import textwrap
 
-@set_node_ID(FUN_IF, Fun=True)
+@set_function_ID(FUN_IF)
 class IfStatement(MasterNode):
 
     icon = "icons/if.png"
@@ -22,7 +22,9 @@ class IfStatement(MasterNode):
 
 
     def getNodeCode(self):
-        self.nodeCode = not self.inputs[0].hasAnyEdge()
+        self.nodeCode = not self.isInputConnected()
+        # self.nodeCode = not self.inputs[0].hasAnyEdge()
+        # input_node = self.getInput(0)
 
         condition = self.getConnectedSocketCode(1) if not None else ""
 
@@ -50,7 +52,7 @@ else:
     
 
 
-@set_node_ID(FUN_FOR_LOOP, Fun=True)
+@set_function_ID(FUN_FOR_LOOP)
 class ForLoop(MasterNode):
     icon = "icons/Loop.png"
     node_type = FUN_FOR_LOOP
@@ -65,7 +67,7 @@ class ForLoop(MasterNode):
 
 
     def getNodeCode(self):
-        self.nodeCode = not self.inputs[0].hasAnyEdge()
+        self.nodeCode = not self.isInputConnected()
 
         firstIndex = self.getConnectedSocketName(1) if not None else ""
 
@@ -83,7 +85,7 @@ for {firstIndex} in {lastIndex}:
         return code
 
 
-@set_node_ID(FUN_PRINT, Fun=True)
+@set_function_ID(FUN_PRINT)
 class Print(MasterNode):
     icon = "icons/print.png"
     node_type = FUN_PRINT
@@ -96,7 +98,7 @@ class Print(MasterNode):
         self.grNode._brush_title = QBrush(QColor("#401447"))
 
     def getNodeCode(self):
-        self.nodeCode = not self.inputs[0].hasAnyEdge()
+        self.nodeCode = not self.isInputConnected()
 
         printCode = self.getConnectedSocketName(1)
         childCode = self.getConnectedNodeAtOutput(0)
@@ -111,7 +113,7 @@ print({printCode})
         return code
 
 
-@set_node_ID(FUN_ADD, Fun=True)
+@set_function_ID(FUN_ADD)
 class Add(MasterNode):
     icon = "icons/add.png"
     node_type = FUN_ADD
@@ -135,7 +137,7 @@ class Add(MasterNode):
         return code
 
 
-@set_node_ID(FUN_SUB, Fun=True)
+@set_function_ID(FUN_SUB)
 class Sub(MasterNode):
     icon = "icons/sub.png"
     node_type = FUN_SUB
@@ -159,7 +161,7 @@ class Sub(MasterNode):
         return code
 
 
-@set_node_ID(FUN_MUL, Fun=True)
+@set_function_ID(FUN_MUL)
 class Mul(MasterNode):
     icon = "icons/mul.png"
     node_type = FUN_MUL
@@ -183,7 +185,7 @@ class Mul(MasterNode):
         return code
 
 
-@set_node_ID(FUN_DIV, Fun=True)
+@set_function_ID(FUN_DIV)
 class Div(MasterNode):
     icon = "icons/divide.png"
     node_type = FUN_DIV
@@ -207,7 +209,7 @@ class Div(MasterNode):
         return code
 
 
-@set_node_ID(FUN_GREATER_THAN, Fun=True)
+@set_function_ID(FUN_GREATER_THAN)
 class GreaterThan(MasterNode):
     icon = "icons/more_than.png"
     node_type = FUN_GREATER_THAN
@@ -230,7 +232,7 @@ class GreaterThan(MasterNode):
         return code
 
 
-@set_node_ID(FUN_LESS_THAN, Fun=True)
+@set_function_ID(FUN_LESS_THAN)
 class LessThan(MasterNode):
     icon = "icons/less_than.png"
     node_type = FUN_LESS_THAN
@@ -253,7 +255,7 @@ class LessThan(MasterNode):
         return code
 
 
-@set_node_ID(FUN_Equal, Fun=True)
+@set_function_ID(FUN_Equal)
 class Equal(MasterNode):
     icon = "icons/equal.png"
     node_type = FUN_Equal
@@ -276,7 +278,7 @@ class Equal(MasterNode):
         return code
 
 
-@set_node_ID(FUN_AND, Fun=True)
+@set_function_ID(FUN_AND)
 class And(MasterNode):
     icon = "icons/and.png"
     node_type = FUN_AND

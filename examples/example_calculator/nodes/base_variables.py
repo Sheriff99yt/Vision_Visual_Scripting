@@ -5,7 +5,7 @@ from examples.example_calculator.master_node import MasterNode
 from examples.example_calculator.editor_proterties_list import PropertiesList
 
 
-@set_node_ID(VAR_FLOAT, Fun=False)
+@set_var_ID(VAR_FLOAT)
 class FloatVar(MasterNode):
     icon = ""
     node_type = VAR_FLOAT
@@ -28,7 +28,7 @@ class FloatVar(MasterNode):
         PropertiesList.varUpdate("Variable Value", QDoubleSpinBox().setValue(self.value))
 
 
-@set_node_ID(VAR_INTEGER, Fun=False)
+@set_var_ID(VAR_INTEGER)
 class IntegerVar(MasterNode):
     icon = ""
     node_type = VAR_INTEGER
@@ -49,7 +49,7 @@ class IntegerVar(MasterNode):
         return name
 
 
-@set_node_ID(VAR_BOOLEAN, Fun=False)
+@set_var_ID(VAR_BOOLEAN)
 class BooleanVar(MasterNode):
     icon = ""
     node_type = VAR_BOOLEAN
@@ -69,7 +69,7 @@ class BooleanVar(MasterNode):
         return name
 
 
-@set_node_ID(VAR_STRING, Fun=False)
+@set_var_ID(VAR_STRING)
 class StringVar(MasterNode):
     icon = ""
     node_type = VAR_STRING

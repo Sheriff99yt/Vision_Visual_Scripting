@@ -211,6 +211,7 @@ class QDMGraphicsNode(QGraphicsItem):
         path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness)
         path_title.addRect(0, self.title_height - self.edge_roundness, self.edge_roundness, self.edge_roundness)
         path_title.addRect(self.width - self.edge_roundness, self.title_height - self.edge_roundness, self.edge_roundness, self.edge_roundness)
+
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._brush_title)
         painter.drawPath(path_title.simplified())

@@ -168,7 +168,7 @@ class Node(Serializable):
                 socket_type=item, multi_edges=self.input_multi_edged,
                 count_on_this_node_side=len(inputs), is_input=True)
 
-            if socket.SocketColor == QColor("white"):
+            if socket.socket_type == 0:
                 socket.is_multi_edges = True
             else:
                 socket.is_multi_edges = False
@@ -184,7 +184,7 @@ class Node(Serializable):
                 socket_type=item, multi_edges=self.output_multi_edged,
                 count_on_this_node_side=len(outputs), is_input=False)
 
-            if socket.SocketColor == QColor("white"):
+            if socket.socket_type == 0:
                 socket.is_multi_edges = False
             else:
                 socket.is_multi_edges = True
@@ -236,7 +236,7 @@ class Node(Serializable):
     def hasConnectedEdge(self, edge: 'Edge'):
         """Returns ``True`` if edge is connected to any :class:`~nodeeditor.node_socket.Socket` of this `Node`"""
         for socket in (self.inputs + self.outputs):
-            if socket.isConnected(edge):
+            if socket.hasAnyEdge(edge):
                 return True
         return False
 
@@ -437,12 +437,19 @@ class Node(Serializable):
         other_socket = connecting_edge.getOtherSocket(self.inputs[index])
         return other_socket.node.getNodeCode()
 
-    def getConnectedSocketNode(self, index: int = 0):
+    def getConnectedInputNode(self, index: int = 0):
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0: return None
         connecting_edge = input_socket.socketEdges[0]
         other_socket = connecting_edge.getOtherSocket(self.inputs[index])
         return other_socket.node
+
+    def isInputConnected(self, index: int = 0):
+        input_socket = self.inputs[index]
+        if len(input_socket.socketEdges) == 0:
+            return False
+        else:
+            return True
 
     def getConnectedSocketCode(self, index: int = 0):
         input_socket = self.inputs[index]

@@ -227,6 +227,14 @@ class Edge(Serializable):
         """
         Helper function which sets start and end :class:`~nodeeditor.node_socket.Socket` to ``None``
         """
+        if self.start_socket is not None:
+            self.start_socket.isConnected = False
+            self.start_socket.grSocket.update()
+
+        if self.end_socket is not None:
+            self.end_socket.isConnected = False
+            self.end_socket.grSocket.update()
+
         self.end_socket = None
         self.start_socket = None
 
@@ -249,6 +257,7 @@ class Edge(Serializable):
         :param silent: ``True`` if no events should be triggered during removing
         :type silent: ``bool``
         """
+
         old_sockets = [self.start_socket, self.end_socket]
 
         # ugly hack, since I noticed that even when you remove grEdge from scene,

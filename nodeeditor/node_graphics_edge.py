@@ -50,16 +50,16 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._color = self._default_color = QColor("#001000")
-        self._color_selected = QColor("#00ff00")
-        self._color_hovered = QColor("#FF37A6FF")
+        self._color = self._default_color = QColor("#101010")
+        self._color_selected = QColor("#FFFFA637")
+        self._color_hovered = QColor("#FFFFFF")
         self._pen = QPen(self._color)
         self._pen_selected = QPen(self._color_selected)
-        self._pen_dragging = QPen(self._color)
+        self._pen_dragging = QPen(QColor("#90000000"))
         self._pen_hovered = QPen(self._color_hovered)
-        self._pen_dragging.setStyle(Qt.DashLine)
-        self._pen.setWidthF(3.0)
-        self._pen_selected.setWidthF(3.0)
+        # self._pen_dragging.setStyle(Qt.DashLine)
+        self._pen.setWidthF(4.0)
+        self._pen_selected.setWidthF(4.0)
         self._pen_dragging.setWidthF(3.0)
         self._pen_hovered.setWidthF(5.0)
 
