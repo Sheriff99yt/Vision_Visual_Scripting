@@ -10,28 +10,33 @@ class PropertiesList(QScrollArea):
         # self.widget = QFrame()
         # self.setWidgetResizable(True)
         # self.setWidget(self.widget)
-        self.start = True
+        self.varStart = True
+        self.infoStart = True
 
     def varUpdate(self, name, type):
-        if self.start == True:
-            self.start = False
+
+        if self.varStart == True:
+            self.varStart = False
+            self.infoStart = True
+
             self.widget = QFrame()
+            self.setWidgetResizable(True)
             self.setWidget(self.widget)
             self.myForm = QFormLayout()
             self.myForm.setSpacing(8)
             self.myForm.setAlignment(Qt.AlignTop)
             self.widget.setLayout(self.myForm)
             self.myForm.addRow(QLabel(f"{name}"), type)
+
+
         else:
             self.myForm.addRow(QLabel(f"{name}"), type)
 
-    def clearWnd(self):
-        pass
-
 
     def infoUpdate(self, Info):
-        if self.start == True:
-            self.start = False
+        if self.infoStart == True:
+            self.infoStart = False
+            self.varStart = True
             widget = QFrame()
             self.setWidget(widget)
             self.infoLayout = QHBoxLayout()

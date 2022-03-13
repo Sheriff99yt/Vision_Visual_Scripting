@@ -64,13 +64,13 @@ class VarEventList(QTabWidget):
         self.eventLayout.addWidget(self.EventList)
         self.EventList.setDragEnabled(True)
 
-        self.proprietiesRef = None
+        self.Proprieties = None
 
         self.VarList.startDrag = self.VarStartDrag
         self.EventList.startDrag = self.EventStartDrag
 
-        self.EventList.itemClicked.connect(self.EventSelectionChanged)
         self.VarList.itemClicked.connect(self.VarSelectionChanged)
+        self.EventList.itemClicked.connect(self.EventSelectionChanged)
 
         self.varsIds = []
         self.eventsIds = []
@@ -80,7 +80,6 @@ class VarEventList(QTabWidget):
     def newNodeFrom(self, var):
         class newNode(var):
             pass
-
         return newNode
 
     def InitList(self):
@@ -149,40 +148,38 @@ class VarEventList(QTabWidget):
         item.setData(91, name)
 
     def EventSelectionChanged(self, *args, **kwargs):
-        self.proprietiesRef.start = True
+        self.Proprieties.start = True
 
         item = self.EventList.currentItem()
         name = QLineEdit()
         name.setText(f"{item.data(91)}")
-        self.proprietiesRef.infoUpdate(name)
-        self.proprietiesRef.infoUpdate(QLabel("This is a Test Text"))
+        self.Proprieties.infoUpdate(name)
+        self.Proprieties.infoUpdate(QLabel("This is a Test Text"))
 
     def VarSelectionChanged(self, *args, **kwargs):
-        self.proprietiesRef.start = True
+        self.Proprieties.start = True
 
         item = self.VarList.currentItem()
         name = QLineEdit()
         name.setText(f"{item.data(91)}")
 
+        self.Proprieties.varUpdate("Variable Name", name)
+
         if item.data(80) == 20:
             value = QDoubleSpinBox()
-            self.proprietiesRef.varUpdate("Variable Name", name)
-            self.proprietiesRef.varUpdate("Variable Value", value)
+            self.Proprieties.varUpdate("Variable Value", value)
 
         elif item.data(80) == 21:
             value = QSpinBox()
-            self.proprietiesRef.varUpdate("Variable Name", name)
-            self.proprietiesRef.varUpdate("Variable Value", value)
+            self.Proprieties.varUpdate("Variable Value", value)
 
         elif item.data(80) == 22:
             value = QCheckBox()
-            self.proprietiesRef.varUpdate("Variable Name", name)
-            self.proprietiesRef.varUpdate("Variable Value", value)
+            self.Proprieties.varUpdate("Variable Value", value)
 
         elif item.data(80) == 23:
             value = QLineEdit()
-            self.proprietiesRef.varUpdate("Variable Name", name)
-            self.proprietiesRef.varUpdate("Variable Value", value)
+            self.Proprieties.varUpdate("Variable Value", value)
 
     def VarStartDrag(self, *args, **kwargs):
         try:

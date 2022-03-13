@@ -23,9 +23,6 @@ class FloatVar(MasterNode):
         code = f"""{self.name}={self.value}"""
         return self.name
 
-    def updateProperties(self):
-        PropertiesList.varUpdate("Variable Name", QLineEdit().setValue(self.name))
-        PropertiesList.varUpdate("Variable Value", QDoubleSpinBox().setValue(self.value))
 
 
 @set_var_ID(VAR_INTEGER)

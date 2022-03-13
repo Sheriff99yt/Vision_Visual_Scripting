@@ -338,7 +338,7 @@ class MasterWindow(NodeEditorWindow):
 
     def CreateVariablesDock(self):
         self.varsListWidget = VarEventList()
-        self.varsListWidget.proprietiesRef = self.proprietiesListWidget
+        self.varsListWidget.Proprieties = self.proprietiesListWidget
         self.varsDock = QDockWidget("Variables")
         self.varsDock.setWidget(self.varsListWidget)
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)

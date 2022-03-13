@@ -202,6 +202,16 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""
+        # content
+        path_content = QPainterPath()
+        path_content.setFillRule(Qt.WindingFill)
+        path_content.addRoundedRect(0, 0, self.width, self.height, self.edge_roundness, self.edge_roundness)
+        path_content.addRect(0, self.title_height, self.edge_roundness, self.edge_roundness)
+        path_content.addRect(self.width - self.edge_roundness, self.title_height, self.edge_roundness, self.edge_roundness)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._brush_background)
+        painter.drawPath(path_content.simplified())
+
         # title
         path_title = QPainterPath()
         path_title.setFillRule(Qt.WindingFill)
@@ -213,20 +223,12 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_title)
         painter.drawPath(path_title.simplified())
 
-        # content
-        path_content = QPainterPath()
-        path_content.setFillRule(Qt.WindingFill)
-        path_content.addRoundedRect(0, self.title_height, self.width, self.height - self.title_height, self.edge_roundness, self.edge_roundness)
-        path_content.addRect(0, self.title_height, self.edge_roundness, self.edge_roundness)
-        path_content.addRect(self.width - self.edge_roundness, self.title_height, self.edge_roundness, self.edge_roundness)
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brush_background)
-        painter.drawPath(path_content.simplified())
 
         # outline
         path_outline = QPainterPath()
         path_outline.addRoundedRect(-1, -1, self.width+2, self.height+2, self.edge_roundness, self.edge_roundness)
         painter.setBrush(Qt.NoBrush)
+
         if self.hovered:
             painter.setBrush(QColor("#10FFFFFF"))
             painter.setPen(self._pen_hovered)

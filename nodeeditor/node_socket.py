@@ -29,13 +29,13 @@ A module containing Graphics representation of a :class:`~nodeeditor.node_socket
 # Holder 7
 
 SOCKET_COLORS = [
-    QColor("#70FFFFFF"),
-    QColor("#7000f204"),
-    QColor("#7000bfff"),
-    QColor("#70e00d0d"),
-    QColor("#70790cc2"),
-    QColor("#70d2d2d2"),
-    QColor("#70a2a2a2")]
+    QColor("#99FFFFFF"),
+    QColor("#9900f204"),
+    QColor("#9900bfff"),
+    QColor("#99e00d0d"),
+    QColor("#99790cc2"),
+    QColor("#99d2d2d2"),
+    QColor("#99a2a2a2")]
 
 SOCKET_COLORS_HOVERED = [
     QColor("#FFFFFF"),
