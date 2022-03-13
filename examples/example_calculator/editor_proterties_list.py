@@ -7,11 +7,12 @@ from qtpy.QtWidgets import *
 class PropertiesList(QScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.widget = QFrame()
-        # self.setWidgetResizable(True)
-        # self.setWidget(self.widget)
+
+        self.setWidgetResizable(True)
+
         self.varStart = True
         self.infoStart = True
+
 
     def varUpdate(self, name, type):
 
@@ -19,16 +20,13 @@ class PropertiesList(QScrollArea):
             self.varStart = False
             self.infoStart = True
 
-            self.widget = QFrame()
-            self.setWidgetResizable(True)
-            self.setWidget(self.widget)
+            widget = QFrame()
+            self.setWidget(widget)
             self.myForm = QFormLayout()
+            widget.setLayout(self.myForm)
             self.myForm.setSpacing(8)
             self.myForm.setAlignment(Qt.AlignTop)
-            self.widget.setLayout(self.myForm)
             self.myForm.addRow(QLabel(f"{name}"), type)
-
-
         else:
             self.myForm.addRow(QLabel(f"{name}"), type)
 
@@ -39,7 +37,8 @@ class PropertiesList(QScrollArea):
             self.varStart = True
             widget = QFrame()
             self.setWidget(widget)
-            self.infoLayout = QHBoxLayout()
+            self.infoLayout = QVBoxLayout()
+            self.infoLayout.setAlignment(Qt.AlignTop)
             widget.setLayout(self.infoLayout)
             self.infoLayout.addWidget(Info)
         else:

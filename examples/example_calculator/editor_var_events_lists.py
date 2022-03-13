@@ -148,7 +148,7 @@ class VarEventList(QTabWidget):
         item.setData(91, name)
 
     def EventSelectionChanged(self, *args, **kwargs):
-        self.Proprieties.start = True
+        self.Proprieties.infoStart = True
 
         item = self.EventList.currentItem()
         name = QLineEdit()
@@ -157,7 +157,7 @@ class VarEventList(QTabWidget):
         self.Proprieties.infoUpdate(QLabel("This is a Test Text"))
 
     def VarSelectionChanged(self, *args, **kwargs):
-        self.Proprieties.start = True
+        self.Proprieties.varStart = True
 
         item = self.VarList.currentItem()
         name = QLineEdit()
