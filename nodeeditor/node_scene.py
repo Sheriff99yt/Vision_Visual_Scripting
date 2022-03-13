@@ -133,6 +133,8 @@ class NodeScene(Serializable):
                 # and store history as a last step always
                 self.history.storeHistory("Selection Changed")
 
+        self.NodeEditor.UpdateTextCode()
+
     def onItemsDeselected(self, silent: bool = False):
         """
         Handle Items deselection and trigger event `Items Deselected`
@@ -154,6 +156,7 @@ class NodeScene(Serializable):
             if not silent:
                 self.history.storeHistory("Deselected Everything")
                 for callback in self._items_deselected_listeners: callback()
+        self.NodeEditor.UpdateTextCode()
 
     def isModified(self) -> bool:
         """Is this `Scene` dirty aka `has been modified` ?

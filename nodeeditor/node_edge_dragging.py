@@ -2,16 +2,17 @@
 """
 A module containing the Edge Dragging functionality
 """
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView
+
 from nodeeditor.node_socket import QDMGraphicsSocket
 from nodeeditor.node_edge import EDGE_TYPE_DEFAULT
 from nodeeditor.utils import dumpException
-
 
 DEBUG = False
 
 
 class EdgeDragging:
-    def __init__(self, grView:'QGraphicsView'):
+    def __init__(self, grView: 'QGraphicsView'):
         self.grView = grView
         # initializing these variable to know we're using them in this class...
         self.drag_edge = None
@@ -35,8 +36,7 @@ class EdgeDragging:
         else:
             print(">>> Want to update self.drag_edge grEdge, but it's None!!!")
 
-
-    def edgeDragStart(self, item:'QGraphicsItem'):
+    def edgeDragStart(self, item: 'QGraphicsItem'):
         """Code handling the start of a dragging an `Edge` operation"""
         try:
             if DEBUG: print('View::edgeDragStart ~ Start dragging edge')
@@ -45,10 +45,10 @@ class EdgeDragging:
             self.drag_edge = self.getEdgeClass()(item.socket.node.scene, item.socket, None, EDGE_TYPE_DEFAULT)
             self.drag_edge.grEdge.makeUnselectable()
             if DEBUG: print('View::edgeDragStart ~   dragEdge:', self.drag_edge)
-        except Exception as e: dumpException(e)
+        except Exception as e:
+            dumpException(e)
 
-
-    def edgeDragEnd(self, item:'QGraphicsItem'):
+    def edgeDragEnd(self, item: 'QGraphicsItem'):
         """Code handling the end of the dragging an `Edge` operation. If this code returns True then skip the
         rest of the mouse event processing. Can be called with ``None`` to cancel the edge dragging mode
 
@@ -60,9 +60,8 @@ class EdgeDragging:
         if not isinstance(item, QDMGraphicsSocket):
             self.grView.resetMode()
             if DEBUG: print('View::edgeDragEnd ~ End dragging edge early')
-            self.drag_edge.remove(silent=True)      # don't notify sockets about removing drag_edge
+            self.drag_edge.remove(silent=True)  # don't notify sockets about removing drag_edge
             self.drag_edge = None
-
 
         # clicked on socket
         if isinstance(item, QDMGraphicsSocket):
@@ -76,7 +75,7 @@ class EdgeDragging:
             self.grView.resetMode()
 
             if DEBUG: print('View::edgeDragEnd ~ End dragging edge')
-            self.drag_edge.remove(silent=True)      # don't notify sockets about removing drag_edge
+            self.drag_edge.remove(silent=True)  # don't notify sockets about removing drag_edge
             self.drag_edge = None
 
             try:
@@ -92,10 +91,11 @@ class EdgeDragging:
                             else:
                                 socket.removeAllEdges(silent=False)
 
-
                     ## Create new Edge
-                    new_edge = self.getEdgeClass()(item.socket.node.scene, self.drag_start_socket, item.socket, edge_type=EDGE_TYPE_DEFAULT)
-                    if DEBUG: print("View::edgeDragEnd ~  created new edge:", new_edge, "connecting", new_edge.start_socket, "<-->", new_edge.end_socket)
+                    new_edge = self.getEdgeClass()(item.socket.node.scene, self.drag_start_socket, item.socket,
+                                                   edge_type=EDGE_TYPE_DEFAULT)
+                    if DEBUG: print("View::edgeDragEnd ~  created new edge:", new_edge, "connecting",
+                                    new_edge.start_socket, "<-->", new_edge.end_socket)
 
                     ## Send notifications for the new edge
                     for socket in [self.drag_start_socket, item.socket]:
@@ -105,9 +105,8 @@ class EdgeDragging:
 
                     self.grView.grScene.scene.history.storeHistory("Created new edge by dragging", setModified=True)
                     return True
-            except Exception as e: dumpException(e)
-
+            except Exception as e:
+                dumpException(e)
 
         if DEBUG: print('View::edgeDragEnd ~ everything done.')
         return False
-

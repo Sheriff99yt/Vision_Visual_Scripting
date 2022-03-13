@@ -456,14 +456,22 @@ class Node(Serializable):
         if len(input_socket.socketEdges) == 0: return ""
         connecting_edge = input_socket.socketEdges[0]
         other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-        return other_socket.socketCode
+
+        if other_socket is None:
+            return ""
+        else:
+            return other_socket.socketCode
 
     def SocketNameAt(self, index: int = 0):
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0: return ""
         connecting_edge = input_socket.socketEdges[0]
         other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-        return other_socket.socketName
+
+        if other_socket is None:
+            return ""
+        else:
+            return other_socket.socketName
 
     def SocketValueAt(self, index: int = 0):
         input_socket = self.inputs[index]
@@ -546,7 +554,11 @@ class Node(Serializable):
         try:
             edge = self.outputs[index].socketEdges[0]
             socket = edge.getOtherSocket(self.outputs[index])
-            return socket.node
+            if socket is None:
+                return ""
+            else:
+                return socket.node
+
         except IndexError:
             # print("EXC: Trying to get input with socket index %d, but none is attached to" % index, self)
             return None
@@ -568,7 +580,10 @@ class Node(Serializable):
         try:
             edge = self.outputs[index].socketEdges[0]
             socket = edge.getOtherSocket(self.outputs[index])
-            return socket.node.getNodeCode()
+            if socket is None:
+                return ""
+            else:
+                return socket.node.getNodeCode()
         except IndexError:
             # print("EXC: Trying to get input with socket index %d, but none is attached to" % index, self)
             return ""

@@ -6,6 +6,7 @@ from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from textwrap import *
 
+FontSize = 20
 
 def Indent(String):
     return indent(String, '     ')
@@ -21,8 +22,8 @@ class IfStatement(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
         self.isVar = False
-
-        self.grNode._brush_title = QBrush(QColor("#3E0B0B"))
+        self.nodeColor = "#553E0B0B"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
 
     def getNodeCode(self):
@@ -30,28 +31,25 @@ class IfStatement(MasterNode):
 
         condition = self.InputSocketCodeAt(1)
 
-        true = self.NodeAtOutput(0)
-        if true is None:
-            true = ""
-        else:
-            true = true.getNodeCode()
+        true = self.NodeCodeAtOutput(0)
 
-        false = self.NodeAtOutput(1)
-        if false is None:
-            false = ""
-        else:
-            false = false.getNodeCode()
+        false = self.NodeCodeAtOutput(1)
 
-        code = f"""\
+        rawCode = f"""
 if {condition}:
 {Indent(true)}
 else:
 {Indent(false)}
 """
 
-        codeColor = "#550000"
-        codeStyle = f"background-color:{codeColor}"
-        styledCode = f"""<pre><span style=" {codeStyle};">{code}</span></pre>"""
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
+# code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
+# if {condition}:
+# {textwrap.indent(true, "    ")}
+# else:
+# {textwrap.indent(false, "    ")}</span></pre>"""
 
         return code
 
@@ -67,7 +65,8 @@ class ForLoop(MasterNode):
         super().__init__(scene, inputs=[0, 2, 2], outputs=[0])
         self.isVar = False
         self.grNode.height = 120
-        self.grNode._brush_title = QBrush(QColor("#0A3C67"))
+        self.nodeColor = "#550A3C67"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
 
     def getNodeCode(self):
@@ -79,10 +78,13 @@ class ForLoop(MasterNode):
 
         loopCode = self.NodeCodeAtOutput(0)
 
-        code = f"""\
-for {firstIndex} in range(0, {lastIndex}):
+        rawCode = f"""
+for {firstIndex} in range({lastIndex}):
 {Indent(loopCode)}
 """
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -96,7 +98,8 @@ class Print(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 4], outputs=[0])
         self.isVar = False
-        self.grNode._brush_title = QBrush(QColor("#401447"))
+        self.nodeColor = "#55401447"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         self.nodeCode = not self.isInputConnected()
@@ -104,10 +107,12 @@ class Print(MasterNode):
         printCode = self.SocketNameAt(1)
         childCode = self.NodeCodeAtOutput(0)
 
-        code = f"""\
+        rawCode = f"""
 print({printCode})
-{childCode}
-"""
+{childCode}"""
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -116,22 +121,27 @@ class Add(MasterNode):
     icon = "icons/add.png"
     node_type = FUN_ADD
     name = "Add"
-    content_label = "+"
+    content_label = ""
     content_label_objname = "node_add"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
-        self.grNode._brush_title = QBrush(QColor("#16602E"))
+        self.nodeColor = "#5516602E"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}+{B}"
+        rawCode = f"{A}+{B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -140,22 +150,27 @@ class Sub(MasterNode):
     icon = "icons/sub.png"
     node_type = FUN_SUB
     name = "Subtract"
-    content_label = "-"
+    content_label = ""
     content_label_objname = "node_subtract"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
-        self.grNode._brush_title = QBrush(QColor("#16602E"))
+        self.nodeColor = "#5516602E"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}-{B}"
+        rawCode = f"{A}-{B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -164,22 +179,27 @@ class Mul(MasterNode):
     icon = "icons/mul.png"
     node_type = FUN_MUL
     name = "Multiply"
-    content_label = "*"
+    content_label = ""
     content_label_objname = "node_mul"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
-        self.grNode._brush_title = QBrush(QColor("#16602E"))
+        self.nodeColor = "#5516602E"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}*{B}"
+        rawCode = f"{A}*{B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -188,22 +208,27 @@ class Div(MasterNode):
     icon = "icons/divide.png"
     node_type = FUN_DIV
     name = "Divide"
-    content_label = "/"
+    content_label = ""
     content_label_objname = "node_div"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.isVar = False
         self.nodeCode = False
-        self.grNode._brush_title = QBrush(QColor("#16602E"))
+        self.nodeColor = "#5516602E"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}/{B}"
+        rawCode = f"{A}/{B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -212,21 +237,28 @@ class GreaterThan(MasterNode):
     icon = "icons/more_than.png"
     node_type = FUN_GREATER_THAN
     name = "Greater Than"
-    content_label = ">"
+    content_label = ""
     content_label_objname = "node_greater_than"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.isVar = False
         self.nodeCode = False
+        self.nodeColor = "#55777777"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}>{B}"
+        rawCode = f"{A}>{B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -235,21 +267,28 @@ class LessThan(MasterNode):
     icon = "icons/less_than.png"
     node_type = FUN_LESS_THAN
     name = "Less Than"
-    content_label = "<"
+    content_label = ""
     content_label_objname = "node_less_than"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.isVar = False
         self.nodeCode = False
+        self.nodeColor = "#55777777"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}<{B}"
+        rawCode = f"{A}<{B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -258,21 +297,27 @@ class Equal(MasterNode):
     icon = "icons/equal.png"
     node_type = FUN_Equal
     name = "Equal"
-    content_label = "<"
+    content_label = ""
     content_label_objname = "node_equal"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.isVar = False
         self.nodeCode = False
+        self.nodeColor = "#55777777"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A}=={B}"
+        rawCode = f"{A}=={B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code
 
 
@@ -281,19 +326,25 @@ class And(MasterNode):
     icon = "icons/and.png"
     node_type = FUN_AND
     name = "And"
-    content_label = "&"
+    content_label = ""
     content_label_objname = "node_and"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3, 3], outputs=[3])
         self.isVar = False
         self.nodeCode = False
+        self.nodeColor = "#55777777"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         A = self.InputSocketNodeCodeAt(0)
         B = self.InputSocketNodeCodeAt(1)
 
-        code = f"{A} and {B}"
+        rawCode = f"{A} and {B}"
 
-        self.outputs[0].socketCode = code
+        self.outputs[0].socketCode = rawCode
+
+        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
+        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+
         return code

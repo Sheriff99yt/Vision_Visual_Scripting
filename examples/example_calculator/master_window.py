@@ -43,7 +43,7 @@ class MasterWindow(NodeEditorWindow):
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), "qss/nodeeditor-night.qss"), self.stylesheet_filename)
 
-        self.empty_icon = QIcon(".")
+        self.empty_icon = QIcon("")
 
         if DEBUG:
             print("Registered nodes:")
