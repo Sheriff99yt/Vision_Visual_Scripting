@@ -1,8 +1,10 @@
 import textwrap
 
+from examples.example_calculator.nodes.default_functions import Indent
 from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from nodeeditor.node_editor_widget import *
+
 
 
 @set_event_ID(FUN_EVENT)
@@ -17,16 +19,13 @@ class Event(MasterNode):
         self.grNode._brush_title = QBrush(QColor("#C16401"))
 
     def getNodeCode(self):
-        EventName = "Event"
+        EventName = self.name
 
-        childCode = self.getConnectedNodeAtOutput(0)
-        if childCode is None:
-            childCode = ""
-        else:
-            childCode = childCode.getNodeCode()
+        childCode = self.NodeCodeAtOutput(0)
+
         code = f"""\
 def {EventName}(self):
-{textwrap.indent(childCode, '     ')}"""
+{Indent(childCode)}"""
 
         return code
 

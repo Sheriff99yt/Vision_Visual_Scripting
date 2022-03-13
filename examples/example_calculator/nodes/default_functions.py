@@ -4,7 +4,11 @@ from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 
 from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
-import textwrap
+from textwrap import *
+
+
+def Indent(String):
+    return indent(String, '     ')
 
 @set_function_ID(FUN_IF)
 class IfStatement(MasterNode):
@@ -23,33 +27,33 @@ class IfStatement(MasterNode):
 
     def getNodeCode(self):
         self.nodeCode = not self.isInputConnected()
-        # self.nodeCode = not self.inputs[0].hasAnyEdge()
-        # input_node = self.getInput(0)
 
-        condition = self.getConnectedSocketCode(1) if not None else ""
+        condition = self.InputSocketCodeAt(1)
 
-        true = self.getConnectedNodeAtOutput(0)
+        true = self.NodeAtOutput(0)
         if true is None:
             true = ""
         else:
             true = true.getNodeCode()
 
-        false = self.getConnectedNodeAtOutput(1)
+        false = self.NodeAtOutput(1)
         if false is None:
             false = ""
         else:
             false = false.getNodeCode()
 
-        code = f"""
+        code = f"""\
 if {condition}:
-    {textwrap.indent(true, "    ")}
+{Indent(true)}
 else:
-    {textwrap.indent(false, "    ")}
+{Indent(false)}
 """
 
-        return code
+        codeColor = "#550000"
+        codeStyle = f"background-color:{codeColor}"
+        styledCode = f"""<pre><span style=" {codeStyle};">{code}</span></pre>"""
 
-    
+        return code
 
 
 @set_function_ID(FUN_FOR_LOOP)
@@ -69,19 +73,16 @@ class ForLoop(MasterNode):
     def getNodeCode(self):
         self.nodeCode = not self.isInputConnected()
 
-        firstIndex = self.getConnectedSocketName(1) if not None else ""
+        firstIndex = self.SocketNameAt(1)
 
-        lastIndex = self.getConnectedSocketName(2) if not None else ""
+        lastIndex = self.SocketNameAt(2)
 
-        loopCode = self.getConnectedNodeAtOutput(0)
-        if loopCode is None:
-            loopCode = ""
-        else:
-            loopCode = loopCode.getNodeCode()
+        loopCode = self.NodeCodeAtOutput(0)
 
-        code = f"""
-for {firstIndex} in {lastIndex}:
-    {textwrap.indent(loopCode, "    ")}"""
+        code = f"""\
+for {firstIndex} in range(0, {lastIndex}):
+{Indent(loopCode)}
+"""
         return code
 
 
@@ -100,16 +101,13 @@ class Print(MasterNode):
     def getNodeCode(self):
         self.nodeCode = not self.isInputConnected()
 
-        printCode = self.getConnectedSocketName(1)
-        childCode = self.getConnectedNodeAtOutput(0)
-        if childCode is None:
-            childCode = ""
-        else:
-            childCode = childCode.getNodeCode()
+        printCode = self.SocketNameAt(1)
+        childCode = self.NodeCodeAtOutput(0)
 
-        code = f"""
+        code = f"""\
 print({printCode})
-{childCode}"""
+{childCode}
+"""
         return code
 
 
@@ -128,8 +126,8 @@ class Add(MasterNode):
         self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}+{B}"
 
@@ -152,8 +150,8 @@ class Sub(MasterNode):
         self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}-{B}"
 
@@ -176,8 +174,8 @@ class Mul(MasterNode):
         self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}*{B}"
 
@@ -200,8 +198,8 @@ class Div(MasterNode):
         self.grNode._brush_title = QBrush(QColor("#16602E"))
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}/{B}"
 
@@ -223,8 +221,8 @@ class GreaterThan(MasterNode):
         self.nodeCode = False
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}>{B}"
 
@@ -246,8 +244,8 @@ class LessThan(MasterNode):
         self.nodeCode = False
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}<{B}"
 
@@ -269,8 +267,8 @@ class Equal(MasterNode):
         self.nodeCode = False
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A}=={B}"
 
@@ -292,8 +290,8 @@ class And(MasterNode):
         self.nodeCode = False
 
     def getNodeCode(self):
-        A = self.getConnectedSocketNodeCode(0) if not None else ""
-        B = self.getConnectedSocketNodeCode(1) if not None else ""
+        A = self.InputSocketNodeCodeAt(0)
+        B = self.InputSocketNodeCodeAt(1)
 
         code = f"{A} and {B}"
 

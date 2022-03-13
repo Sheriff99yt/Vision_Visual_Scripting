@@ -40,7 +40,7 @@ class QDMGraphicsNode(QGraphicsItem):
         shadow.setYOffset(6)
         # setting blur radius (optional step)
         shadow.setBlurRadius(12)
-        # adding shadow to the labelq
+        # adding shadow to the grNode
         self.setGraphicsEffect(shadow)
 
     @property
@@ -186,10 +186,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.title_item.setDefaultTextColor(self._title_color)
         self.title_item.setFont(self._title_font)
         self.title_item.setPos(self.title_horizontal_padding, 0)
-        self.title_item.setTextWidth(
-            self.width
-            - 2 * self.title_horizontal_padding
-        )
+        self.title_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
 
     def initContent(self):
         """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""

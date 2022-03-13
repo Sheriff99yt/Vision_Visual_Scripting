@@ -102,18 +102,17 @@ class MasterEditorWnd(NodeEditorWidget):
             dataStream >> pixmap
             node_type = dataStream.readInt()
             text = dataStream.readQString()
-            type = dataStream.readQStringList()[0]
+            dataType = dataStream.readQStringList()[0]
 
-            print(type)
             isEvent = False
             isVar = False
             isNode = False
 
-            if type == "E":
+            if dataType == "E":
                 isEvent = True
-            elif type == "N":
+            elif dataType == "N":
                 isNode = True
-            elif type == "V":
+            elif dataType == "V":
                 isVar = True
 
             mouse_position = event.pos()
