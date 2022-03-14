@@ -236,7 +236,7 @@ class Socket(Serializable):
         self.is_multi_edges = multi_edges
         self.is_input = is_input
         self.is_output = not self.is_input
-        self.socketName = self.node.title
+        self.socketName = self.node.name
         self.socketValue = True
 
         self.socketCode = "{}={}".format(self.socketName, self.socketValue)

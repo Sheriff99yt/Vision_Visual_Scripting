@@ -21,7 +21,7 @@ class MasterGraphicsNode(QDMGraphicsNode):
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         super().paint(painter, QStyleOptionGraphicsItem, widget)
-        self.icons = QImage("icons/if.png")
+        self.icons = QImage("")
         painter.drawImage(QRectF(0, 0, 30, 30), self.icons)
 
 

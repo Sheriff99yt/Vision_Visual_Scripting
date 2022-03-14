@@ -76,7 +76,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.CreateFilesDock()
         # Create Variable List
-        self.CreateVariablesDock()
+        self.CreateVariablesEventsDock()
 
         self.createActions()
         self.createMenus()
@@ -336,11 +336,11 @@ class MasterWindow(NodeEditorWindow):
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
-    def CreateVariablesDock(self):
-        self.varsListWidget = VarEventList()
-        self.varsListWidget.Proprieties = self.proprietiesListWidget
+    def CreateVariablesEventsDock(self):
+        self.varsEventsWidget = VarEventList()
+        self.varsEventsWidget.Proprieties = self.proprietiesListWidget
         self.varsDock = QDockWidget("Variables")
-        self.varsDock.setWidget(self.varsListWidget)
+        self.varsDock.setWidget(self.varsEventsWidget)
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
 
@@ -348,13 +348,21 @@ class MasterWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def createMdiChild(self, child_widget=None):
-        nodeeditor = child_widget if child_widget is not None else MasterEditorWnd()
-        subwnd = self.mdiArea.addSubWindow(nodeeditor)
+        if child_widget is not None:
+            self.nodeeditor = child_widget
+            self.varsEventsWidget.Scene = child_widget.scene
+        else:
+            self.nodeeditor = MasterEditorWnd()
+            self.varsEventsWidget.Scene = self.nodeeditor.scene
+
+        subwnd = self.mdiArea.addSubWindow(self.nodeeditor)
+
+
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)
         # nodeeditor.scene.addItemsDeselectedListener(self.updateEditMenu)
-        nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
-        nodeeditor.addCloseEventListener(self.onSubWndClose)
+        self.nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        self.nodeeditor.addCloseEventListener(self.onSubWndClose)
         return subwnd
 
     def onSubWndClose(self, widget, event):

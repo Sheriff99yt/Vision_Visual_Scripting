@@ -18,6 +18,7 @@ class VarEventList(QTabWidget):
         # Add QTabWidget and add Both Variables Tab and Events Tab
         tab1 = QWidget()
         tab2 = QWidget()
+
         self.addTab(tab1, "Variables")
         self.addTab(tab2, "Events")
 
@@ -65,6 +66,7 @@ class VarEventList(QTabWidget):
         self.EventList.setDragEnabled(True)
 
         self.Proprieties = None
+        self.Scene = None
 
         self.VarList.startDrag = self.VarStartDrag
         self.EventList.startDrag = self.EventStartDrag
@@ -80,6 +82,7 @@ class VarEventList(QTabWidget):
     def newNodeFrom(self, var):
         class newNode(var):
             pass
+
         return newNode
 
     def InitList(self):
@@ -133,7 +136,7 @@ class VarEventList(QTabWidget):
     def addMyItem(self, name, icon=None, new_node_ID=0, node_type=int, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
 
-        pixmap = QPixmap(icon if icon is not None else ".")
+        pixmap = QPixmap(icon if icon is not None else "")
         item.setIcon(QIcon(pixmap))
         item.setSizeHint(QSize(28, 28))
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
@@ -151,19 +154,28 @@ class VarEventList(QTabWidget):
         self.Proprieties.infoStart = True
 
         item = self.EventList.currentItem()
-        name = QLineEdit()
-        name.setText(f"{item.data(91)}")
-        self.Proprieties.infoUpdate(name)
+        self.eventNameInput = QLineEdit()
+
+        self.eventNameInput.setText(f"{item.data(91)}")
+
+        self.eventNameInput.returnPressed.connect(self.updateEventName)
+
+        self.Proprieties.infoUpdate(self.eventNameInput)
         self.Proprieties.infoUpdate(QLabel("This is a Test Text"))
 
     def VarSelectionChanged(self, *args, **kwargs):
         self.Proprieties.varStart = True
 
         item = self.VarList.currentItem()
-        name = QLineEdit()
-        name.setText(f"{item.data(91)}")
+        self.varNameInput = QLineEdit()
 
-        self.Proprieties.varUpdate("Variable Name", name)
+        self.varNameInput.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
+
+        self.varNameInput.setText(f"{item.data(91)}")
+
+        self.varNameInput.returnPressed.connect(self.updateVarName)
+
+        self.Proprieties.varUpdate("Variable Name", self.varNameInput)
 
         if item.data(80) == 20:
             value = QDoubleSpinBox()
@@ -183,6 +195,7 @@ class VarEventList(QTabWidget):
 
     def VarStartDrag(self, *args, **kwargs):
         try:
+            self.VarSelectionChanged()
 
             item = self.VarList.currentItem()
             var_ID = item.data(90)
@@ -196,7 +209,7 @@ class VarEventList(QTabWidget):
             dataStream << pixmap
             dataStream.writeInt(var_ID)
             dataStream.writeQString(item.text())
-            dataStream.writeQStringList(["V"])
+            dataStream.writeQStringList(["V", str(item.data(90))])
 
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
@@ -222,7 +235,7 @@ class VarEventList(QTabWidget):
             dataStream << pixmap
             dataStream.writeInt(event_ID)
             dataStream.writeQString(item.text())
-            dataStream.writeQStringList(["E"])
+            dataStream.writeQStringList(["E", str(item.data(90))])
 
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
@@ -234,6 +247,57 @@ class VarEventList(QTabWidget):
 
         except Exception as e:
             dumpException(e)
+
+    def updateVarName(self):
+        item = self.VarList.currentItem()
+        oldName = item.data(91)
+        tryName = self.varNameInput.text()
+        newName = self.userData.userRename(oldName=oldName, tryName=tryName)
+        if newName == None:
+            pass
+        else:
+            item.setData(91, newName)
+
+            # get ref to user variable copy
+            varRef = get_user_var_by_ID(item.data(90))
+
+            # set item text to new name
+            item.setText(newName)
+
+            # set name of parent var
+            varRef.name = newName
+
+            # rename all children grNode vars that have the old name
+            for node in self.Scene.nodes:
+                if node.name == oldName:
+                    node.name = newName
+                    node.grNode.name = newName
+
+    def updateEventName(self):
+        item = self.EventList.currentItem()
+        oldName = item.data(91)
+        tryName = self.eventNameInput.text()
+        newName = self.userData.userRename(oldName=oldName, tryName=tryName)
+        if newName == None:
+            pass
+        else:
+            item.setData(91, newName)
+
+            # get ref to user event copy
+            eventRef = get_event_by_ID(item.data(90))
+
+            # set item text to new name
+            item.setText(newName)
+
+            # set name of parent event
+            eventRef.name = newName
+
+            # rename all children grNode vars that have the old name
+            for node in self.Scene.nodes:
+                if node.name == oldName:
+                    node.name = newName
+                    node.grNode.name = newName
+
 
     def loadVars(self, Vars: list):
         for var in Vars:

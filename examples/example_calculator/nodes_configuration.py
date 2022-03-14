@@ -124,7 +124,7 @@ def set_user_var_ID_now(var_ID, class_reference):
         USERVARS[var_ID] = class_reference
 
 
-def get_var_by_ID(var_ID):
+def get_user_var_by_ID(var_ID):
     if var_ID not in USERVARS:
         raise NodeTypeNotRegistered("node_type '%d' is not registered" % var_ID)
     else:

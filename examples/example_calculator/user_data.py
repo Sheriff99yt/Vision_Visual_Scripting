@@ -44,6 +44,14 @@ class UserData():
     def LoadData(self):
         return self.userVars
 
+    def userRename(self, oldName, tryName: str):
+        if self.VarEventNames.__contains__(tryName):
+            return None
+        else:
+            self.VarEventNames.remove(oldName)
+            self.VarEventNames.append(tryName)
+            return tryName
+
     def autoNodeRename(self, node: 'Node'):
         x = 0
         newName = node.name

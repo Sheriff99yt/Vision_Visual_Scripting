@@ -9,7 +9,7 @@ from examples.example_calculator.editor_proterties_list import PropertiesList
 class FloatVar(MasterNode):
     icon = ""
     node_type = VAR_FLOAT
-    name = "Float Var"
+    name = "float"
     content_label_objname = "var_node_float"
     node_value = float
 
@@ -29,7 +29,7 @@ class FloatVar(MasterNode):
 class IntegerVar(MasterNode):
     icon = ""
     node_type = VAR_INTEGER
-    name = "Integer Var"
+    name = "integer"
     content_label_objname = "var_node_integer"
     node_value = int
 
@@ -50,7 +50,7 @@ class IntegerVar(MasterNode):
 class BooleanVar(MasterNode):
     icon = ""
     node_type = VAR_BOOLEAN
-    name = "Boolean Var"
+    name = "boolean"
     content_label_objname = "var_node_boolean"
     node_value = bool
 
@@ -70,7 +70,7 @@ class BooleanVar(MasterNode):
 class StringVar(MasterNode):
     icon = ""
     node_type = VAR_STRING
-    name = "String Var"
+    name = "string"
     content_label_objname = "var_node_string"
     node_value = str
 

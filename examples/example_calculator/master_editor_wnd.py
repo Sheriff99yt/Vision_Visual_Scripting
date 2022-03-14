@@ -102,18 +102,24 @@ class MasterEditorWnd(NodeEditorWidget):
             dataStream >> pixmap
             node_type = dataStream.readInt()
             text = dataStream.readQString()
-            dataType = dataStream.readQStringList()[0]
+            newNodeData = dataStream.readQStringList()
+
+
+            nodeType = newNodeData[0]
 
             isEvent = False
             isVar = False
             isNode = False
 
-            if dataType == "E":
+            if nodeType == "E":
                 isEvent = True
-            elif dataType == "N":
+                nodeID = newNodeData[1]
+            elif nodeType == "N":
                 isNode = True
-            elif dataType == "V":
+            elif nodeType == "V":
                 isVar = True
+                nodeID = newNodeData[1]
+
 
             mouse_position = event.pos()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
@@ -123,11 +129,13 @@ class MasterEditorWnd(NodeEditorWidget):
             try:
                 if isEvent:
                     userEvent = get_event_by_ID(node_type)(self.scene)
+                    userEvent.nodeID = nodeID
                     userEvent.setPos(scene_position.x(), scene_position.y())
                     self.scene.history.storeHistory("Created user Event %s" % userEvent.__class__.__name__)
 
                 elif isVar:
-                    userVar = get_var_by_ID(node_type)(self.scene)
+                    userVar = get_user_var_by_ID(node_type)(self.scene)
+                    userVar.nodeID = nodeID
                     userVar.setPos(scene_position.x(), scene_position.y())
                     self.scene.history.storeHistory("Created user Variable %s" % userVar.__class__.__name__)
 

@@ -46,7 +46,7 @@ class Node(Serializable):
 
         # Additional Uni Code
         self.isVar = None
-        self.nodeOrder = None
+        self.nodeID = None
         self.nodeCode = True
 
         # just to be sure, init these variables
@@ -56,7 +56,7 @@ class Node(Serializable):
         self.initInnerClasses()
         self.initSettings()
 
-        self.title = title
+        self.name = title
 
         self.scene.addNode(self)
         self.scene.grScene.addItem(self.grNode)
@@ -71,10 +71,10 @@ class Node(Serializable):
         return self.inputs[socketID].socketCode
 
     def __str__(self):
-        return "<%s:%s %s..%s>" % (self.title, self.__class__.__name__, hex(id(self))[2:5], hex(id(self))[-3:])
+        return "<%s:%s %s..%s>" % (self.name, self.__class__.__name__, hex(id(self))[2:5], hex(id(self))[-3:])
 
     @property
-    def title(self):
+    def name(self):
         """
         Title shown in the scene
 
@@ -84,10 +84,10 @@ class Node(Serializable):
         """
         return self._title
 
-    @title.setter
-    def title(self, value):
+    @name.setter
+    def name(self, value):
         self._title = value
-        self.grNode.title = self._title
+        self.grNode.name = self._title
 
     @property
     def pos(self):
@@ -633,7 +633,7 @@ class Node(Serializable):
         ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
         return OrderedDict([
             ('id', self.id),
-            ('title', self.title),
+            ('title', self.name),
             ('pos_x', self.grNode.scenePos().x()),
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
@@ -647,7 +647,7 @@ class Node(Serializable):
             hashmap[data['id']] = self
 
             self.setPos(data['pos_x'], data['pos_y'])
-            self.title = data['title']
+            self.name = data['title']
 
             data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
             data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
