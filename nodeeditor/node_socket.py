@@ -29,31 +29,28 @@ A module containing Graphics representation of a :class:`~nodeeditor.node_socket
 # Holder 7
 
 SOCKET_COLORS = [
-    QColor("#99FFFFFF"),
-    QColor("#9900f204"),
-    QColor("#9900bfff"),
-    QColor("#99e00d0d"),
-    QColor("#99790cc2"),
-    QColor("#99d2d2d2"),
-    QColor("#99a2a2a2")]
+    QColor("#aaFFFFFF"),
+    QColor("#aa00FF10"),
+    QColor("#aa0070FF"),
+    QColor("#aaFF1010"),
+    QColor("#aaFF10FF"),
+    QColor("#aad2d2d2")]
 
 SOCKET_COLORS_HOVERED = [
     QColor("#FFFFFF"),
-    QColor("#00f204"),
-    QColor("#00bfff"),
-    QColor("#e00d0d"),
-    QColor("#790cc2"),
-    QColor("#d2d2d2"),
-    QColor("#a2a2a2")]
+    QColor("#00FF10"),
+    QColor("#0070FF"),
+    QColor("#FF1010"),
+    QColor("#FF10FF"),
+    QColor("#d2d2d2")]
 
 SOCKET_COLORS_CONNECTED = [
     QColor("#FFFFFF"),
-    QColor("#00f204"),
-    QColor("#00bfff"),
-    QColor("#e00d0d"),
-    QColor("#790cc2"),
-    QColor("#d2d2d2"),
-    QColor("#a2a2a2")]
+    QColor("#00FF10"),
+    QColor("#0070FF"),
+    QColor("#FF1010"),
+    QColor("#FF10FF"),
+    QColor("#d2d2d2")]
 
 
 class QDMGraphicsSocket(QGraphicsItem):
@@ -180,12 +177,12 @@ A module containing NodeEditor's class for representing Socket and Socket Positi
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
 
-LEFT_TOP = 1  #:
-LEFT_CENTER = 2  #:
-LEFT_BOTTOM = 3  #:
-RIGHT_TOP = 4  #:
-RIGHT_CENTER = 5  #:
-RIGHT_BOTTOM = 6  #:
+LEFT_TOP = 1
+LEFT_CENTER = 2
+LEFT_BOTTOM = 3
+RIGHT_TOP = 4
+RIGHT_CENTER = 5
+RIGHT_BOTTOM = 6
 
 DEBUG = False
 DEBUG_REMOVE_WARNINGS = False

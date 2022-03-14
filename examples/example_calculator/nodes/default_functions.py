@@ -6,9 +6,10 @@ from examples.example_calculator.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from textwrap import *
 
-FontSize = 20
-mathOperators = "#50337733"
-logicOperators = "#607070FF"
+FontSize = 18
+FontFamily = "Roboto"
+mathOperators = "#70307030"
+logicOperators = "#707070FF"
 
 
 def Indent(String):
@@ -25,7 +26,7 @@ class IfStatement(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
         self.isVar = False
-        self.nodeColor = "#50FF3030"
+        self.nodeColor = "#90FF5733"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
 
@@ -38,15 +39,21 @@ class IfStatement(MasterNode):
 
         false = self.NodeCodeAtOutput(1)
 
-        rawCode = f"""
+        rawCode =f"""
 if {condition}:
 {Indent(true)}
 else:
 {Indent(false)}
 """
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+
+        return code
 
 # code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
 # if {condition}:
@@ -54,7 +61,6 @@ else:
 # else:
 # {textwrap.indent(false, "    ")}</span></pre>"""
 
-        return code
 
 
 @set_function_ID(FUN_FOR_LOOP)
@@ -68,7 +74,7 @@ class ForLoop(MasterNode):
         super().__init__(scene, inputs=[0, 2, 2], outputs=[0])
         self.isVar = False
         self.grNode.height = 120
-        self.nodeColor = "#505070FF"
+        self.nodeColor = "#905050FF"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
 
@@ -85,8 +91,12 @@ class ForLoop(MasterNode):
 for {firstIndex} in range({lastIndex}):
 {Indent(loopCode)}
 """
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -101,7 +111,7 @@ class Print(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 4], outputs=[0])
         self.isVar = False
-        self.nodeColor = "#70702070"
+        self.nodeColor = "#90702070"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
@@ -113,8 +123,12 @@ class Print(MasterNode):
         rawCode = f"""
 print({printCode})
 {childCode}"""
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{self.nodeColor};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -141,8 +155,12 @@ class Add(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{mathOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -169,8 +187,12 @@ class Sub(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{mathOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -197,8 +219,12 @@ class Mul(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{mathOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -225,8 +251,12 @@ class Div(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{mathOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -254,8 +284,12 @@ class GreaterThan(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{logicOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -283,8 +317,12 @@ class LessThan(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{logicOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -311,8 +349,12 @@ class Equal(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{logicOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code
 
@@ -339,7 +381,11 @@ class And(MasterNode):
 
         self.outputs[0].socketCode = rawCode
 
-        colorStyle = f''' style=\" Font-size:20px ; background-color:{logicOperators};\"  ''' if self.isSelected() is True else f'  style=\" Font-size:{FontSize}px ;\"   '
-        code = f"""<pre><b><span{colorStyle}>{rawCode}</span></pre>"""
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
 
         return code

@@ -5,6 +5,7 @@ A module containing the representation of the NodeEditor's Scene
 import os, sys, json
 from collections import OrderedDict
 
+from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException, pp
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_graphics_scene import NodeGraphicsScene
@@ -91,7 +92,6 @@ class NodeScene(Serializable):
 
         self._has_been_modified = value
 
-
     def initUI(self):
         """Set up Graphics Scene Instance"""
         self.grScene = NodeGraphicsScene(self)
@@ -123,9 +123,9 @@ class NodeScene(Serializable):
         """
         if self._silent_selection_events: return
 
-        current_selected_items = self.getSelectedItems()
-        if current_selected_items != self._last_selected_items:
-            self._last_selected_items = current_selected_items
+        selected_items = self.getSelectedItems()
+        if selected_items != self._last_selected_items:
+            self._last_selected_items = selected_items
             if not silent:
                 # we could create some kind of UI which could be serialized,
                 # therefore first run all callbacks...
@@ -134,7 +134,16 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Selection Changed")
 
         self.NodeEditor.UpdateTextCode()
-        self.varsEventsLists.NodeSelected(current_selected_items[0])
+        self.varsEventsLists.findListItem(self.getSelectedNodes())
+
+    def getSelectedNodes(self):
+        selectedNodes = []
+        for item in self.getSelectedItems():
+            if isinstance(item, QDMGraphicsNode):
+                if self.nodes.__contains__(item.node):
+                    selectedNodes.append(item.node)
+
+        return selectedNodes
 
     def onItemsDeselected(self, silent: bool = False):
         """

@@ -321,20 +321,24 @@ class VarEventList(QTabWidget):
                     node.name = newName
                     node.grNode.name = newName
 
-    def NodeSelected(self, node: 'Node'):
-        for i in range(self.VarList.count()):
-            myItem = self.VarList.item(i)
-            if myItem.text() == node.name:
-                self.VarList.setCurrentItem(myItem)
-                self.VarSelectionChanged()
-                break
-            else:
-                for i in range(self.EventList.count()):
-                    myItem = self.EventList.item(i)
-                    if myItem.text() == node.name:
-                        self.EventList.setCurrentItem(myItem)
-                        self.EventSelectionChanged()
-                        break
+    def findListItem(self, selectedNodes: 'Nodes'):
+        if selectedNodes != []:
+            for item in range(self.VarList.count()):
+                Litem = self.VarList.item(item)
+                if Litem.text() == selectedNodes[0].name:
+                    self.VarList.setCurrentItem(Litem)
+                    self.VarSelectionChanged()
+                    self.setCurrentIndex(0)
+                    return Litem
+
+            for item in range(self.EventList.count()):
+                Litem = self.EventList.item(item)
+                if Litem.text() == selectedNodes[0].name:
+                    self.EventList.setCurrentItem(Litem)
+                    self.EventSelectionChanged()
+                    self.setCurrentIndex(1)
+                    return Litem
+
 
     def floatVarChanged(self):
         item = self.VarList.currentItem()

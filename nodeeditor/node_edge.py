@@ -22,7 +22,8 @@ class Edge(Serializable):
     """
 
     edge_validators = [edge_cannot_connect_input_and_output_of_different_type,
-                       edge_cannot_connect_input_and_output_of_same_node]
+                       edge_cannot_connect_input_and_output_of_same_node,
+                       edge_cannot_connect_two_outputs_or_two_inputs]
 
     #: class variable containing list of registered edge validators
 

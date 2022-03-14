@@ -64,7 +64,6 @@ class QDMGraphicsNode(QGraphicsItem):
         self._name = value
         self.name_item.setPlainText(self._name)
 
-
     def updateName(self):
         self.name_item.setPlainText(self._name)
 
