@@ -18,7 +18,7 @@ class UserData():
         newVarRef.node_type = newVarID
 
         # Save new Var to list of vars with [Type, ID, Name, Value]
-        varData = [newVarRef.name, newVarRef.node_value, newVarID]
+        varData = [newVarRef.name, newVarRef.node_Value, newVarID]
 
         self.userVars.append(varData)
 
@@ -35,7 +35,7 @@ class UserData():
         newEventRef.node_type = newEventID
 
         # Save new Var to list of vars with [Type, ID, Name, Value]
-        eventData = [newEventRef.name, newEventRef.node_value, newEventID]
+        eventData = [newEventRef.name, newEventRef.node_Value, newEventID]
 
         self.userEvents.append(eventData)
 

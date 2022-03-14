@@ -11,7 +11,7 @@ class FloatVar(MasterNode):
     node_type = VAR_FLOAT
     name = "float"
     content_label_objname = "var_node_float"
-    node_value = float
+    node_Value = None
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[1])
@@ -31,7 +31,7 @@ class IntegerVar(MasterNode):
     node_type = VAR_INTEGER
     name = "integer"
     content_label_objname = "var_node_integer"
-    node_value = int
+    node_Value = None
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[2])
@@ -52,7 +52,7 @@ class BooleanVar(MasterNode):
     node_type = VAR_BOOLEAN
     name = "boolean"
     content_label_objname = "var_node_boolean"
-    node_value = bool
+    node_Value = None
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[3])
@@ -72,7 +72,7 @@ class StringVar(MasterNode):
     node_type = VAR_STRING
     name = "string"
     content_label_objname = "var_node_string"
-    node_value = str
+    node_Value = None
 
     def __init__(self, scene, isFun=False):
         super().__init__(scene, inputs=[], outputs=[4])

@@ -128,7 +128,7 @@ class MasterEditorWnd(NodeEditorWidget):
 
             try:
                 if isEvent:
-                    userEvent = get_event_by_ID(node_type)(self.scene)
+                    userEvent = get_user_event_by_ID(node_type)(self.scene)
                     userEvent.nodeID = nodeID
                     userEvent.setPos(scene_position.x(), scene_position.y())
                     self.scene.history.storeHistory("Created user Event %s" % userEvent.__class__.__name__)

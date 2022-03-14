@@ -14,6 +14,9 @@ class VarEventList(QTabWidget):
         super().__init__(parent)
 
         self.userData = UserData()
+        self.InitUI()
+
+    def InitUI(self):
 
         # Add QTabWidget and add Both Variables Tab and Events Tab
         tab1 = QWidget()
@@ -73,17 +76,18 @@ class VarEventList(QTabWidget):
 
         self.VarList.itemClicked.connect(self.VarSelectionChanged)
         self.EventList.itemClicked.connect(self.EventSelectionChanged)
+        # self.VarList.itemSelectionChanged.connect()
 
         self.varsIds = []
         self.eventsIds = []
 
         self.InitList()
 
-    def newNodeFrom(self, var):
-        class newNode(var):
+    def MakeCopyOfClass(self, var):
+        class NewNode(var):
             pass
 
-        return newNode
+        return NewNode
 
     def InitList(self):
         Events = 0
@@ -109,7 +113,7 @@ class VarEventList(QTabWidget):
         # Get new Variable type and construct new Variable object
         node = get_node_by_ID(self.varsIds.__getitem__(self.varCompoBox.currentIndex()))
 
-        newVar = self.newNodeFrom(node)
+        newVar = self.MakeCopyOfClass(node)
 
         varData = self.userData.AddVar(newVar)
 
@@ -117,13 +121,13 @@ class VarEventList(QTabWidget):
         set_user_var_ID_now(varData[2], newVar)
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newVar.name, newVar.icon, varData[2], node.node_type, self.VarList)
+        self.addMyItem(newVar.name, newVar.icon, varData[2], node.node_type, varData[1], self.VarList)
 
     def addNewEvent(self):
         # Get new Event type and construct new Variable object
         node = get_node_by_ID(self.eventsIds.__getitem__(self.eventCompoBox.currentIndex()))
 
-        newEvent = self.newNodeFrom(node)
+        newEvent = self.MakeCopyOfClass(node)
 
         eventData = self.userData.AddEvent(newEvent)
 
@@ -131,9 +135,9 @@ class VarEventList(QTabWidget):
         set_user_event_ID_now(eventData[2], newEvent)
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newEvent.name, newEvent.icon, eventData[2], node.node_type, self.EventList)
+        self.addMyItem(newEvent.name, newEvent.icon, eventData[2], node.node_type, eventData[1], self.EventList)
 
-    def addMyItem(self, name, icon=None, new_node_ID=0, node_type=int, List=QListWidget):
+    def addMyItem(self, name, icon=None, new_node_ID=0, node_type=int, value=None, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else "")
@@ -149,6 +153,8 @@ class VarEventList(QTabWidget):
         item.setData(90, new_node_ID)
 
         item.setData(91, name)
+
+        item.setData(92, value)
 
     def EventSelectionChanged(self, *args, **kwargs):
         self.Proprieties.infoStart = True
@@ -178,20 +184,35 @@ class VarEventList(QTabWidget):
         self.Proprieties.varUpdate("Variable Name", self.varNameInput)
 
         if item.data(80) == 20:
-            value = QDoubleSpinBox()
-            self.Proprieties.varUpdate("Variable Value", value)
+            self.floatInput = QDoubleSpinBox()
+            self.floatInput.setDecimals(6)
+            self.Proprieties.varUpdate("Float Value", self.floatInput)
+            self.floatInput.valueChanged.connect(self.floatVarChanged)
+
+            if item.data(92) is not None:   self.floatInput.setValue(item.data(92))
 
         elif item.data(80) == 21:
-            value = QSpinBox()
-            self.Proprieties.varUpdate("Variable Value", value)
+            self.intInput = QSpinBox()
+            self.intInput.valueChanged.connect(self.intVarChanged)
+            self.Proprieties.varUpdate("Integer Value", self.intInput)
+
+            if item.data(92) is not None:   self.intInput.setValue(item.data(92))
 
         elif item.data(80) == 22:
-            value = QCheckBox()
-            self.Proprieties.varUpdate("Variable Value", value)
+            self.boolInput = QCheckBox()
+            self.boolInput.stateChanged.connect(self.boolVarChanged)
+            self.Proprieties.varUpdate("Boolean Value", self.boolInput)
+
+            if item.data(92) is not None:   self.boolInput.setChecked(item.data(92))
 
         elif item.data(80) == 23:
-            value = QLineEdit()
-            self.Proprieties.varUpdate("Variable Value", value)
+            self.stringInput = QLineEdit()
+
+            self.stringInput.returnPressed.connect(self.stringVarChanged)
+            self.Proprieties.varUpdate("String Value", self.stringInput)
+
+            if item.data(92) is not None:   self.stringInput.setText(item.data(92))
+
 
     def VarStartDrag(self, *args, **kwargs):
         try:
@@ -224,6 +245,8 @@ class VarEventList(QTabWidget):
 
     def EventStartDrag(self, *args, **kwargs):
         try:
+            self.EventSelectionChanged()
+
             item = self.EventList.currentItem()
             event_ID = item.data(90)
             pixmap = QPixmap(item.data(Qt.UserRole))
@@ -284,7 +307,7 @@ class VarEventList(QTabWidget):
             item.setData(91, newName)
 
             # get ref to user event copy
-            eventRef = get_event_by_ID(item.data(90))
+            eventRef = get_user_event_by_ID(item.data(90))
 
             # set item text to new name
             item.setText(newName)
@@ -297,6 +320,52 @@ class VarEventList(QTabWidget):
                 if node.name == oldName:
                     node.name = newName
                     node.grNode.name = newName
+
+    def NodeSelected(self, node: 'Node'):
+        for i in range(self.VarList.count()):
+            myItem = self.VarList.item(i)
+            if myItem.text() == node.name:
+                self.VarList.setCurrentItem(myItem)
+                self.VarSelectionChanged()
+                break
+            else:
+                for i in range(self.EventList.count()):
+                    myItem = self.EventList.item(i)
+                    if myItem.text() == node.name:
+                        self.EventList.setCurrentItem(myItem)
+                        self.EventSelectionChanged()
+                        break
+
+    def floatVarChanged(self):
+        item = self.VarList.currentItem()
+        varRef = get_user_var_by_ID(item.data(90))
+        newValue = self.floatInput.value()
+        varRef.value = newValue
+        item.setData(92, newValue)
+
+    def intVarChanged(self):
+        item = self.VarList.currentItem()
+        varRef = get_user_var_by_ID(item.data(90))
+        newValue = self.intInput.value()
+        varRef.value = newValue
+        item.setData(92, newValue)
+
+    def boolVarChanged(self):
+        item = self.VarList.currentItem()
+        varRef = get_user_var_by_ID(item.data(90))
+        newValue = self.boolInput.isChecked()
+        varRef.value = newValue
+        item.setData(92, newValue)
+
+    def stringVarChanged(self):
+        item = self.VarList.currentItem()
+        varRef = get_user_var_by_ID(item.data(90))
+        newValue = self.stringInput.text()
+        varRef.value = newValue
+        item.setData(92, newValue)
+        print(newValue)
+
+
 
 
     def loadVars(self, Vars: list):

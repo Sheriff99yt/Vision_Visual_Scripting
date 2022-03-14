@@ -353,6 +353,7 @@ class MasterWindow(NodeEditorWindow):
             self.varsEventsWidget.Scene = child_widget.scene
         else:
             self.nodeeditor = MasterEditorWnd()
+            self.nodeeditor.scene.varsEventsLists = self.varsEventsWidget
             self.varsEventsWidget.Scene = self.nodeeditor.scene
 
         subwnd = self.mdiArea.addSubWindow(self.nodeeditor)

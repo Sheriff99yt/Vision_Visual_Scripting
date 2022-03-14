@@ -41,7 +41,7 @@ class MasterNode(Node):
     name = "Undefined"
     content_label = ""
     content_label_objname = "calc_node_bg"
-    node_value = None
+    node_Value = None
 
     GraphicsNode_class = MasterGraphicsNode
     NodeContent_class = MasterContent

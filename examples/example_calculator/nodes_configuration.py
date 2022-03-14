@@ -143,7 +143,7 @@ def set_user_event_ID_now(event_ID, class_reference):
         USEREVENTS[event_ID] = class_reference
 
 
-def get_event_by_ID(event_ID):
+def get_user_event_by_ID(event_ID):
     if event_ID not in USEREVENTS:
         raise NodeTypeNotRegistered("Event '%d' is not registered" % event_ID)
     else:

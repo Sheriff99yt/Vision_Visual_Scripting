@@ -38,7 +38,7 @@ class NodeScene(Serializable):
         super().__init__()
         self.nodes = []
         self.edges = []
-
+        self.varsEventsLists = None
         # current filename assigned to this scene
         self.filename = None
 
@@ -134,6 +134,7 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Selection Changed")
 
         self.NodeEditor.UpdateTextCode()
+        self.varsEventsLists.NodeSelected(current_selected_items[0])
 
     def onItemsDeselected(self, silent: bool = False):
         """
