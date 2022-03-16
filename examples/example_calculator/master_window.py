@@ -35,6 +35,10 @@ DEBUG = False
 
 class MasterWindow(NodeEditorWindow):
 
+    def __init__(self):
+        super().__init__()
+        self.activeEditor = None
+
     def initUI(self):
         self.name_company = 'MyTeam'
         self.name_product = 'Vision Visual Scripting'
@@ -97,7 +101,7 @@ class MasterWindow(NodeEditorWindow):
         self.nodeDesignerBtn = QAction(QIcon("icons/Pencil_1.png"), "&Toggle Designer", self)
         self.editToolBar = QToolBar("Tools", self)
         # self.editToolBar.setContentsMargins(2, 2, 2, 2)
-        self.editToolBar.setIconSize(QSize(36, 36))
+        self.editToolBar.setIconSize(QSize(26, 26))
         self.editToolBar.setFloatable(False)
 
         self.addToolBar(self.editToolBar)

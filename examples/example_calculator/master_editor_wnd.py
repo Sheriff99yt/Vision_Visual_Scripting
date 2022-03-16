@@ -54,28 +54,28 @@ class MasterEditorWnd(NodeEditorWidget):
     def initNewNodeActions(self):
         self.node_actions = {}
         Funs = list(FUNCTIONS.keys())
-        Vars = list(VARIABLES.keys())
+        Vars = list(USERVARS.keys())
         Funs.sort()
         Vars.sort()
         for key in Funs:
             node = FUNCTIONS[key]
             self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
             self.node_actions[node.node_type].setData(node.node_type)
-        for key in Vars:
-            node = VARIABLES[key]
-            self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
-            self.node_actions[node.node_type].setData(node.node_type)
+        # for key in Vars:
+        #     node = USERVARS[key]
+        #     self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
+        #     self.node_actions[node.node_type].setData(node.node_type)
 
     def initNodesContextMenu(self):
         context_menu = QMenu(self)
         Funs = list(FUNCTIONS.keys())
         Funs.sort()
-        Vars = list(VARIABLES.keys())
+        Vars = list(USERVARS.keys())
         Vars.sort()
         for key in Funs:
             context_menu.addAction(self.node_actions[key])
-        for key in Vars:
-            context_menu.addAction(self.node_actions[key])
+        # for key in Vars:
+        #     context_menu.addAction(self.node_actions[key])
         return context_menu
 
     def setTitle(self):
@@ -100,7 +100,7 @@ class MasterEditorWnd(NodeEditorWidget):
             dataStream = QDataStream(eventData, QIODevice.ReadOnly)
             pixmap = QPixmap()
             dataStream >> pixmap
-            node_type = dataStream.readInt()
+            self.node_type = dataStream.readInt()
             text = dataStream.readQString()
             newNodeData = dataStream.readQStringList()
 
@@ -113,42 +113,31 @@ class MasterEditorWnd(NodeEditorWidget):
 
             if nodeType == "E":
                 isEvent = True
-                nodeID = newNodeData[1]
             elif nodeType == "N":
                 isNode = True
             elif nodeType == "V":
                 isVar = True
-                nodeID = newNodeData[1]
 
 
             mouse_position = event.pos()
-            scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
+            self.scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
 
-            if DEBUG: print("GOT DROP: [%d] '%s'" % (node_type, text), "mouse:", mouse_position, "scene:", scene_position)
+            if DEBUG: print("GOT DROP: [%d] '%s'" % (self.node_type, text), "mouse:", mouse_position, "scene:", self.scene_position)
 
             try:
                 if isEvent:
-                    userEvent = get_user_event_by_ID(node_type)(self.scene)
-                    userEvent.nodeID = nodeID
-                    userEvent.setPos(scene_position.x(), scene_position.y())
-                    self.scene.history.storeHistory("Created user Event %s" % userEvent.__class__.__name__)
-
+                    self.eventSelectMenu(event)
                 elif isVar:
-                    userVar = get_user_var_by_ID(node_type)(self.scene)
-                    userVar.nodeID = nodeID
-                    userVar.setPos(scene_position.x(), scene_position.y())
-                    self.scene.history.storeHistory("Created user Variable %s" % userVar.__class__.__name__)
-
+                    self.varSelectMenu(event)
                 else:
-                    node = get_node_by_ID(node_type)(self.scene)
-                    node.setPos(scene_position.x(), scene_position.y())
+                    node = get_node_by_ID(self.node_type)(self.scene)
+                    node.setPos(self.scene_position.x(), self.scene_position.y())
                     self.scene.history.storeHistory("Created Node %s" % node.__class__.__name__)
 
 
                 isEvent = False
                 isVar = False
                 isNode = False
-
                 self.scene.NodeEditor.UpdateTextCode()
 
             except Exception as e:
@@ -159,6 +148,46 @@ class MasterEditorWnd(NodeEditorWidget):
         else:
             # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
+
+    def varSelectMenu(self, event):
+        context_menu = QMenu(self)
+        getter = context_menu.addAction("Get")
+        setter = context_menu.addAction("Set")
+        cancel = context_menu.addAction("Cancel")
+
+        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+
+        if action is cancel or action is None:
+            return
+        else:
+            userVar = get_user_var_by_ID(self.node_type)(self.scene)
+            if action == setter:
+                userVar.toSetter()
+            elif action == getter:
+                userVar.toGetter()
+
+            userVar.setPos(self.scene_position.x(), self.scene_position.y())
+            self.scene.history.storeHistory("Created user Variable %s" % userVar.__class__.__name__)
+
+    def eventSelectMenu(self, event):
+        context_menu = QMenu(self)
+        call = context_menu.addAction("Call Event")
+        write = context_menu.addAction("Write Event")
+        cancel = context_menu.addAction("Cancel")
+
+        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+
+        if action is cancel or action is None:
+            return
+        else:
+            userEvent = get_user_event_by_ID(self.node_type)(self.scene)
+            if action == write:
+                userEvent.toSetter()
+            elif action == call:
+                userEvent.toGetter()
+
+            userEvent.setPos(self.scene_position.x(), self.scene_position.y())
+            self.scene.history.storeHistory("Created user Variable %s" % userEvent.__class__.__name__)
 
     def contextMenuEvent(self, event):
         try:

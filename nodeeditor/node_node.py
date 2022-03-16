@@ -45,10 +45,10 @@ class Node(Serializable):
         self.scene = scene
 
         # Additional Uni Code
-        self.isVar = None
-        self.nodeID = None
-        self.nodeCode = True
-
+        self.isVar = False
+        self.isSetter = bool
+        self.showCode = True
+        self.nodeID = int
         # just to be sure, init these variables
         self.content = None
         self.grNode = None
@@ -130,6 +130,7 @@ class Node(Serializable):
         self.output_socket_position = RIGHT_TOP
         self.input_multi_edged = False
         self.output_multi_edged = True
+
         self.socket_offsets = {
             LEFT_BOTTOM: -1,
             LEFT_CENTER: -1,
@@ -168,29 +169,25 @@ class Node(Serializable):
                 socket_type=item, multi_edges=self.input_multi_edged,
                 count_on_this_node_side=len(inputs), is_input=True)
 
-            if socket.socket_type == 0:
-                socket.is_multi_edges = True
-            else:
-                socket.is_multi_edges = False
+            socket.is_multi_edges = True if socket.socket_type == 0 else False
 
             counter += 1
             self.inputs.append(socket)
 
         counter = 0
         for item in outputs:
-
             socket = self.__class__.Socket_class(
                 node=self, index=counter, position=self.output_socket_position,
                 socket_type=item, multi_edges=self.output_multi_edged,
                 count_on_this_node_side=len(outputs), is_input=False)
 
-            if socket.socket_type == 0:
-                socket.is_multi_edges = False
-            else:
-                socket.is_multi_edges = True
+            socket.is_multi_edges = False if socket.socket_type == 0 else True
 
             counter += 1
             self.outputs.append(socket)
+
+    def updateSockets(self):
+        pass
 
     def onEdgeConnectionChanged(self, new_edge: 'Edge'):
         """
@@ -256,7 +253,7 @@ class Node(Serializable):
         """
 
         x = self.socket_offsets[position] + self.LR_offset if (
-                    position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[
+                position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[
             position] - self.LR_offset
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
@@ -284,6 +281,7 @@ class Node(Serializable):
             y = 0
 
         return [x, y]
+
 
     def getSocketScenePosition(self, socket: 'Socket') -> '(x, y)':
         """
@@ -430,7 +428,7 @@ class Node(Serializable):
                 other_nodes.append(other_node)
         return other_nodes
 
-    def InputSocketNodeCodeAt(self, index: int = 0):
+    def NodeCodeAtInput(self, index: int = 0):
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0: return ""
         connecting_edge = input_socket.socketEdges[0]
@@ -451,18 +449,18 @@ class Node(Serializable):
         else:
             return True
 
-    def InputSocketCodeAt(self, index: int = 0):
-        input_socket = self.inputs[index]
-        if len(input_socket.socketEdges) == 0: return ""
-        connecting_edge = input_socket.socketEdges[0]
-        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+    # def InputSocketCodeAt(self, index: int = 0):
+    #     input_socket = self.inputs[index]
+    #     if len(input_socket.socketEdges) == 0: return ""
+    #     connecting_edge = input_socket.socketEdges[0]
+    #     other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+    #
+    #     if other_socket is None:
+    #         return ""
+    #     else:
+    #         return other_socket.socketCode
 
-        if other_socket is None:
-            return ""
-        else:
-            return other_socket.socketCode
-
-    def SocketNameAt(self, index: int = 0):
+    def InputSocketNameAt(self, index: int = 0):
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0: return ""
         connecting_edge = input_socket.socketEdges[0]
@@ -566,7 +564,6 @@ class Node(Serializable):
             dumpException(e)
             return None
 
-
     def NodeCodeAtOutput(self, index: int = 0):
         """
         Get the **first**  `Node` connected to the output specified by `index` and the connection `Socket`
@@ -590,7 +587,6 @@ class Node(Serializable):
         except Exception as e:
             dumpException(e)
             return ""
-
 
     def getInputs(self, index: int = 0) -> 'List[Node]':
         """
@@ -709,9 +705,11 @@ class Node(Serializable):
 
         return True
 
+    def toSetter(self):
+        pass
+
+    def toGetter(self):
+        pass
+
     def getNodeCode(self):
         return None
-
-    def updateProperties(self):
-        return None
-

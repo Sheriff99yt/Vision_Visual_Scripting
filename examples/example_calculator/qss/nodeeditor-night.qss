@@ -1,26 +1,14 @@
 QFrame,QDialog,QMainWindow,QSplitter,QStatusBar,QMainWindow::separator{background:#282828}
 QFrame {background-color:#565656}
 QToolBar {
+    padding: 6px;
     background: #282828;
-    spacing: 4px;}
+    spacing: 6px;}
+
 QTabBar,QStatusBar{background:#282828;color:#FFFFFF}
 
 QTabWidget{border:0}
 
-QToolButton {
-    border: 1px solid #828282;
-    border-radius: 1px;
-    background-color: #565656;}
-
-QToolButton:checked {
-    border: 1px solid #FFFFFF;
-    border-radius: 1px;
-    background-color: #1f1f1f;}
-
-QToolButton:hover {
-    border: 1px solid #FFFFFF;
-    border-radius: 1px;
-    background-color: #828282;}
 
 QComboBox {
     background-color: #1F1F1F;
@@ -47,19 +35,25 @@ QComboBox::drop-down {
     border-left-color: #FFFFFF;
     border-left-style: solid;}
 
-QPushButton {
+QPushButton, QToolButton {
+    padding: 6px;
     background-color: #1F1F1F;
     border: 1px solid #828282;
     color: #FFFFFF;
     text-align: center;
     border-radius: 1px;}
 
-QPushButton:hover {
+QPushButton:hover, QToolButton:hover{
     border: 1px solid #FFFFFF;}
 
-QPushButton:pressed {
+QPushButton:pressed, QToolButton:pressed{
     background-color: #828282;
     border: 2px solid #1F1F1F;}
+
+QPushButton, QToolButton:checked {
+    border: 1px solid #FFFFFF;
+    border-radius: 1px;
+    background-color: #1f1f1f;}
 
 QMdiArea QTabBar,QMdiArea QTabWidget,QMdiArea QTabWidget::pane,QMdiArea QTabWidget::tab-bar,QMdiArea QTabBar::tab{height:20px}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover{border-top-left-radius:0px;border-top-right-radius:0px;padding:0px 0px;padding-top:0;padding-bottom:0px;min-width:8ex;border:1px solid #282828;border-bottom:0}

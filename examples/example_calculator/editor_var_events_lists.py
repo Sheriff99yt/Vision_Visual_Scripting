@@ -70,7 +70,6 @@ class VarEventList(QTabWidget):
 
         self.Proprieties = None
         self.Scene = None
-
         self.VarList.startDrag = self.VarStartDrag
         self.EventList.startDrag = self.EventStartDrag
 
@@ -119,6 +118,7 @@ class VarEventList(QTabWidget):
 
         # Add new copy of Var class Info to Dict of USERVARS
         set_user_var_ID_now(varData[2], newVar)
+        newVar.nodeID = varData[2]
 
         # Add new QListItem to the UI List using Init Data
         self.addMyItem(newVar.name, newVar.icon, varData[2], node.node_type, varData[1], self.VarList)
@@ -130,14 +130,14 @@ class VarEventList(QTabWidget):
         newEvent = self.MakeCopyOfClass(node)
 
         eventData = self.userData.AddEvent(newEvent)
-
+        newEvent.nodeID = eventData[2]
         # Add new copy of Var class Info to Dict of USEREVENTS
         set_user_event_ID_now(eventData[2], newEvent)
 
         # Add new QListItem to the UI List using Init Data
         self.addMyItem(newEvent.name, newEvent.icon, eventData[2], node.node_type, eventData[1], self.EventList)
 
-    def addMyItem(self, name, icon=None, new_node_ID=0, node_type=int, value=None, List=QListWidget):
+    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, value=None, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else "")
@@ -213,7 +213,6 @@ class VarEventList(QTabWidget):
 
             if item.data(92) is not None:   self.stringInput.setText(item.data(92))
 
-
     def VarStartDrag(self, *args, **kwargs):
         try:
             self.VarSelectionChanged()
@@ -230,7 +229,7 @@ class VarEventList(QTabWidget):
             dataStream << pixmap
             dataStream.writeInt(var_ID)
             dataStream.writeQString(item.text())
-            dataStream.writeQStringList(["V", str(item.data(90))])
+            dataStream.writeQStringList(["V"])
 
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
@@ -258,7 +257,7 @@ class VarEventList(QTabWidget):
             dataStream << pixmap
             dataStream.writeInt(event_ID)
             dataStream.writeQString(item.text())
-            dataStream.writeQStringList(["E", str(item.data(90))])
+            dataStream.writeQStringList(["E"])
 
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
@@ -320,6 +319,8 @@ class VarEventList(QTabWidget):
                 if node.name == oldName:
                     node.name = newName
                     node.grNode.name = newName
+            self.Scene.NodeEditor.UpdateTextCode()
+
 
     def findListItem(self, selectedNodes: 'Nodes'):
         if selectedNodes != []:
@@ -345,6 +346,7 @@ class VarEventList(QTabWidget):
         varRef = get_user_var_by_ID(item.data(90))
         newValue = self.floatInput.value()
         varRef.value = newValue
+        self.Scene.NodeEditor.UpdateTextCode()
         item.setData(92, newValue)
 
     def intVarChanged(self):
@@ -352,6 +354,7 @@ class VarEventList(QTabWidget):
         varRef = get_user_var_by_ID(item.data(90))
         newValue = self.intInput.value()
         varRef.value = newValue
+        self.Scene.NodeEditor.UpdateTextCode()
         item.setData(92, newValue)
 
     def boolVarChanged(self):
@@ -359,6 +362,7 @@ class VarEventList(QTabWidget):
         varRef = get_user_var_by_ID(item.data(90))
         newValue = self.boolInput.isChecked()
         varRef.value = newValue
+        self.Scene.NodeEditor.UpdateTextCode()
         item.setData(92, newValue)
 
     def stringVarChanged(self):
@@ -366,10 +370,8 @@ class VarEventList(QTabWidget):
         varRef = get_user_var_by_ID(item.data(90))
         newValue = self.stringInput.text()
         varRef.value = newValue
+        self.Scene.NodeEditor.UpdateTextCode()
         item.setData(92, newValue)
-        print(newValue)
-
-
 
 
     def loadVars(self, Vars: list):

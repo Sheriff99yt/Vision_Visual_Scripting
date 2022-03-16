@@ -53,8 +53,6 @@ class NodeEditorWidget(QWidget):
 
         # Went through hell and back \/
         self.TextCodeWnd = QTextEdit()
-        self.TextCodeWnd.setFontPointSize(16)
-        self.TextCodeWnd.setFontFamily("Arial")
         self.TextCodeWnd.setReadOnly(True)
 
         # self.TextCodeWnd.setText("This is a test Text")
@@ -235,9 +233,10 @@ class NodeEditorWidget(QWidget):
     def UpdateTextCode(self):
         self.TextCodeWnd.clear()
         for node in self.scene.nodes:
-            if node.isVar is True or node.getNodeCode() is None or node.nodeCode is not True:
+            fullCode = ""
+            if node.getNodeCode() is None or node.showCode is not True:
                 pass
             else:
-                fullCode = ""
                 fullCode += node.getNodeCode()
-                self.TextCodeWnd.append(fullCode)
+
+            self.TextCodeWnd.append(fullCode)

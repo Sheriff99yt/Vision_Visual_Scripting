@@ -15,13 +15,11 @@ class UserData():
         # Give new Var New Object ID
         newVarID = len(self.userVars)
 
-        newVarRef.node_type = newVarID
-
         # Save new Var to list of vars with [Type, ID, Name, Value]
-        varData = [newVarRef.name, newVarRef.node_Value, newVarID]
+        varData = [newVarRef.name, newVarRef.node_Value, newVarID, newVarRef.node_type]
+
 
         self.userVars.append(varData)
-
         return varData
 
     def AddEvent(self, newEventRef: 'Node'):
@@ -32,10 +30,8 @@ class UserData():
         # Give new Var New Object ID
         newEventID = len(self.userEvents)
 
-        newEventRef.node_type = newEventID
-
         # Save new Var to list of vars with [Type, ID, Name, Value]
-        eventData = [newEventRef.name, newEventRef.node_Value, newEventID]
+        eventData = [newEventRef.name, newEventRef.node_Value, newEventID, newEventRef.node_type]
 
         self.userEvents.append(eventData)
 
