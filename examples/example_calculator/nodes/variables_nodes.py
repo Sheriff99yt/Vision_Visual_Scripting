@@ -4,11 +4,10 @@ from examples.example_calculator.nodes.default_functions import FontSize, FontFa
 from examples.example_calculator.nodes.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode
 
-FloatColor = "green"
-IntegerColor = "lightBlue"
-BooleanColor = "red"
-StringColor = "purple"
-
+FloatColor = "#7000FF10"
+IntegerColor = "#aa0070FF"
+BooleanColor = "#aaFF1010"
+StringColor = "#70FF10FF"
 
 @set_var_ID(VAR_FLOAT)
 class FloatVar(MasterNode):
