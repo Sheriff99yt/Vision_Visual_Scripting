@@ -1,12 +1,8 @@
-import random
-
 from PyQt5.QtGui import QBrush, QColor
-from PyQt5.QtWidgets import QDoubleSpinBox, QLineEdit
 
 from examples.example_calculator.nodes.default_functions import FontSize, FontFamily
-from examples.example_calculator.nodes_configuration import *
+from examples.example_calculator.nodes.nodes_configuration import *
 from examples.example_calculator.master_node import MasterNode
-from examples.example_calculator.editor_proterties_list import PropertiesList
 
 FloatColor = "green"
 IntegerColor = "lightBlue"

@@ -1,8 +1,6 @@
-import textwrap
-
 from examples.example_calculator.nodes.default_functions import Indent, FontFamily, FontSize
-from examples.example_calculator.nodes_configuration import *
-from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
+from examples.example_calculator.nodes.nodes_configuration import *
+from examples.example_calculator.master_node import MasterNode
 from nodeeditor.node_editor_widget import *
 
 

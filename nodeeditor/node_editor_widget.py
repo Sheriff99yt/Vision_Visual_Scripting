@@ -237,6 +237,8 @@ class NodeEditorWidget(QWidget):
             if node.getNodeCode() is None or node.showCode is not True:
                 pass
             else:
-                fullCode += node.getNodeCode()
+                # self.TextCodeWnd.append(fullCode)
+                self.TextCodeWnd.append(node.getNodeCode())
 
-            self.TextCodeWnd.append(fullCode)
+
+

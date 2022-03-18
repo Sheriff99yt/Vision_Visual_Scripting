@@ -3,7 +3,7 @@ from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
 from examples.example_calculator.nodes.default_functions import *
-from examples.example_calculator.nodes_configuration import VARIABLES, get_node_by_ID, LISTBOX_MIMETYPE, \
+from examples.example_calculator.nodes.nodes_configuration import VARIABLES, get_node_by_ID, LISTBOX_MIMETYPE, \
     set_user_var_ID_now, set_user_event_ID_now
 from nodeeditor.utils import dumpException
 from examples.example_calculator.user_data import UserData

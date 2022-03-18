@@ -1,9 +1,7 @@
-from PyQt5.QtCore import QRectF
-from PyQt5.QtGui import QImage
-from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
+from qtpy.QtGui import QColor, QBrush
 
-from examples.example_calculator.nodes_configuration import *
-from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
+from examples.example_calculator.nodes.nodes_configuration import *
+from examples.example_calculator.master_node import MasterNode
 from textwrap import *
 
 FontSize = 18
@@ -42,8 +40,7 @@ class IfStatement(MasterNode):
 if {condition}:
 {Indent(true)}
 else:
-{Indent(false)}
-"""
+{Indent(false)}"""
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
@@ -87,8 +84,7 @@ class ForLoop(MasterNode):
 
         rawCode = f"""
 for {firstIndex} in range({lastIndex}):
-{Indent(loopCode)}
-"""
+{Indent(loopCode)}"""
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
         else:

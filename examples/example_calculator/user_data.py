@@ -1,6 +1,3 @@
-from examples.example_calculator.nodes_configuration import USERVARS
-
-
 class UserData():
     def __init__(self):
         self.userVars = []
