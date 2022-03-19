@@ -1,8 +1,13 @@
-from qtpy.QtGui import QColor, QBrush
+from PyQt5.QtWidgets import *
+from qtpy.QtGui import *
+from qtpy.QtCore import *
 
 from examples.example_calculator.nodes.nodes_configuration import *
-from examples.example_calculator.master_node import MasterNode
+from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from textwrap import *
+
+from nodeeditor.node_content_widget import QDMNodeContentWidget
+from nodeeditor.utils import dumpException
 
 FontSize = 18
 FontFamily = "Roboto"
@@ -15,7 +20,6 @@ def Indent(String):
 
 @set_function_ID(FUN_IF)
 class IfStatement(MasterNode):
-
     icon = "icons/if.png"
     node_type = FUN_IF
     name = "IF Statement"
@@ -26,7 +30,6 @@ class IfStatement(MasterNode):
         self.nodeColor = "#90FF5733"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
-
     def getNodeCode(self):
         self.showCode = not self.isInputConnected(0)
 
@@ -36,7 +39,7 @@ class IfStatement(MasterNode):
 
         false = self.NodeCodeAtOutput(1)
 
-        rawCode =f"""
+        rawCode = f"""
 if {condition}:
 {Indent(true)}
 else:
@@ -51,12 +54,12 @@ else:
 
         return code
 
+
 # code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
 # if {condition}:
 # {textwrap.indent(true, "    ")}
 # else:
 # {textwrap.indent(false, "    ")}</span></pre>"""
-
 
 
 @set_function_ID(FUN_FOR_LOOP)
@@ -71,7 +74,6 @@ class ForLoop(MasterNode):
         self.grNode.height = 120
         self.nodeColor = "#905050FF"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
-
 
     def getNodeCode(self):
         self.showCode = not self.isInputConnected(0)
@@ -256,13 +258,11 @@ class GreaterThan(MasterNode):
         self.showCode = False
         self.grNode._brush_title = QBrush(QColor(logicOperators))
 
-
     def getNodeCode(self):
         A = self.NodeCodeAtInput(0)
         B = self.NodeCodeAtInput(1)
 
         rawCode = f"({A}>{B})"
-
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
@@ -286,7 +286,6 @@ class LessThan(MasterNode):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
         self.grNode._brush_title = QBrush(QColor(logicOperators))
-
 
     def getNodeCode(self):
         A = self.NodeCodeAtInput(0)
@@ -351,7 +350,6 @@ class And(MasterNode):
         B = self.NodeCodeAtInput(1)
 
         rawCode = f"({A} and {B})"
-
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''

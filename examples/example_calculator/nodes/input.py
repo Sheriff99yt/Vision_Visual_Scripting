@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import *
 from qtpy.QtCore import Qt
-from examples.example_calculator.nodes.nodes_configuration import FUN_INPUT
+from examples.example_calculator.nodes.nodes_configuration import FUN_INPUT, set_function_ID
 from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
@@ -27,8 +27,7 @@ class CalcInputContent(QDMNodeContentWidget):
             dumpException(e)
         return res
 
-
-# @set_function_ID(FUN_INPUT)
+@set_function_ID(FUN_INPUT)
 class MasterNode_Input(MasterNode):
     icon = "icons/in.png"
     node_type = FUN_INPUT

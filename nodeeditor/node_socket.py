@@ -20,11 +20,11 @@ A module containing Graphics representation of a :class:`~nodeeditor.node_socket
 
 # SOCKET_COLORS must be at least 7 in this version
 
-# Executable
-# Float
-# Intager
-# Boolean
-# String
+# Executable 0
+# Float 1
+# Intager 2
+# Boolean 3
+# String 4
 # Holder 6
 # Holder 7
 
@@ -51,7 +51,6 @@ SOCKET_COLORS_CONNECTED = [
     QColor("#FF1010"),
     QColor("#FF10FF"),
     QColor("#d2d2d2")]
-
 
 class QDMGraphicsSocket(QGraphicsItem):
     """Class representing Graphic `Socket` in ``QGraphicsScene``"""
@@ -246,6 +245,45 @@ class Socket(Serializable):
         self.setSocketPosition()
 
         self.socketEdges = []
+
+        self.userInputWdg = self.SocketInputs()
+
+
+
+
+    def SocketInputs(self):
+        if self.is_input:
+            userInputWdg = None
+            Spos = self.grSocket.pos()
+            if self.socket_type == 4:
+                userInputWdg = QLineEdit()
+
+                userInputWdg.setMaximumWidth(150)
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+            elif self.socket_type == 3:
+                userInputWdg = QCheckBox()
+
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+            elif self.socket_type == 2:
+                userInputWdg = QSpinBox()
+
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+            elif self.socket_type == 1:
+                userInputWdg = QDoubleSpinBox()
+
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+
+            if userInputWdg is not None: userInputWdg.setStyleSheet("background-color: rgba(0,0,0,0); border-width: 1px; border-style: solid; border-color: white; color: white")
+
+            return userInputWdg
 
     def updateSocketCode(self):
         if len(self.socketEdges) == 0: return ""

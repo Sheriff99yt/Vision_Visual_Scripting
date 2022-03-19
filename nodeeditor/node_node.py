@@ -3,6 +3,9 @@
 A module containing NodeEditor's class for representing `Node`.
 """
 from collections import OrderedDict
+
+from PyQt5.QtWidgets import *
+
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from PyQt5.QtGui import QColor
 from nodeeditor.node_content_widget import QDMNodeContentWidget
@@ -713,3 +716,6 @@ class Node(Serializable):
 
     def getNodeCode(self):
         return None
+
+    def initUI(self):
+        pass

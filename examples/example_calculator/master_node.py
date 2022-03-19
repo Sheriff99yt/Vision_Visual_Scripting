@@ -1,6 +1,6 @@
-from qtpy.QtGui import QImage, QColor
-from qtpy.QtCore import QRectF
-from qtpy.QtWidgets import QLabel, QWidget
+from qtpy.QtGui import *
+from qtpy.QtCore import *
+from qtpy.QtWidgets import *
 
 from nodeeditor.node_node import Node
 from nodeeditor.node_content_widget import QDMNodeContentWidget
@@ -32,8 +32,7 @@ class MasterGraphicsNode(QDMGraphicsNode):
 
 class MasterContent(QDMNodeContentWidget):
     def initUI(self):
-        lbl = QLabel(self.node.content_label, self)
-        lbl.setObjectName(self.node.content_label_objname)
+        pass
 
 class MasterNode(Node):
     icon = ""
@@ -47,10 +46,9 @@ class MasterNode(Node):
     GraphicsNode_class = MasterGraphicsNode
     NodeContent_class = MasterContent
 
-
-
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         super().__init__(scene, self.__class__.name, inputs, outputs)
+        self.NodeContent_class.initUI = self.initUI
 
     def initSettings(self):
         super().initSettings()
@@ -68,4 +66,3 @@ class MasterNode(Node):
         res = super().deserialize(data, hashmap, restore_id)
         print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
         return res
-    
