@@ -233,12 +233,11 @@ class NodeEditorWidget(QWidget):
     def UpdateTextCode(self):
         self.TextCodeWnd.clear()
         for node in self.scene.nodes:
-            fullCode = ""
+
             if node.getNodeCode() is None or node.showCode is not True:
                 pass
             else:
-                # self.TextCodeWnd.append(fullCode)
                 self.TextCodeWnd.append(node.getNodeCode())
-
+                # scrollToAnchor
 
 

@@ -14,7 +14,7 @@ class PropertiesList(QScrollArea):
         self.infoStart = True
 
 
-    def varUpdate(self, name, type):
+    def detailsUpdate(self, name, type, grNodesRef):
 
         if self.varStart == True:
             self.varStart = False
@@ -26,21 +26,24 @@ class PropertiesList(QScrollArea):
             widget.setLayout(self.myForm)
             self.myForm.setSpacing(8)
             self.myForm.setAlignment(Qt.AlignTop)
+
+            if grNodesRef and len(grNodesRef) == 1:
+                self.order = QSpinBox()
+                self.nodeRef = grNodesRef[0].node
+                self.order.setValue(self.nodeRef.getNodeOrder())
+                self.order.valueChanged.connect(self.orderChanged)
+                self.myForm.addRow(QLabel(f"Node Order"), self.order)
+
             self.myForm.addRow(QLabel(f"{name}"), type)
         else:
             self.myForm.addRow(QLabel(f"{name}"), type)
 
+    def orderChanged(self):
+        i = self.nodeRef.scene.nodes
+        if self.order.value() > len(i)-1:
+            self.order.setValue(len(i)-1)
+        i[self.nodeRef.getNodeOrder()], i[self.order.value()] = i[self.order.value()], i[self.nodeRef.getNodeOrder()]
 
-    def infoUpdate(self, Info):
-        if self.infoStart == True:
-            self.infoStart = False
-            self.varStart = True
-            widget = QFrame()
-            self.setWidget(widget)
-            self.infoLayout = QVBoxLayout()
-            self.infoLayout.setAlignment(Qt.AlignTop)
-            widget.setLayout(self.infoLayout)
-            self.infoLayout.addWidget(Info)
-        else:
-            self.infoLayout.addWidget(Info)
+        self.nodeRef.scene.NodeEditor.UpdateTextCode()
+
 

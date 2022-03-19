@@ -271,6 +271,8 @@ class NodeScene(Serializable):
         :type node: :class:`~nodeeditor.node_node.Node`
         """
         self.nodes.append(node)
+        node.getNodeOrder()
+
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodeeditor.node_edge.Edge` to this `Scene`

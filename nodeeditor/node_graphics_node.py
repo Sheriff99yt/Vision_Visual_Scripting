@@ -111,6 +111,7 @@ class QDMGraphicsNode(QGraphicsItem):
         """Our event handling when the node was selected"""
         self.node.scene.grScene.itemSelected.emit()
 
+
     def doSelect(self, new_state=True):
         """Safe version of selecting the `Graphics Node`. Takes care about the selection state flag used internally
 

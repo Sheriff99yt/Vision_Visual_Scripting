@@ -357,13 +357,12 @@ class Socket(Serializable):
         :return: ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
         :rtype: ``bool``
         """
-        we = len(self.socketEdges) > 0
-        if we:
+        hasAnyEdges = len(self.socketEdges) > 0
+        if hasAnyEdges:
             if self.userInputWdg is not None : self.userInputWdg.hide()
         else:
             if self.userInputWdg is not None :self.userInputWdg.show()
-
-        return len(self.socketEdges) > 0
+        return hasAnyEdges
 
     def isConnected(self, edge: 'Edge') -> bool:
         """

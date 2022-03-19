@@ -53,6 +53,7 @@ class Node(Serializable):
         self.isSetter = bool
         self.showCode = True
         self.nodeID = int
+
         # just to be sure, init these variables
         self.content = None
         self.grNode = None
@@ -73,6 +74,11 @@ class Node(Serializable):
     def getSocketCode(self, socketID):
         print(len(self.inputs))
         return self.inputs[socketID].socketCode
+
+    def getNodeOrder(self):
+        currentOrder = self.scene.nodes.index(self)
+        print(currentOrder)
+        return currentOrder
 
     def __str__(self):
         return "<%s:%s %s..%s>" % (self.name, self.__class__.__name__, hex(id(self))[2:5], hex(id(self))[-3:])

@@ -47,10 +47,6 @@ class NodeGraphicsScene(QGraphicsScene):
         self.initAssets()
         self.setBackgroundBrush(self._color_background)
 
-        # self.GraphText = QLabel("Node Editor")
-        # self.GraphText.setFont(QFont("Roboto",100))
-        # self.GraphText.setStyleSheet("QLabel { background-color : Transparent; color : #30FFFFFF; }")
-        # self.addWidget(self.GraphText)
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""

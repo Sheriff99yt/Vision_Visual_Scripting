@@ -157,7 +157,7 @@ class VarEventList(QTabWidget):
         item.setData(92, value)
 
     def EventSelectionChanged(self, *args, **kwargs):
-        self.Proprieties.infoStart = True
+        self.Proprieties.varStart = True
 
         item = self.EventList.currentItem()
         self.eventNameInput = QLineEdit()
@@ -166,27 +166,23 @@ class VarEventList(QTabWidget):
 
         self.eventNameInput.returnPressed.connect(self.updateEventName)
 
-        self.Proprieties.infoUpdate(self.eventNameInput)
-        self.Proprieties.infoUpdate(QLabel("This is a Test Text"))
+        self.Proprieties.detailsUpdate("Event Name", self.eventNameInput, self.Scene.getSelectedItems())
 
     def VarSelectionChanged(self, *args, **kwargs):
+        # Name line edite setup
         self.Proprieties.varStart = True
-
         item = self.VarList.currentItem()
         self.varNameInput = QLineEdit()
-
         self.varNameInput.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
-
         self.varNameInput.setText(f"{item.data(91)}")
-
         self.varNameInput.returnPressed.connect(self.updateVarName)
+        self.Proprieties.detailsUpdate("Variable Name", self.varNameInput, self.Scene.getSelectedItems() if self.Scene is not None else [])
 
-        self.Proprieties.varUpdate("Variable Name", self.varNameInput)
 
         if item.data(80) == 20:
             self.floatInput = QDoubleSpinBox()
             self.floatInput.setDecimals(6)
-            self.Proprieties.varUpdate("Float Value", self.floatInput)
+            # self.Proprieties.varUpdate("Float Value", self.floatInput)
             self.floatInput.valueChanged.connect(self.floatVarChanged)
 
             if item.data(92) is not None:   self.floatInput.setValue(item.data(92))
@@ -194,14 +190,14 @@ class VarEventList(QTabWidget):
         elif item.data(80) == 21:
             self.intInput = QSpinBox()
             self.intInput.valueChanged.connect(self.intVarChanged)
-            self.Proprieties.varUpdate("Integer Value", self.intInput)
+            # self.Proprieties.varUpdate("Integer Value", self.intInput)
 
             if item.data(92) is not None:   self.intInput.setValue(item.data(92))
 
         elif item.data(80) == 22:
             self.boolInput = QCheckBox()
             self.boolInput.stateChanged.connect(self.boolVarChanged)
-            self.Proprieties.varUpdate("Boolean Value", self.boolInput)
+            # self.Proprieties.varUpdate("Boolean Value", self.boolInput)
 
             if item.data(92) is not None:   self.boolInput.setChecked(item.data(92))
 
@@ -209,7 +205,7 @@ class VarEventList(QTabWidget):
             self.stringInput = QLineEdit()
 
             self.stringInput.returnPressed.connect(self.stringVarChanged)
-            self.Proprieties.varUpdate("String Value", self.stringInput)
+            # self.Proprieties.varUpdate("String Value", self.stringInput)
 
             if item.data(92) is not None:   self.stringInput.setText(item.data(92))
 
