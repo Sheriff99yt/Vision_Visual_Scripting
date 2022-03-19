@@ -2,6 +2,8 @@
 """
 A module containing NodeEditor's class for representing Socket and Socket Position Constants.
 """
+import math
+
 from qtpy.QtGui import *
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
@@ -258,30 +260,35 @@ class Socket(Serializable):
             if self.socket_type == 4:
                 userInputWdg = QLineEdit()
 
-                userInputWdg.setMaximumWidth(150)
+                userInputWdg.setMaximumWidth(100)
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
             elif self.socket_type == 3:
                 userInputWdg = QCheckBox()
-
+                userInputWdg.setFixedSize(16,16)
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
             elif self.socket_type == 2:
                 userInputWdg = QSpinBox()
-
+                userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                userInputWdg.setRange(-1000000000, 1000000000)
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
             elif self.socket_type == 1:
                 userInputWdg = QDoubleSpinBox()
-
+                userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                userInputWdg.setDecimals(6)
+                userInputWdg.setMinimum(float("-inf"))
+                userInputWdg.setMaximum(float("inf"))
+                userInputWdg.setFixedWidth(70)
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
 
-            if userInputWdg is not None: userInputWdg.setStyleSheet("background-color: rgba(0,0,0,0); border-width: 1px; border-style: solid; border-color: white; color: white")
+            if userInputWdg is not None: userInputWdg.setStyleSheet("background-color: transparent; border-width: 1px; border-style: solid; border-color: white; color: white")
 
             return userInputWdg
 
