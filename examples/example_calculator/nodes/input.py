@@ -27,7 +27,7 @@ class CalcInputContent(QDMNodeContentWidget):
             dumpException(e)
         return res
 
-@set_function_ID(FUN_INPUT)
+# @set_function_ID(FUN_INPUT)
 class MasterNode_Input(MasterNode):
     icon = "icons/in.png"
     node_type = FUN_INPUT

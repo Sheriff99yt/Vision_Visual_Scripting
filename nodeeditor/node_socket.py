@@ -257,28 +257,9 @@ class Socket(Serializable):
         if self.is_input:
             userInputWdg = None
             Spos = self.grSocket.pos()
-            if self.socket_type == 4:
-                userInputWdg = QLineEdit()
-
-                userInputWdg.setMaximumWidth(100)
-                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
-                sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
-            elif self.socket_type == 3:
-                userInputWdg = QCheckBox()
-                userInputWdg.setFixedSize(16,16)
-                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
-                sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
-            elif self.socket_type == 2:
-                userInputWdg = QSpinBox()
-                userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
-                userInputWdg.setRange(-1000000000, 1000000000)
-                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
-                sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
-            elif self.socket_type == 1:
+            if self.socket_type == 1:
                 userInputWdg = QDoubleSpinBox()
+                userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
                 userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
                 userInputWdg.setDecimals(6)
                 userInputWdg.setMinimum(float("-inf"))
@@ -287,6 +268,35 @@ class Socket(Serializable):
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+
+
+            elif self.socket_type == 2:
+                userInputWdg = QSpinBox()
+                userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                userInputWdg.setRange(-1000000000, 1000000000)
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+
+            elif self.socket_type == 3:
+                userInputWdg = QCheckBox()
+                userInputWdg.stateChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+
+                userInputWdg.setFixedSize(16,16)
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+
+
+            elif self.socket_type == 4:
+                userInputWdg = QLineEdit()
+                userInputWdg.textChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.setMaximumWidth(100)
+                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
+                sceneProxy.setParentItem(self.node.grNode)
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+
 
             if userInputWdg is not None: userInputWdg.setStyleSheet("background-color: transparent; border-width: 1px; border-style: solid; border-color: white; color: white")
 
@@ -347,6 +357,12 @@ class Socket(Serializable):
         :return: ``True`` if any :class:`~nodeeditor.node_edge.Edge` is connected to this socket
         :rtype: ``bool``
         """
+        we = len(self.socketEdges) > 0
+        if we:
+            if self.userInputWdg is not None : self.userInputWdg.hide()
+        else:
+            if self.userInputWdg is not None :self.userInputWdg.show()
+
         return len(self.socketEdges) > 0
 
     def isConnected(self, edge: 'Edge') -> bool:
@@ -358,6 +374,7 @@ class Socket(Serializable):
         :return: ``True`` if `Edge` is connected to this socket
         :rtype: ``bool``
         """
+
         return edge in self.socketEdges
 
     def addEdge(self, edge: 'Edge'):

@@ -2,6 +2,7 @@
 """
 A module containing NodeEditor's class for representing `Node`.
 """
+import socket
 from collections import OrderedDict
 
 from PyQt5.QtWidgets import *
@@ -433,10 +434,20 @@ class Node(Serializable):
 
     def NodeCodeAtInput(self, index: int = 0):
         input_socket = self.inputs[index]
-        if len(input_socket.socketEdges) == 0: return ""
+        if len(input_socket.socketEdges) == 0: return self.getSocketWdgValue(input_socket)
         connecting_edge = input_socket.socketEdges[0]
         other_socket = connecting_edge.getOtherSocket(self.inputs[index])
         return other_socket.node.getNodeCode()
+
+    def getSocketWdgValue(self, input_socket):
+        if input_socket.socket_type == 1 or input_socket.socket_type == 2:
+            return input_socket.userInputWdg.value()
+
+        elif input_socket.socket_type == 3:
+            return input_socket.userInputWdg.isChecked()
+
+        elif input_socket.socket_type == 4:
+            return input_socket.userInputWdg.text()
 
     def getConnectedInputNode(self, index: int = 0):
         input_socket = self.inputs[index]
@@ -719,3 +730,4 @@ class Node(Serializable):
 
     def initUI(self):
         pass
+
