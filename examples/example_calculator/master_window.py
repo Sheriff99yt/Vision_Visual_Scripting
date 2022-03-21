@@ -35,10 +35,6 @@ DEBUG = False
 
 class MasterWindow(NodeEditorWindow):
 
-    def __init__(self):
-        super().__init__()
-        self.activeEditor = None
-
     def initUI(self):
         self.name_company = 'MyTeam'
         self.name_product = 'Vision Visual Scripting'

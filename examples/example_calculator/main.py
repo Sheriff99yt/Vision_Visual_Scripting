@@ -1,4 +1,6 @@
 import os, sys
+
+from PyQt5.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
 from examples.example_calculator.nodes import *
 
@@ -12,6 +14,7 @@ if __name__ == '__main__':
 
     # print(QStyleFactory.keys())
     app.setStyle('Fusion')
+    app.setWindowIcon(QIcon("icons/VVS_Logo.png"))
 
     wnd = MasterWindow()
     wnd.showMaximized()
