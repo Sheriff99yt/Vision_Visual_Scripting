@@ -12,8 +12,9 @@ FUN_ADD = 8
 FUN_SUB = 9
 FUN_MUL = 10
 FUN_DIV = 11
-FUN_INPUT = 12
-FUN_OUTPUT = 13
+FUN_USER_INPUT = 12
+FUN_INPUT = 13
+FUN_OUTPUT = 14
 
 ######################
 

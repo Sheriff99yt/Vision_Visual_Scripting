@@ -52,6 +52,7 @@ class MasterWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
+        self.graphsNames=[]
 
         self.masterDisplay = QStackedWidget()
         self.mdiArea = QMdiArea()
@@ -84,7 +85,6 @@ class MasterWindow(NodeEditorWindow):
 
         self.createActions()
         self.createMenus()
-        self.createToolBars()
         self.createStatusBar()
         self.updateMenus()
 
@@ -100,16 +100,37 @@ class MasterWindow(NodeEditorWindow):
     def CreateToolBar(self):
         self.nodeDesignerBtn = QAction(QIcon("icons/Pencil_1.png"), "&Toggle Designer", self)
         self.editToolBar = QToolBar("Tools", self)
-        # self.editToolBar.setContentsMargins(2, 2, 2, 2)
         self.editToolBar.setIconSize(QSize(26, 26))
         self.editToolBar.setFloatable(False)
 
         self.addToolBar(self.editToolBar)
-        self.editToolBar.addAction(self.nodeDesignerBtn)
+        # self.editToolBar.addAction(self.nodeDesignerBtn)
 
         self.nodeDesignerBtn.setCheckable(True)
         self.nodeDesignerBtn.triggered.connect(self.updateActiveWnd)
         self.nodeDesignerBtn.setShortcut(QKeySequence("`"))
+
+
+        self.CodeWndSettingBtn = QAction(QIcon("icons/Oriantation.png"), "&Code Window View Mode", self)
+        self.editToolBar.addAction(self.CodeWndSettingBtn)
+
+        self.CodeWndSettingBtn.setCheckable(True)
+        self.CodeWndSettingBtn.setShortcut(QKeySequence("Ctrl+Shift+R"))
+
+
+
+        self.codeWndCopy = QAction(QIcon("icons/Copy.png"), "&Copy The Code From The Code Window", self)
+        self.editToolBar.addAction(self.codeWndCopy)
+
+        self.codeWndCopy.setCheckable(True)
+        self.codeWndCopy.triggered.connect(self.CopyTextCode)
+        self.codeWndCopy.setShortcut(QKeySequence("Ctrl+Shift+C"))
+
+    def CopyTextCode(self):
+        Wnd = self.getCurrentNodeEditorWidget()
+        if Wnd is not None:
+            Wnd.TextCodeWnd.selectAll()
+            Wnd.TextCodeWnd.copy()
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -156,12 +177,14 @@ class MasterWindow(NodeEditorWindow):
             subwnd = self.createMdiChild()
             subwnd.widget().fileNew()
             subwnd.show()
+
+            self.filesWidget.CreateNewGraph(subwnd)
+
+            self.CodeWndSettingBtn.triggered.connect(self.getCurrentNodeEditorWidget().setCodeWndViewMode)
         except Exception as e:
             dumpException(e)
-
     def onFileOpen(self):
-        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(),
-                                                      self.getFileDialogFilter())
+        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
 
         try:
             for fname in fnames:
@@ -172,6 +195,8 @@ class MasterWindow(NodeEditorWindow):
                     else:
                         # we need to create new subWindow and open the file
                         nodeeditor = MasterEditorWnd()
+                        nodeeditor.scene.varsEventsLists = self.varsEventsWidget
+
                         if nodeeditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
                             nodeeditor.setTitle()
@@ -298,9 +323,6 @@ class MasterWindow(NodeEditorWindow):
         else:
             self.proprietiesDock.show()
 
-    def createToolBars(self):
-        pass
-
     def createGraphsDock(self):
         self.graphsDock = QDockWidget("Graphs")
         self.graphsDock.setWidget(self.mdiArea)
@@ -325,6 +347,7 @@ class MasterWindow(NodeEditorWindow):
 
     def CreateFilesDock(self):
         self.filesWidget = FilesWDG()
+        self.filesWidget.masterWmdRef = self
 
         self.filesDock = QDockWidget("Project Files")
         self.filesDock.setWidget(self.filesWidget)

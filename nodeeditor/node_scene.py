@@ -11,10 +11,8 @@ from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_graphics_scene import NodeGraphicsScene
 from nodeeditor.node_node import Node
 from nodeeditor.node_edge import Edge
-# from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_scene_history import SceneHistory
 from nodeeditor.node_scene_clipboard import SceneClipboard
-from qtpy.QtWidgets import *
 
 DEBUG_REMOVE_WARNINGS = False
 
@@ -24,7 +22,6 @@ class InvalidFile(Exception): pass
 
 class NodeScene(Serializable):
     """Class representing NodeEditor's `Scene`"""
-
     def __init__(self):
         """
         :Instance Attributes:
@@ -110,11 +107,12 @@ class NodeScene(Serializable):
                 return node
         return None
 
-    def setSilentSelectionEvents(self, value: bool = True):
+
+    def setSilentSelectionEvents(self, value: bool=True):
         """Calling this can suppress onItemSelected events to be triggered. This is useful when working with clipboard"""
         self._silent_selection_events = value
 
-    def onItemSelected(self, silent: bool = False):
+    def onItemSelected(self, silent: bool=False):
         """
         Handle Item selection and trigger event `Item Selected`
 
@@ -134,6 +132,7 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Selection Changed")
 
         self.NodeEditor.UpdateTextCode()
+        # print(self.varsEventsLists)
         self.varsEventsLists.findListItem(self.getSelectedNodes())
 
     def getSelectedNodes(self):
@@ -185,7 +184,7 @@ class NodeScene(Serializable):
         """
         return self.grScene.selectedItems()
 
-    def doDeselectItems(self, silent: bool = False) -> None:
+    def doDeselectItems(self, silent: bool=False) -> None:
         """
         Deselects everything in scene
 
@@ -271,8 +270,6 @@ class NodeScene(Serializable):
         :type node: :class:`~nodeeditor.node_node.Node`
         """
         self.nodes.append(node)
-        node.getNodeOrder()
-
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodeeditor.node_edge.Edge` to this `Scene`
@@ -413,7 +410,7 @@ class NodeScene(Serializable):
 
             if not found:
                 try:
-                    new_node = self.getNodeClassFromData(node_data)
+                    new_node = self.getNodeClassFromData(node_data)(self)
                     new_node.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
                     new_node.onDeserialized(node_data)
                     # print("New node for", node_data['title'])

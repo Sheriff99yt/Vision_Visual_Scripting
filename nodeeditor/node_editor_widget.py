@@ -51,23 +51,35 @@ class NodeEditorWidget(QWidget):
         self.GraphGraphicsView = self.__class__.GraphGraphics_class(self.scene.grScene, self)
         self.layout.addWidget(self.GraphGraphicsView)
 
-        # Went through hell and back \/
-        self.TextCodeWnd = QTextEdit()
-        self.TextCodeWnd.setReadOnly(True)
+        self.codeWndSettings = Qt.Horizontal
+        # Qt.Horizontal
+        # Qt.Vertical
 
-        # self.TextCodeWnd.setText("This is a test Text")
-
-        self.TextCodeWnd.resize(1000, 1000)
-        self.SplitterWnd = QSplitter(Qt.Horizontal)
-
-        self.SplitterWnd.addWidget(self.GraphGraphicsView)
-        self.SplitterWnd.addWidget(self.TextCodeWnd)
+        self.createCodeWnd(self.codeWndSettings)
 
         self.layout.addWidget(self.SplitterWnd)
 
         # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
         self.scene.setNodeEditorWidget(self)
         self.GraphGraphicsView.setNodeEditorWidget(self)
+
+    def createCodeWnd(self, SplWndSet):
+        self.SplitterWnd = QSplitter(SplWndSet)
+        self.SplitterWnd.addWidget(self.GraphGraphicsView)
+        self.SplitterWnd.setSizes([650])
+
+        self.TextCodeWnd = QTextEdit()
+        self.TextCodeWnd.setReadOnly(True)
+        self.SplitterWnd.addWidget(self.TextCodeWnd)
+
+    def setCodeWndViewMode(self):
+        if self.codeWndSettings == Qt.Horizontal:
+            self.SplitterWnd.setOrientation(Qt.Vertical)
+            self.codeWndSettings = Qt.Vertical
+        else:
+            self.SplitterWnd.setOrientation(Qt.Horizontal)
+            self.codeWndSettings = Qt.Horizontal
+
 
     def isModified(self) -> bool:
         """Has the `Scene` been modified?

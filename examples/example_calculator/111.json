@@ -1,0 +1,240 @@
+{
+    "id": 1704183434208,
+    "scene_width": 8000,
+    "scene_height": 8000,
+    "nodes": [
+        {
+            "id": 1704184846112,
+            "title": "IF Statement",
+            "pos_x": -150.0,
+            "pos_y": -155.0,
+            "inputs": [
+                {
+                    "id": 1704184896512,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1704184896560,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1704184899296,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1704184899344,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "content": {},
+            "node_type": 1
+        },
+        {
+            "id": 1704184964496,
+            "title": "Event",
+            "pos_x": -674.0,
+            "pos_y": -164.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 1704184964784,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "content": {},
+            "node_type": 0
+        },
+        {
+            "id": 1704185025424,
+            "title": "Greater Than",
+            "pos_x": -198.0,
+            "pos_y": -2.0,
+            "inputs": [
+                {
+                    "id": 1704185025712,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                },
+                {
+                    "id": 1704185029168,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1704185029216,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "node_type": 5
+        },
+        {
+            "id": 1704185031472,
+            "title": "float",
+            "pos_x": -682.0,
+            "pos_y": 11.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 1704185031760,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1704185032528,
+            "title": "Print",
+            "pos_x": 183.0,
+            "pos_y": -176.0,
+            "inputs": [
+                {
+                    "id": 1704185032768,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1704185032816,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 4
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1704185032864,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "content": {},
+            "node_type": 3
+        },
+        {
+            "id": 1704185032480,
+            "title": "Print",
+            "pos_x": 192.0,
+            "pos_y": -59.0,
+            "inputs": [
+                {
+                    "id": 1704185031712,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1704185032960,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 4
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1704185033152,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "content": {},
+            "node_type": 3
+        },
+        {
+            "id": 1704185034352,
+            "title": "Event",
+            "pos_x": -472.5050000000001,
+            "pos_y": 220.946,
+            "inputs": [
+                {
+                    "id": 1704185034688,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1704185034736,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "content": {},
+            "node_type": 0
+        }
+    ],
+    "edges": [
+        {
+            "id": 1704184965408,
+            "edge_type": 2,
+            "start": 1704184964784,
+            "end": 1704184896512
+        },
+        {
+            "id": 1704185029504,
+            "edge_type": 2,
+            "start": 1704184896560,
+            "end": 1704185029216
+        },
+        {
+            "id": 1704185031904,
+            "edge_type": 2,
+            "start": 1704185031760,
+            "end": 1704185025712
+        },
+        {
+            "id": 1704185033008,
+            "edge_type": 2,
+            "start": 1704185032768,
+            "end": 1704184899296
+        },
+        {
+            "id": 1704185033392,
+            "edge_type": 2,
+            "start": 1704184899344,
+            "end": 1704185031712
+        }
+    ]
+}
