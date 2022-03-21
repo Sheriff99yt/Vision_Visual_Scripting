@@ -12,7 +12,7 @@ from nodeeditor.utils import dumpException
 FontSize = 18
 FontFamily = "Roboto"
 mathOperators = "#70307030"
-logicOperators = "#707070FF"
+logicOperators = "#50000050"
 
 
 def Indent(String):
@@ -293,7 +293,7 @@ class GreaterThan(MasterNode):
         A = self.NodeCodeAtInput(0)
         B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}>{B})"
+        rawCode = f"({A}&gt;{B})"
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
@@ -322,7 +322,7 @@ class LessThan(MasterNode):
         A = self.NodeCodeAtInput(0)
         B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}<{B})"
+        rawCode = f"({A}&lt;{B})"
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
