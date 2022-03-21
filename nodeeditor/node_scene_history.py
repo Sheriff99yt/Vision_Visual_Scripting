@@ -113,7 +113,7 @@ class SceneHistory():
         self.restoreHistoryStamp(self.history_stack[self.history_current_step])
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_restored_listeners: callback()
-
+        self.scene.NodeEditor.UpdateTextCode()
 
     def storeHistory(self, desc: str, setModified: bool=False):
         """

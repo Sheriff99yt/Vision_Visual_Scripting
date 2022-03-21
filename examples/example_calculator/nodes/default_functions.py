@@ -12,7 +12,7 @@ from nodeeditor.utils import dumpException
 FontSize = 18
 FontFamily = "Roboto"
 mathOperators = "#70307030"
-logicOperators = "#50000050"
+logicOperators = "#30000050"
 
 
 def Indent(String):

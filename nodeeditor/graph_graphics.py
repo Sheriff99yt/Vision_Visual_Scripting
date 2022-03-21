@@ -491,6 +491,13 @@ class GraphGraphics(QGraphicsView):
         self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
         self.NodeEditor.UpdateTextCode()
 
+    def deleteNode(self, item):
+        """Shortcut for safe deleting every object selected in the Scene."""
+        item.remove()
+
+        self.grScene.scene.history.storeHistory("Context Menu Delete", setModified=True)
+        self.NodeEditor.UpdateTextCode()
+
     def debug_modifiers(self, event):
         """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""
         out = "MODS: "

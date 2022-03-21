@@ -247,6 +247,10 @@ class MasterEditorWnd(NodeEditorWidget):
         if hasattr(item, 'socket'):
             selected = item.socket.node
 
+        if action == delete:
+            item.node.scene.getView().deleteNode(item.node)
+
+
     def handleEdgeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: EDGE")
         context_menu = QMenu(self)
