@@ -196,6 +196,8 @@ class Node(Serializable):
             counter += 1
             self.outputs.append(socket)
 
+        self.grNode.AutoResizeGrNode()
+
     def updateSockets(self):
         pass
 
@@ -268,7 +270,8 @@ class Node(Serializable):
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
             # start from bottom
-            y = self.grNode.height - self.grNode.edge_roundness - self.grNode.title_vertical_padding - index * self.socket_spacing
+            y = self.grNode.height - self.grNode.edge_roundnes - self.grNode.title_vertical_padding - index * self.socket_spacing
+
         elif position in (LEFT_CENTER, RIGHT_CENTER):
             num_sockets = num_out_of
             node_height = self.grNode.height
@@ -285,7 +288,7 @@ class Node(Serializable):
 
         elif position in (LEFT_TOP, RIGHT_TOP):
             # start from top
-            y = self.grNode.title_height + self.grNode.title_vertical_padding + self.grNode.edge_roundness + index * self.socket_spacing
+            y = self.grNode.title_height + self.grNode.title_vertical_padding + self.grNode.edge_roundnes + index * self.socket_spacing
         else:
             # this should never happen
             y = 0
@@ -355,6 +358,10 @@ class Node(Serializable):
         return other_nodes
 
     def NodeCodeAtInput(self, index: int = 0):
+        if not self.inputs or index > len(self.inputs)-1:
+            print("Trying ro call from Node Input socket while Node has no input socket")
+            return None
+
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0: return self.getSocketWdgValue(input_socket)
         connecting_edge = input_socket.socketEdges[0]
@@ -380,6 +387,10 @@ class Node(Serializable):
         return other_socket.node
 
     def isInputConnected(self, index: int = 0):
+        if not self.inputs:
+            print("Trying ro call from Node Input socket while Node has no input socket")
+            return
+
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0:
             return False

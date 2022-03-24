@@ -71,7 +71,6 @@ class ForLoop(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 2, 2], outputs=[0])
-        self.grNode.height = 120
         self.nodeColor = "#905050FF"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
@@ -129,14 +128,14 @@ print({printCode})
         return code
 
 @set_function_ID(FUN_USER_INPUT)
-class Print(MasterNode):
+class Input(MasterNode):
     icon = ""
     node_type = FUN_USER_INPUT
     name = "Input"
     content_label_objname = "node_input"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 4], outputs=[0])
+        super().__init__(scene, inputs=[0, 4, 4], outputs=[0])
         self.nodeColor = "#505050"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
@@ -144,10 +143,12 @@ class Print(MasterNode):
         self.showCode = not self.isInputConnected(0)
 
         brotherCode = self.NodeCodeAtOutput(0)
-        inputCode = self.NodeCodeAtInput(1)
+        inputName = self.NodeCodeAtInput(1)
+        if inputName != "" and inputName is not None: inputName += " = "
+        inputCode = self.NodeCodeAtInput(2)
 
         rawCode = f"""
-input({inputCode})
+{inputName}input({inputCode})
 {brotherCode}"""
 
         if self.isSelected() is True:
@@ -159,6 +160,36 @@ input({inputCode})
 
         return code
 
+@set_function_ID(FUN_RAW_CODE)
+class Print(MasterNode):
+    icon = ""
+    node_type = FUN_RAW_CODE
+    name = "Raw Code"
+    content_label_objname = "node_raw_code"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 4], outputs=[0])
+        self.nodeColor = "#303030"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+
+    def getNodeCode(self):
+        self.showCode = not self.isInputConnected(0)
+
+        brotherCode = self.NodeCodeAtOutput(0)
+        inputCode = self.NodeCodeAtInput(1)
+
+        rawCode = f"""
+{inputCode}
+{brotherCode}"""
+
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+
+        return code
 
 @set_function_ID(FUN_ADD)
 class Add(MasterNode):

@@ -9,10 +9,6 @@ from nodeeditor.utils import dumpException
 
 
 class MasterGraphicsNode(QDMGraphicsNode):
-    def updateSizes(self):
-        super().updateSizes()
-        self.width = 180
-        self.height = 85
 
     def initAssets(self):
         super().initAssets()

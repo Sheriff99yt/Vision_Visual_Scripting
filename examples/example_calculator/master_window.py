@@ -95,28 +95,28 @@ class MasterWindow(NodeEditorWindow):
 
     def CreateToolBar(self):
         self.nodeDesignerBtn = QAction(QIcon("icons/Pencil_1.png"), "&Toggle Designer", self)
-        self.editToolBar = QToolBar("Tools", self)
-        self.editToolBar.setIconSize(QSize(26, 26))
-        self.editToolBar.setFloatable(False)
+        self.toolsBar = QToolBar("Tools", self)
+        self.toolsBar.setIconSize(QSize(26, 26))
+        self.toolsBar.setFloatable(False)
 
-        self.addToolBar(self.editToolBar)
+        self.addToolBar(self.toolsBar)
         # self.editToolBar.addAction(self.nodeDesignerBtn)
 
         self.nodeDesignerBtn.setCheckable(True)
         self.nodeDesignerBtn.triggered.connect(self.updateActiveWnd)
         self.nodeDesignerBtn.setShortcut(QKeySequence("`"))
 
+        mySpacer = QWidget()
+        mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.toolsBar.addWidget(mySpacer)
 
         self.CodeWndSettingBtn = QAction(QIcon("icons/Oriantation.png"), "&Code Window View Mode", self)
-        self.editToolBar.addAction(self.CodeWndSettingBtn)
+        self.toolsBar.addAction(self.CodeWndSettingBtn)
 
         self.CodeWndSettingBtn.setCheckable(True)
         self.CodeWndSettingBtn.setShortcut(QKeySequence("Ctrl+Shift+R"))
-
-
-
         self.codeWndCopy = QAction(QIcon("icons/Copy.png"), "&Copy The Code From The Code Window", self)
-        self.editToolBar.addAction(self.codeWndCopy)
+        self.toolsBar.addAction(self.codeWndCopy)
 
         self.codeWndCopy.setCheckable(True)
         self.codeWndCopy.triggered.connect(self.CopyTextCode)
@@ -258,17 +258,22 @@ class MasterWindow(NodeEditorWindow):
 
     def updateWindowMenu(self):
 
-        self.toolbar_details = self.windowMenu.addAction("Details Toolbar")
+        self.toolbar_details = self.windowMenu.addAction("Properties Window")
         self.toolbar_details.setCheckable(True)
         self.toolbar_details.triggered.connect(self.onWindowDetailsToolbar)
         self.toolbar_details.setChecked(not self.proprietiesDock.isVisible())
 
-        self.toolbar_vars = self.windowMenu.addAction("Variables Toolbar")
+        self.toolbar_Files = self.windowMenu.addAction("Project Files Window")
+        self.toolbar_Files.setCheckable(True)
+        self.toolbar_Files.triggered.connect(self.onWindowFilesToolbar)
+        self.toolbar_Files.setChecked(not self.proprietiesDock.isVisible())
+
+        self.toolbar_vars = self.windowMenu.addAction("Variables & Events Window")
         self.toolbar_vars.setCheckable(True)
         self.toolbar_vars.triggered.connect(self.onWindowVarsToolbar)
         self.toolbar_vars.setChecked(not self.varsDock.isVisible())
 
-        self.toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
+        self.toolbar_nodes = self.windowMenu.addAction("Functions Window")
         self.toolbar_nodes.setCheckable(True)
         self.toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
         self.toolbar_nodes.setChecked(not self.nodesDock.isVisible())
@@ -319,6 +324,12 @@ class MasterWindow(NodeEditorWindow):
         else:
             self.proprietiesDock.show()
 
+    def onWindowFilesToolbar(self):
+        if self.filesDock.isVisible():
+            self.filesDock.hide()
+        else:
+            self.filesDock.show()
+
     def createGraphsDock(self):
         self.graphsDock = QDockWidget("Graphs")
         self.graphsDock.setWidget(self.mdiArea)
@@ -362,7 +373,7 @@ class MasterWindow(NodeEditorWindow):
     def CreateVariablesEventsDock(self):
         self.varsEventsWidget = VarEventList()
         self.varsEventsWidget.Proprieties = self.proprietiesListWidget
-        self.varsDock = QDockWidget("Variables")
+        self.varsDock = QDockWidget("Variables & Events")
         self.varsDock.setWidget(self.varsEventsWidget)
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)

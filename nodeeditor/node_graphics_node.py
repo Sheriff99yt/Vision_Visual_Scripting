@@ -62,8 +62,19 @@ class QDMGraphicsNode(QGraphicsItem):
     @name.setter
     def name(self, value):
         self._name = value
-        self.name_item.setPlainText(self._name)
+        self.grName = self._name
 
+        self.name_item.setPlainText(self.grName)
+        self.name_item.adjustSize()
+
+        if self.name_item.textWidth()+40 > self.width:
+            while self.name_item.textWidth()+40 > self.width:
+                self.grName = self.grName[0: -1]
+                self.name_item.setPlainText(self.grName)
+                self.name_item.adjustSize()
+
+            self.name_item.setPlainText(self.grName+"...")
+            self.name_item.adjustSize()
 
     def initUI(self):
         """Set up this ``QGraphicsItem``"""
@@ -79,13 +90,27 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
-        self.width = 160
+        self.width = 180
         self.height = 80
-        self.edge_roundness = 2
+        self.edge_roundnes = 2
         self.edge_padding = 0
         self.title_height = 30
         self.title_horizontal_padding = 24
         self.title_vertical_padding = 10
+
+
+    def AutoResizeGrNode(self):
+        socketsHeight = self.title_height
+        if len(self.node.inputs) > len(self.node.outputs):
+            maxSockets = self.node.inputs
+        else:
+            maxSockets = self.node.outputs
+
+        for socket in maxSockets:
+            print(socketsHeight)
+            socketsHeight += self.node.socket_spacing
+
+        self.height = socketsHeight
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
@@ -182,11 +207,12 @@ class QDMGraphicsNode(QGraphicsItem):
     def initName(self):
         """Set up the title Graphics representation: font, color, position, etc."""
         self.name_item = QGraphicsTextItem(self)
+        # self.name_item
         self.name_item.node = self.node
         self.name_item.setDefaultTextColor(self._title_color)
         self.name_item.setFont(self._title_font)
         self.name_item.setPos(self.title_horizontal_padding, 0)
-        self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
+        # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
 
     def initContent(self):
         """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""
@@ -205,10 +231,10 @@ class QDMGraphicsNode(QGraphicsItem):
         # content
         path_content = QPainterPath()
         path_content.setFillRule(Qt.WindingFill)
-        path_content.addRoundedRect(0, 0, self.width, self.height, self.edge_roundness, self.edge_roundness)
-        path_content.addRect(0, self.title_height, self.edge_roundness, self.edge_roundness)
-        path_content.addRect(self.width - self.edge_roundness, self.title_height, self.edge_roundness,
-                             self.edge_roundness)
+        path_content.addRoundedRect(0, 0, self.width, self.height, self.edge_roundnes, self.edge_roundnes)
+        path_content.addRect(0, self.title_height, self.edge_roundnes, self.edge_roundnes)
+        path_content.addRect(self.width - self.edge_roundnes, self.title_height, self.edge_roundnes,
+                             self.edge_roundnes)
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._brush_background)
         painter.drawPath(path_content.simplified())
@@ -216,10 +242,10 @@ class QDMGraphicsNode(QGraphicsItem):
         # title
         path_title = QPainterPath()
         path_title.setFillRule(Qt.WindingFill)
-        path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness)
-        path_title.addRect(0, self.title_height - self.edge_roundness, self.edge_roundness, self.edge_roundness)
-        path_title.addRect(self.width - self.edge_roundness, self.title_height - self.edge_roundness,
-                           self.edge_roundness, self.edge_roundness)
+        path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundnes, self.edge_roundnes)
+        path_title.addRect(0, self.title_height - self.edge_roundnes, self.edge_roundnes, self.edge_roundnes)
+        path_title.addRect(self.width - self.edge_roundnes, self.title_height - self.edge_roundnes,
+                           self.edge_roundnes, self.edge_roundnes)
 
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._brush_title)
@@ -227,7 +253,7 @@ class QDMGraphicsNode(QGraphicsItem):
 
         # outline
         path_outline = QPainterPath()
-        path_outline.addRoundedRect(-1, -1, self.width + 2, self.height + 2, self.edge_roundness, self.edge_roundness)
+        path_outline.addRoundedRect(-1, -1, self.width + 2, self.height + 2, self.edge_roundnes, self.edge_roundnes)
         painter.setBrush(Qt.NoBrush)
 
         if self.hovered:

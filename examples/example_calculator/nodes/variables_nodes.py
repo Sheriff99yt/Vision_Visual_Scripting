@@ -19,18 +19,15 @@ class FloatVar(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[1])
         self.isVar = True
-        self.grNode.height = 60
         self.grNode._brush_title = QBrush(QColor(FloatColor))
 
     def toGetter(self):
         self.isSetter = False
-        self.grNode.height = 60
         self.initSockets(inputs=[], outputs=[1])
         self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
-        self.grNode.height = 85
         self.initSockets(inputs=[0, 1], outputs=[0])
         self.getNodeCode = self.setterCode
 
@@ -68,18 +65,15 @@ class IntegerVar(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[2])
         self.isVar = True
-        self.grNode.height = 60
         self.grNode._brush_title = QBrush(QColor(IntegerColor))
 
     def toGetter(self):
         self.isSetter = False
-        self.grNode.height = 60
         self.initSockets(inputs=[], outputs=[2])
         self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
-        self.grNode.height = 85
         self.initSockets(inputs=[0, 2], outputs=[0])
         self.getNodeCode = self.setterCode
 
@@ -117,18 +111,15 @@ class BooleanVar(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
         self.isVar = True
-        self.grNode.height = 60
         self.grNode._brush_title = QBrush(QColor(BooleanColor))
 
     def toGetter(self):
         self.isSetter = False
-        self.grNode.height = 60
         self.initSockets(inputs=[], outputs=[3])
         self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
-        self.grNode.height = 85
         self.initSockets(inputs=[0, 3], outputs=[0])
         self.getNodeCode = self.setterCode
 
@@ -166,18 +157,15 @@ class StringVar(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[4])
         self.isVar = True
-        self.grNode.height = 60
         self.grNode._brush_title = QBrush(QColor(StringColor))
 
     def toGetter(self):
         self.isSetter = False
-        self.grNode.height = 60
         self.initSockets(inputs=[], outputs=[4])
         self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
-        self.grNode.height = 85
         self.initSockets(inputs=[0, 4], outputs=[0])
         self.getNodeCode = self.setterCode
 
