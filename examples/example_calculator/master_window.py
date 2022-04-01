@@ -233,11 +233,9 @@ class MasterWindow(NodeEditorWindow):
     def onFileOpen(self, dir=False):
         if dir == False:
             fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
-            print(fnames)
         else:
             if dir.endswith(".json"):
                 fnames = [dir]
-                print(fnames)
             else:
                 return
         try:
@@ -261,9 +259,6 @@ class MasterWindow(NodeEditorWindow):
                         # we need to create new subWindow and open the file
                         nodeEditor = MasterEditorWnd()
                         subwnd = self.newGraphTab(nodeEditor)
-
-                        # nodeEditor.scene.masterRef = self
-                        # nodeEditor.scene.history.masterWndRef = self
 
                         if nodeEditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
@@ -502,12 +497,8 @@ class MasterWindow(NodeEditorWindow):
 
     def findMdiChild(self, filename):
         for window in self.graphs_parent_wdg.subWindowList():
-            print(filename, window.widget().filename)
-            if window.widget().filename != None and filename != None:
-                wndName = os.path.splitext(os.path.basename(window.widget().filename))[0]
-                fName = os.path.splitext(os.path.basename(filename))[0]
-                if wndName == fName:
-                    return window
+            if window.widget().filename == filename:
+                return window
         return None
 
     def setActiveSubWindow(self, window):

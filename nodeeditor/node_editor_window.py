@@ -49,8 +49,6 @@ class NodeEditorWindow(QMainWindow):
         self.show()
 
 
-
-
     def sizeHint(self):
         return QSize(800, 600)
 
@@ -188,7 +186,6 @@ class NodeEditorWindow(QMainWindow):
             self.CurrentNodeEditor().newGraph()
             self.setTitle()
 
-
     def onFileOpen(self):
         """Handle File Open operation"""
         if self.maybeSave():
@@ -217,10 +214,8 @@ class NodeEditorWindow(QMainWindow):
             if os.path.isfile(f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"""):
                 self.onFileSave()
             else:
-                fname = self.filesWidget.Project_Directory +  "/AutoSave/" + current_node_editor.windowTitle() + ".AS.json"
-
+                fname = f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"""
                 # if fname == '': return False
-
                 self.onBeforeSaveAs(current_node_editor, fname)
                 current_node_editor.fileSave(fname)
                 self.statusBar().showMessage("Successfully Auto Saved %s" % current_node_editor.filename, 5000)

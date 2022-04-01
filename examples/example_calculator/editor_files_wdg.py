@@ -34,11 +34,10 @@ class FilesWDG(QWidget):
             fname = f"""{self.Project_Directory}/{self.tree_wdg.currentIndex().data()}"""
         else:
             fname = f"""{self.Project_Directory}/{self.tree_wdg.currentIndex().parent().data()}/{self.tree_wdg.currentIndex().data()}"""
-
         self.masterWmdRef.onFileOpen(fname)
 
     def CreateDefaultDir(self):
-        defaultDir = os.getenv('AppData') + "/VVS"
+        defaultDir = f"""C:/Users/{os.getlogin()}/AppData/Roaming/VVS"""
         if os.path.exists(defaultDir):
             Dir = defaultDir
         else:
