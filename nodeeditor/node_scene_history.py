@@ -20,6 +20,7 @@ class SceneHistory():
         - **scene** - reference to the :class:`~nodeeditor.node_scene.Scene`
         - **history_limit** - number of history steps that can be stored
         """
+        self.masterWndRef = None
         self.scene = scene
 
         self.clear()
@@ -31,6 +32,8 @@ class SceneHistory():
         self._history_modified_listeners = []
         self._history_stored_listeners = []
         self._history_restored_listeners = []
+
+        self.autoSaveCounter = 0
 
     def clear(self):
         """Reset the history stack"""
@@ -154,6 +157,15 @@ class SceneHistory():
         # always trigger history modified (for i.e. updateEditMenu)
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_stored_listeners: callback()
+
+        self.AutoSave()
+
+    def AutoSave(self):
+        self.autoSaveCounter += 1
+
+        if self.autoSaveCounter == 5:
+            self.masterWndRef.onFileAutoSave()
+            self.autoSaveCounter = 0
 
 
     def captureCurrentSelection(self) -> dict:

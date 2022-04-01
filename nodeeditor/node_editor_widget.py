@@ -134,7 +134,7 @@ class NodeEditorWidget(QWidget):
         :return: just a base name of the file or `'New Graph'`
         :rtype: ``str``
         """
-        name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
+        name = os.path.splitext(os.path.basename(self.filename))[0] if self.isFilenameSet() else "New Graph"
         return name + ("*" if self.isModified() else "")
 
     def newGraph(self):

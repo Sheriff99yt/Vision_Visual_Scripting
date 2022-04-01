@@ -87,6 +87,8 @@ class MasterWindow(NodeEditorWindow):
 
         # Create Nodes List
         self.createFunctionsDock()
+
+        # Creat Files Dock
         self.CreateFilesDock()
 
         # Create Variable List
@@ -102,6 +104,8 @@ class MasterWindow(NodeEditorWindow):
         self.CreateToolBar()
 
         self.setWindowTitle("Vision Visual Scripting")
+
+        self.CodeWndSettingBtn.triggered.connect(self.RotateTextCodeWnd)
 
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
@@ -144,10 +148,23 @@ class MasterWindow(NodeEditorWindow):
         self.codeWndCopy.setShortcut(QKeySequence("Ctrl+Shift+C"))
 
     def CopyTextCode(self):
-        current_NE = self.CurrentNodeEditor()
-        if current_NE is not None:
-            current_NE.TextCodeWnd.selectAll()
-            current_NE.TextCodeWnd.copy()
+        node_editor = self.CurrentNodeEditor()
+
+        if node_editor is not None:
+            node_editor.TextCodeWnd.selectAll()
+            node_editor.TextCodeWnd.copy()
+            python_file_name = node_editor.windowTitle()
+
+            text = node_editor.TextCodeWnd.toPlainText()
+            if os.listdir(self.filesWidget.Project_Directory).__contains__("Generated Scripts") is False:
+                os.makedirs(self.filesWidget.Project_Directory + "/Generated Scripts")
+                f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+                with open(f, 'w') as newPyFile:
+                    newPyFile.writelines(text)
+            else:
+                f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+                with open(f, 'w') as newPyFile:
+                    newPyFile.writelines(text)
 
     def closeEvent(self, event):
         self.graphs_parent_wdg.closeAllSubWindows()
@@ -162,6 +179,8 @@ class MasterWindow(NodeEditorWindow):
 
     def createActions(self):
         super().createActions()
+
+        self.actSetProjectDir = QAction('&Open Project', self, shortcut='Ctrl+Shift+O', statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
                                 triggered=self.graphs_parent_wdg.closeActiveSubWindow)
@@ -200,27 +219,23 @@ class MasterWindow(NodeEditorWindow):
     def onNewGraphTab(self):
         # Overrides Node Editor Window > actNew action
         try:
+            self.filesWidget.removeDeletedGraphs()
+
             subwnd = self.newGraphTab()
             subwnd.widget().newGraph()
 
             subwnd.show()
 
             self.filesWidget.CreateNewGraph(subwnd)
-
-            self.CodeWndSettingBtn.triggered.connect(self.CurrentNodeEditor().setCodeWndViewMode)
         except Exception as e:
             dumpException(e)
 
     def onFileOpen(self):
-        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(),
-                                                      self.getFileDialogFilter())
-
+        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
         try:
             for fname in fnames:
                 if fname:
-
                     if self.findMdiChild(fname):
-
                         subwnd = self.findMdiChild(fname)
                         nodeEditor = subwnd.widget()
                         VEL = self.CreateNewVEList()
@@ -237,16 +252,17 @@ class MasterWindow(NodeEditorWindow):
                     else:
                         # we need to create new subWindow and open the file
                         nodeEditor = MasterEditorWnd()
-                        nodeEditor.scene.masterRef = self
                         subwnd = self.newGraphTab(nodeEditor)
+
+                        # nodeEditor.scene.masterRef = self
+                        # nodeEditor.scene.history.masterWndRef = self
 
                         if nodeEditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
-                            nodeEditor.setTitle()
+                            nodeEditor.setWindowTitle(os.path.splitext(os.path.basename(fname))[0])
                             subwnd.show()
                         else:
                             nodeEditor.close()
-
         except Exception as e:
             dumpException(e)
 
@@ -440,6 +456,10 @@ class MasterWindow(NodeEditorWindow):
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
+    def RotateTextCodeWnd(self):
+        if self.CurrentNodeEditor():
+            self.CurrentNodeEditor().setCodeWndViewMode()
+
     def newGraphTab(self, oldNodeEditor=None):
 
         VEL = self.CreateNewVEList()
@@ -451,7 +471,7 @@ class MasterWindow(NodeEditorWindow):
         VEL.Scene = nodeEditor.scene
 
         nodeEditor.scene.masterRef = self
-
+        nodeEditor.scene.history.masterWndRef = self
 
         subwnd = self.graphs_parent_wdg.addSubWindow(nodeEditor)
 

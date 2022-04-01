@@ -80,7 +80,8 @@ class MasterEditorWnd(NodeEditorWidget):
         return context_menu
 
     def setTitle(self):
-        self.setWindowTitle(self.getUserFriendlyFilename())
+        # self.setWindowTitle(self.getUserFriendlyFilename())
+        self.setWindowTitle(self.windowTitle())
 
     def addCloseEventListener(self, callback):
         self._close_event_listeners.append(callback)
