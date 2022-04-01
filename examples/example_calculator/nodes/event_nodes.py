@@ -14,6 +14,7 @@ class Event(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[0])
+        self.isEvent = True
         self.nodeColor = "#90FF1010"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 

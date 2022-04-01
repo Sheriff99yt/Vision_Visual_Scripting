@@ -37,7 +37,6 @@ class MasterNode(Node):
     content_label = ""
     content_label_objname = "calc_node_bg"
     node_Value = None
-    isSetter = None
 
     GraphicsNode_class = MasterGraphicsNode
     NodeContent_class = MasterContent
@@ -60,5 +59,5 @@ class MasterNode(Node):
 
     def deserialize(self, data, hashmap={}, restore_id=True):
         res = super().deserialize(data, hashmap, restore_id)
-        print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
+        # print("Deserialized Node '%s'" % self.__class__.__name__, "res:", res)
         return res

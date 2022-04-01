@@ -46,7 +46,6 @@ class NodeEditorWidget(QWidget):
 
         # crate graphics scene
         self.scene = self.__class__.Scene_class()
-
         # create graphics view
         self.GraphGraphicsView = self.__class__.GraphGraphics_class(self.scene.grScene, self)
         self.layout.addWidget(self.GraphGraphicsView)
@@ -138,12 +137,13 @@ class NodeEditorWidget(QWidget):
         name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
         return name + ("*" if self.isModified() else "")
 
-    def fileNew(self):
-        """Empty the scene (create new file)"""
+    def newGraph(self):
+        """Empty the scene (create new Graph)"""
         self.scene.clear()
         self.filename = None
         self.scene.history.clear()
         self.scene.history.storeInitialHistoryStamp()
+        return self.scene
 
     def fileLoad(self, filename: str):
         """Load serialized graph from JSON file
@@ -176,10 +176,13 @@ class NodeEditorWidget(QWidget):
         :param filename: file to store the graph
         :type filename: ``str``
         """
-        if filename is not None: self.filename = filename
+        if filename is not None:
+            self.filename = filename
+
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.scene.saveToFile(self.filename)
         QApplication.restoreOverrideCursor()
+
         return True
 
     def addNodes(self):

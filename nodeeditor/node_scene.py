@@ -5,6 +5,7 @@ A module containing the representation of the NodeEditor's Scene
 import os, sys, json
 from collections import OrderedDict
 
+
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException, pp
 from nodeeditor.node_serializable import Serializable
@@ -34,9 +35,10 @@ class NodeScene(Serializable):
             - **scene_height** - height of this `Scene` in pixels
         """
         super().__init__()
+        self.VEListWdg = None
         self.nodes = []
         self.edges = []
-        self.varsEventsLists = None
+        self.masterRef = None
         # current filename assigned to this scene
         self.filename = None
 
@@ -132,8 +134,7 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Selection Changed")
 
         self.NodeEditor.UpdateTextCode()
-        # print(self.varsEventsLists)
-        self.varsEventsLists.findListItem(self.getSelectedNodes())
+        self.VEListWdg.findListItem(self.getSelectedNodes())
 
     def getSelectedNodes(self):
         selectedNodes = []
@@ -340,9 +341,12 @@ class NodeScene(Serializable):
                     data = json.loads(raw_data)
                 else:
                     data = json.loads(raw_data, encoding='utf-8')
+
                 self.filename = filename
+
                 self.deserialize(data)
                 self.has_been_modified = False
+
             except json.JSONDecodeError:
                 raise InvalidFile("%s is not a valid JSON file" % os.path.basename(filename))
             except Exception as e:
@@ -376,25 +380,68 @@ class NodeScene(Serializable):
         """
         return Node if self.node_class_selector is None else self.node_class_selector(data)
 
+    def UVSerialize(self):
+        # Serialize all item in UserVarsData
+
+        self.userVars = []
+        for item in self.VEListWdg.user_vars_data:
+            userVar = OrderedDict([
+                ('title', item[0]),
+                ('id', item[1]),
+                ('type', item[2]),
+            ])
+
+            self.userVars.append(userVar)
+
+    def UESerialize(self):
+        # Serialize all item in UserEventsData
+
+        self.userEvents = []
+        for item in self.VEListWdg.user_events_data:
+            userEvent = OrderedDict([
+                ('title', item[0]),
+                ('id', item[1]),
+                ('type', item[2]),
+            ])
+
+            self.userEvents.append(userEvent)
+
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
+
         for node in self.nodes: nodes.append(node.serialize())
         for edge in self.edges: edges.append(edge.serialize())
+        self.UVSerialize()
+        self.UESerialize()
         return OrderedDict([
             ('id', self.id),
             ('scene_width', self.scene_width),
             ('scene_height', self.scene_height),
+            ('user_vars', self.userVars),
+            ('user_events', self.userEvents),
             ('nodes', nodes),
             ('edges', edges),
         ])
 
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
-        hashmap = {}
+        # Start with the scene ID
 
-        if restore_id: self.id = data['id']
+        print(self.VEListWdg)
+
+        hashmap = {}
+        if restore_id:
+            self.id = data['id']
+
+        # Deserialize the User Vars
+        for var_data in data['user_vars']:
+            self.VEListWdg.LoadVar(type=var_data['type'], name=var_data['title'], id=var_data['id'])
+
+        # Deserialize the User Events
+        for event_data in data['user_events']:
+            self.VEListWdg.LoadEvent(type=event_data['type'], name=event_data['title'], id=event_data['id'])
+
 
         # -- deserialize NODES
-
         # Instead of recreating all the nodes, reuse existing ones...
         # get list of all current nodes:
         all_nodes = self.nodes.copy()
@@ -459,4 +506,5 @@ class NodeScene(Serializable):
             edge = all_edges.pop()
             edge.remove()
 
+        self.NodeEditor.UpdateTextCode()
         return True

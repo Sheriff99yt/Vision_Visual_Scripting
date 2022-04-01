@@ -2,7 +2,7 @@ from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
-from examples.example_calculator.nodes.nodes_configuration import FUNCTIONS, get_node_by_ID, LISTBOX_MIMETYPE
+from examples.example_calculator.nodes.nodes_configuration import FUNCTIONS, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
@@ -23,7 +23,7 @@ class NodeList(QListWidget):
         Funs = list(FUNCTIONS.keys())
         Funs.sort()
         for Fun in Funs:
-            node = get_node_by_ID(Fun)
+            node = get_node_by_type(Fun)
             self.addMyItem(node.name, node.icon, node.node_type)
 
     def addMyItem(self, name, icon=None, node_type=0):

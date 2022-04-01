@@ -33,20 +33,21 @@ class MasterEditorWnd(NodeEditorWidget):
         if 'node_type' not in data:
             return Node
         else:
-            return get_node_by_ID(data['node_type'])
+            return get_node_by_type(data['node_type'])
 
-    def doEvalOutputs(self):
-        # eval all output nodes
-        for node in self.scene.nodes:
-            if node.__class__.__name__ == "CalcNode_Output":
-                node.eval()
+    # def doEvalOutputs(self):
+    #     # eval all output nodes
+    #     for node in self.scene.nodes:
+    #         if node.__class__.__name__ == "CalcNode_Output":
+    #             node.eval()
 
     def onHistoryRestored(self):
-        self.doEvalOutputs()
+        # self.doEvalOutputs()
+        pass
 
     def fileLoad(self, filename):
         if super().fileLoad(filename):
-            self.doEvalOutputs()
+            # self.doEvalOutputs()
             return True
 
         return False
@@ -54,9 +55,9 @@ class MasterEditorWnd(NodeEditorWidget):
     def initNewNodeActions(self):
         self.node_actions = {}
         Funs = list(FUNCTIONS.keys())
-        Vars = list(USERVARS.keys())
         Funs.sort()
-        Vars.sort()
+        # Vars = list(USERVARS.keys())
+        # Vars.sort()
         for key in Funs:
             node = FUNCTIONS[key]
             self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
@@ -70,8 +71,8 @@ class MasterEditorWnd(NodeEditorWidget):
         context_menu = QMenu(self)
         Funs = list(FUNCTIONS.keys())
         Funs.sort()
-        Vars = list(USERVARS.keys())
-        Vars.sort()
+        # Vars = list(USERVARS.keys())
+        # Vars.sort()
         for key in Funs:
             context_menu.addAction(self.node_actions[key])
         # for key in Vars:
@@ -130,7 +131,7 @@ class MasterEditorWnd(NodeEditorWidget):
                 elif isVar:
                     self.varSelectMenu(event)
                 else:
-                    node = get_node_by_ID(self.node_type)(self.scene)
+                    node = get_node_by_type(self.node_type)(self.scene)
                     node.setPos(self.scene_position.x(), self.scene_position.y())
                     self.scene.history.storeHistory("Created Node %s" % node.__class__.__name__)
 
@@ -149,6 +150,9 @@ class MasterEditorWnd(NodeEditorWidget):
             # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
 
+    def ActiveScene(self):
+        return self.scene.masterRef.CurrentNodeEditor().scene
+
     def varSelectMenu(self, event):
         context_menu = QMenu(self)
         getter = context_menu.addAction("Get")
@@ -160,7 +164,8 @@ class MasterEditorWnd(NodeEditorWidget):
         if action is cancel or action is None:
             return
         else:
-            userVar = get_user_var_by_ID(self.node_type)(self.scene)
+            scene = self.ActiveScene()
+            userVar = scene.VEListWdg.get_user_var_by_ID(self.node_type)(scene)
             if action == setter:
                 userVar.toSetter()
             elif action == getter:
@@ -180,7 +185,8 @@ class MasterEditorWnd(NodeEditorWidget):
         if action is cancel or action is None:
             return
         else:
-            userEvent = get_user_event_by_ID(self.node_type)(self.scene)
+            scene = self.ActiveScene()
+            userEvent = scene.VEListWdg.get_user_event_by_ID(self.node_type)(scene)
             if action == write:
                 userEvent.toSetter()
             elif action == call:
@@ -289,7 +295,7 @@ class MasterEditorWnd(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_node = get_node_by_ID(action.data())(self.scene)
+            new_node = get_node_by_type(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_node.setPos(scene_pos.x(), scene_pos.y())
             if DEBUG_CONTEXT: print("Selected node:", new_node)

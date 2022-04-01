@@ -8,23 +8,22 @@ class FilesWDG(QWidget):
         self.masterWmdRef = None
         self.Project_Directory = ""
 
-        self.lay = QVBoxLayout()
-        self.lay.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(self.lay)
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
 
         self.Model = QFileSystemModel()
         self.Model.setRootPath("")
 
-        self.tree = QTreeView()
-        self.tree.setModel(self.Model)
-        self.tree.setSortingEnabled(True)
-        self.tree.setColumnWidth(0, 150)
-        self.tree.setColumnWidth(2, 50)
-        self.tree.sortByColumn(0, Qt.AscendingOrder)
-        self.tree.hideColumn(1)
-        self.tree.setStyleSheet("color: white")
-        self.lay.addWidget(self.tree)
-
+        self.tree_wdg = QTreeView()
+        self.tree_wdg.setModel(self.Model)
+        self.tree_wdg.setSortingEnabled(True)
+        self.tree_wdg.setColumnWidth(0, 130)
+        self.tree_wdg.sortByColumn(0, Qt.AscendingOrder)
+        self.tree_wdg.hideColumn(1)
+        self.tree_wdg.hideColumn(2)
+        self.tree_wdg.setStyleSheet("color: white")
+        layout.addWidget(self.tree_wdg)
 
         self.CreateDefaultDir()
 
@@ -37,7 +36,7 @@ class FilesWDG(QWidget):
             Dir = defaultDir
 
         self.Project_Directory = Dir
-        self.tree.setRootIndex(self.Model.index(self.Project_Directory))
+        self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
 
     def onSetProjectFolder(self):
         Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
@@ -54,14 +53,14 @@ class FilesWDG(QWidget):
                                              QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.No)
                     if Q == QMessageBox.Yes:
                         self.Project_Directory = Dir
-                        self.tree.setRootIndex(self.Model.index(self.Project_Directory))
+                        self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
                     elif Q == QMessageBox.No:
                         self.onSetProjectFolder()
                     elif Q == QMessageBox.Cancel:
                         QMessageBox.about(self, "Note", f"""Your Data is Being Saved in\n\n {self.Project_Directory}""")
                 else:
                     self.Project_Directory = Dir
-                    self.tree.setRootIndex(self.Model.index(self.Project_Directory))
+                    self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         else:
             QMessageBox.about(self, "Note", f"""Your Data is Being Saved By Default in\n\n {self.Project_Directory}""")
 

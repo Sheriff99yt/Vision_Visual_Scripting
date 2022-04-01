@@ -50,9 +50,10 @@ class Node(Serializable):
 
         # Additional Uni Code
         self.isVar = False
-        self.isSetter = bool
+        self.isEvent = False
+        self.isSetter = None
         self.showCode = True
-        self.nodeID = int
+        self.nodeID = None
 
         # just to be sure, init these variables
         self.content = None
@@ -70,6 +71,7 @@ class Node(Serializable):
         self.outputs = []
 
         self.initSockets(inputs, outputs)
+
 
     def getSocketCode(self, socketID):
         print(len(self.inputs))
@@ -359,7 +361,7 @@ class Node(Serializable):
 
     def NodeCodeAtInput(self, index: int = 0):
         if not self.inputs or index > len(self.inputs)-1:
-            print("Trying ro call from Node Input socket while Node has no input socket")
+            print("Trying to call from Node Input socket while Node has no input socket")
             return None
 
         input_socket = self.inputs[index]
@@ -388,7 +390,7 @@ class Node(Serializable):
 
     def isInputConnected(self, index: int = 0):
         if not self.inputs:
-            print("Trying ro call from Node Input socket while Node has no input socket")
+            print("Trying to call from Node Input socket while Node has no input socket")
             return
 
         input_socket = self.inputs[index]
@@ -577,11 +579,13 @@ class Node(Serializable):
         ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
         return OrderedDict([
             ('id', self.id),
-            ('title', self.name),
+            ('name', self.name),
             ('pos_x', self.grNode.scenePos().x()),
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
             ('outputs', outputs),
+            ('is_var', self.isVar),
+            ('is_setter', self.isSetter),
             ('content', ser_content),
         ])
 
@@ -591,7 +595,8 @@ class Node(Serializable):
             hashmap[data['id']] = self
 
             self.setPos(data['pos_x'], data['pos_y'])
-            self.name = data['title']
+            self.name = data['name']
+
 
             data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
             data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
@@ -642,6 +647,21 @@ class Node(Serializable):
                     self.outputs.append(found)  # append newly created output to the list
                 found.deserialize(socket_data, hashmap, restore_id)
 
+
+            self.isVar = data['is_var']
+            self.isSetter = data['is_setter']
+
+            if self.isVar or self.isEvent:
+                if self.isSetter:
+                    self.getNodeCode = self.setterCode
+                    self.grNode.AutoResizeGrNode()
+
+                else:
+                    self.getNodeCode = self.getterCode
+                    self.grNode.AutoResizeGrNode()
+
+
+
         except Exception as e:
             dumpException(e)
 
@@ -661,6 +681,12 @@ class Node(Serializable):
 
     def getNodeCode(self):
         return None
+
+    def getterCode(self):
+        pass
+
+    def setterCode(self):
+        pass
 
     def initUI(self):
         pass

@@ -107,7 +107,6 @@ class QDMGraphicsNode(QGraphicsItem):
             maxSockets = self.node.outputs
 
         for socket in maxSockets:
-            print(socketsHeight)
             socketsHeight += self.node.socket_spacing
 
         self.height = socketsHeight
@@ -265,3 +264,4 @@ class QDMGraphicsNode(QGraphicsItem):
         else:
             painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
             painter.drawPath(path_outline.simplified())
+

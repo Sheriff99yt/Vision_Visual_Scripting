@@ -2,7 +2,7 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
-from examples.example_calculator.nodes.nodes_configuration import FUNCTIONS, get_node_by_ID, LISTBOX_MIMETYPE
+from examples.example_calculator.nodes.nodes_configuration import FUNCTIONS, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from nodeeditor.graph_graphics import MODE_EDGE_DRAG
@@ -30,7 +30,7 @@ class MasterDesignerWnd(NodeEditorWidget):
 
     def getNodeClassFromData(self, data):
         if 'node_type' not in data: return Node
-        return get_node_by_ID(data['node_type'])
+        return get_node_by_type(data['node_type'])
 
     def doEvalOutputs(self):
         # eval all output nodes
@@ -39,11 +39,10 @@ class MasterDesignerWnd(NodeEditorWidget):
                 node.eval()
 
     def onHistoryRestored(self):
-        self.doEvalOutputs()
+        pass
 
     def fileLoad(self, filename):
         if super().fileLoad(filename):
-            self.doEvalOutputs()
             return True
 
         return False
@@ -96,7 +95,7 @@ class MasterDesignerWnd(NodeEditorWidget):
             if DEBUG: print("GOT DROP: [%d] '%s'" % (node_type, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
-                node = get_node_by_ID(node_type)(self.scene)
+                node = get_node_by_type(node_type)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
 
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
@@ -198,7 +197,7 @@ class MasterDesignerWnd(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_calc_node = get_node_by_ID(action.data())(self.scene)
+            new_calc_node = get_node_by_type(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_calc_node.setPos(scene_pos.x(), scene_pos.y())
             if DEBUG_CONTEXT: print("Selected node:", new_calc_node)

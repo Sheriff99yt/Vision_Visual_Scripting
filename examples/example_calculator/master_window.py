@@ -2,7 +2,7 @@ import os
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
-
+from copy import *
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from examples.example_calculator.master_editor_wnd import MasterEditorWnd
@@ -35,6 +35,12 @@ DEBUG = False
 
 class MasterWindow(NodeEditorWindow):
 
+    def MakeCopyOfClass(self, classRef):
+        class NewVEList(classRef):
+            pass
+
+        return NewVEList
+
     def initUI(self):
         self.name_company = 'MyTeam'
         self.name_product = 'Vision Visual Scripting'
@@ -48,36 +54,43 @@ class MasterWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
-        self.graphsNames=[]
+        self.graphsNames = []
 
-        self.masterDisplay = QStackedWidget()
-        self.mdiArea = QMdiArea()
+        self.all_VE_lists = []
+        self.all_graphs = []
+
+        self.stackedDisplay = QStackedWidget()
+
+        self.graphs_parent_wdg = QMdiArea()
+
         # Create Node Designer Window
         self.nodeDesigner = MasterDesignerWnd()
 
-        self.masterDisplay.addWidget(self.mdiArea)
-        self.masterDisplay.addWidget(self.nodeDesigner)
-        self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.mdiArea.setViewMode(QMdiArea.TabbedView)
-        self.mdiArea.setDocumentMode(True)
-        self.mdiArea.setTabsClosable(True)
-        self.mdiArea.setTabsMovable(True)
-        self.setCentralWidget(self.masterDisplay)
+        self.stackedDisplay.addWidget(self.graphs_parent_wdg)
+        self.stackedDisplay.addWidget(self.nodeDesigner)
+        self.graphs_parent_wdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.graphs_parent_wdg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
+        self.graphs_parent_wdg.setDocumentMode(True)
+        self.graphs_parent_wdg.setTabsClosable(True)
+        self.graphs_parent_wdg.setTabsMovable(True)
+        self.setCentralWidget(self.stackedDisplay)
 
-        self.mdiArea.subWindowActivated.connect(self.updateMenus)
+        self.graphs_parent_wdg.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+
+        self.graphs_parent_wdg.subWindowActivated.connect(self.ActiveGraphSwitched)
 
         # Create Details List Window
         self.CreatePropertiesDock()
 
         # Create Nodes List
         self.createFunctionsDock()
-
         self.CreateFilesDock()
+
         # Create Variable List
-        self.CreateVariablesEventsDock()
+        self.CreateVarEventDock()
 
         self.createActions()
         self.createMenus()
@@ -92,6 +105,14 @@ class MasterWindow(NodeEditorWindow):
 
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
+
+    def ActiveGraphSwitched(self):
+
+        if self.CurrentNodeEditor():
+            currentGraphIndex = self.all_graphs.index(self.CurrentNodeEditor())
+            self.VEStackedWdg.setCurrentIndex(currentGraphIndex)
+        else:
+            pass
 
     def CreateToolBar(self):
         self.nodeDesignerBtn = QAction(QIcon("icons/Pencil_1.png"), "&Toggle Designer", self)
@@ -123,14 +144,14 @@ class MasterWindow(NodeEditorWindow):
         self.codeWndCopy.setShortcut(QKeySequence("Ctrl+Shift+C"))
 
     def CopyTextCode(self):
-        Wnd = self.getCurrentNodeEditorWidget()
-        if Wnd is not None:
-            Wnd.TextCodeWnd.selectAll()
-            Wnd.TextCodeWnd.copy()
+        current_NE = self.CurrentNodeEditor()
+        if current_NE is not None:
+            current_NE.TextCodeWnd.selectAll()
+            current_NE.TextCodeWnd.copy()
 
     def closeEvent(self, event):
-        self.mdiArea.closeAllSubWindows()
-        if self.mdiArea.currentSubWindow():
+        self.graphs_parent_wdg.closeAllSubWindows()
+        if self.graphs_parent_wdg.currentSubWindow():
             event.ignore()
         else:
             self.writeSettings()
@@ -143,63 +164,89 @@ class MasterWindow(NodeEditorWindow):
         super().createActions()
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
-                                triggered=self.mdiArea.closeActiveSubWindow)
+                                triggered=self.graphs_parent_wdg.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",
-                                   triggered=self.mdiArea.closeAllSubWindows)
-        self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.mdiArea.tileSubWindows)
+                                   triggered=self.graphs_parent_wdg.closeAllSubWindows)
+        self.actTile = QAction("&Tile", self, statusTip="Tile the windows",
+                               triggered=self.graphs_parent_wdg.tileSubWindows)
         self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows",
-                                  triggered=self.mdiArea.cascadeSubWindows)
+                                  triggered=self.graphs_parent_wdg.cascadeSubWindows)
         self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild,
                                statusTip="Move the focus to the next window",
-                               triggered=self.mdiArea.activateNextSubWindow)
+                               triggered=self.graphs_parent_wdg.activateNextSubWindow)
         self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild,
                                    statusTip="Move the focus to the previous window",
-                                   triggered=self.mdiArea.activatePreviousSubWindow)
+                                   triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
 
         self.actSeparator = QAction(self)
         self.actSeparator.setSeparator(True)
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
 
-    def getCurrentNodeEditorWidget(self):
+    def CurrentNodeEditor(self):
         """ we're returning NodeEditorWidget here... """
-        activeSubWindow = self.mdiArea.activeSubWindow()
+        activeSubWindow = self.graphs_parent_wdg.activeSubWindow()
+
         if activeSubWindow:
             return activeSubWindow.widget()
-        return None
+        else:
+            return None
 
-    def onFileNew(self):
+    def currentVEList(self, add=0):
+        if self.VEStackedWdg.widget(self.VEStackedWdg.currentIndex() + add) == None:
+            return self.VEStackedWdg.widget(self.VEStackedWdg.currentIndex())
+        return self.VEStackedWdg.widget(self.VEStackedWdg.currentIndex() + add)
+
+    def onNewGraphTab(self):
+        # Overrides Node Editor Window > actNew action
         try:
-            subwnd = self.createMdiChild()
-            subwnd.widget().fileNew()
+            subwnd = self.newGraphTab()
+            subwnd.widget().newGraph()
+
             subwnd.show()
 
             self.filesWidget.CreateNewGraph(subwnd)
 
-            self.CodeWndSettingBtn.triggered.connect(self.getCurrentNodeEditorWidget().setCodeWndViewMode)
+            self.CodeWndSettingBtn.triggered.connect(self.CurrentNodeEditor().setCodeWndViewMode)
         except Exception as e:
             dumpException(e)
+
     def onFileOpen(self):
-        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(),
+                                                      self.getFileDialogFilter())
 
         try:
             for fname in fnames:
                 if fname:
-                    existing = self.findMdiChild(fname)
-                    if existing:
-                        self.mdiArea.setActiveSubWindow(existing)
+
+                    if self.findMdiChild(fname):
+
+                        subwnd = self.findMdiChild(fname)
+                        nodeEditor = subwnd.widget()
+                        VEL = self.CreateNewVEList()
+
+                        nodeEditor.scene.VEListWdg = VEL
+
+                        VEL.Scene = nodeEditor.scene
+
+                        self.all_graphs.append(nodeEditor)
+                        nodeEditor.scene.masterRef = self
+
+                        self.graphs_parent_wdg.setActiveSubWindow(subwnd)
+
                     else:
                         # we need to create new subWindow and open the file
-                        nodeeditor = MasterEditorWnd()
-                        nodeeditor.scene.varsEventsLists = self.varsEventsWidget
+                        nodeEditor = MasterEditorWnd()
+                        nodeEditor.scene.masterRef = self
+                        subwnd = self.newGraphTab(nodeEditor)
 
-                        if nodeeditor.fileLoad(fname):
+                        if nodeEditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
-                            nodeeditor.setTitle()
-                            subwnd = self.createMdiChild(nodeeditor)
+                            nodeEditor.setTitle()
                             subwnd.show()
                         else:
-                            nodeeditor.close()
+                            nodeEditor.close()
+
         except Exception as e:
             dumpException(e)
 
@@ -224,7 +271,7 @@ class MasterWindow(NodeEditorWindow):
 
     def updateMenus(self):
         # print("update Menus")
-        active = self.getCurrentNodeEditorWidget()
+        active = self.CurrentNodeEditor()
         hasMdiChild = (active is not None)
 
         self.actSave.setEnabled(hasMdiChild)
@@ -242,7 +289,7 @@ class MasterWindow(NodeEditorWindow):
     def updateEditMenu(self):
         try:
             # print("update Edit Menu")
-            active = self.getCurrentNodeEditorWidget()
+            active = self.CurrentNodeEditor()
             hasMdiChild = (active is not None)
 
             self.actPaste.setEnabled(hasMdiChild)
@@ -290,7 +337,7 @@ class MasterWindow(NodeEditorWindow):
         self.windowMenu.addAction(self.actPrevious)
         self.windowMenu.addAction(self.actSeparator)
 
-        windows = self.mdiArea.subWindowList()
+        windows = self.graphs_parent_wdg.subWindowList()
         self.actSeparator.setVisible(len(windows) != 0)
 
         for i, window in enumerate(windows):
@@ -302,7 +349,7 @@ class MasterWindow(NodeEditorWindow):
 
             action = self.windowMenu.addAction(text)
             action.setCheckable(True)
-            action.setChecked(child is self.getCurrentNodeEditorWidget())
+            action.setChecked(child is self.CurrentNodeEditor())
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
@@ -332,19 +379,17 @@ class MasterWindow(NodeEditorWindow):
 
     def createGraphsDock(self):
         self.graphsDock = QDockWidget("Graphs")
-        self.graphsDock.setWidget(self.mdiArea)
+        self.graphsDock.setWidget(self.graphs_parent_wdg)
         self.graphsDock.setFeatures(self.graphsDock.DockWidgetClosable | self.graphsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.graphsDock)
 
     def updateActiveWnd(self):
         if self.nodeDesignerBtn.isChecked():
-            self.masterDisplay.setCurrentIndex(1)
-
+            self.stackedDisplay.setCurrentIndex(1)
         else:
-            self.masterDisplay.setCurrentIndex(0)
+            self.stackedDisplay.setCurrentIndex(0)
 
     def createFunctionsDock(self):
-
         self.nodesListWidget = NodeList()
 
         self.nodesDock = QDockWidget("Functions")
@@ -362,47 +407,65 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
     def CreatePropertiesDock(self):
-        self.proprietiesListWidget = PropertiesList()
+        self.proprietiesWdg = PropertiesList()
 
         self.proprietiesDock = QDockWidget("Properties")
-        self.proprietiesDock.setWidget(self.proprietiesListWidget)
+        self.proprietiesDock.setWidget(self.proprietiesWdg)
         self.proprietiesDock.setFeatures(self.proprietiesDock.DockWidgetMovable)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
-    def CreateVariablesEventsDock(self):
-        self.varsEventsWidget = VarEventList()
-        self.varsEventsWidget.Proprieties = self.proprietiesListWidget
+    def CreateVarEventDock(self):
         self.varsDock = QDockWidget("Variables & Events")
-        self.varsDock.setWidget(self.varsEventsWidget)
+
+        self.VEStackedWdg = QStackedWidget()
+        self.varsDock.setWidget(self.VEStackedWdg)
         self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
+
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
+
+    def CreateNewVEList(self):
+
+        new_wdg = self.MakeCopyOfClass(VarEventList)
+        new_wdg = new_wdg()
+
+        self.all_VE_lists.append(new_wdg)
+
+        self.VEStackedWdg.addWidget(new_wdg)
+
+        self.VEStackedWdg.setCurrentWidget(new_wdg)
+
+        return new_wdg
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
-    def createMdiChild(self, child_widget=None):
-        if child_widget is not None:
-            self.nodeeditor = child_widget
-            self.varsEventsWidget.Scene = child_widget.scene
-        else:
-            self.nodeeditor = MasterEditorWnd()
-            self.nodeeditor.scene.varsEventsLists = self.varsEventsWidget
-            self.varsEventsWidget.Scene = self.nodeeditor.scene
+    def newGraphTab(self, oldNodeEditor=None):
 
-        subwnd = self.mdiArea.addSubWindow(self.nodeeditor)
+        VEL = self.CreateNewVEList()
 
+        nodeEditor = oldNodeEditor if oldNodeEditor is not None else MasterEditorWnd()
+        self.all_graphs.append(nodeEditor)
+
+        nodeEditor.scene.VEListWdg = VEL
+        VEL.Scene = nodeEditor.scene
+
+        nodeEditor.scene.masterRef = self
+
+
+        subwnd = self.graphs_parent_wdg.addSubWindow(nodeEditor)
 
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)
         # nodeeditor.scene.addItemsDeselectedListener(self.updateEditMenu)
-        self.nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
-        self.nodeeditor.addCloseEventListener(self.onSubWndClose)
+        nodeEditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        nodeEditor.addCloseEventListener(self.onSubWndClose)
+
         return subwnd
 
     def onSubWndClose(self, widget, event):
         existing = self.findMdiChild(widget.filename)
-        self.mdiArea.setActiveSubWindow(existing)
+        self.graphs_parent_wdg.setActiveSubWindow(existing)
 
         if self.maybeSave():
             event.accept()
@@ -410,11 +473,11 @@ class MasterWindow(NodeEditorWindow):
             event.ignore()
 
     def findMdiChild(self, filename):
-        for window in self.mdiArea.subWindowList():
+        for window in self.graphs_parent_wdg.subWindowList():
             if window.widget().filename == filename:
                 return window
         return None
 
     def setActiveSubWindow(self, window):
         if window:
-            self.mdiArea.setActiveSubWindow(window)
+            self.graphs_parent_wdg.setActiveSubWindow(window)

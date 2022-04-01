@@ -32,8 +32,7 @@ EVENTS = {}
 
 ######################
 
-USERVARS = {}
-USEREVENTS = {}
+
 
 ######################
 
@@ -101,12 +100,13 @@ def set_event_ID_now(node_type, class_reference):
         EVENTS[node_type] = class_reference
 
 
-def get_node_by_ID(node_type):
+def get_node_by_type(node_type):
     NODES = {**FUNCTIONS, **VARIABLES, **EVENTS}
     if node_type not in NODES:
         raise NodeTypeNotRegistered("node_type '%d' is not registered" % node_type)
     else:
         return NODES[node_type]
+
 
 
 ######################
@@ -118,38 +118,16 @@ def get_node_by_ID(node_type):
 # User Variables setup
 
 
-def set_user_var_ID_now(var_ID, class_reference):
-    if var_ID in USERVARS:
-        raise InvalidNodeRegistration(
-            "Duplicate Variable registration of '%s'. There is already %s" % (var_ID, USERVARS[var_ID]))
-    else:
-        USERVARS[var_ID] = class_reference
 
 
-def get_user_var_by_ID(var_ID):
-    if var_ID not in USERVARS:
-        raise NodeTypeNotRegistered("node_type '%d' is not registered" % var_ID)
-    else:
-        return USERVARS[var_ID]
 
 
 ######################
 
 # User Events setup
 
-def set_user_event_ID_now(event_ID, class_reference):
-    if event_ID in USEREVENTS:
-        raise InvalidNodeRegistration(
-            "Duplicate Event registration of '%s'. There is already %s" % (event_ID, USEREVENTS[event_ID]))
-    else:
-        USEREVENTS[event_ID] = class_reference
 
 
-def get_user_event_by_ID(event_ID):
-    if event_ID not in USEREVENTS:
-        raise NodeTypeNotRegistered("Event '%d' is not registered" % event_ID)
-    else:
-        return USEREVENTS[event_ID]
 
 ##############################################################################################################
 ##############################################################################################################
