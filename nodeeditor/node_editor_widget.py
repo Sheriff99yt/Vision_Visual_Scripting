@@ -135,6 +135,7 @@ class NodeEditorWidget(QWidget):
         :rtype: ``str``
         """
         name = os.path.splitext(os.path.basename(self.filename))[0] if self.isFilenameSet() else "New Graph"
+        # name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
         return name + ("*" if self.isModified() else "")
 
     def newGraph(self):

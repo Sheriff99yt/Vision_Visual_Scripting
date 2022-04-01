@@ -230,8 +230,16 @@ class MasterWindow(NodeEditorWindow):
         except Exception as e:
             dumpException(e)
 
-    def onFileOpen(self):
-        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
+    def onFileOpen(self, dir=False):
+        if dir == False:
+            fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
+            print(fnames)
+        else:
+            if dir.endswith(".json"):
+                fnames = [dir]
+                print(fnames)
+            else:
+                return
         try:
             for fname in fnames:
                 if fname:
@@ -494,8 +502,12 @@ class MasterWindow(NodeEditorWindow):
 
     def findMdiChild(self, filename):
         for window in self.graphs_parent_wdg.subWindowList():
-            if window.widget().filename == filename:
-                return window
+            print(filename, window.widget().filename)
+            if window.widget().filename != None and filename != None:
+                wndName = os.path.splitext(os.path.basename(window.widget().filename))[0]
+                fName = os.path.splitext(os.path.basename(filename))[0]
+                if wndName == fName:
+                    return window
         return None
 
     def setActiveSubWindow(self, window):

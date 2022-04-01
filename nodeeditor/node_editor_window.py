@@ -217,7 +217,7 @@ class NodeEditorWindow(QMainWindow):
             if os.path.isfile(f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"""):
                 self.onFileSave()
             else:
-                fname = self.filesWidget.Project_Directory +  "/AutoSave/" + current_node_editor.windowTitle() + "_AS.json"
+                fname = self.filesWidget.Project_Directory +  "/AutoSave/" + current_node_editor.windowTitle() + ".AS.json"
 
                 # if fname == '': return False
 

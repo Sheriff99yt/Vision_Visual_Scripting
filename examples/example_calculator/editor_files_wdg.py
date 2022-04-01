@@ -35,36 +35,7 @@ class FilesWDG(QWidget):
         else:
             fname = f"""{self.Project_Directory}/{self.tree_wdg.currentIndex().parent().data()}/{self.tree_wdg.currentIndex().data()}"""
 
-        if fname[-5] == ".":
-            if self.masterWmdRef.findMdiChild(fname):
-                subwnd = self.masterWmdRef.findMdiChild(fname)
-                nodeEditor = subwnd.widget()
-                VEL = self.masterWmdRef.CreateNewVEList()
-                nodeEditor.scene.VEListWdg = VEL
-                VEL.Scene = nodeEditor.scene
-                self.masterWmdRef.all_graphs.append(nodeEditor)
-                self.masterWmdRef.graphs_parent_wdg.setActiveSubWindow(subwnd)
-            else:
-                # we need to create new subWindow and open the file
-                nodeEditor = MasterEditorWnd()
-                subwnd = self.masterWmdRef.newGraphTab(nodeEditor)
-
-                nodeEditor.scene.masterRef = self.masterWmdRef
-                nodeEditor.scene.history.masterWndRef = self.masterWmdRef
-                # self.masterWmdRef.CodeWndSettingBtn.triggered.connect(nodeEditor.setCodeWndViewMode)
-
-                if nodeEditor.fileLoad(fname):
-                    self.masterWmdRef.statusBar().showMessage("File %s loaded" % fname, 5000)
-                    nodeEditor.setWindowTitle(os.path.splitext(os.path.basename(fname))[0])
-                    subwnd.show()
-                else:
-                    nodeEditor.close()
-        else:
-            msg = QMessageBox()
-            msg.setText("File Format Isn't Supported!")
-            msg.setWindowTitle("Incompatible File")
-            msg.setStyleSheet("background-color: #282828; color: rgb(255, 255, 255);")
-            msg.exec_()
+        self.masterWmdRef.onFileOpen(fname)
 
     def CreateDefaultDir(self):
         defaultDir = os.getenv('AppData') + "/VVS"
