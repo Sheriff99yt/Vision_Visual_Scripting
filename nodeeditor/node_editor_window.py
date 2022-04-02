@@ -196,25 +196,25 @@ class NodeEditorWindow(QMainWindow):
 
     def onFileSave(self):
         """Handle File Save operation"""
-        current_nodeeditor = self.CurrentNodeEditor()
-        if current_nodeeditor is not None:
-            if not current_nodeeditor.isFilenameSet() or current_nodeeditor.filename.__contains__("AutoSave") : return self.onFileSaveAs()
-            current_nodeeditor.fileSave()
-            self.statusBar().showMessage("Successfully saved %s" % current_nodeeditor.filename, 5000)
+        current_node_editor = self.CurrentNodeEditor()
+        if current_node_editor is not None:
+            if not current_node_editor.isFilenameSet() or current_node_editor.filename.__contains__("AutoSave") : return self.onFileSaveAs()
+            current_node_editor.fileSave()
+            self.statusBar().showMessage("Successfully saved %s" % current_node_editor.filename, 5000)
 
             # support for MDI app
-            if hasattr(current_nodeeditor, "setTitle"): current_nodeeditor.setTitle()
+            if hasattr(current_node_editor, "setTitle"): current_node_editor.setTitle()
             else: self.setTitle()
             return True
 
-    def onFileAutoSave(self):
+    def FileAutoSave(self):
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
             # print(f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""")
-            if os.path.isfile(f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"""):
+            if os.path.isfile(f"{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json") and os.path.isfile(f"{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"):
                 self.onFileSave()
             else:
-                fname = f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"""
+                fname = f"{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"
                 # if fname == '': return False
                 self.onBeforeSaveAs(current_node_editor, fname)
                 current_node_editor.fileSave(fname)
@@ -229,19 +229,19 @@ class NodeEditorWindow(QMainWindow):
 
     def onFileSaveAs(self):
         """Handle File Save As operation"""
-        current_nodeeditor = self.CurrentNodeEditor()
-        if current_nodeeditor is not None:
+        current_node_editor = self.CurrentNodeEditor()
+        if current_node_editor is not None:
             fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
             if fname == '': return False
 
-            self.onBeforeSaveAs(current_nodeeditor, fname)
-            current_nodeeditor.fileSave(fname)
-            current_nodeeditor.setWindowTitle(os.path.splitext(os.path.basename(current_nodeeditor.filename))[0])
-            self.statusBar().showMessage("Successfully saved as %s" % current_nodeeditor.filename, 5000)
+            self.onBeforeSaveAs(current_node_editor, fname)
+            current_node_editor.fileSave(fname)
+            current_node_editor.setWindowTitle(os.path.splitext(os.path.basename(current_node_editor.filename))[0])
+            self.statusBar().showMessage("Successfully saved as %s" % current_node_editor.filename, 5000)
 
             # support for MDI app
-            if hasattr(current_nodeeditor, "setTitle"):
-                current_nodeeditor.setTitle()
+            if hasattr(current_node_editor, "setTitle"):
+                current_node_editor.setTitle()
             else:
                 self.setTitle()
             return True

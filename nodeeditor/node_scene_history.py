@@ -158,12 +158,12 @@ class SceneHistory():
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_stored_listeners: callback()
 
-        self.AutoSave()
+        self.onAutoSave()
 
-    def AutoSave(self):
+    def onAutoSave(self):
         self.autoSaveCounter += 1
         if self.autoSaveCounter == 30:
-            self.masterWndRef.onFileAutoSave()
+            self.masterWndRef.FileAutoSave()
             self.autoSaveCounter = 0
 
     def captureCurrentSelection(self) -> dict:
