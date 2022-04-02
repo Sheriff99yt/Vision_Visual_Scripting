@@ -426,8 +426,6 @@ class NodeScene(Serializable):
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
         # Start with the scene ID
 
-        print(self.VEListWdg)
-
         hashmap = {}
         if restore_id:
             self.id = data['id']

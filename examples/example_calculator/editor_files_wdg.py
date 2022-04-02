@@ -5,8 +5,7 @@ class FilesWDG(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.masterWmdRef = None
-        self.Project_Directory = ""
+        self.masterRef = None
 
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -16,6 +15,7 @@ class FilesWDG(QWidget):
         self.Model.setRootPath("")
 
         self.tree_wdg = QTreeView()
+        self.tree_wdg.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.tree_wdg.setModel(self.Model)
         self.tree_wdg.setSortingEnabled(True)
         self.tree_wdg.setColumnWidth(0, 130)
@@ -25,26 +25,33 @@ class FilesWDG(QWidget):
         self.tree_wdg.setStyleSheet("color: white")
         layout.addWidget(self.tree_wdg)
 
-        self.tree_wdg.doubleClicked.connect(self.onDoubleClicked)
+        self.tree_wdg.clicked.connect(self.OpenSelectedFiles)
 
         self.CreateDefaultDir()
 
-    def onDoubleClicked(self):
-        if self.Project_Directory.__contains__(self.tree_wdg.currentIndex().parent().data()):
-            fname = f"""{self.Project_Directory}/{self.tree_wdg.currentIndex().data()}"""
-        else:
-            fname = f"""{self.Project_Directory}/{self.tree_wdg.currentIndex().parent().data()}/{self.tree_wdg.currentIndex().data()}"""
-        self.masterWmdRef.onFileOpen(fname)
+    def OpenSelectedFiles(self):
+        all_files = []
+
+        selected_files = self.tree_wdg.selectedIndexes()
+
+        for file_name in selected_files:
+            file_path = QFileSystemModel().filePath(file_name)
+
+            if file_path.endswith(".json"):
+                if not all_files.__contains__(file_path):
+                    all_files.append(file_path)
+                    # print(all_files)
+
+
+        self.masterRef.onFileOpen(all_files)
 
     def CreateDefaultDir(self):
-        defaultDir = f"""C:/Users/{os.getlogin()}/AppData/Roaming/VVS"""
-        if os.path.exists(defaultDir):
-            Dir = defaultDir
+        self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
+        if os.path.exists(self.Project_Directory):
+            pass
         else:
-            os.makedirs(os.getenv('AppData') + "/VVS")
-            Dir = defaultDir
+            self.Project_Directory = os.makedirs(os.getenv('AppData') + "/VVS")
 
-        self.Project_Directory = Dir
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)
 
@@ -77,27 +84,27 @@ class FilesWDG(QWidget):
 
     def removeDeletedGraphs(self):
         wndsN = []
-        wnds = self.masterWmdRef.graphs_parent_wdg.subWindowList()
+        wnds = self.masterRef.graphs_parent_wdg.subWindowList()
         if wnds != []:
             for wnd in wnds:
                 Y = [int(s) for s in wnd.windowTitle().split() if s.isdigit()]
                 wndsN.append(f"New Graph {Y[0] if Y else 1}")
 
-        list2 = [i for i in wndsN + self.masterWmdRef.graphsNames if
-                 i not in wndsN or i not in self.masterWmdRef.graphsNames]  # this is the difference between the two lists
+        list2 = [i for i in wndsN + self.masterRef.graphsNames if
+                 i not in wndsN or i not in self.masterRef.graphsNames]  # this is the difference between the two lists
 
         if list2 != []:
             for li in list2:
-                if self.masterWmdRef.graphsNames.__contains__(li):
-                    self.masterWmdRef.graphsNames.remove(li)
+                if self.masterRef.graphsNames.__contains__(li):
+                    self.masterRef.graphsNames.remove(li)
 
     def CreateNewGraph(self, subwnd):
         x = 1
         newName = f"New Graph {x}"
-        while self.masterWmdRef.graphsNames.__contains__(newName):
+        while self.masterRef.graphsNames.__contains__(newName):
             x += 1
             newName = f"New Graph {x}"
         else:
-            self.masterWmdRef.graphsNames.append(newName)
+            self.masterRef.graphsNames.append(newName)
             subwnd.setWindowTitle(newName)
             subwnd.widget().setWindowTitle(newName)

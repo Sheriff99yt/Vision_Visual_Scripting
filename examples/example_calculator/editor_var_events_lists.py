@@ -145,7 +145,6 @@ class VarEventList(QTabWidget):
         varData = [name, id, type]
         self.var_event_names.append(varData[0])
 
-        # print(varData)
         newVar.name = varData[0]
         newVar.nodeID = varData[1]
         newVar.node_type = varData[2]
@@ -166,7 +165,6 @@ class VarEventList(QTabWidget):
         eventData = [name, id, type]
         self.var_event_names.append(eventData[0])
 
-        # print(eventData)
         newEvent.name = eventData[0]
         newEvent.nodeID = eventData[1]
         newEvent.node_type = eventData[2]
@@ -239,7 +237,7 @@ class VarEventList(QTabWidget):
 
     def VarSelectionChanged(self, *args, **kwargs):
         # Name line edite setup
-        print(self.Scene)
+        # print(self.Scene)
         self.Scene.masterRef.proprietiesWdg.varStart = True
         item = self.VarList.currentItem()
         self.varNameInput = QLineEdit()
@@ -481,7 +479,19 @@ class VarEventList(QTabWidget):
         else:
             self.var_event_names.remove(oldName)
             self.var_event_names.append(tryName)
-            return tryName
+
+            for item in self.user_vars_data:
+                if item[0] == oldName:
+                    item[0] = tryName
+                    print("V",self.user_vars_data)
+                    return tryName
+
+            for item in self.user_events_data:
+                if item[0] == oldName:
+                    item[0] = tryName
+                    print("E",self.user_events_data)
+                    return tryName
+
 
     def autoNodeRename(self, node: 'Node'):
         x = 0

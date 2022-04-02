@@ -596,6 +596,7 @@ class Node(Serializable):
 
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
+            self.grNode.name = self.name
 
 
             data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)

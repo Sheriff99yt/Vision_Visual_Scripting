@@ -216,25 +216,25 @@ class MasterEditorWnd(NodeEditorWidget):
         except Exception as e:
             dumpException(e)
 
-    def contextMenuEvent(self, event):
-        try:
-            item = self.scene.getItemAt(event.pos())
-            if DEBUG_CONTEXT: print(item)
-
-            if type(item) == QGraphicsProxyWidget:
-                item = item.widget()
-
-            if hasattr(item, 'node') or hasattr(item, 'socket'):
-                self.handleNodeContextMenu(event)
-            elif hasattr(item, 'edge'):
-                self.handleEdgeContextMenu(event)
-            # elif item is None:
-            else:
-                self.handleNewNodeContextMenu(event)
-
-            return super().contextMenuEvent(event)
-        except Exception as e:
-            dumpException(e)
+    # def contextMenuEvent(self, event):
+    #     try:
+    #         item = self.scene.getItemAt(event.pos())
+    #         if DEBUG_CONTEXT: print(item)
+    #
+    #         if type(item) == QGraphicsProxyWidget:
+    #             item = item.widget()
+    #
+    #         if hasattr(item, 'node') or hasattr(item, 'socket'):
+    #             self.handleNodeContextMenu(event)
+    #         elif hasattr(item, 'edge'):
+    #             self.handleEdgeContextMenu(event)
+    #         # elif item is None:
+    #         else:
+    #             self.handleNewNodeContextMenu(event)
+    #
+    #         return super().contextMenuEvent(event)
+    #     except Exception as e:
+    #         dumpException(e)
 
     def handleNodeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: NODE")

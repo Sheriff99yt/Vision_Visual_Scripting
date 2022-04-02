@@ -20,11 +20,11 @@ if __name__ == '__main__':
     wnd = MasterWindow()
     wnd.showMaximized()
 
-    msg = QMessageBox()
-    msg.setText(f"""Your Data is Being Saved By Default in\n\n {wnd.filesWidget.Project_Directory}""")
-    msg.setWindowTitle("Note")
-    msg.setWindowIcon(QIcon("icons/VVS_Logo.png"))
-    msg.setStyleSheet("background-color: #282828; color: rgb(255, 255, 255);")
+    # msg = QMessageBox()
+    # msg.setText(f"""Your Data is Being Saved By Default in\n\n {wnd.filesWidget.Project_Directory}""")
+    # msg.setWindowTitle("Note")
+    # msg.setWindowIcon(QIcon("icons/VVS_Logo.png"))
+    # msg.setStyleSheet("background-color: #282828; color: rgb(255, 255, 255);")
     # msg.exec_()
 
     sys.exit(app.exec_())

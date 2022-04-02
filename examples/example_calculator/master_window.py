@@ -111,12 +111,8 @@ class MasterWindow(NodeEditorWindow):
         # self.updateActiveWnd()
 
     def ActiveGraphSwitched(self):
-
         if self.CurrentNodeEditor():
-            currentGraphIndex = self.all_graphs.index(self.CurrentNodeEditor())
-            self.VEStackedWdg.setCurrentIndex(currentGraphIndex)
-        else:
-            pass
+            self.VEStackedWdg.setCurrentWidget(self.CurrentNodeEditor().scene.VEListWdg)
 
     def CreateToolBar(self):
         self.nodeDesignerBtn = QAction(QIcon("icons/Pencil_1.png"), "&Toggle Designer", self)
@@ -230,25 +226,19 @@ class MasterWindow(NodeEditorWindow):
         except Exception as e:
             dumpException(e)
 
-    def onFileOpen(self, dir=False):
-        if dir == False:
-            fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
+    def onFileOpen(self, all_files=False):
+        if all_files == False:
+            file_names, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
         else:
-            if dir.endswith(".json"):
-                fnames = [dir]
-            else:
-                return
+            file_names = all_files
+
         try:
-            for fname in fnames:
-                if fname:
-                    if self.findMdiChild(fname):
-                        subwnd = self.findMdiChild(fname)
+            for file_name in file_names:
+                if file_name:
+                    if self.findMdiChild(file_name):
+                        subwnd = self.findMdiChild(file_name)
+
                         nodeEditor = subwnd.widget()
-                        VEL = self.CreateNewVEList()
-
-                        nodeEditor.scene.VEListWdg = VEL
-
-                        VEL.Scene = nodeEditor.scene
 
                         self.all_graphs.append(nodeEditor)
                         nodeEditor.scene.masterRef = self
@@ -260,9 +250,9 @@ class MasterWindow(NodeEditorWindow):
                         nodeEditor = MasterEditorWnd()
                         subwnd = self.newGraphTab(nodeEditor)
 
-                        if nodeEditor.fileLoad(fname):
-                            self.statusBar().showMessage("File %s loaded" % fname, 5000)
-                            nodeEditor.setWindowTitle(os.path.splitext(os.path.basename(fname))[0])
+                        if nodeEditor.fileLoad(file_name):
+                            self.statusBar().showMessage("File %s loaded" % file_name, 5000)
+                            nodeEditor.setWindowTitle(os.path.splitext(os.path.basename(file_name))[0])
                             subwnd.show()
                         else:
                             nodeEditor.close()
@@ -418,7 +408,7 @@ class MasterWindow(NodeEditorWindow):
 
     def CreateFilesDock(self):
         self.filesWidget = FilesWDG()
-        self.filesWidget.masterWmdRef = self
+        self.filesWidget.masterRef = self
 
         self.filesDock = QDockWidget("Project Files")
         self.filesDock.setWidget(self.filesWidget)
@@ -447,7 +437,6 @@ class MasterWindow(NodeEditorWindow):
 
         new_wdg = self.MakeCopyOfClass(VarEventList)
         new_wdg = new_wdg()
-
         self.all_VE_lists.append(new_wdg)
 
         self.VEStackedWdg.addWidget(new_wdg)
@@ -455,6 +444,10 @@ class MasterWindow(NodeEditorWindow):
         self.VEStackedWdg.setCurrentWidget(new_wdg)
 
         return new_wdg
+
+    def DeleteVEList(self, ref):
+        self.all_VE_lists.remove(ref)
+        self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
@@ -488,7 +481,10 @@ class MasterWindow(NodeEditorWindow):
 
     def onSubWndClose(self, widget, event):
         existing = self.findMdiChild(widget.filename)
+
         self.graphs_parent_wdg.setActiveSubWindow(existing)
+
+        self.DeleteVEList(self.graphs_parent_wdg.activeSubWindow().widget().scene.VEListWdg)
 
         if self.maybeSave():
             event.accept()
@@ -504,3 +500,5 @@ class MasterWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
+
+
