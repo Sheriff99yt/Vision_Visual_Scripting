@@ -483,13 +483,11 @@ class VarEventList(QTabWidget):
             for item in self.user_vars_data:
                 if item[0] == oldName:
                     item[0] = tryName
-                    print("V",self.user_vars_data)
                     return tryName
 
             for item in self.user_events_data:
                 if item[0] == oldName:
                     item[0] = tryName
-                    print("E",self.user_events_data)
                     return tryName
 
 

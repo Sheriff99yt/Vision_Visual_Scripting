@@ -1,0 +1,287 @@
+{
+    "id": 1758620159904,
+    "scene_width": 8000,
+    "scene_height": 8000,
+    "user_vars": [
+        {
+            "title": "float",
+            "id": 0,
+            "type": 20
+        },
+        {
+            "title": "float1",
+            "id": 1,
+            "type": 20
+        },
+        {
+            "title": "float2",
+            "id": 2,
+            "type": 20
+        },
+        {
+            "title": "float3",
+            "id": 3,
+            "type": 20
+        }
+    ],
+    "user_events": [],
+    "nodes": [
+        {
+            "id": 1758702815168,
+            "name": "float",
+            "pos_x": -104.55000000000001,
+            "pos_y": -59.36000000000004,
+            "inputs": [
+                {
+                    "id": 1758702815408,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1758702815456,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702815504,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": true,
+            "is_setter": true,
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1758702815552,
+            "name": "float3",
+            "pos_x": -30.559999999999974,
+            "pos_y": -312.37,
+            "inputs": [
+                {
+                    "id": 1758702815984,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1758702816032,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702816080,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": true,
+            "is_setter": true,
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1758702816128,
+            "name": "float2",
+            "pos_x": 109.0,
+            "pos_y": -63.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 1758702816368,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 1
+                }
+            ],
+            "is_var": true,
+            "is_setter": false,
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1758702816320,
+            "name": "Print",
+            "pos_x": -496.22,
+            "pos_y": -88.16999999999999,
+            "inputs": [
+                {
+                    "id": 1758702817472,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1758702817520,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 4
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702817568,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 3
+        },
+        {
+            "id": 1758702817616,
+            "name": "Less Than",
+            "pos_x": 38.0,
+            "pos_y": 280.0,
+            "inputs": [
+                {
+                    "id": 1758702817808,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                },
+                {
+                    "id": 1758702817856,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702817904,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 3
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 6
+        },
+        {
+            "id": 1758702817232,
+            "name": "Greater Than",
+            "pos_x": 156.0,
+            "pos_y": 93.0,
+            "inputs": [
+                {
+                    "id": 1758702818144,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                },
+                {
+                    "id": 1758702818192,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702818240,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 3
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 5
+        },
+        {
+            "id": 2135084788240,
+            "name": "IF Statement",
+            "pos_x": -498.5200000000001,
+            "pos_y": -298.87000000000006,
+            "inputs": [
+                {
+                    "id": 2135084788576,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 2135084788624,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2135084791216,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                },
+                {
+                    "id": 2135084791264,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 1
+        }
+    ],
+    "edges": [
+        {
+            "id": 2135084781136,
+            "edge_type": 2,
+            "start": 1758702816080,
+            "end": 1758702817472
+        },
+        {
+            "id": 2135084778064,
+            "edge_type": 2,
+            "start": 1758702817568,
+            "end": 1758702815408
+        },
+        {
+            "id": 2135084791408,
+            "edge_type": 2,
+            "start": 2135084791216,
+            "end": 1758702815984
+        }
+    ]
+}

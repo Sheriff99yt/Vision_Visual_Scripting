@@ -58,25 +58,29 @@ class FilesWDG(QWidget):
     def onSetProjectFolder(self):
         Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
         if Dir != "":
-            DirCont = os.listdir(Dir)
-            if DirCont != []:
-                Q = QMessageBox.question(self, "Warning",
-                                         "Project Folder Isn't Empty\n\n- Do You Still Want To Use It?",
-                                         QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.No)
-                if Q == QMessageBox.Yes:
-                    self.Project_Directory = Dir
-                    self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
-                    self.MakeDir(self.Project_Directory)
-                elif Q == QMessageBox.No:
-                    self.onSetProjectFolder()
-                elif Q == QMessageBox.Cancel:
-                    QMessageBox.about(self, "Note", f"""Your Data is Being Saved in\n\n {self.Project_Directory}""")
-            else:
-                self.Project_Directory = Dir
-                self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
-                self.MakeDir(self.Project_Directory)
-        else:
-            QMessageBox.about(self, "Note", f"""Your Data is Being Saved By Default in\n\n {self.Project_Directory}""")
+            self.Project_Directory = Dir
+            self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
+            self.MakeDir(self.Project_Directory)
+
+        #     DirCont = os.listdir(Dir)
+        #     if DirCont != []:
+        #         Q = QMessageBox.question(self, "Warning",
+        #                                  "Project Folder Isn't Empty\n\n- Do You Still Want To Use It?",
+        #                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.No)
+        #         if Q == QMessageBox.Yes:
+        #             self.Project_Directory = Dir
+        #             self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
+        #             self.MakeDir(self.Project_Directory)
+        #         elif Q == QMessageBox.No:
+        #             self.onSetProjectFolder()
+        #         elif Q == QMessageBox.Cancel:
+        #             QMessageBox.about(self, "Note", f"""Your Data is Being Saved in\n\n {self.Project_Directory}""")
+        #     else:
+        #         self.Project_Directory = Dir
+        #         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
+        #         self.MakeDir(self.Project_Directory)
+        # else:
+        #     QMessageBox.about(self, "Note", f"""Your Data is Being Saved By Default in\n\n {self.Project_Directory}""")
 
     def MakeDir(self, Dir):
         if os.listdir(self.Project_Directory).__contains__("AutoSave") is False:

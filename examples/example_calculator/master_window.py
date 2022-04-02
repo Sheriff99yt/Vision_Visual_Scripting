@@ -207,11 +207,6 @@ class MasterWindow(NodeEditorWindow):
         else:
             return None
 
-    def currentVEList(self, add=0):
-        if self.VEStackedWdg.widget(self.VEStackedWdg.currentIndex() + add) == None:
-            return self.VEStackedWdg.widget(self.VEStackedWdg.currentIndex())
-        return self.VEStackedWdg.widget(self.VEStackedWdg.currentIndex() + add)
-
     def onNewGraphTab(self):
         # Overrides Node Editor Window > actNew action
         try:

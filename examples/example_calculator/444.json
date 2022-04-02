@@ -1,0 +1,246 @@
+{
+    "id": 1758620171376,
+    "scene_width": 8000,
+    "scene_height": 8000,
+    "user_vars": [
+        {
+            "title": "float",
+            "id": 0,
+            "type": 20
+        },
+        {
+            "title": "float1",
+            "id": 1,
+            "type": 20
+        },
+        {
+            "title": "float2",
+            "id": 2,
+            "type": 20
+        },
+        {
+            "title": "float3",
+            "id": 3,
+            "type": 20
+        }
+    ],
+    "user_events": [],
+    "nodes": [
+        {
+            "id": 1758702736704,
+            "name": "float",
+            "pos_x": -198.0,
+            "pos_y": -75.0,
+            "inputs": [
+                {
+                    "id": 1758702787152,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1758702787200,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702794640,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": true,
+            "is_setter": true,
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1758702815312,
+            "name": "Less Than",
+            "pos_x": 21.0,
+            "pos_y": 41.0,
+            "inputs": [
+                {
+                    "id": 1758702816608,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                },
+                {
+                    "id": 1758702816656,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702816704,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 3
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 6
+        },
+        {
+            "id": 1758702816560,
+            "name": "Equal",
+            "pos_x": 264.0,
+            "pos_y": -25.0,
+            "inputs": [
+                {
+                    "id": 1758702816944,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                },
+                {
+                    "id": 1758702816992,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702817040,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 3
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 4
+        },
+        {
+            "id": 1758702816272,
+            "name": "Print",
+            "pos_x": 245.0,
+            "pos_y": -222.0,
+            "inputs": [
+                {
+                    "id": 1758702817280,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1758702817328,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 4
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702817376,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": false,
+            "is_setter": null,
+            "content": {},
+            "node_type": 3
+        },
+        {
+            "id": 1758702817760,
+            "name": "float1",
+            "pos_x": -364.0,
+            "pos_y": 103.0,
+            "inputs": [
+                {
+                    "id": 1758702818624,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 1,
+                    "socket_type": 0
+                },
+                {
+                    "id": 1758702818672,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 1,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1758702818720,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 4,
+                    "socket_type": 0
+                }
+            ],
+            "is_var": true,
+            "is_setter": true,
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1758702818768,
+            "name": "float2",
+            "pos_x": -432.0,
+            "pos_y": -69.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 1758702819008,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 1
+                }
+            ],
+            "is_var": true,
+            "is_setter": false,
+            "content": {},
+            "node_type": 20
+        },
+        {
+            "id": 1758702818912,
+            "name": "float3",
+            "pos_x": -381.0,
+            "pos_y": 267.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 1758702819344,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 4,
+                    "socket_type": 1
+                }
+            ],
+            "is_var": true,
+            "is_setter": false,
+            "content": {},
+            "node_type": 20
+        }
+    ],
+    "edges": []
+}
