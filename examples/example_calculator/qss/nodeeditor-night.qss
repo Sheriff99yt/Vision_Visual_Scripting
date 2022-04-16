@@ -1,14 +1,19 @@
-QFrame,QDialog,QMainWindow,QSplitter,QStatusBar,QMainWindow::separator{background:#282828}
+QDialog,QMainWindow,QSplitter,QStatusBar,QMainWindow::separator {background:#282828}
 QFrame {background-color:#565656}
+
 QToolBar {
     padding: 6px;
     background: #282828;
     spacing: 6px;}
 
-QTabBar,QStatusBar{background:#282828;color:#FFFFFF}
+QTabBar,QStatusBar{background:#282828; color:#FFFFFF}
 
-QTabWidget{border:0}
+QTabWidget {
+    border:0;}
 
+QTabBar::tab:selected {
+    background-color: #1F1F1F;
+    color: white;}
 
 QComboBox {
     background-color: #1F1F1F;
@@ -22,8 +27,10 @@ QComboBox:hover, QComboBox:focus {
     border: 2px solid #1F1F1F;
     background-color: #282828;}
 
+
 QComboBox QAbstractItemView{
     background-color: #1F1F1F;}
+
 
 QComboBox::drop-down {
     background-color: #1F1F1F;
@@ -35,6 +42,7 @@ QComboBox::drop-down {
     border-left-color: #FFFFFF;
     border-left-style: solid;}
 
+
 QPushButton, QToolButton {
     padding: 6px;
     background-color: #1F1F1F;
@@ -43,17 +51,21 @@ QPushButton, QToolButton {
     text-align: center;
     border-radius: 1px;}
 
+
 QPushButton:hover, QToolButton:hover{
     border: 1px solid #FFFFFF;}
+
 
 QPushButton:pressed, QToolButton:pressed{
     background-color: #828282;
     border: 2px solid #1F1F1F;}
 
+
 QPushButton, QToolButton:checked {
     border: 1px solid #FFFFFF;
     border-radius: 1px;
     background-color: #1f1f1f;}
+
 
 QMdiArea QTabBar,QMdiArea QTabWidget,QMdiArea QTabWidget::pane,QMdiArea QTabWidget::tab-bar,QMdiArea QTabBar::tab{height:20px}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover{border-top-left-radius:0px;border-top-right-radius:0px;padding:0px 0px;padding-top:0;padding-bottom:0px;min-width:8ex;border:1px solid #282828;border-bottom:0}
@@ -109,6 +121,8 @@ QDMNodeContentWidget QFrame{background:#FFFFFF}
 QDMNodeContentWidget QTextEdit{background:#FFFFFF}
 QDMNodeContentWidget QLabel{color:#FFFFFF}
 
+
 QGraphicsView{selection-background-color:#FFFFFF}
+
 
 QLabel{color:#FFFFFF;}

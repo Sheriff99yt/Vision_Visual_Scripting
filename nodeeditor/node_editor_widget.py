@@ -47,38 +47,32 @@ class NodeEditorWidget(QWidget):
         # crate graphics scene
         self.scene = self.__class__.Scene_class()
         # create graphics view
-        self.GraphGraphicsView = self.__class__.GraphGraphics_class(self.scene.grScene, self)
-        self.layout.addWidget(self.GraphGraphicsView)
+        self.graph_graphics_view = self.__class__.GraphGraphics_class(self.scene.grScene, self)
+        self.layout.addWidget(self.graph_graphics_view)
 
-        self.codeWndSettings = Qt.Horizontal
-        # Qt.Horizontal
-        # Qt.Vertical
+        self.createCodeWnd()
 
-        self.createCodeWnd(self.codeWndSettings)
-
-        self.layout.addWidget(self.SplitterWnd)
+        self.layout.addWidget(self.editor_wnd)
 
         # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
         self.scene.setNodeEditorWidget(self)
-        self.GraphGraphicsView.setNodeEditorWidget(self)
+        self.graph_graphics_view.setNodeEditorWidget(self)
 
-    def createCodeWnd(self, SplWndSet):
-        self.SplitterWnd = QSplitter(SplWndSet)
-        self.SplitterWnd.addWidget(self.GraphGraphicsView)
-        self.SplitterWnd.setSizes([650])
+    def createCodeWnd(self):
+        self.editor_wnd = QSplitter(Qt.Horizontal)
 
         self.TextCodeWnd = QTextEdit()
+        self.TextCodeWnd.resize(800, 100)
         self.TextCodeWnd.setReadOnly(True)
-        self.SplitterWnd.addWidget(self.TextCodeWnd)
+
+        self.editor_wnd.addWidget(self.graph_graphics_view)
+        self.editor_wnd.addWidget(self.TextCodeWnd)
 
     def setCodeWndViewMode(self):
-        if self.codeWndSettings == Qt.Horizontal:
-            self.SplitterWnd.setOrientation(Qt.Vertical)
-            self.codeWndSettings = Qt.Vertical
+        if self.editor_wnd.orientation() == Qt.Horizontal:
+            self.editor_wnd.setOrientation(Qt.Vertical)
         else:
-            self.SplitterWnd.setOrientation(Qt.Horizontal)
-            self.codeWndSettings = Qt.Horizontal
-
+            self.editor_wnd.setOrientation(Qt.Horizontal)
 
     def isModified(self) -> bool:
         """Has the `Scene` been modified?
@@ -255,5 +249,3 @@ class NodeEditorWidget(QWidget):
             else:
                 self.TextCodeWnd.append(node.getNodeCode())
                 # scrollToAnchor
-
-

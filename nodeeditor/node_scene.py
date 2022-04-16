@@ -381,30 +381,32 @@ class NodeScene(Serializable):
         return Node if self.node_class_selector is None else self.node_class_selector(data)
 
     def UVSerialize(self):
+
         # Serialize all item in UserVarsData
-
         self.userVars = []
-        for item in self.VEListWdg.user_vars_data:
-            userVar = OrderedDict([
-                ('title', item[0]),
-                ('id', item[1]),
-                ('type', item[2]),
-            ])
+        if self.VEListWdg:
+            for item in self.VEListWdg.user_vars_data:
+                userVar = OrderedDict([
+                    ('title', item[0]),
+                    ('id', item[1]),
+                    ('type', item[2]),
+                ])
 
-            self.userVars.append(userVar)
+                self.userVars.append(userVar)
 
     def UESerialize(self):
+
         # Serialize all item in UserEventsData
-
         self.userEvents = []
-        for item in self.VEListWdg.user_events_data:
-            userEvent = OrderedDict([
-                ('title', item[0]),
-                ('id', item[1]),
-                ('type', item[2]),
-            ])
+        if self.VEListWdg:
+            for item in self.VEListWdg.user_events_data:
+                userEvent = OrderedDict([
+                    ('title', item[0]),
+                    ('id', item[1]),
+                    ('type', item[2]),
+                ])
 
-            self.userEvents.append(userEvent)
+                self.userEvents.append(userEvent)
 
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
