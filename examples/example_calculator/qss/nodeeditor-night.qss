@@ -6,7 +6,7 @@ QToolBar {
     background: #282828;
     spacing: 6px;}
 
-QTabBar,QStatusBar{background:#282828; color:#FFFFFF}
+QTabBar,QStatusBar{background:#565656; color:#FFFFFF}
 
 QTabWidget {
     border:0;}

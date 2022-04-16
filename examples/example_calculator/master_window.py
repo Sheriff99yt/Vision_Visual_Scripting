@@ -45,7 +45,7 @@ class MasterWindow(NodeEditorWindow):
         self.name_company = 'MyTeam'
         self.name_product = 'Vision Visual Scripting'
 
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor.qss")
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-night.qss")
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), "qss/nodeeditor-night.qss"), self.stylesheet_filename)
 
@@ -91,7 +91,7 @@ class MasterWindow(NodeEditorWindow):
         # Create Nodes List
         self.createFunctionsDock()
 
-        # Creat Files Dock
+        # Create Files Dock
         self.CreateFilesDock()
 
         # Create Variable List
@@ -185,7 +185,7 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addWidget(mySpacer)
 
         # Add and connect self.code_orientation_btn
-        self.code_orientation_btn = QAction(QIcon("icons/Oriantation.png"), "&Code Window View Mode", self)
+        self.code_orientation_btn = QAction(QIcon("icons/Orientation.png"), "&Code Window View Mode", self)
         self.tools_bar.addAction(self.code_orientation_btn)
         self.code_orientation_btn.triggered.connect(self.RotateTextCodeWnd)
         self.code_orientation_btn.setShortcut(QKeySequence("Ctrl+Shift+R"))
@@ -562,7 +562,12 @@ class MasterWindow(NodeEditorWindow):
 
         self.graphs_parent_wdg.setActiveSubWindow(existing)
 
-        self.DeleteVEList(self.graphs_parent_wdg.activeSubWindow().widget().scene.VEListWdg)
+        ref = self.graphs_parent_wdg.activeSubWindow()
+        if ref:
+            ref = ref.widget().scene.VEListWdg
+
+            self.DeleteVEList(ref)
+
 
         if self.maybeSave():
             event.accept()
