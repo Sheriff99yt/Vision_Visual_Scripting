@@ -86,7 +86,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initName()
         self.name = self.node.name
 
-        self.initContent()
+        # self.initContent()
 
     def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
@@ -118,7 +118,7 @@ class QDMGraphicsNode(QGraphicsItem):
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")
-        self._color_hovered = QColor("#FFFFFFFF")
+        self._color_hovered = QColor("#FFFFFF")
 
         self._pen_default = QPen(self._color)
         self._pen_default.setWidthF(1.5)

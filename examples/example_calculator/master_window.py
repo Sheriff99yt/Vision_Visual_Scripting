@@ -69,7 +69,6 @@ class MasterWindow(NodeEditorWindow):
         self.node_designer = MasterDesignerWnd()
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
         self.stackedDisplay.addWidget(self.node_designer)
-        self.stackedDisplay.addWidget(self.library_wnd)
 
         self.graphs_parent_wdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.graphs_parent_wdg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -107,45 +106,100 @@ class MasterWindow(NodeEditorWindow):
         self.CreateToolBar()
 
         self.setWindowTitle("Vision Visual Scripting")
+        self.LibrariesWnd()
+        self.library_menu.setEnabled(False)
+        self.node_designer_menu.setEnabled(False)
 
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
 
-    def InitLibraryWnd(self):
-        self.library_wnd = QSplitter(Qt.Horizontal)
 
+    def CreateOfflineDir(self):
+        self.Offline_Dir = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS/Offline Library"
+        if os.path.exists(self.Offline_Dir):
+            pass
+        else:
+            self.Offline_Dir = os.makedirs(os.getenv('AppData') + "/VVS/Offline Library")
+
+        self.library_offline_list.setRootIndex(self.Model.index(self.Offline_Dir))
+
+    # def onSetProjectFolder(self):
+    #     Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
+    #     if Dir != "":
+    #         self.Offline_Dir = Dir
+    #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
+    #         self.MakeDir(self.Offline_Dir)
+
+    def InitLibraryWnd(self):
+        self.librariesDock = QDockWidget("Libraries")
         self.library_subwnd = QTabWidget()
 
+        self.librariesDock.setWidget(self.library_subwnd)
+        self.librariesDock.setFeatures(self.librariesDock.DockWidgetMovable)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.librariesDock)
+
+        offline_Vlayout = QVBoxLayout()
+        offline_Vlayout.setContentsMargins(0, 0, 0, 0)
+
+        self.Model = QFileSystemModel()
+        self.Model.setRootPath("")
+
+        self.library_offline_list = QTreeView()
+        self.library_offline_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.library_offline_list.setModel(self.Model)
+        self.library_offline_list.setSortingEnabled(True)
+        self.library_offline_list.setColumnWidth(0, 130)
+        self.library_offline_list.sortByColumn(0, Qt.AscendingOrder)
+        self.library_offline_list.hideColumn(1)
+        self.library_offline_list.hideColumn(2)
+        self.library_offline_list.setStyleSheet("color: white")
+
+        offline_Vlayout.addWidget(self.library_offline_list)
+
         self.library_online_list = QListWidget()
-        self.library_offline_list = QListView()
 
-        Vlayout = QVBoxLayout()
-        search_layout = QHBoxLayout()
+        topVlayout = QVBoxLayout()
+        search_bar_layout = QHBoxLayout()
 
-        self.search_bar = QLineEdit()
+        self.search_line_edit = QLineEdit()
         self.search_btn = QPushButton()
+
+        search_bar_layout.addWidget(self.search_line_edit)
+        search_bar_layout.addWidget(self.search_btn)
 
         self.search_btn.setMaximumSize(30, 30)
         self.search_btn.setIcon(QIcon("icons/search.png"))
-        self.search_bar.setMinimumHeight(30)
+        self.search_line_edit.setMinimumHeight(30)
 
-
-        search_layout.addWidget(self.search_bar)
-        search_layout.addWidget(self.search_btn)
-
-
-        Vlayout.addLayout(search_layout)
-        Vlayout.addWidget(self.library_online_list)
+        topVlayout.addLayout(search_bar_layout)
+        topVlayout.addWidget(self.library_online_list)
 
         online_widget = QWidget()
-        online_widget.setLayout(Vlayout)
+        online_widget.setLayout(topVlayout)
 
+        offline_widget = QWidget()
+        offline_widget.setLayout(offline_Vlayout)
+
+        self.library_subwnd.addTab(offline_widget, "    Offline    ")
         self.library_subwnd.addTab(online_widget, "    Online    ")
-        self.library_subwnd.addTab(self.library_offline_list, "    Offline    ")
 
-        self.library_graph = MasterDesignerWnd()
-        self.library_wnd.addWidget(self.library_subwnd)
-        self.library_wnd.addWidget(self.library_graph)
+        self.CreateOfflineDir()
+        self.library_offline_list.clicked.connect(self.ViewSelectedFiles)
+
+    def ViewSelectedFiles(self):
+        all_files = []
+
+        selected_files = self.library_offline_list.selectedIndexes()
+
+        for file_name in selected_files:
+            file_path = QFileSystemModel().filePath(file_name)
+
+            if file_path.endswith(".json"):
+                if not all_files.__contains__(file_path):
+                    all_files.append(file_path)
+                    # print(all_files)
+
+        self.onFileOpen(all_files)
 
     def ActiveGraphSwitched(self):
         if self.CurrentNodeEditor():
@@ -372,6 +426,11 @@ class MasterWindow(NodeEditorWindow):
 
     def updateWindowMenu(self):
 
+        self.toolbar_library = self.library_menu.addAction("Libraries Window")
+        self.toolbar_library.setCheckable(True)
+        self.toolbar_library.triggered.connect(self.LibrariesWnd)
+        self.toolbar_library.setChecked(False)
+
         self.toolbar_properties = self.node_editor_menu.addAction("Properties Window")
         self.toolbar_properties.setCheckable(True)
         self.toolbar_properties.triggered.connect(self.DetailsWnd)
@@ -426,11 +485,15 @@ class MasterWindow(NodeEditorWindow):
 
     def EventsVarsWnd(self):
         self.toolbar_events_vars.setChecked(self.toolbar_events_vars.isChecked())
-        self.varsDock.setVisible(self.toolbar_events_vars.isChecked())
+        self.varsEventsDock.setVisible(self.toolbar_events_vars.isChecked())
 
     def DetailsWnd(self):
         self.toolbar_properties.setChecked(self.toolbar_properties.isChecked())
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
+
+    def LibrariesWnd(self):
+        self.toolbar_library.setChecked(self.toolbar_library.isChecked())
+        self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
     def FilesWnd(self):
         self.toolbar_files.setChecked(self.toolbar_files.isChecked())
@@ -444,10 +507,11 @@ class MasterWindow(NodeEditorWindow):
 
     def ActivateEditorWnd(self):
         self.node_editor_menu.setEnabled(True)
-
+        self.library_menu.setEnabled(False)
         self.stackedDisplay.setCurrentIndex(0)
-        self.toolbar_events_vars.setChecked(True)
-        self.varsDock.setVisible(self.toolbar_events_vars.isChecked())
+
+        self.toolbar_library.setChecked(False)
+        self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
         self.toolbar_functions.setChecked(True)
         self.functionsDock.setVisible(self.toolbar_functions.isChecked())
@@ -460,14 +524,20 @@ class MasterWindow(NodeEditorWindow):
 
     def ActivateDesignerWnd(self):
         self.node_editor_menu.setEnabled(False)
+        self.library_menu.setEnabled(False)
         self.stackedDisplay.setCurrentIndex(1)
+
+        self.toolbar_library.setChecked(False)
+        self.librariesDock.setVisible(self.toolbar_library.isChecked())
+
 
     def ActivateLibraryWnd(self):
         self.node_editor_menu.setEnabled(False)
-        self.stackedDisplay.setCurrentIndex(2)
+        self.library_menu.setEnabled(True)
+        self.stackedDisplay.setCurrentIndex(0)
 
-        self.toolbar_events_vars.setChecked(False)
-        self.varsDock.setVisible(self.toolbar_events_vars.isChecked())
+        self.toolbar_library.setChecked(True)
+        self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
         self.toolbar_functions.setChecked(False)
         self.functionsDock.setVisible(self.toolbar_functions.isChecked())
@@ -505,12 +575,12 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
     def CreateVarEventDock(self):
-        self.varsDock = QDockWidget("Variables & Events")
+        self.varsEventsDock = QDockWidget("Variables & Events")
 
         self.VEStackedWdg = QStackedWidget()
-        self.varsDock.setWidget(self.VEStackedWdg)
-        self.varsDock.setFeatures(self.varsDock.DockWidgetMovable)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.varsDock)
+        self.varsEventsDock.setWidget(self.VEStackedWdg)
+        self.varsEventsDock.setFeatures(self.varsEventsDock.DockWidgetMovable)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.varsEventsDock)
 
     def CreateNewVEList(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
