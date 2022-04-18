@@ -1,0 +1,1 @@
+This software started as a university graduation project aimed to create an all in one software that allows anyone to just hop in and start programing using visual modular code blocks (nodes), kind of like ((  Unreal Engines Blueprint Graph System )).. It enables the code to be translated from the Visual Scripting graph into any programming language syntax the user selects.
