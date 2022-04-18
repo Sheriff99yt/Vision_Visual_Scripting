@@ -2,7 +2,7 @@ from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
-from examples.nodes.nodes_configuration import FUNCTIONS, get_node_by_type, LISTBOX_MIMETYPE
+from vvs_app.nodes.nodes_configuration import FUNCTIONS, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 

@@ -1,8 +1,8 @@
 from PyQt5.QtGui import QBrush, QColor
 
-from examples.nodes.default_functions import FontSize, FontFamily
-from examples.nodes.nodes_configuration import *
-from examples.master_node import MasterNode
+from vvs_app.nodes.default_functions import FontSize, FontFamily
+from vvs_app.nodes.nodes_configuration import *
+from vvs_app.master_node import MasterNode
 
 FloatColor = "#7000FF10"
 IntegerColor = "#aa0070FF"

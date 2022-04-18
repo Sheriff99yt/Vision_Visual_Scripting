@@ -1,5 +1,5 @@
-from examples.nodes.nodes_configuration import FUN_OUTPUT
-from examples.master_node import *
+from vvs_app.nodes.nodes_configuration import FUN_OUTPUT
+from vvs_app.master_node import *
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 
 

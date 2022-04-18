@@ -1,6 +1,6 @@
-from examples.nodes.default_functions import Indent, FontFamily, FontSize
-from examples.nodes.nodes_configuration import *
-from examples.master_node import MasterNode
+from vvs_app.nodes.default_functions import Indent, FontFamily, FontSize
+from vvs_app.nodes.nodes_configuration import *
+from vvs_app.master_node import MasterNode
 from nodeeditor.node_editor_widget import *
 
 

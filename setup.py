@@ -42,7 +42,7 @@ setup(
     keywords='nodeeditor',
     name='nodeeditor',
     #packages=find_packages(include=['_template']),
-    packages=find_packages(include=['nodeeditor*'], exclude=['examples*', 'tests*']),
+    packages=find_packages(include=['nodeeditor*'], exclude=['vvs_app*', 'tests*']),
     package_data={'': ['qss/*']},
     setup_requires=setup_requirements,
     test_suite='tests',

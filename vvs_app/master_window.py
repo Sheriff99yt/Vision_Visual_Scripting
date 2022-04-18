@@ -5,15 +5,15 @@ from qtpy.QtCore import *
 
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from examples.master_editor_wnd import MasterEditorWnd
-from examples.master_designer_wnd import MasterDesignerWnd
-from examples.editor_node_list import NodeList
-from examples.editor_files_wdg import FilesWDG
-from examples.editor_var_events_lists import VarEventList
-from examples.editor_proterties_list import PropertiesList
+from vvs_app.master_editor_wnd import MasterEditorWnd
+from vvs_app.master_designer_wnd import MasterDesignerWnd
+from vvs_app.editor_node_list import NodeList
+from vvs_app.editor_files_wdg import FilesWDG
+from vvs_app.editor_var_events_lists import VarEventList
+from vvs_app.editor_proterties_list import PropertiesList
 
 from nodeeditor.utils import dumpException
-# from examples.nodes_configuration import FUNCTIONS
+# from vvs_app.nodes_configuration import FUNCTIONS
 
 # Enabling edge validators
 from nodeeditor.node_edge import Edge

@@ -125,4 +125,4 @@ def get_node_by_type(node_type):
 
 # This comment was originally here before it was removed for better init performance and moved
 # import all nodes and register them
-from examples.nodes import *
+# from vvs_app.nodes import *

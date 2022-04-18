@@ -1,7 +1,7 @@
 from qtpy.QtWidgets import *
 from qtpy.QtCore import Qt
-from examples.nodes.nodes_configuration import FUN_INPUT
-from examples.master_node import MasterNode, MasterGraphicsNode
+from vvs_app.nodes.nodes_configuration import FUN_INPUT
+from vvs_app.master_node import MasterNode, MasterGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 

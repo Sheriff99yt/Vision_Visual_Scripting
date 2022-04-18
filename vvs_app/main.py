@@ -2,10 +2,11 @@ import os, sys
 
 from PyQt5.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
+from vvs_app.nodes import *
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "", ".."))
 
-from examples.master_window import MasterWindow
+from vvs_app.master_window import MasterWindow
 
 
 if __name__ == '__main__':

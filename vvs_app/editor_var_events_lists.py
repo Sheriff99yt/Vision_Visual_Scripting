@@ -2,8 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from examples.nodes.default_functions import *
-from examples.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
+from vvs_app.nodes.default_functions import *
+from vvs_app.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
