@@ -1,6 +1,5 @@
-from qtpy.QtCore import Qt
-from examples.example_calculator.nodes.nodes_configuration import FUN_OUTPUT
-from examples.example_calculator.master_node import *
+from examples.nodes.nodes_configuration import FUN_OUTPUT
+from examples.master_node import *
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 
 

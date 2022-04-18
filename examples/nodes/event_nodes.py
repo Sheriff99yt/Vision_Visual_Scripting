@@ -1,14 +1,14 @@
-from examples.example_calculator.nodes.default_functions import Indent, FontFamily, FontSize
-from examples.example_calculator.nodes.nodes_configuration import *
-from examples.example_calculator.master_node import MasterNode
+from examples.nodes.default_functions import Indent, FontFamily, FontSize
+from examples.nodes.nodes_configuration import *
+from examples.master_node import MasterNode
 from nodeeditor.node_editor_widget import *
 
 
 
-@set_event_ID(FUN_EVENT)
+@set_event_ID(EVENT)
 class Event(MasterNode):
     icon = "icons/event.png"
-    node_type = FUN_EVENT
+    node_type = EVENT
     name = "Event"
     content_label_objname = "calc_node_event"
 

@@ -2,23 +2,22 @@ import os
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
-from copy import *
+
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from examples.example_calculator.master_editor_wnd import MasterEditorWnd
-from examples.example_calculator.master_designer_wnd import MasterDesignerWnd
-from examples.example_calculator.editor_node_list import NodeList
-from examples.example_calculator.editor_files_wdg import FilesWDG
-from examples.example_calculator.editor_var_events_lists import VarEventList
-from examples.example_calculator.editor_proterties_list import PropertiesList
+from examples.master_editor_wnd import MasterEditorWnd
+from examples.master_designer_wnd import MasterDesignerWnd
+from examples.editor_node_list import NodeList
+from examples.editor_files_wdg import FilesWDG
+from examples.editor_var_events_lists import VarEventList
+from examples.editor_proterties_list import PropertiesList
 
-from nodeeditor.utils import dumpException, pp
-# from examples.example_calculator.nodes_configuration import FUNCTIONS
+from nodeeditor.utils import dumpException
+# from examples.nodes_configuration import FUNCTIONS
 
 # Enabling edge validators
 from nodeeditor.node_edge import Edge
 from nodeeditor.node_edge_validators import (
-    edge_validator_debug,
     edge_cannot_connect_two_outputs_or_two_inputs,
     edge_cannot_connect_input_and_output_of_same_node
 )
@@ -28,7 +27,6 @@ Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
 # images for the dark skin
-import examples.example_calculator.qss.nodeeditor_dark_resources
 
 DEBUG = False
 

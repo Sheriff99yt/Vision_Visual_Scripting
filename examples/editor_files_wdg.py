@@ -1,4 +1,4 @@
-from examples.example_calculator.master_window import *
+from examples.master_window import *
 
 
 class FilesWDG(QWidget):

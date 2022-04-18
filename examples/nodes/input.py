@@ -1,7 +1,7 @@
 from qtpy.QtWidgets import *
 from qtpy.QtCore import Qt
-from examples.example_calculator.nodes.nodes_configuration import FUN_INPUT, set_function_ID
-from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
+from examples.nodes.nodes_configuration import FUN_INPUT
+from examples.master_node import MasterNode, MasterGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 

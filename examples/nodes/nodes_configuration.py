@@ -1,6 +1,6 @@
 LISTBOX_MIMETYPE = "application/x-item"
 
-FUN_EVENT = 0
+EVENT = 0
 FUN_IF = 1
 FUN_FOR_LOOP = 2
 FUN_PRINT = 3
@@ -30,8 +30,8 @@ FUNCTIONS = {}
 VARIABLES = {}
 EVENTS = {}
 
-######################
 
+######################
 
 
 ######################
@@ -64,7 +64,6 @@ def set_var_ID(node_type):
     def decorator(original_class):
         set_var_ID_now(node_type, original_class)
         return original_class
-
     return decorator
 
 
@@ -72,7 +71,6 @@ def set_event_ID(node_type):
     def decorator(original_class):
         set_event_ID_now(node_type, original_class)
         return original_class
-
     return decorator
 
 
@@ -107,8 +105,6 @@ def get_node_by_type(node_type):
     else:
         return NODES[node_type]
 
-
-
 ######################
 
 
@@ -118,15 +114,9 @@ def get_node_by_type(node_type):
 # User Variables setup
 
 
-
-
-
-
 ######################
 
 # User Events setup
-
-
 
 
 ##############################################################################################################
@@ -135,4 +125,4 @@ def get_node_by_type(node_type):
 
 # This comment was originally here before it was removed for better init performance and moved
 # import all nodes and register them
-# from examples.example_calculator.nodes import *
+from examples.nodes import *

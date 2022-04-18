@@ -2,12 +2,10 @@ import os, sys
 
 from PyQt5.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
-from examples.example_calculator.nodes import *
-from PyQt5.QtWidgets import QMessageBox
 
-sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "", ".."))
 
-from examples.example_calculator.master_window import MasterWindow
+from examples.master_window import MasterWindow
 
 
 if __name__ == '__main__':

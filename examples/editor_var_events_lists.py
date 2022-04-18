@@ -1,9 +1,9 @@
-from qtpy.QtGui import *
-from qtpy.QtCore import *
-from qtpy.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
-from examples.example_calculator.nodes.default_functions import *
-from examples.example_calculator.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
+from examples.nodes.default_functions import *
+from examples.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
@@ -117,11 +117,13 @@ class VarEventList(QTabWidget):
         return NewNode
 
     def InitList(self):
-        Events = 0
+        Event = 0
         # Events = list(FUNCTIONS.keys())[0]
         # Events.sort()
         # for node_type in Events:
-        node = get_node_by_type(Events)
+
+        node = get_node_by_type(Event)
+        print("Weeeeeeeeeeee")
         self.eventCompoBox.addItem(node.name)
         self.eventsIds.append(node.node_type)
 

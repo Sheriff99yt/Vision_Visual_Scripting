@@ -1,13 +1,8 @@
-from PyQt5.QtWidgets import *
 from qtpy.QtGui import *
-from qtpy.QtCore import *
 
-from examples.example_calculator.nodes.nodes_configuration import *
-from examples.example_calculator.master_node import MasterNode, MasterGraphicsNode
+from examples.nodes.nodes_configuration import *
+from examples.master_node import MasterNode
 from textwrap import *
-
-from nodeeditor.node_content_widget import QDMNodeContentWidget
-from nodeeditor.utils import dumpException
 
 FontSize = 18
 FontFamily = "Roboto"
