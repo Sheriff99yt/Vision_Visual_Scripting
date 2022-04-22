@@ -36,9 +36,9 @@ class NodeEditorWindow(QMainWindow):
 
         # create node editor widget
 
-        self.nodeeditor = self.__class__.NodeEditorWidget_class(self)
-        self.nodeeditor.scene.addHasBeenModifiedListener(self.setTitle)
-        self.setCentralWidget(self.nodeeditor)
+        self.central_window = self.__class__.NodeEditorWidget_class(self)
+        self.central_window.scene.addHasBeenModifiedListener(self.setTitle)
+        self.setCentralWidget(self.central_window)
 
 
         self.createStatusBar()

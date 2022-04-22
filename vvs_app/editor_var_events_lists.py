@@ -123,7 +123,6 @@ class VarEventList(QTabWidget):
         # for node_type in Events:
 
         node = get_node_by_type(Event)
-        print("Weeeeeeeeeeee")
         self.eventCompoBox.addItem(node.name)
         self.eventsIds.append(node.node_type)
 
