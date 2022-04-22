@@ -55,23 +55,23 @@ class MasterWindow(NodeEditorWindow):
         self.graphsNames = []
 
         self.all_VE_lists = []
-        self.all_graphs = []
 
         self.stackedDisplay = QStackedWidget()
 
         self.graphs_parent_wdg = QMdiArea()
 
-        self.InitLibraryWnd()
+        self.CreateLibraryWnd()
 
         # Create Node Designer Window
         self.node_designer = MasterDesignerWnd()
+
+
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
         self.stackedDisplay.addWidget(self.node_designer)
 
         self.graphs_parent_wdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.graphs_parent_wdg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
-        self.graphs_parent_wdg.setDocumentMode(True)
+
         self.graphs_parent_wdg.setTabsClosable(True)
         self.graphs_parent_wdg.setTabsMovable(True)
         self.setCentralWidget(self.stackedDisplay)
@@ -82,11 +82,14 @@ class MasterWindow(NodeEditorWindow):
 
         self.graphs_parent_wdg.subWindowActivated.connect(self.ActiveGraphSwitched)
 
+        # Create Welcome Screen and allow user to set the project Directory
+        self.CreateWelcomeScreen()
+
         # Create Details List Window
         self.CreatePropertiesDock()
 
         # Create Nodes List
-        self.createFunctionsDock()
+        self.CreateFunctionsDock()
 
         # Create Files Dock
         self.CreateFilesDock()
@@ -111,6 +114,24 @@ class MasterWindow(NodeEditorWindow):
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
 
+    def CreateWelcomeScreen(self):
+        Elayout = QVBoxLayout()
+        Elayout.setAlignment(Qt.AlignCenter)
+        Elayout.setSpacing(20)
+
+        self.empty_screen = QWidget()
+        self.empty_screen.setLayout(Elayout)
+
+        user_text = QLabel("Select Your Project Directory...")
+        user_text.setFont(QFont("Roboto", 14))
+
+        self.brows_btn = QPushButton("Brows..")
+
+        Elayout.addWidget(user_text)
+        Elayout.addWidget(self.brows_btn)
+
+        self.stackedDisplay.addWidget(self.empty_screen)
+        self.stackedDisplay.setCurrentIndex(2)
 
     def CreateOfflineDir(self):
         self.Offline_Dir = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS/Offline Library"
@@ -128,7 +149,7 @@ class MasterWindow(NodeEditorWindow):
     #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
     #         self.MakeDir(self.Offline_Dir)
 
-    def InitLibraryWnd(self):
+    def CreateLibraryWnd(self):
         self.librariesDock = QDockWidget("Libraries")
         self.library_subwnd = QTabWidget()
 
@@ -202,6 +223,15 @@ class MasterWindow(NodeEditorWindow):
     def ActiveGraphSwitched(self):
         if self.CurrentNodeEditor():
             self.VEStackedWdg.setCurrentWidget(self.CurrentNodeEditor().scene.VEListWdg)
+
+        self.isGraphsEmpty()
+
+    def isGraphsEmpty(self):
+        if len(self.graphs_parent_wdg.subWindowList()) > 0:
+            if self.stackedDisplay.currentIndex() != 0: self.stackedDisplay.setCurrentIndex(0)
+
+        else:
+            if self.stackedDisplay.currentIndex() != 2: self.stackedDisplay.setCurrentIndex(2)
 
     def CreateToolBar(self):
         # Create Tools self.tools_bar
@@ -345,7 +375,6 @@ class MasterWindow(NodeEditorWindow):
 
                         nodeEditor = subwnd.widget()
 
-                        self.all_graphs.append(nodeEditor)
                         nodeEditor.scene.masterRef = self
 
                         self.graphs_parent_wdg.setActiveSubWindow(subwnd)
@@ -361,8 +390,11 @@ class MasterWindow(NodeEditorWindow):
                             subwnd.show()
                         else:
                             nodeEditor.close()
+
+
         except Exception as e:
             dumpException(e)
+
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",
@@ -506,7 +538,7 @@ class MasterWindow(NodeEditorWindow):
     def ActivateEditorWnd(self):
         self.node_editor_menu.setEnabled(True)
         self.library_menu.setEnabled(False)
-        self.stackedDisplay.setCurrentIndex(0)
+        self.isGraphsEmpty()
 
         self.toolbar_library.setChecked(False)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
@@ -532,7 +564,7 @@ class MasterWindow(NodeEditorWindow):
     def ActivateLibraryWnd(self):
         self.node_editor_menu.setEnabled(False)
         self.library_menu.setEnabled(True)
-        self.stackedDisplay.setCurrentIndex(0)
+        self.isGraphsEmpty()
 
         self.toolbar_library.setChecked(True)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
@@ -546,7 +578,7 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_properties.setChecked(False)
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
-    def createFunctionsDock(self):
+    def CreateFunctionsDock(self):
         self.nodesListWidget = NodeList()
 
         self.functionsDock = QDockWidget("Functions")
@@ -557,6 +589,8 @@ class MasterWindow(NodeEditorWindow):
     def CreateFilesDock(self):
         self.filesWidget = FilesWDG()
         self.filesWidget.masterRef = self
+
+        self.brows_btn.clicked.connect(self.filesWidget.onSetProjectFolder)
 
         self.filesDock = QDockWidget("Project Files")
         self.filesDock.setWidget(self.filesWidget)
@@ -607,38 +641,40 @@ class MasterWindow(NodeEditorWindow):
         VEL = self.CreateNewVEList()
 
         nodeEditor = oldNodeEditor if oldNodeEditor is not None else MasterEditorWnd()
-        self.all_graphs.append(nodeEditor)
 
         nodeEditor.scene.VEListWdg = VEL
         VEL.Scene = nodeEditor.scene
 
+
         nodeEditor.scene.masterRef = self
         nodeEditor.scene.history.masterWndRef = self
 
-        subwnd = self.graphs_parent_wdg.addSubWindow(nodeEditor)
+        subwnd = QMdiSubWindow()
+        subwnd.setAttribute(Qt.WA_DeleteOnClose, True)
+        subwnd.setWidget(nodeEditor)
 
+        self.graphs_parent_wdg.addSubWindow(subwnd)
+        self.isGraphsEmpty()
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)
         # nodeeditor.scene.addItemsDeselectedListener(self.updateEditMenu)
         nodeEditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
         nodeEditor.addCloseEventListener(self.onSubWndClose)
 
+        self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
+
         return subwnd
 
     def onSubWndClose(self, widget, event):
+
+        self.DeleteVEList(widget.scene.VEListWdg)
+
         existing = self.findMdiChild(widget.filename)
-
         self.graphs_parent_wdg.setActiveSubWindow(existing)
-
-        ref = self.graphs_parent_wdg.activeSubWindow()
-        if ref:
-            ref = ref.widget().scene.VEListWdg
-
-            self.DeleteVEList(ref)
-
 
         if self.maybeSave():
             event.accept()
+
         else:
             event.ignore()
 

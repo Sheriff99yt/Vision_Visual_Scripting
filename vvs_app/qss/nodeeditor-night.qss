@@ -51,6 +51,14 @@ QPushButton, QToolButton {
     text-align: center;
     border-radius: 1px;}
 
+QPushButton:disabled, QToolButton:disabled {
+    padding: 6px;
+    background-color: #565656;
+    border: 1px solid #828282;
+    color: #FFFFFF;
+    text-align: center;
+    border-radius: 1px;}
+
 
 QPushButton:hover, QToolButton:hover{
     border: 1px solid #FFFFFF;}

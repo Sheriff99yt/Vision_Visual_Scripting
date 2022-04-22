@@ -33,40 +33,41 @@ class NodeEditorWidget(QWidget):
 
         self.filename = None
 
-        self.initUI()
+        self.createWidgetWindow()
 
-    def initUI(self):
+
+    def createWidgetWindow(self):
+
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
+
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
         # crate graphics scene
         self.scene = self.__class__.Scene_class()
+
         # create graphics view
         self.graph_graphics_view = self.__class__.GraphGraphics_class(self.scene.grScene, self)
-        self.layout.addWidget(self.graph_graphics_view)
 
-        self.createCodeWnd()
-
-        self.layout.addWidget(self.editor_wnd)
-
-        # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
-        self.scene.setNodeEditorWidget(self)
-        self.graph_graphics_view.setNodeEditorWidget(self)
-
-    def createCodeWnd(self):
+        # create widget splitter
         self.editor_wnd = QSplitter(Qt.Horizontal)
 
         self.TextCodeWnd = QTextEdit()
         self.TextCodeWnd.resize(800, 100)
         self.TextCodeWnd.setReadOnly(True)
 
+        # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
+        self.scene.setNodeEditorWidget(self)
+        self.graph_graphics_view.setNodeEditorWidget(self)
+
         self.editor_wnd.addWidget(self.graph_graphics_view)
         self.editor_wnd.addWidget(self.TextCodeWnd)
+
+        self.layout.addWidget(self.editor_wnd)
 
     def setCodeWndViewMode(self):
         if self.editor_wnd.orientation() == Qt.Horizontal:
