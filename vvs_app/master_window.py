@@ -610,6 +610,7 @@ class MasterWindow(NodeEditorWindow):
         self.varsEventsDock = QDockWidget("Variables & Events")
 
         self.VEStackedWdg = QStackedWidget()
+
         self.varsEventsDock.setWidget(self.VEStackedWdg)
         self.varsEventsDock.setFeatures(self.varsEventsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsEventsDock)
@@ -634,7 +635,7 @@ class MasterWindow(NodeEditorWindow):
 
     def RotateTextCodeWnd(self):
         if self.CurrentNodeEditor():
-            self.CurrentNodeEditor().setCodeWndViewMode()
+            self.CurrentNodeEditor().UpdateTextWndRot()
 
     def newGraphTab(self, oldNodeEditor=None):
 

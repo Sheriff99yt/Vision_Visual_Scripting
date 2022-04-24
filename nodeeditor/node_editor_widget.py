@@ -37,15 +37,22 @@ class NodeEditorWidget(QWidget):
 
 
     def createWidgetWindow(self):
-
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
 
-        self.layout = QHBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(self.layout)
+
+        widget_layout = QHBoxLayout()
+        widget_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(widget_layout)
+
+        text_code_layout = QVBoxLayout()
+        text_code_layout.setContentsMargins(0, 0, 0, 0)
+
+        text_code_widget = QWidget()
+        text_code_widget.resize(800, 100)
+        text_code_widget.setLayout(text_code_layout)
 
         # crate graphics scene
         self.scene = self.__class__.Scene_class()
@@ -57,19 +64,31 @@ class NodeEditorWidget(QWidget):
         self.editor_wnd = QSplitter(Qt.Horizontal)
 
         self.TextCodeWnd = QTextEdit()
-        self.TextCodeWnd.resize(800, 100)
         self.TextCodeWnd.setReadOnly(True)
+
+        self.syntax_selector = QComboBox()
+        self.syntax_selector.currentTextChanged.connect(self.UpdateTextCode)
+        self.syntax_selector.addItem("Python")
+        self.syntax_selector.addItem("C++")
+
+        code_wnd_bar = QHBoxLayout()
+        code_wnd_bar.setContentsMargins(4, 4, 4, 4)
+        code_wnd_bar.addWidget(QLabel("Select Syntax"))
+        code_wnd_bar.addWidget(self.syntax_selector)
+
+        text_code_layout.addLayout(code_wnd_bar)
+        text_code_layout.addWidget(self.TextCodeWnd)
 
         # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
         self.scene.setNodeEditorWidget(self)
         self.graph_graphics_view.setNodeEditorWidget(self)
 
         self.editor_wnd.addWidget(self.graph_graphics_view)
-        self.editor_wnd.addWidget(self.TextCodeWnd)
+        self.editor_wnd.addWidget(text_code_widget)
 
-        self.layout.addWidget(self.editor_wnd)
+        widget_layout.addWidget(self.editor_wnd)
 
-    def setCodeWndViewMode(self):
+    def UpdateTextWndRot(self):
         if self.editor_wnd.orientation() == Qt.Horizontal:
             self.editor_wnd.setOrientation(Qt.Vertical)
         else:
@@ -196,22 +215,6 @@ class NodeEditorWidget(QWidget):
 
         self.scene.history.storeInitialHistoryStamp()
 
-    def addCustomNode(self):
-        """Testing method to create a custom Node with custom content"""
-
-        class NNodeContent(QLabel):  # , Serializable):
-            def __init__(self, node, parent=None):
-                super().__init__("FooBar")
-                self.node = node
-                self.setParent(parent)
-
-        class NNode(Node):
-            NodeContent_class = NNodeContent
-
-        self.scene.setNodeClassSelector(lambda data: NNode)
-        node = NNode(self.scene, "A Custom Node 1", inputs=[0, 1, 2])
-
-        print("node content:", node.content)
 
     def addDebugContent(self):
         """Testing method to put random QGraphicsItems and elements into QGraphicsScene"""
@@ -243,8 +246,10 @@ class NodeEditorWidget(QWidget):
 
     def UpdateTextCode(self):
         self.TextCodeWnd.clear()
+        s = self.syntax_selector.currentText()
         for node in self.scene.nodes:
-
+            node.syntax = s
+            # Don't add Text Code OF Node in these cases !
             if node.getNodeCode() is None or node.showCode is not True:
                 pass
             else:

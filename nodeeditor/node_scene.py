@@ -35,6 +35,7 @@ class NodeScene(Serializable):
             - **scene_height** - height of this `Scene` in pixels
         """
         super().__init__()
+        self.NodeEditor = None
         self.VEListWdg = None
         self.nodes = []
         self.edges = []
@@ -271,6 +272,7 @@ class NodeScene(Serializable):
         :type node: :class:`~nodeeditor.node_node.Node`
         """
         self.nodes.append(node)
+        self.has_been_modified = True
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodeeditor.node_edge.Edge` to this `Scene`
@@ -279,6 +281,7 @@ class NodeScene(Serializable):
         :return: :class:`~nodeeditor.node_edge.Edge`
         """
         self.edges.append(edge)
+
 
     def removeNode(self, node: Node):
         """Remove :class:`~nodeeditor.node_node.Node` from this `Scene`

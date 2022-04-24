@@ -34,20 +34,16 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initUI()
 
         # creating a QGraphicsDropShadowEffect object
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setColor(QColor(14, 14, 14))
+        # shadow = QGraphicsDropShadowEffect()
+        # shadow.setColor(QColor(14, 14, 14))
+        #
+        # shadow.setXOffset(-6)
+        # shadow.setYOffset(6)
+        # # setting blur radius (optional step)
+        # shadow.setBlurRadius(12)
+        # # adding shadow to the grNode
+        # self.setGraphicsEffect(shadow)
 
-        shadow.setXOffset(-6)
-        shadow.setYOffset(6)
-        # setting blur radius (optional step)
-        shadow.setBlurRadius(12)
-        # adding shadow to the grNode
-        self.setGraphicsEffect(shadow)
-
-    @property
-    def content(self):
-        """Reference to `Node Content`"""
-        return self.node.content if self.node else None
 
     @property
     def name(self):
@@ -67,8 +63,8 @@ class QDMGraphicsNode(QGraphicsItem):
         self.name_item.setPlainText(self.grName)
         self.name_item.adjustSize()
 
-        if self.name_item.textWidth()+40 > self.width:
-            while self.name_item.textWidth()+40 > self.width:
+        if self.name_item.textWidth()+20 > self.width:
+            while self.name_item.textWidth()+20 > self.width:
                 self.grName = self.grName[0: -1]
                 self.name_item.setPlainText(self.grName)
                 self.name_item.adjustSize()
@@ -90,12 +86,12 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
-        self.width = 180
+        self.width = 120
         self.height = 80
         self.edge_roundnes = 2
         self.edge_padding = 0
-        self.title_height = 30
-        self.title_horizontal_padding = 24
+        self.title_height = 20
+        self.title_horizontal_padding = 16
         self.title_vertical_padding = 10
 
 
@@ -114,7 +110,7 @@ class QDMGraphicsNode(QGraphicsItem):
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Roboto", 14)
+        self._title_font = QFont("Roboto", 10)
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")
@@ -213,17 +209,6 @@ class QDMGraphicsNode(QGraphicsItem):
         self.name_item.setPos(self.title_horizontal_padding, 0)
         # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
 
-    def initContent(self):
-        """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""
-        if self.content is not None:
-            self.content.setGeometry(self.edge_padding, self.title_height + self.edge_padding,
-                                     self.width - 2 * self.edge_padding,
-                                     self.height - 2 * self.edge_padding - self.title_height)
-
-        # get the QGraphicsProxyWidget when inserted into the grScene
-        self.grContent = self.node.scene.grScene.addWidget(self.content)
-        self.grContent.node = self.node
-        self.grContent.setParentItem(self)
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""

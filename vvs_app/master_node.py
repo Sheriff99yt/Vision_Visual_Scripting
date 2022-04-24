@@ -26,10 +26,6 @@ class MasterGraphicsNode(QDMGraphicsNode):
         print(self.icons)
 
 
-class MasterContent(QDMNodeContentWidget):
-    def initUI(self):
-        pass
-
 class MasterNode(Node):
     icon = ""
     node_type = 0
@@ -39,11 +35,9 @@ class MasterNode(Node):
     node_Value = None
 
     GraphicsNode_class = MasterGraphicsNode
-    NodeContent_class = MasterContent
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         super().__init__(scene, self.__class__.name, inputs, outputs)
-        self.NodeContent_class.initUI = self.initUI
 
     def initSettings(self):
         super().initSettings()
