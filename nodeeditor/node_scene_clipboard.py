@@ -104,7 +104,7 @@ class SceneClipboard():
         mouse_scene_pos = view.last_scene_mouse_position
 
         # calculate selected objects bbox and center
-        minx, maxx, miny, maxy = 10000000,-10000000, 10000000,-10000000
+        minx, maxx, miny, maxy = 10000000, -10000000, 10000000, -10000000
         for node_data in data['nodes']:
             x, y = node_data['pos_x'], node_data['pos_y']
             if x < minx: minx = x
@@ -167,4 +167,5 @@ class SceneClipboard():
         # store history
         self.scene.history.storeHistory("Pasted elements in scene", setModified=True)
 
+        self.scene.NodeEditor.UpdateTextCode()
         return created_nodes

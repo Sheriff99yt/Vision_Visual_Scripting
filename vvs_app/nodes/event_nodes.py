@@ -21,44 +21,57 @@ class Event(MasterNode):
     def toGetter(self):
         self.isSetter = False
         self.initSockets(inputs=[0], outputs=[0])
-        self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
         self.initSockets(inputs=[], outputs=[0])
-        self.getNodeCode = self.setterCode
 
-    def getterCode(self):
-        brotherCode = self.NodeCodeAtOutput(0)
-        self.showCode = not self.isInputConnected(0)
+    def getNodeCode(self):
+        if self.isSetter:
+            if self.syntax == "Python":
+                childCode = self.NodeCodeAtOutput(0)
 
-        rawCode = f"""
-{self.name}()
-{brotherCode}"""
-
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-        getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
-
-
-        return getCode
-
-
-    def setterCode(self):
-        childCode = self.NodeCodeAtOutput(0)
-
-        rawCode = f"""
+                python_code = f"""
 def {self.name}():
 {Indent(childCode)}"""
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+                raw_code = python_code
+
+            elif self.syntax == "C++":
+
+                raw_code = self.syntax
+
+
+            if self.isSelected() is True:
+                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+            else:
+                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+            setterCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
+
+            return setterCode
+
         else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            if self.syntax == "Python":
+                brotherCode = self.NodeCodeAtOutput(0)
+                self.showCode = not self.isInputConnected(0)
 
-        setterCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+                python_code = f"""
+{self.name}()
+{brotherCode}"""
 
-        return setterCode
+                raw_code = python_code
+
+            elif self.syntax == "C++":
+
+                raw_code = self.syntax
+
+
+            if self.isSelected() is True:
+                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+            else:
+                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+            getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
+
+            return getCode

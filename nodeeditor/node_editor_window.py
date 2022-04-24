@@ -297,8 +297,7 @@ class NodeEditorWindow(QMainWindow):
             if 'nodes' not in data:
                 print("JSON does not contain any nodes!")
                 return
-
-            return self.CurrentNodeEditor().scene.clipboard.deserializeFromClipboard(data)
+            self.CurrentNodeEditor().scene.clipboard.deserializeFromClipboard(data)
 
     def readSettings(self):
         """Read the permanent profile settings for this app"""

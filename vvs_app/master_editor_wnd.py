@@ -140,7 +140,6 @@ class MasterEditorWnd(NodeEditorWidget):
                 isEvent = False
                 isVar = False
                 isNode = False
-                self.scene.NodeEditor.UpdateTextCode()
 
             except Exception as e:
                 dumpException(e)
@@ -150,6 +149,7 @@ class MasterEditorWnd(NodeEditorWidget):
         else:
             # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
+        self.scene.NodeEditor.UpdateTextCode()
 
     def ActiveScene(self):
         return self.scene.masterRef.CurrentNodeEditor().scene
@@ -255,7 +255,7 @@ class MasterEditorWnd(NodeEditorWidget):
             selected = item.socket.node
 
         if action == delete:
-            item.node.scene.getView().deleteNode(item.node)
+            item.node.scene.getView().deleteSelected()
 
 
     def handleEdgeContextMenu(self, event):
@@ -299,6 +299,8 @@ class MasterEditorWnd(NodeEditorWidget):
             new_node = get_node_by_type(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_node.setPos(scene_pos.x(), scene_pos.y())
+            self.scene.NodeEditor.UpdateTextCode()
+
             if DEBUG_CONTEXT: print("Selected node:", new_node)
 
             if self.scene.getView().mode == MODE_EDGE_DRAG:

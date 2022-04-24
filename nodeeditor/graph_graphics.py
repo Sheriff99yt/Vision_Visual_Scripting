@@ -2,6 +2,8 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
+from time import sleep
+
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 from qtpy.QtGui import *
@@ -95,8 +97,8 @@ class GraphGraphics(QGraphicsView):
         self.last_scene_mouse_position = QPoint(0, 0)
 
         self.zoomInFactor = 1.1
-        self.ZoomInSteps = 5
-        self.ZoomOutSteps = 15
+        self.max_zoom_in = 5
+        self.max_zoom_out = 15
         self.CurrentZoom = 0
 
         # listeners
@@ -491,13 +493,6 @@ class GraphGraphics(QGraphicsView):
         self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
         self.NodeEditor.UpdateTextCode()
 
-    def deleteNode(self, item):
-        """Shortcut for safe deleting every object selected in the Scene."""
-        item.remove()
-
-        self.grScene.scene.history.storeHistory("Context Menu Delete", setModified=True)
-        self.NodeEditor.UpdateTextCode()
-
     def debug_modifiers(self, event):
         """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""
         out = "MODS: "
@@ -532,19 +527,13 @@ class GraphGraphics(QGraphicsView):
 
     def wheelEvent(self, event: QWheelEvent):
         """overridden Qt's ``wheelEvent``. This handles zooming"""
-        if event.angleDelta().y() > 0:
-            if self.CurrentZoom <= -1 * self.ZoomInSteps:
-                print("Can't")
-            else:
-                self.CurrentZoom -= 1
-                print("Zoom In", self.CurrentZoom)
-                self.scale(1 * self.zoomInFactor, 1 * self.zoomInFactor)
-        else:
-            if self.CurrentZoom >= self.ZoomOutSteps:
-                print("Can't")
-            else:
-                self.CurrentZoom += 1
-                print("Zoom Out", self.CurrentZoom)
-                self.scale(1 / self.zoomInFactor, 1 / self.zoomInFactor)
+        if event.angleDelta().y() > 0 and not self.CurrentZoom <= -1 * self.max_zoom_in:
+            self.CurrentZoom -= 1
+            self.scale(1 * self.zoomInFactor, 1 * self.zoomInFactor)
+            # print("In")
 
+        elif not event.angleDelta().y() > 0 and self.CurrentZoom <= self.max_zoom_out:
+            self.CurrentZoom += 1
+            self.scale(1 / self.zoomInFactor, 1 / self.zoomInFactor)
+            # print("Out")
 

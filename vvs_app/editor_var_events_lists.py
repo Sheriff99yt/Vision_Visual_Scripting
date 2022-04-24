@@ -362,6 +362,8 @@ class VarEventList(QTabWidget):
                     node.name = newName
                     node.grNode.name = newName
 
+            self.Scene.NodeEditor.UpdateTextCode()
+
     def updateEventName(self):
         item = self.EventList.currentItem()
         oldName = item.data(91)
@@ -386,6 +388,7 @@ class VarEventList(QTabWidget):
                 if node.name == oldName:
                     node.name = newName
                     node.grNode.name = newName
+
             self.Scene.NodeEditor.UpdateTextCode()
 
     def findListItem(self, selectedNodes: 'Nodes'):

@@ -9,7 +9,6 @@ from PyQt5.QtWidgets import *
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from PyQt5.QtGui import QColor
-from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
 from nodeeditor.utils import dumpException, pp
@@ -22,16 +21,15 @@ class Node(Serializable):
     Class representing `Node` in the `Scene`.
     """
     GraphicsNode_class = QDMGraphicsNode
-    NodeContent_class = QDMNodeContentWidget
     Socket_class = Socket
 
-    def __init__(self, scene: 'Scene', title: str = "Undefined Node", inputs: list = [], outputs: list = []):
+    def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [], outputs: list = []):
         """
 
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
         :type scene: :class:`~nodeeditor.node_scene.NodeScene`
-        :param title: Node Title shown in Scene
-        :type title: str
+        :param name: Node Title shown in Scene
+        :type name: str
         :param inputs: list of :class:`~nodeeditor.node_socket.Socket` types from which the `Sockets` will be auto created
         :param outputs: list of :class:`~nodeeditor.node_socket.Socket` types from which the `Sockets` will be auto created
 
@@ -45,24 +43,28 @@ class Node(Serializable):
 
         """
         super().__init__()
-        self._title = title
+
+        self._name = name
+
         self.scene = scene
 
-        # Additional Uni Code
+        # Additional Code
         self.isVar = False
         self.isEvent = False
         self.isSetter = None
         self.showCode = True
+
         self.nodeID = None
 
+        self.syntax = ""
+
         # just to be sure, init these variables
-        self.content = None
         self.grNode = None
 
         self.initInnerClasses()
         self.initSettings()
 
-        self.name = title
+        self.name = name
 
         self.scene.addNode(self)
         self.scene.grScene.addItem(self.grNode)
@@ -74,12 +76,12 @@ class Node(Serializable):
 
 
     def getSocketCode(self, socketID):
-        print(len(self.inputs))
+        # print(len(self.inputs))
         return self.inputs[socketID].socketCode
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
-        print(currentOrder)
+        # print(currentOrder)
         return currentOrder
 
     def __str__(self):
@@ -88,18 +90,18 @@ class Node(Serializable):
     @property
     def name(self):
         """
-        Title shown in the scene
+        Name shown in the scene
 
         :getter: return current Node title
         :setter: sets Node title and passes it to Graphics Node class
         :type: ``str``
         """
-        return self._title
+        return self._name
 
     @name.setter
-    def name(self, value):
-        self._title = value
-        self.grNode.name = self._title
+    def name(self, new_name):
+        self._name = new_name
+        self.grNode.name = self._name
 
     @property
     def pos(self):
@@ -122,22 +124,16 @@ class Node(Serializable):
 
     def initInnerClasses(self):
         """Sets up graphics Node (PyQt) and Content Widget"""
-        node_content_class = self.getNodeContentClass()
         graphics_node_class = self.getGraphicsNodeClass()
-        if node_content_class is not None: self.content = node_content_class(self)
         if graphics_node_class is not None: self.grNode = graphics_node_class(self)
-
-    def getNodeContentClass(self):
-        """Returns class representing nodeeditor content"""
-        return self.__class__.NodeContent_class
 
     def getGraphicsNodeClass(self):
         return self.__class__.GraphicsNode_class
 
     def initSettings(self):
         """Initialize properties and socket information"""
-        self.socket_spacing = 28
-        self.LR_offset = 9
+        self.socket_spacing = 20
+        self.LR_offset = 6
         self.input_socket_position = LEFT_TOP
         self.output_socket_position = RIGHT_TOP
         self.input_multi_edged = False
@@ -199,6 +195,7 @@ class Node(Serializable):
             self.outputs.append(socket)
 
         self.grNode.AutoResizeGrNode()
+
 
     def updateSockets(self):
         pass
@@ -576,7 +573,6 @@ class Node(Serializable):
         inputs, outputs = [], []
         for socket in self.inputs: inputs.append(socket.serialize())
         for socket in self.outputs: outputs.append(socket.serialize())
-        ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
         return OrderedDict([
             ('id', self.id),
             ('name', self.name),
@@ -586,7 +582,6 @@ class Node(Serializable):
             ('outputs', outputs),
             ('is_var', self.isVar),
             ('is_setter', self.isSetter),
-            ('content', ser_content),
         ])
 
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
@@ -597,7 +592,7 @@ class Node(Serializable):
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
             self.grNode.name = self.name
-
+            self.syntax = self.scene.NodeEditor.syntax_selector.currentText()
 
             data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
             data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
@@ -653,24 +648,13 @@ class Node(Serializable):
             self.isSetter = data['is_setter']
 
             if self.isVar or self.isEvent:
-                if self.isSetter:
-                    self.getNodeCode = self.setterCode
-                    self.grNode.AutoResizeGrNode()
-
-                else:
-                    self.getNodeCode = self.getterCode
-                    self.grNode.AutoResizeGrNode()
+                self.getNodeCode()
+                self.grNode.AutoResizeGrNode()
 
 
 
         except Exception as e:
             dumpException(e)
-
-        # also deserialize the content of the node
-        # so far the rest was ok, now as last step the content...
-        if isinstance(self.content, Serializable):
-            res = self.content.deserialize(data['content'], hashmap)
-            return res
 
         return True
 
@@ -680,15 +664,9 @@ class Node(Serializable):
     def toGetter(self):
         pass
 
-    def getNodeCode(self):
-        return None
-
-    def getterCode(self):
-        pass
-
-    def setterCode(self):
-        pass
-
     def initUI(self):
         pass
+
+    def getNodeCode(self):
+        return None
 

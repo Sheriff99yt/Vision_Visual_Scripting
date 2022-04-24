@@ -70,18 +70,18 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.isHighlighted = False
 
-        self.radius = 8
+        self.radius = 6
         self.outline_width = 1
         self.initAssets()
 
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setXOffset(-2)
-        shadow.setYOffset(2)
-        # setting blur radius (optional step)
-        shadow.setBlurRadius(6)
-        shadow.setColor(QColor(6, 6, 6))
-        # adding shadow to the Socket
-        self.setGraphicsEffect(shadow)
+        # shadow = QGraphicsDropShadowEffect()
+        # shadow.setXOffset(-2)
+        # shadow.setYOffset(2)
+        # # setting blur radius (optional step)
+        # shadow.setBlurRadius(6)
+        # shadow.setColor(QColor(6, 6, 6))
+        # # adding shadow to the Socket
+        # self.setGraphicsEffect(shadow)
 
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
@@ -264,10 +264,13 @@ class Socket(Serializable):
                 userInputWdg.setDecimals(6)
                 userInputWdg.setMinimum(float("-inf"))
                 userInputWdg.setMaximum(float("inf"))
-                userInputWdg.setFixedWidth(70)
+                userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
+                userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
+                userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
+
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 2), int(Spos.y() - self.grSocket.radius))
 
 
             elif self.socket_type == 2:
@@ -275,6 +278,10 @@ class Socket(Serializable):
                 userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
                 userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
                 userInputWdg.setRange(-1000000000, 1000000000)
+                userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
+                userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
+                userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
+
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
@@ -282,8 +289,9 @@ class Socket(Serializable):
             elif self.socket_type == 3:
                 userInputWdg = QCheckBox()
                 userInputWdg.stateChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.setFixedSize(self.grSocket.radius * 2, self.grSocket.radius * 2)
+                # userInputWdg.setIconSize(QSize(self.grSocket.radius, self.grSocket.radius))
 
-                userInputWdg.setFixedSize(16,16)
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
@@ -292,13 +300,17 @@ class Socket(Serializable):
             elif self.socket_type == 4:
                 userInputWdg = QLineEdit()
                 userInputWdg.textChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
-                userInputWdg.setMaximumWidth(100)
+                userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
+                userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
+                userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
+
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
 
 
-            if userInputWdg is not None: userInputWdg.setStyleSheet("background-color: transparent; border-width: 1px; border-style: solid; border-color: white; color: white")
+            if userInputWdg is not None:
+                userInputWdg.setStyleSheet("background-color: transparent; border-width: 1px; border-style: solid; border-color: white; color: white")
 
             return userInputWdg
 

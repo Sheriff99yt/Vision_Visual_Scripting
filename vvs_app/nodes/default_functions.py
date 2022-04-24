@@ -26,26 +26,32 @@ class IfStatement(MasterNode):
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
-        self.showCode = not self.isInputConnected(0)
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
 
-        condition = self.NodeCodeAtInput(1)
+            condition = self.NodeCodeAtInput(1)
 
-        true = self.NodeCodeAtOutput(0)
+            true = self.NodeCodeAtOutput(0)
 
-        false = self.NodeCodeAtOutput(1)
+            false = self.NodeCodeAtOutput(1)
 
-        rawCode = f"""
+            python_code = f"""
 if {condition}:
 {Indent(true)}
 else:
 {Indent(false)}"""
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+            raw_code = self.syntax
+
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
         else:
             colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
 
@@ -70,25 +76,30 @@ class ForLoop(MasterNode):
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
-        self.showCode = not self.isInputConnected(0)
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
 
-        firstIndex = self.NodeCodeAtInput(1)
+            firstIndex = self.NodeCodeAtInput(1)
 
-        lastIndex = self.NodeCodeAtInput(2)
+            lastIndex = self.NodeCodeAtInput(2)
 
-        loopCode = self.NodeCodeAtOutput(0)
+            loopCode = self.NodeCodeAtOutput(0)
 
-        rawCode = f"""
+            python_code = f"""
 for i in range({firstIndex},{lastIndex}):
 {Indent(loopCode)}"""
+            raw_code = python_code
+        elif self.syntax == "C++":
+            raw_code = self.syntax
+
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
         else:
             colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        styled_code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
-        return code
+        return styled_code
 
 
 @set_function_ID(FUN_PRINT)
@@ -104,21 +115,29 @@ class Print(MasterNode):
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
-        self.showCode = not self.isInputConnected(0)
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
 
-        brotherCode = self.NodeCodeAtOutput(0)
-        printCode = self.NodeCodeAtInput(1)
+            brotherCode = self.NodeCodeAtOutput(0)
+            printCode = self.NodeCodeAtInput(1)
 
-        rawCode = f"""
+            python_code = f"""
 print({printCode})
 {brotherCode}"""
+
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+
+            raw_code = self.syntax
+
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
         else:
             colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
 
@@ -126,7 +145,7 @@ print({printCode})
 class Input(MasterNode):
     icon = ""
     node_type = FUN_USER_INPUT
-    name = "Input"
+    name = "User Input"
     content_label_objname = "node_input"
 
     def __init__(self, scene):
@@ -135,23 +154,30 @@ class Input(MasterNode):
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
-        self.showCode = not self.isInputConnected(0)
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
 
-        brotherCode = self.NodeCodeAtOutput(0)
-        inputName = self.NodeCodeAtInput(1)
-        if inputName != "" and inputName is not None: inputName += " = "
-        inputCode = self.NodeCodeAtInput(2)
+            brotherCode = self.NodeCodeAtOutput(0)
+            inputName = self.NodeCodeAtInput(1)
+            if inputName != "" and inputName is not None: inputName += " = "
+            inputCode = self.NodeCodeAtInput(2)
 
-        rawCode = f"""
+            python_code = f"""
 {inputName}input({inputCode})
 {brotherCode}"""
+
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+            raw_code = self.syntax
+
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
         else:
             colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
 
@@ -168,21 +194,29 @@ class Print(MasterNode):
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
-        self.showCode = not self.isInputConnected(0)
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
 
-        brotherCode = self.NodeCodeAtOutput(0)
-        inputCode = self.NodeCodeAtInput(1)
+            brotherCode = self.NodeCodeAtOutput(0)
+            inputCode = self.NodeCodeAtInput(1)
 
-        rawCode = f"""
+            python_code = f"""
 {inputCode}
 {brotherCode}"""
+
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+
+            raw_code = self.syntax
+
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
         else:
             colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
 
@@ -200,19 +234,19 @@ class Add(MasterNode):
         self.grNode._brush_title = QBrush(QColor(mathOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}+{B})"
+            python_code = f"({A}+{B})"
 
-        if self.isSelected() is True:
-            colorStyle = f' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '
-        else:
-            colorStyle = f' style=" Font-size:{FontSize}px ;" '
+            raw_code = python_code
 
-        code = f' <p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p> '
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
 
 
 @set_function_ID(FUN_SUB)
@@ -229,19 +263,19 @@ class Sub(MasterNode):
         self.grNode._brush_title = QBrush(QColor(mathOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}-{B})"
+            python_code = f"({A}+{B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
 
 
 @set_function_ID(FUN_MUL)
@@ -258,19 +292,19 @@ class Mul(MasterNode):
         self.grNode._brush_title = QBrush(QColor(mathOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}*{B})"
+            python_code = f"({A}*{B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
 
 
 @set_function_ID(FUN_DIV)
@@ -287,19 +321,19 @@ class Div(MasterNode):
         self.grNode._brush_title = QBrush(QColor(mathOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}/{B})"
+            python_code = f"({A}/{B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
 
 
 @set_function_ID(FUN_GREATER_THAN)
@@ -316,19 +350,19 @@ class GreaterThan(MasterNode):
         self.grNode._brush_title = QBrush(QColor(logicOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}&gt;{B})"
+            python_code = f"({A}&gt;{B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{mathOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
 
 
 @set_function_ID(FUN_LESS_THAN)
@@ -345,20 +379,19 @@ class LessThan(MasterNode):
         self.grNode._brush_title = QBrush(QColor(logicOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}&lt;{B})"
+            python_code = f"({A}&lt;{B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
 
+        return raw_code
 
 @set_function_ID(FUN_Equal)
 class Equal(MasterNode):
@@ -374,19 +407,19 @@ class Equal(MasterNode):
         self.grNode._brush_title = QBrush(QColor(logicOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A}=={B})"
+            python_code = f"({A}=={B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
 
 
 @set_function_ID(FUN_AND)
@@ -403,16 +436,16 @@ class And(MasterNode):
         self.grNode._brush_title = QBrush(QColor(logicOperators))
 
     def getNodeCode(self):
-        A = self.NodeCodeAtInput(0)
-        B = self.NodeCodeAtInput(1)
+        if self.syntax == "Python":
+            A = self.NodeCodeAtInput(0)
+            B = self.NodeCodeAtInput(1)
 
-        rawCode = f"({A} and {B})"
+            python_code = f"({A} and {B})"
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{logicOperators};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+            raw_code = python_code
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{rawCode}</span></p></pre> """
+        elif self.syntax == "C++":
 
-        return rawCode
+            raw_code = self.syntax
+
+        return raw_code
