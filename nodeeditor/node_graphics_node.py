@@ -90,7 +90,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.height = 80
         self.edge_roundnes = 2
         self.edge_padding = 0
-        self.title_height = 18
+        self.title_height = 20
         self.title_horizontal_padding = 16
         self.title_vertical_padding = 10
 
@@ -110,7 +110,7 @@ class QDMGraphicsNode(QGraphicsItem):
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Roboto", 9)
+        self._title_font = QFont("Roboto", 10)
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")
