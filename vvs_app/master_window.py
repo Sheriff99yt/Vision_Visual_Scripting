@@ -124,9 +124,14 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
+        w_image = QPixmap("icons/VVS_White.png")
 
+        welcome_image = QLabel()
+        welcome_image.setPixmap(w_image)
         self.brows_btn = QPushButton("Brows..")
 
+        Elayout.addWidget(welcome_image)
+        Elayout.addItem(QSpacerItem(120, 120))
         Elayout.addWidget(user_text)
         Elayout.addWidget(self.brows_btn)
 
