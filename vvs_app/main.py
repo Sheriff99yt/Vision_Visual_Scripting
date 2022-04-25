@@ -1,4 +1,6 @@
-import os, sys
+import ctypes
+import os
+import sys
 
 from PyQt5.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
@@ -16,16 +18,13 @@ if __name__ == '__main__':
 
     # print(QStyleFactory.keys())
     app.setStyle('Fusion')
-    app.setWindowIcon(QIcon("icons/VVS_Logo.png"))
+    app.setWindowIcon(QIcon("icons/VVS_Logo_Thick.png"))
+
+    # Show app Icon In Task Manager
+    myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     wnd = MasterWindow()
     wnd.showMaximized()
-
-    # msg = QMessageBox()
-    # msg.setText(f"""Your Data is Being Saved By Default in\n\n {wnd.filesWidget.Project_Directory}""")
-    # msg.setWindowTitle("Note")
-    # msg.setWindowIcon(QIcon("icons/VVS_Logo.png"))
-    # msg.setStyleSheet("background-color: #282828; color: rgb(255, 255, 255);")
-    # msg.exec_()
 
     sys.exit(app.exec_())
