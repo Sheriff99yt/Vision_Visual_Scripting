@@ -148,14 +148,13 @@ class Print(MasterNode):
     content_label_objname = "node_print"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 4], outputs=[0])
+        super().__init__(scene, inputs=[0, 6], outputs=[0])
         self.nodeColor = "#90702070"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
     def getNodeCode(self):
         if self.syntax == "Python":
             self.showCode = not self.isInputConnected(0)
-
             brotherCode = self.get_other_socket_code(0)
             printCode = self.get_my_input_code(1)
             print(self.isInputConnected(0))

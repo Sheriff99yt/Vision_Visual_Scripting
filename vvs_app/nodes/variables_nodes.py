@@ -27,11 +27,12 @@ class FloatVar(MasterNode):
 
     def toSetter(self):
         self.isSetter = True
-        self.initSockets(inputs=[0, 1], outputs=[0])
+        self.initSockets(inputs=[0, 1], outputs=[0, 1])
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
+                self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
@@ -77,11 +78,12 @@ class IntegerVar(MasterNode):
 
     def toSetter(self):
         self.isSetter = True
-        self.initSockets(inputs=[0, 2], outputs=[0])
+        self.initSockets(inputs=[0, 2], outputs=[0, 2])
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
+                self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
@@ -128,11 +130,12 @@ class BooleanVar(MasterNode):
 
     def toSetter(self):
         self.isSetter = True
-        self.initSockets(inputs=[0, 3], outputs=[0])
+        self.initSockets(inputs=[0, 3], outputs=[0, 3])
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
+                self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
@@ -179,11 +182,12 @@ class StringVar(MasterNode):
 
     def toSetter(self):
         self.isSetter = True
-        self.initSockets(inputs=[0, 4], outputs=[0])
+        self.initSockets(inputs=[0, 4], outputs=[0, 4])
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
+                self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
@@ -231,11 +235,12 @@ class ListVar(MasterNode):
 
     def toSetter(self):
         self.isSetter = True
-        self.initSockets(inputs=[0, 5], outputs=[0])
+        self.initSockets(inputs=[0, 5], outputs=[0, 5])
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
+                self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
