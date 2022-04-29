@@ -161,10 +161,10 @@ class SceneHistory():
         self.onAutoSave()
 
     def onAutoSave(self):
-        self.autoSaveCounter += 1
-        if self.autoSaveCounter == 30:
-            # self.masterWndRef.FileAutoSave()
-            self.autoSaveCounter = 0
+        self.masterWndRef.GlobalSwitches.autoSaveCounter += 1
+        if self.masterWndRef.GlobalSwitches.autoSaveCounter == self.masterWndRef.GlobalSwitches.autoSaveSteps:
+            self.masterWndRef.onFileAutoSave()
+            self.masterWndRef.GlobalSwitches.autoSaveCounter = 0
 
     def captureCurrentSelection(self) -> dict:
         """

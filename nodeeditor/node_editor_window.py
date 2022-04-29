@@ -7,6 +7,7 @@ from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 # from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_editor_widget import NodeEditorWidget
+from datetime import datetime
 
 
 class NodeEditorWindow(QMainWindow):
@@ -232,15 +233,19 @@ class NodeEditorWindow(QMainWindow):
             else: self.setTitle()
             return True
 
-    def FileAutoSave(self):
+    def onFileAutoSave(self):
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            # print(f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""")
-            if os.path.isfile(f"{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json") and os.path.isfile(f"{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"):
+            now = datetime.now()
+            Now = str(now).replace(":", ".")[0:19]
+            print(Now)
+
+            if os.path.isfile(
+                    f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(
+                    f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()} {Now}.json"""):
                 self.onFileSave()
             else:
-                fname = f"{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()}.json"
-                # if fname == '': return False
+                fname = f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()} {Now}.json"""
                 self.onBeforeSaveAs(current_node_editor, fname)
                 current_node_editor.fileSave(fname)
                 self.statusBar().showMessage("Successfully Auto Saved %s" % current_node_editor.filename, 5000)
