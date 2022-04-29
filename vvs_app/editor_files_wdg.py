@@ -102,7 +102,7 @@ class FilesWDG(QWidget):
                 if self.masterRef.graphsNames.__contains__(li):
                     self.masterRef.graphsNames.remove(li)
 
-    def CreateNewGraph(self, subwnd):
+    def new_graph_name(self, subwnd):
         x = 1
         newName = f"New Graph {x}"
         while self.masterRef.graphsNames.__contains__(newName):

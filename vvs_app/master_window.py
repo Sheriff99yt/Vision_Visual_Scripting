@@ -5,6 +5,7 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 
+from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from vvs_app.editor_settings_wnd import settingsWidget
@@ -371,14 +372,13 @@ class MasterWindow(NodeEditorWindow):
     def onNewGraphTab(self):
         # Overrides Node Editor Window > actNew action
         try:
-            self.filesWidget.removeDeletedGraphs()
-
             subwnd = self.newGraphTab()
-            subwnd.widget().newGraph()
+            if isinstance(subwnd.widget(), NodeEditorWidget):
+                subwnd.widget().setup_new_graph()
 
             subwnd.show()
 
-            self.filesWidget.CreateNewGraph(subwnd)
+            self.filesWidget.new_graph_name(subwnd)
         except Exception as e:
             dumpException(e)
 
@@ -397,15 +397,17 @@ class MasterWindow(NodeEditorWindow):
                         subwnd = self.findMdiChild(file_name)
 
                         nodeEditor = subwnd.widget()
+                        print(nodeEditor)
 
                         nodeEditor.scene.masterRef = self
 
                         self.graphs_parent_wdg.setActiveSubWindow(subwnd)
 
                     else:
-                        # we need to create new subWindow and open the file
+                        # We need to create new subWindow and open the file
                         nodeEditor = MasterEditorWnd()
                         subwnd = self.newGraphTab(nodeEditor)
+                        print(nodeEditor)
 
                         if nodeEditor.fileLoad(file_name):
                             self.statusBar().showMessage("File %s loaded" % file_name, 5000)
@@ -413,6 +415,9 @@ class MasterWindow(NodeEditorWindow):
                             subwnd.show()
                         else:
                             nodeEditor.close()
+
+                    if isinstance(nodeEditor, MasterEditorWnd):
+                        nodeEditor.scene.history.storeInitialHistoryStamp()
 
 
         except Exception as e:
