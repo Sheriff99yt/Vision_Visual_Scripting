@@ -183,7 +183,7 @@ class NodeEditorWindow(QMainWindow):
         """Hande New Graph operation"""
         print("No Waaaayyyyy")
         if self.maybeSave():
-            self.CurrentNodeEditor().newGraph()
+            self.CurrentNodeEditor().setup_new_graph()
             self.setTitle()
 
     def onFileOpen(self):
