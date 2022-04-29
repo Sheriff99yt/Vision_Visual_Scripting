@@ -277,6 +277,9 @@ class NodeEditorWidget(QWidget):
         output = output.decode('UTF-8')
         error = error.decode('UTF-8')
 
+        colorStyle = f''' style=" Font-size:12px ; color: #FF3333;" '''
+        code = f""" <pre><p style="font-family: Roboto "><span {colorStyle} >{error}</span></p></pre> """
+
         self.code_output.append(output)
         self.code_output.append(error)
 

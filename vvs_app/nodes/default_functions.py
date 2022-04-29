@@ -4,7 +4,7 @@ from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
 from textwrap import *
 
-FontSize = 18
+FontSize = 14
 FontFamily = "Roboto"
 mathOperators = "#70307030"
 logicOperators = "#30000050"
