@@ -5,6 +5,7 @@ from qtpy.QtCore import *
 
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
+from vvs_app.editor_settings_wnd import settingsWidget
 from vvs_app.master_editor_wnd import MasterEditorWnd
 from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
@@ -275,7 +276,7 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
         # self.settingsBtn.setShortcut(QKeySequence("Ctrl+Shift+S"))
-        self.toolsBar.addAction(self.settingsBtn)
+        self.tools_bar.addAction(self.settingsBtn)
 
         # Add Spacer Wdg
         mySpacer = QWidget()
@@ -293,6 +294,14 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.copy_code_btn)
         self.copy_code_btn.triggered.connect(self.CopyTextCode)
         self.copy_code_btn.setShortcut(QKeySequence("Ctrl+Shift+C"))
+
+    def onSettingsOpen(self):
+        self.settingsWidget = settingsWidget()
+        self.settingsWidget.masterRef = self
+        self.settingsWidget.show()
+
+        self.settingsWidget.setWindowTitle("Settings")
+        self.settingsWidget.setGeometry(100, 100, 800, 600)
 
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()

@@ -2,8 +2,7 @@ from functools import partial
 
 from PyQt5 import *
 
-from examples.example_calculator.master_window import *
-from nodeeditor.node_scene_history import SceneHistory
+from vvs_app.master_window import *
 
 class settingsWidget(QWidget):
     def __init__(self, parent=None):
