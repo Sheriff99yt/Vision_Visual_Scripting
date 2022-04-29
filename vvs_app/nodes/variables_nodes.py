@@ -33,8 +33,8 @@ class FloatVar(MasterNode):
         if self.isSetter:
             if self.syntax == "Python":
                 self.showCode = not self.isInputConnected(0)
-                brotherCode = self.NodeCodeAtOutput(0)
-                setInput = self.NodeCodeAtInput(1)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
 
                 python_code = f"""
 {self.name}={setInput}
@@ -74,19 +74,17 @@ class IntegerVar(MasterNode):
     def toGetter(self):
         self.isSetter = False
         self.initSockets(inputs=[], outputs=[2])
-        self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
         self.initSockets(inputs=[0, 2], outputs=[0])
-        self.getNodeCode = self.setterCode
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
                 self.showCode = not self.isInputConnected(0)
-                brotherCode = self.NodeCodeAtOutput(0)
-                setInput = self.NodeCodeAtInput(1)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
 
                 python_code = f"""
 {self.name}={setInput}
@@ -127,19 +125,17 @@ class BooleanVar(MasterNode):
     def toGetter(self):
         self.isSetter = False
         self.initSockets(inputs=[], outputs=[3])
-        self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
         self.initSockets(inputs=[0, 3], outputs=[0])
-        self.getNodeCode = self.setterCode
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
                 self.showCode = not self.isInputConnected(0)
-                brotherCode = self.NodeCodeAtOutput(0)
-                setInput = self.NodeCodeAtInput(1)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
 
                 python_code = f"""
 {self.name}={setInput}
@@ -180,22 +176,20 @@ class StringVar(MasterNode):
     def toGetter(self):
         self.isSetter = False
         self.initSockets(inputs=[], outputs=[4])
-        self.getNodeCode = self.getterCode
 
     def toSetter(self):
         self.isSetter = True
         self.initSockets(inputs=[0, 4], outputs=[0])
-        self.getNodeCode = self.setterCode
 
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
                 self.showCode = not self.isInputConnected(0)
-                brotherCode = self.NodeCodeAtOutput(0)
-                setInput = self.NodeCodeAtInput(1)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
 
                 python_code = f"""
-{self.name}={setInput}
+{self.name}="{setInput}"
 {brotherCode}"""
 
                 raw_code = python_code
@@ -217,3 +211,61 @@ class StringVar(MasterNode):
             self.showCode = False
             getCode = self.name
             return getCode
+
+
+@set_var_ID(VAR_LIST)
+class ListVar(MasterNode):
+    icon = ""
+    node_type = VAR_LIST
+    name = "list"
+    content_label_objname = "var_node_list"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[], outputs=[5])
+        self.isVar = True
+        self.grNode._brush_title = QBrush(QColor(StringColor))
+
+    def toGetter(self):
+        self.isSetter = False
+        self.initSockets(inputs=[], outputs=[5])
+
+    def toSetter(self):
+        self.isSetter = True
+        self.initSockets(inputs=[0, 5], outputs=[0])
+
+    def getNodeCode(self):
+        if self.isSetter:
+            if self.syntax == "Python":
+                self.showCode = not self.isInputConnected(0)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
+                if self.isInputConnected(1):
+                    python_code = f"""
+{self.name}={setInput}
+{brotherCode}"""
+
+                else:
+                    python_code = f"""
+{self.name}=[{setInput}]
+{brotherCode}"""
+
+                raw_code = python_code
+
+            elif self.syntax == "C++":
+
+                raw_code = self.syntax
+
+
+            if self.isSelected() is True:
+                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{StringColor};" '''
+            else:
+                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+            code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
+
+            return code
+        else:
+            self.showCode = False
+            getCode = self.name
+            return getCode
+

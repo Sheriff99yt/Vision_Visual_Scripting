@@ -29,11 +29,11 @@ class IfStatement(MasterNode):
         if self.syntax == "Python":
             self.showCode = not self.isInputConnected(0)
 
-            condition = self.NodeCodeAtInput(1)
+            condition = self.get_my_input_code(1)
 
-            true = self.NodeCodeAtOutput(0)
+            true = self.get_other_socket_code(0)
 
-            false = self.NodeCodeAtOutput(1)
+            false = self.get_other_socket_code(1)
 
             python_code = f"""
 if {condition}:
@@ -71,7 +71,7 @@ class ForLoop(MasterNode):
     content_label_objname = "node_for_loop"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 2, 2], outputs=[0])
+        super().__init__(scene, inputs=[0, 2], outputs=[0])
         self.nodeColor = "#905050FF"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
@@ -79,14 +79,52 @@ class ForLoop(MasterNode):
         if self.syntax == "Python":
             self.showCode = not self.isInputConnected(0)
 
-            firstIndex = self.NodeCodeAtInput(1)
+            range = self.get_my_input_code(1)
 
-            lastIndex = self.NodeCodeAtInput(2)
-
-            loopCode = self.NodeCodeAtOutput(0)
+            loopCode = self.get_other_socket_code(0)
 
             python_code = f"""
-for i in range({firstIndex},{lastIndex}):
+for item in range({range}):
+{Indent(loopCode)}"""
+            raw_code = python_code
+        elif self.syntax == "C++":
+            raw_code = self.syntax
+
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        styled_code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
+
+        return styled_code
+
+
+@set_function_ID(FUN_FOR_EACH_LOOP)
+class ForEachLoop(MasterNode):
+    icon = "icons/Loop.png"
+    node_type = FUN_FOR_EACH_LOOP
+    name = "For Each Loop"
+    content_label_objname = "node_for_each_loop"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 5], outputs=[0, 6])
+        self.nodeColor = "#905050FF"
+        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+
+    def getNodeCode(self):
+        if self.syntax == "Python":
+
+            self.showCode = not self.isInputConnected(0)
+
+            list = self.get_my_input_code(1)
+
+            loopCode = self.get_other_socket_code(0)
+
+            self.outputs[1].socket_code = 'item'
+
+            python_code = f"""
+for item in {list}:
 {Indent(loopCode)}"""
             raw_code = python_code
         elif self.syntax == "C++":
@@ -118,11 +156,17 @@ class Print(MasterNode):
         if self.syntax == "Python":
             self.showCode = not self.isInputConnected(0)
 
-            brotherCode = self.NodeCodeAtOutput(0)
-            printCode = self.NodeCodeAtInput(1)
-
-            python_code = f"""
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            print(self.isInputConnected(0))
+            if self.isInputConnected(1):
+                python_code = f"""
 print({printCode})
+{brotherCode}"""
+
+            else:
+                python_code = f"""
+print("{printCode}")
 {brotherCode}"""
 
             raw_code = python_code
@@ -142,14 +186,14 @@ print({printCode})
         return code
 
 @set_function_ID(FUN_USER_INPUT)
-class Input(MasterNode):
+class UserInput(MasterNode):
     icon = ""
     node_type = FUN_USER_INPUT
     name = "User Input"
     content_label_objname = "node_input"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 4, 4], outputs=[0])
+        super().__init__(scene, inputs=[0, 6, 4], outputs=[0])
         self.nodeColor = "#505050"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
@@ -157,13 +201,14 @@ class Input(MasterNode):
         if self.syntax == "Python":
             self.showCode = not self.isInputConnected(0)
 
-            brotherCode = self.NodeCodeAtOutput(0)
-            inputName = self.NodeCodeAtInput(1)
+            brotherCode = self.get_other_socket_code(0)
+            inputName = self.get_my_input_code(1)
+
             if inputName != "" and inputName is not None: inputName += " = "
-            inputCode = self.NodeCodeAtInput(2)
+            inputCode = self.get_my_input_code(2)
 
             python_code = f"""
-{inputName}input({inputCode})
+{inputName}input("{inputCode}")
 {brotherCode}"""
 
             raw_code = python_code
@@ -182,7 +227,7 @@ class Input(MasterNode):
         return code
 
 @set_function_ID(FUN_RAW_CODE)
-class Print(MasterNode):
+class RawCode(MasterNode):
     icon = ""
     node_type = FUN_RAW_CODE
     name = "Raw Code"
@@ -197,8 +242,8 @@ class Print(MasterNode):
         if self.syntax == "Python":
             self.showCode = not self.isInputConnected(0)
 
-            brotherCode = self.NodeCodeAtOutput(0)
-            inputCode = self.NodeCodeAtInput(1)
+            brotherCode = self.get_other_socket_code(0)
+            inputCode = self.get_my_input_code(1)
 
             python_code = f"""
 {inputCode}
@@ -235,10 +280,10 @@ class Add(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}+{B})"
+            python_code = self.outputs[0].socket_code = f"({A}+{B})"
 
             raw_code = python_code
 
@@ -264,10 +309,10 @@ class Sub(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}+{B})"
+            python_code = self.outputs[0].socket_code = f"({A}+{B})"
 
             raw_code = python_code
 
@@ -293,10 +338,10 @@ class Mul(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}*{B})"
+            python_code = self.outputs[0].socket_code = f"({A}*{B})"
 
             raw_code = python_code
 
@@ -322,10 +367,10 @@ class Div(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}/{B})"
+            python_code = self.outputs[0].socket_code = f"({A}/{B})"
 
             raw_code = python_code
 
@@ -351,10 +396,10 @@ class GreaterThan(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}&gt;{B})"
+            python_code = self.outputs[0].socket_code = f"({A}&gt;{B})"
 
             raw_code = python_code
 
@@ -380,10 +425,10 @@ class LessThan(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}&lt;{B})"
+            python_code = self.outputs[0].socket_code = f"({A}&lt;{B})"
 
             raw_code = python_code
 
@@ -408,10 +453,10 @@ class Equal(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A}=={B})"
+            python_code = self.outputs[0].socket_code = f"({A}=={B})"
 
             raw_code = python_code
 
@@ -437,10 +482,10 @@ class And(MasterNode):
 
     def getNodeCode(self):
         if self.syntax == "Python":
-            A = self.NodeCodeAtInput(0)
-            B = self.NodeCodeAtInput(1)
+            A = self.get_my_input_code(0)
+            B = self.get_my_input_code(1)
 
-            python_code = f"({A} and {B})"
+            python_code = self.outputs[0].socket_code = f"({A} and {B})"
 
             raw_code = python_code
 

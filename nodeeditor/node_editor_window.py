@@ -10,7 +10,7 @@ from nodeeditor.node_editor_widget import NodeEditorWidget
 
 
 class NodeEditorWindow(QMainWindow):
-    # NodeEditorWidget_class = NodeEditorWidget
+    NodeEditorWidget_class = NodeEditorWidget
 
     """Class representing NodeEditor's Main Window"""
     def __init__(self):

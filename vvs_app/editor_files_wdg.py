@@ -45,11 +45,12 @@ class FilesWDG(QWidget):
         self.masterRef.onFileOpen(all_files)
 
     def CreateDefaultDir(self):
+
         self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
         if os.path.exists(self.Project_Directory):
             pass
         else:
-            self.Project_Directory = os.makedirs(os.getenv('AppData') + "/VVS")
+            self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
 
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)

@@ -16,13 +16,14 @@ FUN_USER_INPUT = 12
 FUN_RAW_CODE = 13
 FUN_INPUT = 14
 FUN_OUTPUT = 15
-
+FUN_FOR_EACH_LOOP = 16
 ######################
 
 VAR_FLOAT = 20
 VAR_INTEGER = 21
 VAR_BOOLEAN = 22
 VAR_STRING = 23
+VAR_LIST = 24
 
 ######################
 
