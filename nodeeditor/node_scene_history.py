@@ -116,6 +116,7 @@ class SceneHistory():
         self.restoreHistoryStamp(self.history_stack[self.history_current_step])
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_restored_listeners: callback()
+
         self.scene.NodeEditor.UpdateTextCode()
 
     def storeHistory(self, desc: str, setModified: bool=False):
@@ -211,7 +212,7 @@ class SceneHistory():
             previous_selection = self.captureCurrentSelection()
             if DEBUG_SELECTION: print("selected nodes before restore:", previous_selection['nodes'])
 
-            self.scene.deserialize(history_stamp['snapshot'])
+            self.scene.deserialize(data=history_stamp['snapshot'], history_call=True)
 
             # restore selection
 
