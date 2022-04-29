@@ -29,7 +29,7 @@ class Event(MasterNode):
     def getNodeCode(self):
         if self.isSetter:
             if self.syntax == "Python":
-                childCode = self.NodeCodeAtOutput(0)
+                childCode = self.get_other_socket_code(0)
 
                 python_code = f"""
 def {self.name}():
@@ -53,7 +53,7 @@ def {self.name}():
 
         else:
             if self.syntax == "Python":
-                brotherCode = self.NodeCodeAtOutput(0)
+                brotherCode = self.get_other_socket_code(0)
                 self.showCode = not self.isInputConnected(0)
 
                 python_code = f"""

@@ -75,10 +75,6 @@ class Node(Serializable):
         self.initSockets(inputs, outputs)
 
 
-    def getSocketCode(self, socketID):
-        # print(len(self.inputs))
-        return self.inputs[socketID].socketCode
-
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
         # print(currentOrder)
@@ -356,17 +352,48 @@ class Node(Serializable):
                 other_nodes.append(other_node)
         return other_nodes
 
-    def NodeCodeAtInput(self, index: int = 0):
+    def get_other_socket_code(self, index: int = 0):
+        """
+        Get the **first**  `Node` connected to the output specified by `index` and the connection `Socket`
+
+        :param index: Order number of the `Input Socket`
+        :type index: ``int``
+        :return: Tuple containing :class:`~nodeeditor.node_node.Node` and :class:`~nodeeditor.node_socket.Socket` which
+            is connected to the specified `Input` or ``None`` if there is no connection or the index is out of range
+        :rtype: (:class:`~nodeeditor.node_node.Node`, int)
+        """
+        try:
+            edge = self.outputs[index].socketEdges[0]
+            other_socket = edge.getOtherSocket(self.outputs[index])
+            if other_socket is None:
+                return ""
+            else:
+                return other_socket.getSocketCode()
+
+        except IndexError:
+            # print("EXC: Trying to get input with other_socket index %d, but none is attached to" % index, self)
+            return ""
+        except Exception as e:
+            dumpException(e)
+            return ""
+
+    def get_my_input_code(self, index: int = 0):
         if not self.inputs or index > len(self.inputs)-1:
             print("Trying to call from Node Input socket while Node has no input socket")
             return None
 
         input_socket = self.inputs[index]
-        if len(input_socket.socketEdges) == 0: return self.getSocketWdgValue(input_socket)
+        if len(input_socket.socketEdges) == 0:
+            return self.getSocketWdgValue(input_socket)
+
         connecting_edge = input_socket.socketEdges[0]
         other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-        if other_socket is None: return self.getSocketWdgValue(input_socket)
-        return other_socket.node.getNodeCode()
+
+        if other_socket is None:
+            return self.getSocketWdgValue(input_socket)
+
+        return other_socket.getSocketCode()
+
 
     def getSocketWdgValue(self, input_socket):
         if input_socket.socket_type == 1 or input_socket.socket_type == 2:
@@ -375,8 +402,8 @@ class Node(Serializable):
         elif input_socket.socket_type == 3:
             return input_socket.userInputWdg.isChecked()
 
-        elif input_socket.socket_type == 4:
-            return input_socket.userInputWdg.text()
+        elif input_socket.socket_type == 4 or input_socket.socket_type == 5 or input_socket.socket_type == 6:
+            return input_socket.userInputWdg.toPlainText()
 
     def getConnectedInputNode(self, index: int = 0):
         input_socket = self.inputs[index]
@@ -395,35 +422,6 @@ class Node(Serializable):
             return False
         else:
             return True
-
-    # def InputSocketCodeAt(self, index: int = 0):
-    #     input_socket = self.inputs[index]
-    #     if len(input_socket.socketEdges) == 0: return ""
-    #     connecting_edge = input_socket.socketEdges[0]
-    #     other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-    #
-    #     if other_socket is None:
-    #         return ""
-    #     else:
-    #         return other_socket.socketCode
-
-    def InputSocketNameAt(self, index: int = 0):
-        input_socket = self.inputs[index]
-        if len(input_socket.socketEdges) == 0: return ""
-        connecting_edge = input_socket.socketEdges[0]
-        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-
-        if other_socket is None:
-            return ""
-        else:
-            return other_socket.socketName
-
-    def SocketValueAt(self, index: int = 0):
-        input_socket = self.inputs[index]
-        if len(input_socket.socketEdges) == 0: return ""
-        connecting_edge = input_socket.socketEdges[0]
-        other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-        return other_socket.socketValue
 
     def getInput(self, index: int = 0) -> ['Node', None]:
         """
@@ -511,29 +509,6 @@ class Node(Serializable):
             dumpException(e)
             return None
 
-    def NodeCodeAtOutput(self, index: int = 0):
-        """
-        Get the **first**  `Node` connected to the output specified by `index` and the connection `Socket`
-
-        :param index: Order number of the `Input Socket`
-        :type index: ``int``
-        :return: Tuple containing :class:`~nodeeditor.node_node.Node` and :class:`~nodeeditor.node_socket.Socket` which
-            is connected to the specified `Input` or ``None`` if there is no connection or the index is out of range
-        :rtype: (:class:`~nodeeditor.node_node.Node`, int)
-        """
-        try:
-            edge = self.outputs[index].socketEdges[0]
-            socket = edge.getOtherSocket(self.outputs[index])
-            if socket is None:
-                return ""
-            else:
-                return socket.node.getNodeCode()
-        except IndexError:
-            # print("EXC: Trying to get input with socket index %d, but none is attached to" % index, self)
-            return ""
-        except Exception as e:
-            dumpException(e)
-            return ""
 
     def getInputs(self, index: int = 0) -> 'List[Node]':
         """

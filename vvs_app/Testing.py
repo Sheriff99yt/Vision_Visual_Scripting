@@ -8,7 +8,6 @@ def Event():
 
 
     else:
-
         print("Can Not Register")
 
 

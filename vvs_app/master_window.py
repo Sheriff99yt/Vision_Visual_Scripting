@@ -286,12 +286,13 @@ class MasterWindow(NodeEditorWindow):
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
 
-        if node_editor is not None:
-            node_editor.TextCodeWnd.selectAll()
-            node_editor.TextCodeWnd.copy()
+        if node_editor:
+
+            node_editor.text_code_wnd.selectAll()
+            node_editor.text_code_wnd.copy()
             python_file_name = node_editor.windowTitle()
 
-            text = node_editor.TextCodeWnd.toPlainText()
+            text = node_editor.text_code_wnd.toPlainText()
             if os.listdir(self.filesWidget.Project_Directory).__contains__("Generated Scripts") is False:
                 os.makedirs(self.filesWidget.Project_Directory + "/Generated Scripts")
                 f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
