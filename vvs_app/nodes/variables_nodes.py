@@ -56,7 +56,7 @@ class FloatVar(MasterNode):
             return code
         else:
             self.showCode = False
-            getCode = self.name
+            getCode = self.outputs[0].socket_code = self.name
             return getCode
 
 
@@ -109,7 +109,7 @@ class IntegerVar(MasterNode):
             return code
         else:
             self.showCode = False
-            getCode = self.name
+            getCode = self.outputs[0].socket_code = self.name
             return getCode
 
 @set_var_ID(VAR_BOOLEAN)
@@ -161,7 +161,7 @@ class BooleanVar(MasterNode):
             return code
         else:
             self.showCode = False
-            getCode = self.name
+            getCode = self.outputs[0].socket_code = self.name
             return getCode
 
 @set_var_ID(VAR_STRING)
@@ -213,7 +213,7 @@ class StringVar(MasterNode):
             return code
         else:
             self.showCode = False
-            getCode = self.name
+            getCode = self.outputs[0].socket_code = self.name
             return getCode
 
 
@@ -271,6 +271,6 @@ class ListVar(MasterNode):
             return code
         else:
             self.showCode = False
-            getCode = self.name
+            getCode = self.outputs[0].socket_code = self.name
             return getCode
 
