@@ -62,19 +62,43 @@ class NodeEditorWindow(QMainWindow):
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut='Ctrl+Shift+O', statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
-        self.actNew = QAction('&New Graph', self, shortcut='Ctrl+N', statusTip="Create new graph", triggered=self.onNewGraphTab)
-        self.actOpen = QAction('&Open', self, shortcut='Ctrl+O', statusTip="Open file", triggered=self.onFileOpen)
-        self.actSave = QAction('&Save', self, shortcut='Ctrl+S', statusTip="Save file", triggered=self.onFileSave)
-        self.actSaveAs = QAction('Save &As...', self, shortcut='Ctrl+Shift+S', statusTip="Save file as...", triggered=self.onFileSaveAs)
-        self.actExit = QAction('E&xit', self, shortcut='Ctrl+Q', statusTip="Exit application", triggered=self.close)
+        self.actNew = QAction('&New Graph', self,
+                              shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("New Graph") + 1],
+                              statusTip="Create new graph", triggered=self.onNewGraphTab)
+        self.actOpen = QAction('&Open', self,
+                               shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Open") + 1],
+                               statusTip="Open file", triggered=self.onFileOpen)
+        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.GlobalSwitches.varlist[
+            self.GlobalSwitches.varlist.index("Set Project Location") + 1], statusTip="Set a Folder For Your Project",
+                                        triggered=self.filesWidget.onSetProjectFolder)
+        self.actSave = QAction('&Save', self,
+                               shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Save") + 1],
+                               statusTip="Save file", triggered=self.onFileSave)
+        self.actSaveAs = QAction('Save &As...', self,
+                                 shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Save As") + 1],
+                                 statusTip="Save file as...", triggered=self.onFileSaveAs)
+        self.actExit = QAction('E&xit', self,
+                               shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Exit") + 1],
+                               statusTip="Exit application", triggered=self.close)
 
-        self.actUndo = QAction('&Undo', self, shortcut='Ctrl+Z', statusTip="Undo last operation", triggered=self.onEditUndo)
-        self.actRedo = QAction('&Redo', self, shortcut='Ctrl+Shift+Z', statusTip="Redo last operation", triggered=self.onEditRedo)
-        self.actCut = QAction('Cu&t', self, shortcut='Ctrl+X', statusTip="Cut to clipboard", triggered=self.onEditCut)
-        self.actCopy = QAction('&Copy', self, shortcut='Ctrl+C', statusTip="Copy to clipboard", triggered=self.onEditCopy)
-        self.actPaste = QAction('&Paste', self, shortcut='Ctrl+V', statusTip="Paste from clipboard", triggered=self.onEditPaste)
-        self.actDelete = QAction('&Delete', self, shortcut='Del', statusTip="Delete selected items", triggered=self.onEditDelete)
+        self.actUndo = QAction('&Undo', self,
+                               shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Undo") + 1],
+                               statusTip="Undo last operation", triggered=self.onEditUndo)
+        self.actRedo = QAction('&Redo',
+                               shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Redo") + 1],
+                               statusTip="Redo last operation", triggered=self.onEditRedo)
+        self.actCut = QAction('Cu&t',
+                              shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Cut") + 1],
+                              statusTip="Cut to clipboard", triggered=self.onEditCut)
+        self.actCopy = QAction('&Copy',
+                               shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Copy") + 1],
+                               statusTip="Copy to clipboard", triggered=self.onEditCopy)
+        self.actPaste = QAction('&Paste',
+                                shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Paste") + 1],
+                                statusTip="Paste from clipboard", triggered=self.onEditPaste)
+        self.actDelete = QAction('&Delete',
+                                 shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Delete") + 1],
+                                 statusTip="Delete selected items", triggered=self.onEditDelete)
 
 
     def createMenus(self):

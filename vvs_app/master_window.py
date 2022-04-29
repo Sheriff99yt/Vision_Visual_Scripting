@@ -11,6 +11,7 @@ from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.editor_var_events_lists import VarEventList
 from vvs_app.editor_proterties_list import PropertiesList
+from vvs_app.Global_Switchs import *
 
 from nodeeditor.utils import dumpException
 # from vvs_app.nodes_configuration import FUNCTIONS
@@ -52,6 +53,9 @@ class MasterWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
+
+        self.GlobalSwitches = GlobalSwitches()
+
         self.graphsNames = []
 
         self.all_VE_lists = []
