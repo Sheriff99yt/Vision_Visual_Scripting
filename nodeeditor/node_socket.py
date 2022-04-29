@@ -20,15 +20,15 @@ DEBUG_REMOVE_WARNINGS = False
 A module containing Graphics representation of a :class:`~nodeeditor.node_socket.Socket`
 """
 
-# SOCKET_COLORS must be at least 7 in this version
 
-# Executable 0
-# Float 1
-# Intager 2
-# Boolean 3
-# String 4
-# Holder 6
-# Holder 7
+Socket_Types = {}
+Socket_Types[0] = 'Executable'
+Socket_Types[1] = 'float'
+Socket_Types[3] = 'int'
+Socket_Types[2] = 'bool'
+Socket_Types[4] = 'string'
+Socket_Types[5] = 'list'
+Socket_Types[6] = 'list_item'
 
 SOCKET_COLORS = [
     QColor("#aaFFFFFF"),
@@ -36,7 +36,8 @@ SOCKET_COLORS = [
     QColor("#aa0070FF"),
     QColor("#aaFF1010"),
     QColor("#aaFF10FF"),
-    QColor("#aad2d2d2")]
+    QColor("#aaaaaaaa"),
+    QColor("#aaaaaaaa")]
 
 SOCKET_COLORS_HOVERED = [
     QColor("#FFFFFF"),
@@ -44,7 +45,8 @@ SOCKET_COLORS_HOVERED = [
     QColor("#0070FF"),
     QColor("#FF1010"),
     QColor("#FF10FF"),
-    QColor("#d2d2d2")]
+    QColor("#aaaaaa"),
+    QColor("#aaaaaa")]
 
 SOCKET_COLORS_CONNECTED = [
     QColor("#FFFFFF"),
@@ -52,7 +54,8 @@ SOCKET_COLORS_CONNECTED = [
     QColor("#0070FF"),
     QColor("#FF1010"),
     QColor("#FF10FF"),
-    QColor("#d2d2d2")]
+    QColor("#aaaaaa"),
+    QColor("#aaaaaa")]
 
 class QDMGraphicsSocket(QGraphicsItem):
     """Class representing Graphic `Socket` in ``QGraphicsScene``"""
@@ -64,6 +67,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         """
         super().__init__(socket.node.grNode)
 
+        self.is_list = False
         self.isConnected = False
         self.hovered = None
         self.socket = socket
@@ -72,7 +76,9 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.radius = 6
         self.outline_width = 1
+
         self.initAssets()
+        self.paint = self.myPaint
 
         # shadow = QGraphicsDropShadowEffect()
         # shadow.setXOffset(-2)
@@ -82,6 +88,8 @@ class QDMGraphicsSocket(QGraphicsItem):
         # shadow.setColor(QColor(6, 6, 6))
         # # adding shadow to the Socket
         # self.setGraphicsEffect(shadow)
+
+
 
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
@@ -132,23 +140,32 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._pen.setWidthF(self.outline_width)
         self._brush = QBrush(self.getSocketColor(self.socket_type))
 
-    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
+
+    def myPaint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting a circle"""
         painter.setBrush(self._brush)
         painter.setPen(self._pen)
-
-        if self.hovered:
-            painter.setPen(QPen(QColor("#FFFFFF")))
 
         if self.hovered or self.isConnected:
             painter.setBrush(self.getHoveredSocketColor(self.socket_type))
 
         else:
-            painter.setBrush(self.getSocketColor(self.socket_type))
+            painter.setBrush(self._brush)
 
         if self.socket_type == 0:
             painter.drawPolygon(QPoint(-self.radius, self.radius), QPoint(self.radius, 0),
                                 QPoint(-self.radius, -self.radius))
+        elif self.socket_type == 6:
+            # This is an Object Reference Socket Type
+            painter.drawPolygon(QPoint(-self.radius, 0), QPoint(0, self.radius), QPoint(self.radius, 0), QPoint(0, -self.radius))
+
+        elif self.socket_type == 5:
+            # This is an Object Reference Socket Type
+            painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+            painter.setBrush(QBrush(QColor("#FF101010")))
+
+            if not self.isConnected:
+                painter.drawRect(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
 
         elif self.socket_type == 1 or 2 or 3 or 4:
             painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
@@ -156,8 +173,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
             if not self.isConnected:
                 painter.drawEllipse(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
-        else:
-            painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+
 
     def boundingRect(self) -> QRectF:
         """Defining Qt' bounding rectangle"""
@@ -185,9 +201,9 @@ RIGHT_TOP = 4
 RIGHT_CENTER = 5
 RIGHT_BOTTOM = 6
 
+
 DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
-
 
 class Socket(Serializable):
     Socket_GR_Class = QDMGraphicsSocket
@@ -227,6 +243,7 @@ class Socket(Serializable):
         super().__init__()
 
         self.node = node
+        self.socket_code = self.node.name
         self.position = position
         self.index = index
         self.socket_type = socket_type
@@ -234,15 +251,10 @@ class Socket(Serializable):
         self.is_multi_edges = multi_edges
         self.is_input = is_input
         self.is_output = not self.is_input
-        self.socketName = self.node.name
-        self.socketValue = True
-
-        self.socketCode = "{}={}".format(self.socketName, self.socketValue)
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for nodeeditor", self.node)
 
         self.grSocket = self.__class__.Socket_GR_Class(self)
-        self.SocketColor = self.grSocket._current_color
 
         self.setSocketPosition()
 
@@ -251,12 +263,16 @@ class Socket(Serializable):
         self.userInputWdg = self.SocketInputs()
 
 
-
+    def getSocketCode(self):
+        if self.socket_type == 0:
+            return self.node.getNodeCode()
+        else:
+            return self.socket_code
 
     def SocketInputs(self):
         if self.is_input:
             userInputWdg = None
-            Spos = self.grSocket.pos()
+            scene_pos = self.grSocket.pos()
             if self.socket_type == 1:
                 userInputWdg = QDoubleSpinBox()
                 userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
@@ -268,11 +284,6 @@ class Socket(Serializable):
                 userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
                 userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
 
-                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
-                sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 2), int(Spos.y() - self.grSocket.radius))
-
-
             elif self.socket_type == 2:
                 userInputWdg = QSpinBox()
                 userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
@@ -282,43 +293,30 @@ class Socket(Serializable):
                 userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
                 userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
 
-                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
-                sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
-
             elif self.socket_type == 3:
                 userInputWdg = QCheckBox()
                 userInputWdg.stateChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
                 userInputWdg.setFixedSize(self.grSocket.radius * 2, self.grSocket.radius * 2)
                 # userInputWdg.setIconSize(QSize(self.grSocket.radius, self.grSocket.radius))
 
-                sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
-                sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
-
-
-            elif self.socket_type == 4:
-                userInputWdg = QLineEdit()
+            elif self.socket_type == 4 or self.socket_type == 5 or self.socket_type == 6:
+                userInputWdg = QTextEdit()
+                userInputWdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+                userInputWdg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
                 userInputWdg.textChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
                 userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
                 userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
                 userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
 
+            if userInputWdg:
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
-                sceneProxy.setPos(int(Spos.x() + self.grSocket.radius + 4), int(Spos.y() - self.grSocket.radius))
+                sceneProxy.setPos(int(scene_pos.x() + self.grSocket.radius + 4), int(scene_pos.y() - self.grSocket.radius))
 
-
-            if userInputWdg is not None:
-                userInputWdg.setStyleSheet("background-color: transparent; border-width: 1px; border-style: solid; border-color: white; color: white")
+                userInputWdg.setStyleSheet("background-color: #555555; border-width: 1px; border-style: solid; border-color: transparent; color: white")
 
             return userInputWdg
 
-    def updateSocketCode(self):
-        if len(self.socketEdges) == 0: return ""
-        connecting_edge = self.socketEdges[0]
-        other_socket = connecting_edge.getOtherSocket(self)
-        return other_socket.socketName
 
     def __str__(self):
         return "<Socket #%d %s %s..%s>" % (
@@ -440,8 +438,6 @@ class Socket(Serializable):
             # probably older version of file, make RIGHT socket multi edged by default
             return data['position'] in (RIGHT_BOTTOM, RIGHT_TOP)
 
-    def setSocketCode(self, name: str, code: str):
-        self.socketCode = "{}={}".format(name, code)
 
     def serialize(self) -> OrderedDict:
         return OrderedDict([
