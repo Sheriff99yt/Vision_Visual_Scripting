@@ -282,7 +282,6 @@ class NodeScene(Serializable):
         """
         self.edges.append(edge)
 
-
     def removeNode(self, node: Node):
         """Remove :class:`~nodeeditor.node_node.Node` from this `Scene`
 
@@ -347,7 +346,7 @@ class NodeScene(Serializable):
 
                 self.filename = filename
 
-                self.deserialize(data)
+                self.deserialize(data=data)
                 self.has_been_modified = False
 
             except json.JSONDecodeError:
@@ -396,6 +395,7 @@ class NodeScene(Serializable):
                 ])
 
                 self.userVars.append(userVar)
+        return self.userVars
 
     def UESerialize(self):
 
@@ -410,38 +410,38 @@ class NodeScene(Serializable):
                 ])
 
                 self.userEvents.append(userEvent)
+        return self.userEvents
 
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
-
         for node in self.nodes: nodes.append(node.serialize())
         for edge in self.edges: edges.append(edge.serialize())
-        self.UVSerialize()
-        self.UESerialize()
+
         return OrderedDict([
             ('id', self.id),
             ('scene_width', self.scene_width),
             ('scene_height', self.scene_height),
-            ('user_vars', self.userVars),
-            ('user_events', self.userEvents),
+            ('user_vars', self.UVSerialize()),
+            ('user_events', self.UESerialize()),
             ('nodes', nodes),
             ('edges', edges),
         ])
 
-    def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
+    def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, history_call=False, *args, **kwargs) -> bool:
         # Start with the scene ID
 
         hashmap = {}
         if restore_id:
             self.id = data['id']
 
-        # Deserialize the User Vars
-        for var_data in data['user_vars']:
-            self.VEListWdg.LoadVar(type=var_data['type'], name=var_data['title'], id=var_data['id'])
+        if not history_call:
+            # Deserialize the User Vars
+            for var_data in data['user_vars']:
+                self.VEListWdg.LoadVar(type=var_data['type'], name=var_data['title'], id=var_data['id'])
 
-        # Deserialize the User Events
-        for event_data in data['user_events']:
-            self.VEListWdg.LoadEvent(type=event_data['type'], name=event_data['title'], id=event_data['id'])
+            # Deserialize the User Events
+            for event_data in data['user_events']:
+                self.VEListWdg.LoadEvent(type=event_data['type'], name=event_data['title'], id=event_data['id'])
 
 
         # -- deserialize NODES
@@ -461,7 +461,7 @@ class NodeScene(Serializable):
             if not found:
                 try:
                     new_node = self.getNodeClassFromData(node_data)(self)
-                    new_node.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
+                    new_node.deserialize(data=node_data, hashmap=hashmap, restore_id=restore_id, *args, **kwargs)
                     new_node.onDeserialized(node_data)
                     # print("New node for", node_data['title'])
                 except:

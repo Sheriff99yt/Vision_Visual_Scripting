@@ -136,7 +136,7 @@ class SceneClipboard():
 
         for node_data in data['nodes']:
             new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
-            new_node.deserialize(node_data, hashmap, restore_id=False, *args, **kwargs)
+            new_node.deserialize(data=node_data, hashmap=hashmap, restore_id=False, *args, **kwargs)
             created_nodes.append(new_node)
 
             # readjust the new nodeeditor's position
