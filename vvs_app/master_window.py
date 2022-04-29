@@ -270,6 +270,13 @@ class MasterWindow(NodeEditorWindow):
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
 
+        # Add and connect self.settingsBtn
+        self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
+        self.settingsBtn.setCheckable(True)
+        self.settingsBtn.triggered.connect(self.onSettingsOpen)
+        # self.settingsBtn.setShortcut(QKeySequence("Ctrl+Shift+S"))
+        self.toolsBar.addAction(self.settingsBtn)
+
         # Add Spacer Wdg
         mySpacer = QWidget()
         mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
