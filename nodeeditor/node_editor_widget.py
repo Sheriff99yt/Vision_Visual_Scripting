@@ -281,7 +281,7 @@ class NodeEditorWidget(QWidget):
         code = f""" <pre><p style="font-family: Roboto "><span {colorStyle} >{error}</span></p></pre> """
 
         self.code_output.append(output)
-        self.code_output.append(error)
+        self.code_output.append(code)
 
     def UpdateTextCode(self):
         self.text_code_wnd.clear()
