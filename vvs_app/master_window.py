@@ -318,10 +318,6 @@ class MasterWindow(NodeEditorWindow):
     def createActions(self):
         super().createActions()
 
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut='Ctrl+Shift+O',
-                                        statusTip="Set a Folder For Your Project",
-                                        triggered=self.filesWidget.onSetProjectFolder)
-
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
                                 triggered=self.graphs_parent_wdg.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",

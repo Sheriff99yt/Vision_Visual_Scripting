@@ -62,6 +62,7 @@ class NodeEditorWindow(QMainWindow):
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
+        self.actSetProjectDir = QAction('&Open Project', self, shortcut='Ctrl+Shift+O', statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
         self.actNew = QAction('&New Graph', self, shortcut='Ctrl+N', statusTip="Create new graph", triggered=self.onNewGraphTab)
         self.actOpen = QAction('&Open', self, shortcut='Ctrl+O', statusTip="Open file", triggered=self.onFileOpen)
         self.actSave = QAction('&Save', self, shortcut='Ctrl+S', statusTip="Save file", triggered=self.onFileSave)
