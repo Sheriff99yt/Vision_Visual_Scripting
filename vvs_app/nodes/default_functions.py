@@ -35,13 +35,20 @@ class IfStatement(MasterNode):
 
             false = self.get_other_socket_code(1)
 
-            python_code = f"""
+            if self.isOutputConnected(1):
+                print("weee")
+                python_code = f"""
 if {condition}:
 {Indent(true)}
 else:
 {Indent(false)}"""
-            raw_code = python_code
 
+            else:
+                python_code = f"""
+if {condition}:
+{Indent(true)}"""
+
+            raw_code = python_code
         elif self.syntax == "C++":
             raw_code = self.syntax
 
@@ -55,7 +62,7 @@ else:
 
         return code
 
-
+# Khyria Efforts
 # code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
 # if {condition}:
 # {textwrap.indent(true, "    ")}

@@ -423,6 +423,17 @@ class Node(Serializable):
         else:
             return True
 
+    def isOutputConnected(self, index: int = 0):
+        if not self.outputs:
+            print("Trying to call from Node Input socket while Node has no input socket")
+            return
+
+        output_socket = self.outputs[index]
+        if len(output_socket.socketEdges) == 0:
+            return False
+        else:
+            return True
+
     def getInput(self, index: int = 0) -> ['Node', None]:
         """
         Get the **first**  `Node` connected to the  Input specified by `index`
