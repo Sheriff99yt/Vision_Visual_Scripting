@@ -1,4 +1,6 @@
 import os
+import subprocess
+
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
@@ -6,12 +8,14 @@ from qtpy.QtCore import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
+from vvs_app.editor_settings_wnd import settingsWidget
 from vvs_app.master_editor_wnd import MasterEditorWnd
 from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.editor_var_events_lists import VarEventList
 from vvs_app.editor_proterties_list import PropertiesList
+from vvs_app.Global_Switchs import *
 
 from nodeeditor.utils import dumpException
 # from vvs_app.nodes_configuration import FUNCTIONS
@@ -24,6 +28,7 @@ from nodeeditor.node_edge_validators import (
 )
 
 # Edge.registerEdgeValidator(edge_validator_debug)
+
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
@@ -37,7 +42,6 @@ class MasterWindow(NodeEditorWindow):
     def MakeCopyOfClass(self, classRef):
         class NewVEList(classRef):
             pass
-
         return NewVEList
 
     def initUI(self):
@@ -53,6 +57,10 @@ class MasterWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
+
+        self.GlobalSwitches = GlobalSwitches()
+        self.GlobalSwitches.masterRef = self
+
         self.graphsNames = []
 
         self.all_VE_lists = []
@@ -147,14 +155,12 @@ class MasterWindow(NodeEditorWindow):
             self.Offline_Dir = os.makedirs(os.getenv('AppData') + "/VVS/Offline Library")
 
         self.library_offline_list.setRootIndex(self.Model.index(self.Offline_Dir))
-
     # def onSetProjectFolder(self):
     #     Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
     #     if Dir != "":
     #         self.Offline_Dir = Dir
     #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
     #         self.MakeDir(self.Offline_Dir)
-
     def CreateLibraryWnd(self):
         self.librariesDock = QDockWidget("Libraries")
         self.library_subwnd = QTabWidget()
@@ -248,6 +254,16 @@ class MasterWindow(NodeEditorWindow):
         # Add self.tools_bar To Main Window
         self.addToolBar(self.tools_bar)
 
+        # Add and connect self.settingsBtn
+        self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
+        self.settingsBtn.setCheckable(True)
+        self.settingsBtn.triggered.connect(self.onSettingsOpen)
+        self.settingsBtn.setShortcut(QKeySequence(self.GlobalSwitches.switches_List["Settings Window"]))
+        self.tools_bar.addAction(self.settingsBtn)
+
+        # Add Separator
+        self.tools_bar.addSeparator()
+
         # Add and connect self.node_editor_btn
         self.node_editor_btn = QAction(QIcon("icons/Edit 2.png"), "&Node Editor", self)
         self.node_editor_btn.triggered.connect(self.ActivateEditorWnd)
@@ -284,9 +300,16 @@ class MasterWindow(NodeEditorWindow):
         self.copy_code_btn.triggered.connect(self.CopyTextCode)
         self.copy_code_btn.setShortcut(QKeySequence("Ctrl+Shift+C"))
 
+    def onSettingsOpen(self):
+        self.settingsWidget = settingsWidget()
+        self.settingsWidget.masterRef = self
+        self.settingsWidget.show()
+
+        self.settingsWidget.setWindowTitle("Settings")
+        self.settingsWidget.setGeometry(100, 100, 800, 600)
+
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
-
         if node_editor:
 
             node_editor.text_code_wnd.selectAll()
@@ -319,29 +342,21 @@ class MasterWindow(NodeEditorWindow):
     def createActions(self):
         super().createActions()
 
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut='Ctrl+Shift+O',
-                                        statusTip="Set a Folder For Your Project",
-                                        triggered=self.filesWidget.onSetProjectFolder)
-
-        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
-                                triggered=self.graphs_parent_wdg.closeActiveSubWindow)
-        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",
-                                   triggered=self.graphs_parent_wdg.closeAllSubWindows)
-        self.actTile = QAction("&Tile", self, statusTip="Tile the windows",
-                               triggered=self.graphs_parent_wdg.tileSubWindows)
-        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows",
-                                  triggered=self.graphs_parent_wdg.cascadeSubWindows)
-        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild,
-                               statusTip="Move the focus to the next window",
-                               triggered=self.graphs_parent_wdg.activateNextSubWindow)
-        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild,
-                                   statusTip="Move the focus to the previous window",
-                                   triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
+        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.graphs_parent_wdg.closeActiveSubWindow)
+        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.graphs_parent_wdg.closeAllSubWindows)
+        self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.graphs_parent_wdg.tileSubWindows)
+        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows", triggered=self.graphs_parent_wdg.cascadeSubWindows)
+        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild, statusTip="Move the focus to the next window", triggered=self.graphs_parent_wdg.activateNextSubWindow)
+        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild, statusTip="Move the focus to the previous window", triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
 
         self.actSeparator = QAction(self)
         self.actSeparator.setSeparator(True)
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
+        self.actDoc = QAction("&Documentation", self, triggered=self.open_doc)
+
+    def open_doc(self):
+        subprocess.Popen('hh.exe "VVS-Help.chm"')
 
     def CurrentNodeEditor(self):
         """ we're returning NodeEditorWidget here... """
@@ -410,18 +425,13 @@ class MasterWindow(NodeEditorWindow):
 
     def createMenus(self):
         super().createMenus()
-
         self.node_editor_menu = self.menuBar().addMenu("&Node Editor")
-
         self.library_menu = self.menuBar().addMenu("&Library")
-
         self.node_designer_menu = self.menuBar().addMenu("&Node Designer")
-
         self.updateWindowMenu()
-        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
         self.menuBar().addSeparator()
-
         self.helpMenu = self.menuBar().addMenu("&Help")
+        self.helpMenu.addAction(self.actDoc)
         self.helpMenu.addAction(self.actAbout)
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
@@ -695,3 +705,9 @@ class MasterWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
+
+    def about(self):
+        QMessageBox.about(self, "About Calculator NodeEditor Example",
+                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
+                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
+                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")

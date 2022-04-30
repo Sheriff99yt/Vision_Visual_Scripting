@@ -47,9 +47,7 @@ class FilesWDG(QWidget):
     def CreateDefaultDir(self):
 
         self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
-        if os.path.exists(self.Project_Directory):
-            pass
-        else:
+        if os.path.exists(self.Project_Directory) is False:
             self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
 
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
@@ -62,29 +60,9 @@ class FilesWDG(QWidget):
             self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
             self.MakeDir(self.Project_Directory)
 
-        #     DirCont = os.listdir(Dir)
-        #     if DirCont != []:
-        #         Q = QMessageBox.question(self, "Warning",
-        #                                  "Project Folder Isn't Empty\n\n- Do You Still Want To Use It?",
-        #                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.No)
-        #         if Q == QMessageBox.Yes:
-        #             self.Project_Directory = Dir
-        #             self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
-        #             self.MakeDir(self.Project_Directory)
-        #         elif Q == QMessageBox.No:
-        #             self.onSetProjectFolder()
-        #         elif Q == QMessageBox.Cancel:
-        #             QMessageBox.about(self, "Note", f"""Your Data is Being Saved in\n\n {self.Project_Directory}""")
-        #     else:
-        #         self.Project_Directory = Dir
-        #         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
-        #         self.MakeDir(self.Project_Directory)
-        # else:
-        #     QMessageBox.about(self, "Note", f"""Your Data is Being Saved By Default in\n\n {self.Project_Directory}""")
-
     def MakeDir(self, Dir):
-        if os.listdir(self.Project_Directory).__contains__("AutoSave") is False:
-            os.makedirs(Dir + "/AutoSave")
+        if os.listdir(self.Project_Directory).__contains__("VVS AutoSave") is False:
+            os.makedirs(Dir + "/VVS AutoSave")
 
     def removeDeletedGraphs(self):
         wndsN = []
