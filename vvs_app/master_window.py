@@ -15,7 +15,7 @@ from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.editor_var_events_lists import VarEventList
 from vvs_app.editor_proterties_list import PropertiesList
-from vvs_app.Global_Switchs import *
+from vvs_app.global_switchs import *
 
 from nodeeditor.utils import dumpException
 # from vvs_app.nodes_configuration import FUNCTIONS
@@ -156,12 +156,14 @@ class MasterWindow(NodeEditorWindow):
             self.Offline_Dir = os.makedirs(os.getenv('AppData') + "/VVS/Offline Library")
 
         self.library_offline_list.setRootIndex(self.Model.index(self.Offline_Dir))
+
     # def onSetProjectFolder(self):
     #     Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
     #     if Dir != "":
     #         self.Offline_Dir = Dir
     #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
     #         self.MakeDir(self.Offline_Dir)
+
     def CreateLibraryWnd(self):
         self.librariesDock = QDockWidget("Libraries")
         self.library_subwnd = QTabWidget()
@@ -259,7 +261,7 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
-        # self.settingsBtn.setShortcut(QKeySequence("Ctrl+Shift+S"))
+        self.settingsBtn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.settingsBtn)
 
         # Add Separator
@@ -268,7 +270,7 @@ class MasterWindow(NodeEditorWindow):
         # Add and connect self.node_editor_btn
         self.node_editor_btn = QAction(QIcon("icons/Edit 2.png"), "&Node Editor", self)
         self.node_editor_btn.triggered.connect(self.ActivateEditorWnd)
-        # self.node_designer_btn.setShortcut(QKeySequence("`"))
+        # self.node_designer_btn.setShortcut(QKeySequence("key"))
         self.tools_bar.addAction(self.node_editor_btn)
 
         # Add and connect self.node_designer_btn
@@ -284,10 +286,16 @@ class MasterWindow(NodeEditorWindow):
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
 
+        # Add Separator
+        self.tools_bar.addSeparator()
+
         # Add Spacer Wdg
         mySpacer = QWidget()
         mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.tools_bar.addWidget(mySpacer)
+
+        # Add Separator
+        self.tools_bar.addSeparator()
 
         # Add and connect self.code_orientation_btn
         self.code_orientation_btn = QAction(QIcon("icons/Orientation.png"), "&Code Window View Mode", self)
@@ -307,7 +315,7 @@ class MasterWindow(NodeEditorWindow):
         self.settingsWidget.show()
 
         self.settingsWidget.setWindowTitle("Settings")
-        self.settingsWidget.setGeometry(100, 100, 800, 600)
+        self.settingsWidget.setGeometry(300, 150, 1200, 800)
 
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
@@ -414,7 +422,8 @@ class MasterWindow(NodeEditorWindow):
                         else:
                             nodeEditor.close()
 
-                    nodeEditor.scene.history.storeInitialHistoryStamp()
+                    if isinstance(nodeEditor, MasterEditorWnd):
+                        nodeEditor.scene.history.storeInitialHistoryStamp()
 
         except Exception as e:
             dumpException(e)
@@ -427,11 +436,17 @@ class MasterWindow(NodeEditorWindow):
 
     def createMenus(self):
         super().createMenus()
+
         self.node_editor_menu = self.menuBar().addMenu("&Node Editor")
+
         self.library_menu = self.menuBar().addMenu("&Library")
+
         self.node_designer_menu = self.menuBar().addMenu("&Node Designer")
+
         self.updateWindowMenu()
+        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
         self.menuBar().addSeparator()
+
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actDoc)
         self.helpMenu.addAction(self.actAbout)
@@ -707,9 +722,3 @@ class MasterWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
-
-    def about(self):
-        QMessageBox.about(self, "About Calculator NodeEditor Example",
-                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
-                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
