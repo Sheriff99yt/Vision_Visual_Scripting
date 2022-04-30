@@ -1,8 +1,8 @@
 from functools import partial
 
 from PyQt5 import *
-
 from vvs_app.master_window import *
+
 
 class settingsWidget(QWidget):
     def __init__(self, parent=None):
@@ -12,9 +12,6 @@ class settingsWidget(QWidget):
 
         self.settingsList = [[Appearance.__name__, Appearance], [System.__name__, System], [KeyMapping.__name__, KeyMapping]]
 
-        self.inttialize()
-
-    def inttialize(self):
         self.settingsLayout = QVBoxLayout()
         self.setLayout(self.settingsLayout)
 
@@ -38,6 +35,7 @@ class settingsWidget(QWidget):
 
         self.settingsTree.clicked.connect(self.settingsWidgetChange)
 
+
     def settingsWidgetChange(self):
         selected = self.settingsTree.selectedItems()
         old = self.settingsSplitter.widget(1)
@@ -46,6 +44,7 @@ class settingsWidget(QWidget):
         self.settingsWidget = selected[0].data(5, 6)()
         self.settingsSplitter.addWidget(self.settingsWidget)
         self.settingsWidget.masterRef = self.masterRef
+        self.settingsWidget.fill()
 
 class Appearance(QWidget):
     def __init__(self, parent=None):
@@ -62,9 +61,11 @@ class Appearance(QWidget):
 
         # Content
 
-
         self.setLayout(self.Appearance_Layout)
         self.layout().setAlignment(Qt.AlignTop)
+
+    def fill(self):
+        print(self.masterRef)
 
 class System(QWidget):
     def __init__(self, parent=None):
@@ -87,10 +88,13 @@ class System(QWidget):
         self.autoSaveSteps = QSpinBox()
         self.System_Layout.addWidget(self.autoSaveSteps, 2, 1, 1, 10, alignment=Qt.AlignLeft)
         self.autoSaveSteps.setMaximumWidth(200)
-        self.autoSaveSteps.editingFinished.connect(lambda :self.masterRef.GlobalSwitches.change_autoSaveSteps(self.autoSaveSteps.value()))
+        self.autoSaveSteps.editingFinished.connect(lambda : self.masterRef.GlobalSwitches.change_Switches(self.autoSaveSteps.value(), "autoSaveSteps"))
 
         self.setLayout(self.System_Layout)
         self.layout().setAlignment(Qt.AlignTop)
+
+    def fill(self):
+        self.autoSaveSteps.setValue(self.masterRef.GlobalSwitches.switches_List["autoSaveSteps"])
 
 class KeyMapping(QWidget):
     def __init__(self, parent=None):
@@ -106,7 +110,7 @@ class KeyMapping(QWidget):
         self.KeyMapping_Layout.addItem(self.spacer, 1, 0)
 
         self.settingslist = ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
-                             "Undo", "Redo", "Cut", "Copy", "Paste", "Delete"]
+                             "Undo", "Redo", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
 
         for item in self.settingslist:
             lbl = QLabel(item)
@@ -121,6 +125,12 @@ class KeyMapping(QWidget):
 
         self.setLayout(self.KeyMapping_Layout)
         self.layout().setAlignment(Qt.AlignTop)
+
+    def fill(self):
+        for i in range(self.KeyMapping_Layout.rowCount()-2):
+            Label = self.KeyMapping_Layout.itemAtPosition(i + 2, 0).widget().text()
+            currentKS = self.masterRef.GlobalSwitches.switches_List[Label]
+            self.KeyMapping_Layout.itemAtPosition(i + 2, 1).widget().setKeySequence(currentKS)
 
     def Handlers(self):
         # File Shortcuts
@@ -163,6 +173,10 @@ class KeyMapping(QWidget):
             self.settingslist.index("Delete") + 2, 2).widget().editingFinished.connect(
             lambda: self.shortcutEdit(self.masterRef.actDelete, None, "Delete", 2))
 
+        self.KeyMapping_Layout.itemAtPosition(
+            self.settingslist.index("Settings Window") + 2, 2).widget().editingFinished.connect(
+            lambda: self.shortcutEdit(self.masterRef.settingsBtn, None, "Settings Window", 3))
+
     def shortcutEdit(self, ChangingAct, NextAct, Text, Num):
         index = self.settingslist.index(Text)
         NewShortcut = self.KeyMapping_Layout.itemAtPosition(index + 2, 2).widget().keySequence().toString()
@@ -177,3 +191,5 @@ class KeyMapping(QWidget):
             self.masterRef.editMenu.removeAction(ChangingAct)
             ChangingAct.setShortcut(NewShortcut)
             self.masterRef.editMenu.insertAction(NextAct, ChangingAct)
+        elif Num == 3:
+            ChangingAct.setShortcut(NewShortcut)

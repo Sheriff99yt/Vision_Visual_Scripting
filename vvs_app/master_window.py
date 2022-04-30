@@ -42,7 +42,6 @@ class MasterWindow(NodeEditorWindow):
     def MakeCopyOfClass(self, classRef):
         class NewVEList(classRef):
             pass
-
         return NewVEList
 
     def initUI(self):
@@ -259,7 +258,7 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
-        # self.settingsBtn.setShortcut(QKeySequence("Ctrl+Shift+S"))
+        self.settingsBtn.setShortcut(QKeySequence(self.GlobalSwitches.switches_List["Settings Window"]))
         self.tools_bar.addAction(self.settingsBtn)
 
         # Add Separator
@@ -311,7 +310,6 @@ class MasterWindow(NodeEditorWindow):
 
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
-
         if node_editor:
 
             node_editor.text_code_wnd.selectAll()
