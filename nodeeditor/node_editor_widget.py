@@ -293,4 +293,5 @@ class NodeEditorWidget(QWidget):
                 pass
             else:
                 self.text_code_wnd.append(node.getNodeCode())
-                # scrollToAnchor
+        # print(self.text_code_wnd.find("f"))
+        # print("o")

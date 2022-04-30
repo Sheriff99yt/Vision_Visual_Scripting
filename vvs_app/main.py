@@ -20,7 +20,7 @@ if __name__ == '__main__':
     app.setWindowIcon(QIcon("icons/VVS_Logo_Thick.png"))
 
     # Show app Icon In Task Manager
-    myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
+    myappid = 'mycompany.myproduct.subproduct.version'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     wnd = MasterWindow()
