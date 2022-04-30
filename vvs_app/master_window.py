@@ -380,7 +380,6 @@ class MasterWindow(NodeEditorWindow):
                         subwnd = self.findMdiChild(file_name)
 
                         nodeEditor = subwnd.widget()
-                        print(nodeEditor)
 
                         nodeEditor.scene.masterRef = self
 
@@ -390,7 +389,6 @@ class MasterWindow(NodeEditorWindow):
                         # We need to create new subWindow and open the file
                         nodeEditor = MasterEditorWnd()
                         subwnd = self.newGraphTab(nodeEditor)
-                        print(nodeEditor)
 
                         if nodeEditor.fileLoad(file_name):
                             self.statusBar().showMessage("File %s loaded" % file_name, 5000)
@@ -399,13 +397,10 @@ class MasterWindow(NodeEditorWindow):
                         else:
                             nodeEditor.close()
 
-                    if isinstance(nodeEditor, MasterEditorWnd):
-                        nodeEditor.scene.history.storeInitialHistoryStamp()
-
+                    nodeEditor.scene.history.storeInitialHistoryStamp()
 
         except Exception as e:
             dumpException(e)
-
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",
@@ -674,6 +669,7 @@ class MasterWindow(NodeEditorWindow):
         nodeEditor.addCloseEventListener(self.onSubWndClose)
 
         self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
+
 
         return subwnd
 
