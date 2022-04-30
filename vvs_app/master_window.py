@@ -5,6 +5,7 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 
+from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from vvs_app.editor_settings_wnd import settingsWidget
@@ -371,14 +372,13 @@ class MasterWindow(NodeEditorWindow):
     def onNewGraphTab(self):
         # Overrides Node Editor Window > actNew action
         try:
-            self.filesWidget.removeDeletedGraphs()
-
             subwnd = self.newGraphTab()
-            subwnd.widget().newGraph()
+            if isinstance(subwnd.widget(), NodeEditorWidget):
+                subwnd.widget().setup_new_graph()
 
             subwnd.show()
 
-            self.filesWidget.CreateNewGraph(subwnd)
+            self.filesWidget.new_graph_name(subwnd)
         except Exception as e:
             dumpException(e)
 
@@ -403,7 +403,7 @@ class MasterWindow(NodeEditorWindow):
                         self.graphs_parent_wdg.setActiveSubWindow(subwnd)
 
                     else:
-                        # we need to create new subWindow and open the file
+                        # We need to create new subWindow and open the file
                         nodeEditor = MasterEditorWnd()
                         subwnd = self.newGraphTab(nodeEditor)
 
@@ -414,9 +414,16 @@ class MasterWindow(NodeEditorWindow):
                         else:
                             nodeEditor.close()
 
+                    nodeEditor.scene.history.storeInitialHistoryStamp()
 
         except Exception as e:
             dumpException(e)
+
+    def about(self):
+        QMessageBox.about(self, "About Calculator NodeEditor Example",
+                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
+                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
+                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
 
     def createMenus(self):
         super().createMenus()
@@ -674,6 +681,7 @@ class MasterWindow(NodeEditorWindow):
         nodeEditor.addCloseEventListener(self.onSubWndClose)
 
         self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
+
 
         return subwnd
 

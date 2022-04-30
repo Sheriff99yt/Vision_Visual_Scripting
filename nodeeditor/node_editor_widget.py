@@ -173,7 +173,7 @@ class NodeEditorWidget(QWidget):
         # name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
         return name + ("*" if self.isModified() else "")
 
-    def newGraph(self):
+    def setup_new_graph(self):
         """Empty the scene (create new Graph)"""
         self.scene.clear()
         self.filename = None
@@ -293,4 +293,5 @@ class NodeEditorWidget(QWidget):
                 pass
             else:
                 self.text_code_wnd.append(node.getNodeCode())
-                # scrollToAnchor
+        # print(self.text_code_wnd.find("f"))
+        # print("o")
