@@ -12,6 +12,9 @@ class settingsWidget(QWidget):
 
         self.settingsList = [[Appearance.__name__, Appearance], [System.__name__, System], [KeyMapping.__name__, KeyMapping]]
 
+        self.inttialize()
+
+    def inttialize(self):
         self.settingsLayout = QVBoxLayout()
         self.setLayout(self.settingsLayout)
 
