@@ -33,7 +33,7 @@ class SceneHistory():
         self._history_stored_listeners = []
         self._history_restored_listeners = []
 
-        self.autoSaveCounter = 0
+        self.Edits_Counter = 0
 
     def clear(self):
         """Reset the history stack"""
@@ -162,10 +162,14 @@ class SceneHistory():
         self.onAutoSave()
 
     def onAutoSave(self):
-        self.masterWndRef.GlobalSwitches.switches_List["autoSaveCounter"] += 1
-        if self.masterWndRef.GlobalSwitches.switches_List["autoSaveCounter"] == self.masterWndRef.GlobalSwitches.switches_List["autoSaveSteps"]:
+        # x = self.Edits_Counter
+        # y = self.masterWndRef.GlobalSwitches.switches_List["autoSaveSteps"]
+        # print(x, y)
+        self.Edits_Counter += 1
+        if self.Edits_Counter == self.masterWndRef.GlobalSwitches.switches_Dict["autoSaveSteps"]:
             self.masterWndRef.onFileAutoSave()
-            self.masterWndRef.GlobalSwitches.switches_List["autoSaveCounter"] = 0
+            self.Edits_Counter = 0
+        self.masterWndRef.GlobalSwitches.saveSettingsToFile(self.masterWndRef.GlobalSwitches.switches_Dict, self.masterWndRef.GlobalSwitches.Settings_File)
 
     def captureCurrentSelection(self) -> dict:
         """

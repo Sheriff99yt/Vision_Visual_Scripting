@@ -37,7 +37,6 @@ class NodeEditorWidget(QWidget):
         self.file_path = ''
         self.createWidgetWindow()
 
-
     def createWidgetWindow(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
@@ -169,8 +168,10 @@ class NodeEditorWidget(QWidget):
         :return: just a base name of the file or `'New Graph'`
         :rtype: ``str``
         """
-        name = os.path.splitext(os.path.basename(self.filename))[0] if self.isFilenameSet() else "New Graph"
-        # name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
+        if self.isFilenameSet():
+            name = os.path.splitext(os.path.basename(self.filename))[0]
+        else:
+            name = self.windowTitle().replace("*", "")
         return name + ("*" if self.isModified() else "")
 
     def setup_new_graph(self):
@@ -217,6 +218,19 @@ class NodeEditorWidget(QWidget):
 
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.scene.saveToFile(self.filename)
+        QApplication.restoreOverrideCursor()
+
+        return True
+
+    def fileAutoSave(self, filename: str = None):
+        """Save serialized graph to JSON file. When called with an empty parameter, we won't store/remember the filename.
+
+        :param filename: file to store the graph
+        :type filename: ``str``
+        """
+
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.scene.saveToFile(filename)
         QApplication.restoreOverrideCursor()
 
         return True

@@ -36,7 +36,6 @@ class IfStatement(MasterNode):
             false = self.get_other_socket_code(1)
 
             if self.isOutputConnected(1):
-                print("weee")
                 python_code = f"""
 if {condition}:
 {Indent(true)}
@@ -164,7 +163,7 @@ class Print(MasterNode):
             self.showCode = not self.isInputConnected(0)
             brotherCode = self.get_other_socket_code(0)
             printCode = self.get_my_input_code(1)
-            print(self.isInputConnected(0))
+            # print(self.isInputConnected(0))
             if self.isInputConnected(1):
                 python_code = f"""
 print({printCode})

@@ -15,7 +15,6 @@ from vvs_app.master_window import MasterWindow
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    # print(QStyleFactory.keys())
     app.setStyle('Fusion')
     app.setWindowIcon(QIcon("icons/VVS_Logo_Thick.png"))
 
