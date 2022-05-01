@@ -12,7 +12,6 @@ from datetime import datetime
 
 class NodeEditorWindow(QMainWindow):
     NodeEditorWidget_class = NodeEditorWidget
-
     """Class representing NodeEditor's Main Window"""
     def __init__(self):
 
@@ -27,7 +26,6 @@ class NodeEditorWindow(QMainWindow):
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
         self.initUI()
-
 
     def initUI(self):
 
@@ -49,7 +47,6 @@ class NodeEditorWindow(QMainWindow):
         self.setTitle()
         self.show()
 
-
     def sizeHint(self):
         return QSize(800, 600)
 
@@ -63,18 +60,18 @@ class NodeEditorWindow(QMainWindow):
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
-        self.actNew = QAction('&New Graph', self, shortcut=self.GlobalSwitches.switches_List["New Graph"], statusTip="Create new graph", triggered=self.onNewGraphTab)
-        self.actOpen = QAction('&Open', self, shortcut=self.GlobalSwitches.switches_List["Open"], statusTip="Open file", triggered=self.onFileOpen)
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.GlobalSwitches.switches_List["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
-        self.actSave = QAction('&Save', self, shortcut=self.GlobalSwitches.switches_List["Save"], statusTip="Save file", triggered=self.onFileSave)
-        self.actSaveAs = QAction('Save &As...', self, shortcut=self.GlobalSwitches.switches_List["Save As"], statusTip="Save file as...", triggered=self.onFileSaveAs)
-        self.actExit = QAction('E&xit', self, shortcut=self.GlobalSwitches.switches_List["Exit"], statusTip="Exit application", triggered=self.close)
-        self.actUndo = QAction('&Undo', self, shortcut=self.GlobalSwitches.switches_List["Undo"], statusTip="Undo last operation", triggered=self.onEditUndo)
-        self.actRedo = QAction('&Redo', shortcut=self.GlobalSwitches.switches_List["Redo"], statusTip="Redo last operation", triggered=self.onEditRedo)
-        self.actCut = QAction('Cu&t', shortcut=self.GlobalSwitches.switches_List["Cut"], statusTip="Cut to clipboard", triggered=self.onEditCut)
-        self.actCopy = QAction('&Copy', shortcut=self.GlobalSwitches.switches_List["Copy"], statusTip="Copy to clipboard", triggered=self.onEditCopy)
-        self.actPaste = QAction('&Paste', shortcut=self.GlobalSwitches.switches_List["Paste"], statusTip="Paste from clipboard", triggered=self.onEditPaste)
-        self.actDelete = QAction('&Delete', shortcut=self.GlobalSwitches.switches_List["Delete"], statusTip="Delete selected items", triggered=self.onEditDelete)
+        self.actNew = QAction('&New Graph', self, shortcut=self.GlobalSwitches.switches_Dict["New Graph"], statusTip="Create new graph", triggered=self.onNewGraphTab)
+        self.actOpen = QAction('&Open', self, shortcut=self.GlobalSwitches.switches_Dict["Open"], statusTip="Open file", triggered=self.onFileOpen)
+        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.GlobalSwitches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
+        self.actSave = QAction('&Save', self, shortcut=self.GlobalSwitches.switches_Dict["Save"], statusTip="Save file", triggered=self.onFileSave)
+        self.actSaveAs = QAction('Save &As...', self, shortcut=self.GlobalSwitches.switches_Dict["Save As"], statusTip="Save file as...", triggered=self.onFileSaveAs)
+        self.actExit = QAction('E&xit', self, shortcut=self.GlobalSwitches.switches_Dict["Exit"], statusTip="Exit application", triggered=self.close)
+        self.actUndo = QAction('&Undo', self, shortcut=self.GlobalSwitches.switches_Dict["Undo"], statusTip="Undo last operation", triggered=self.onEditUndo)
+        self.actRedo = QAction('&Redo', shortcut=self.GlobalSwitches.switches_Dict["Redo"], statusTip="Redo last operation", triggered=self.onEditRedo)
+        self.actCut = QAction('Cu&t', shortcut=self.GlobalSwitches.switches_Dict["Cut"], statusTip="Cut to clipboard", triggered=self.onEditCut)
+        self.actCopy = QAction('&Copy', shortcut=self.GlobalSwitches.switches_Dict["Copy"], statusTip="Copy to clipboard", triggered=self.onEditCopy)
+        self.actPaste = QAction('&Paste', shortcut=self.GlobalSwitches.switches_Dict["Paste"], statusTip="Paste from clipboard", triggered=self.onEditPaste)
+        self.actDelete = QAction('&Delete', shortcut=self.GlobalSwitches.switches_Dict["Delete"], statusTip="Delete selected items", triggered=self.onEditDelete)
 
     def createMenus(self):
         """Create Menus for `File` and `Edit`"""
@@ -111,7 +108,7 @@ class NodeEditorWindow(QMainWindow):
         title += self.CurrentNodeEditor().getUserFriendlyFilename()
 
         self.setWindowTitle(title)
-
+        # self.setWindowTitle(self.CurrentNodeEditor.windowTitle())
 
     def closeEvent(self, event):
         """Handle close event. Ask before we loose work"""
@@ -159,7 +156,6 @@ class NodeEditorWindow(QMainWindow):
 
         return True
 
-
     def onScenePosChanged(self, x:int, y:int):
         """Handle event when cursor position changed on the `Scene`
 
@@ -181,7 +177,7 @@ class NodeEditorWindow(QMainWindow):
     def onNewGraphTab(self):
         # This is overridden by Master Window Function
         """Hande New Graph operation"""
-        print("No Waaaayyyyy")
+        # print("No Waaaayyyyy")
         if self.maybeSave():
             self.CurrentNodeEditor().setup_new_graph()
             self.setTitle()
@@ -211,28 +207,24 @@ class NodeEditorWindow(QMainWindow):
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
             Now = str(datetime.now()).replace(":", ".")[0:19]
-            if os.path.isfile(
-                    f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(
-                    f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{current_node_editor.windowTitle()} {Now}.json"""):
-                self.onFileSave()
-            else:
-                fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{current_node_editor.windowTitle()} {Now}.json"""
-                self.onBeforeSaveAs(current_node_editor, fname)
-                current_node_editor.fileSave(fname)
-                self.statusBar().showMessage("Successfully Auto Saved %s" % current_node_editor.filename, 5000)
+            fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{(current_node_editor.windowTitle()).replace("*","")} {Now}.json"""
+            self.onBeforeSaveAs(current_node_editor, fname)
+            current_node_editor.fileAutoSave(fname)
+            self.filesWidget.deleteOldAutoSaves()
+            self.statusBar().showMessage("Successfully Auto Saved %s" % fname , 5000)
 
-                # support for MDI app
-                if hasattr(current_node_editor, "setTitle"):
-                    current_node_editor.setTitle()
-                else:
-                    self.setTitle()
-                return True
+            # support for MDI app
+            if hasattr(current_node_editor, "setTitle"):
+                current_node_editor.setTitle()
+            else:
+                self.setTitle()
+            return True
 
     def onFileSaveAs(self):
         """Handle File Save As operation"""
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.filesWidget.Project_Directory}/{self.CurrentNodeEditor().windowTitle().replace("*","")}""", self.getFileDialogFilter())
             if fname == '': return False
 
             self.onBeforeSaveAs(current_node_editor, fname)

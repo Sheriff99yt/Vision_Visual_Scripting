@@ -238,7 +238,6 @@ class VarEventList(QTabWidget):
 
     def VarSelectionChanged(self, *args, **kwargs):
         # Name line edite setup
-        # print(self.Scene)
         self.Scene.masterRef.proprietiesWdg.varStart = True
         item = self.VarList.currentItem()
         self.varNameInput = QLineEdit()

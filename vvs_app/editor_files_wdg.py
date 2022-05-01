@@ -90,3 +90,20 @@ class FilesWDG(QWidget):
             self.masterRef.graphsNames.append(newName)
             subwnd.setWindowTitle(newName)
             subwnd.widget().setWindowTitle(newName)
+
+    def deleteOldAutoSaves(self):
+        AutoSaveDir = self.Project_Directory + "/VVS AutoSave"
+        dirContentList = os.listdir(AutoSaveDir)
+
+        FolderContentSize = 0
+        for file in dirContentList:
+            file = os.path.join(AutoSaveDir, file)
+            FolderContentSize += os.stat(file).st_size
+
+        FolderContentSizeInGBs = FolderContentSize/(1000 * 1000 * 1000)
+
+        if FolderContentSizeInGBs >= self.masterRef.GlobalSwitches.switches_Dict["AutoSave Folder Max Size"]:
+            ToDelete = dirContentList[0:len(dirContentList)//2]
+            for file in ToDelete:
+                file = os.path.join(AutoSaveDir, file)
+                os.remove(file)

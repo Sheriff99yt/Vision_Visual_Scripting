@@ -59,7 +59,7 @@ class MasterWindow(NodeEditorWindow):
             # pp(FUNCTIONS)
 
         self.GlobalSwitches = GlobalSwitches()
-        self.GlobalSwitches.masterRef = self
+        self.GlobalSwitches.MasterRef = self
 
         self.graphsNames = []
 
@@ -258,7 +258,7 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
-        self.settingsBtn.setShortcut(QKeySequence(self.GlobalSwitches.switches_List["Settings Window"]))
+        self.settingsBtn.setShortcut(QKeySequence(self.GlobalSwitches.switches_Dict["Settings Window"]))
         self.tools_bar.addAction(self.settingsBtn)
 
         # Add Separator
@@ -416,12 +416,6 @@ class MasterWindow(NodeEditorWindow):
 
         except Exception as e:
             dumpException(e)
-
-    def about(self):
-        QMessageBox.about(self, "About Calculator NodeEditor Example",
-                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
-                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
 
     def createMenus(self):
         super().createMenus()
@@ -661,7 +655,6 @@ class MasterWindow(NodeEditorWindow):
 
         nodeEditor.scene.VEListWdg = VEL
         VEL.Scene = nodeEditor.scene
-
 
         nodeEditor.scene.masterRef = self
         nodeEditor.scene.history.masterWndRef = self
