@@ -64,8 +64,8 @@ class NodeEditorWindow(QMainWindow):
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
         self.actNew = QAction('&New Graph', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("New Graph") + 1], statusTip="Create new graph", triggered=self.onNewGraphTab)
-        self.actOpen = QAction('&Open', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Open") + 1], statusTip="Open file", triggered=self.onFileOpen)
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Set Project Location") + 1], statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
+        self.actOpen = QAction('&Open File', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Open") + 1], statusTip="Open file", triggered=self.onFileOpen)
+        self.actSetProjectDir = QAction('&Open Folder', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Set Project Location") + 1], statusTip="Set a Folder For Your Project", triggered=self.filesWidget.on_open_folder)
         self.actSave = QAction('&Save', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Save") + 1], statusTip="Save file", triggered=self.onFileSave)
         self.actSaveAs = QAction('Save &As...', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Save As") + 1], statusTip="Save file as...", triggered=self.onFileSaveAs)
         self.actExit = QAction('E&xit', self, shortcut=self.GlobalSwitches.varlist[self.GlobalSwitches.varlist.index("Exit") + 1], statusTip="Exit application", triggered=self.close)
@@ -178,13 +178,13 @@ class NodeEditorWindow(QMainWindow):
         """Returns ``str`` standard file open/save filter for ``QFileDialog``"""
         return 'Graph (*.json);;All files (*)'
 
-    def onNewGraphTab(self):
-        # This is overridden by Master Window Function
-        """Hande New Graph operation"""
-        print("No Waaaayyyyy")
-        if self.maybeSave():
-            self.CurrentNodeEditor().setup_new_graph()
-            self.setTitle()
+    # def onNewGraphTab(self):
+    #     # This is overridden by Master Window Function
+    #     """Hande New Graph operation"""
+    #     print("No Waaaayyyyy")
+    #     if self.maybeSave():
+    #         self.CurrentNodeEditor().setup_new_graph()
+    #         self.setTitle()
 
     def onFileOpen(self):
         """Handle File Open operation"""
@@ -198,7 +198,7 @@ class NodeEditorWindow(QMainWindow):
         """Handle File Save operation"""
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            if not current_node_editor.isFilenameSet() or current_node_editor.filename.__contains__("AutoSave") : return self.onFileSaveAs()
+            if not current_node_editor.isFilenameSet() or current_node_editor.filename.__contains__("AutoSave"): return self.onFileSaveAs()
             current_node_editor.fileSave()
             self.statusBar().showMessage("Successfully saved %s" % current_node_editor.filename, 5000)
 
@@ -281,6 +281,7 @@ class NodeEditorWindow(QMainWindow):
 
     def onEditCopy(self):
         """Handle Edit Copy to clipboard operation"""
+        print("WWWWWWWWWWWWWWWWWWWWWWWWWWW")
         if self.CurrentNodeEditor():
             data = self.CurrentNodeEditor().scene.clipboard.serializeSelected(delete=False)
             str_data = json.dumps(data, indent=4)

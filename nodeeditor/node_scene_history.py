@@ -159,7 +159,7 @@ class SceneHistory():
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_stored_listeners: callback()
 
-        self.onAutoSave()
+        # self.onAutoSave()
 
     def onAutoSave(self):
         self.masterWndRef.GlobalSwitches.autoSaveCounter += 1

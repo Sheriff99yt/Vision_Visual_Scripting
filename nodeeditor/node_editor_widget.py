@@ -194,7 +194,9 @@ class NodeEditorWidget(QWidget):
             self.scene.history.clear()
             self.scene.history.storeInitialHistoryStamp()
             return True
+
         except FileNotFoundError as e:
+            print("File Not Found")
             dumpException(e)
             QMessageBox.warning(self, "Error loading %s" % os.path.basename(filename), str(e).replace('[Errno 2]', ''))
             return False

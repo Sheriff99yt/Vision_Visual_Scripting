@@ -97,7 +97,7 @@ class GraphGraphics(QGraphicsView):
         self.last_scene_mouse_position = QPoint(0, 0)
 
         self.zoomInFactor = 1.1
-        self.max_zoom_in = 5
+        self.max_zoom_in = 8
         self.max_zoom_out = 15
         self.CurrentZoom = 0
 
