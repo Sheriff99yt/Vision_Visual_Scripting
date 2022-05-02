@@ -29,6 +29,8 @@ class MasterEditorWnd(NodeEditorWidget):
 
         self._close_event_listeners = []
 
+        self.setup_new_graph()
+
     def getNodeClassFromType(self, data):
         if 'node_type' not in data:
             return Node
@@ -44,13 +46,6 @@ class MasterEditorWnd(NodeEditorWidget):
     def onHistoryRestored(self):
         # self.doEvalOutputs()
         pass
-
-    def fileLoad(self, filename):
-        if super().fileLoad(filename):
-            # self.doEvalOutputs()
-            return True
-
-        return False
 
     def initNewNodeActions(self):
         self.node_actions = {}

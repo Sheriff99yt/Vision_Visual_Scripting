@@ -12,6 +12,7 @@ from datetime import datetime
 
 class NodeEditorWindow(QMainWindow):
     NodeEditorWidget_class = NodeEditorWidget
+
     """Class representing NodeEditor's Main Window"""
     def __init__(self):
 
@@ -26,6 +27,7 @@ class NodeEditorWindow(QMainWindow):
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
         self.initUI()
+
 
     def initUI(self):
 
@@ -46,6 +48,7 @@ class NodeEditorWindow(QMainWindow):
         # self.setGeometry(200, 200, 800, 600)
         self.setTitle()
         self.show()
+
 
     def sizeHint(self):
         return QSize(800, 600)
@@ -108,7 +111,7 @@ class NodeEditorWindow(QMainWindow):
         title += self.CurrentNodeEditor().getUserFriendlyFilename()
 
         self.setWindowTitle(title)
-        # self.setWindowTitle(self.CurrentNodeEditor.windowTitle())
+
 
     def closeEvent(self, event):
         """Handle close event. Ask before we loose work"""
@@ -156,6 +159,7 @@ class NodeEditorWindow(QMainWindow):
 
         return True
 
+
     def onScenePosChanged(self, x:int, y:int):
         """Handle event when cursor position changed on the `Scene`
 
@@ -174,13 +178,13 @@ class NodeEditorWindow(QMainWindow):
         """Returns ``str`` standard file open/save filter for ``QFileDialog``"""
         return 'Graph (*.json);;All files (*)'
 
-    def onNewGraphTab(self):
-        # This is overridden by Master Window Function
-        """Hande New Graph operation"""
-        # print("No Waaaayyyyy")
-        if self.maybeSave():
-            self.CurrentNodeEditor().setup_new_graph()
-            self.setTitle()
+    # def onNewGraphTab(self):
+    #     # This is overridden by Master Window Function
+    #     """Hande New Graph operation"""
+    #     print("No Waaaayyyyy")
+    #     if self.maybeSave():
+    #         self.CurrentNodeEditor().setup_new_graph()
+    #         self.setTitle()
 
     def onFileOpen(self):
         """Handle File Open operation"""
@@ -206,25 +210,32 @@ class NodeEditorWindow(QMainWindow):
     def onFileAutoSave(self):
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            Now = str(datetime.now()).replace(":", ".")[0:19]
-            fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{(current_node_editor.windowTitle()).replace("*","")} {Now}.json"""
-            self.onBeforeSaveAs(current_node_editor, fname)
-            current_node_editor.fileAutoSave(fname)
-            self.filesWidget.deleteOldAutoSaves()
-            self.statusBar().showMessage("Successfully Auto Saved %s" % fname , 5000)
+            now = datetime.now()
+            Now = str(now).replace(":", ".")[0:19]
+            print(Now)
 
-            # support for MDI app
-            if hasattr(current_node_editor, "setTitle"):
-                current_node_editor.setTitle()
+            if os.path.isfile(
+                    f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(
+                    f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()} {Now}.json"""):
+                self.onFileSave()
             else:
-                self.setTitle()
-            return True
+                fname = f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()} {Now}.json"""
+                self.onBeforeSaveAs(current_node_editor, fname)
+                current_node_editor.fileSave(fname)
+                self.statusBar().showMessage("Successfully Auto Saved %s" % current_node_editor.filename, 5000)
+
+                # support for MDI app
+                if hasattr(current_node_editor, "setTitle"):
+                    current_node_editor.setTitle()
+                else:
+                    self.setTitle()
+                return True
 
     def onFileSaveAs(self):
         """Handle File Save As operation"""
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.filesWidget.Project_Directory}/{self.CurrentNodeEditor().windowTitle().replace("*","")}""", self.getFileDialogFilter())
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
             if fname == '': return False
 
             self.onBeforeSaveAs(current_node_editor, fname)

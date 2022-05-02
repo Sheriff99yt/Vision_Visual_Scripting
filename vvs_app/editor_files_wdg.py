@@ -53,7 +53,7 @@ class FilesWDG(QWidget):
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)
 
-    def onSetProjectFolder(self):
+    def on_open_folder(self):
         Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
         if Dir != "":
             self.Project_Directory = Dir
@@ -64,30 +64,13 @@ class FilesWDG(QWidget):
         if os.listdir(self.Project_Directory).__contains__("VVS AutoSave") is False:
             os.makedirs(Dir + "/VVS AutoSave")
 
-    def removeDeletedGraphs(self):
-        wndsN = []
-        wnds = self.masterRef.graphs_parent_wdg.subWindowList()
-        if wnds != []:
-            for wnd in wnds:
-                Y = [int(s) for s in wnd.windowTitle().split() if s.isdigit()]
-                wndsN.append(f"New Graph {Y[0] if Y else 1}")
-
-        list2 = [i for i in wndsN + self.masterRef.graphsNames if
-                 i not in wndsN or i not in self.masterRef.graphsNames]  # this is the difference between the two lists
-
-        if list2 != []:
-            for li in list2:
-                if self.masterRef.graphsNames.__contains__(li):
-                    self.masterRef.graphsNames.remove(li)
-
-    def new_graph_name(self, subwnd):
+    def new_graph_name(self, subwnd, all_names):
         x = 1
         newName = f"New Graph {x}"
-        while self.masterRef.graphsNames.__contains__(newName):
+        while all_names.__contains__(newName):
             x += 1
             newName = f"New Graph {x}"
         else:
-            self.masterRef.graphsNames.append(newName)
             subwnd.setWindowTitle(newName)
             subwnd.widget().setWindowTitle(newName)
 
