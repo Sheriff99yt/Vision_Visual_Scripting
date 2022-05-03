@@ -20,8 +20,10 @@ class SceneHistory():
         - **scene** - reference to the :class:`~nodeeditor.node_scene.Scene`
         - **history_limit** - number of history steps that can be stored
         """
-        self.masterWndRef = None
+
         self.scene = scene
+
+        self.masterRef = self.scene.masterRef
 
         self.clear()
         self.history_limit = 32
@@ -33,7 +35,7 @@ class SceneHistory():
         self._history_stored_listeners = []
         self._history_restored_listeners = []
 
-        self.Edits_Counter = 0
+        self.Edits_Counter = -1
 
     def clear(self):
         """Reset the history stack"""
@@ -159,17 +161,18 @@ class SceneHistory():
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_stored_listeners: callback()
 
-        # self.onAutoSave()
+        self.onAutoSave()
 
     def onAutoSave(self):
-        # x = self.Edits_Counter
-        # y = self.masterWndRef.GlobalSwitches.switches_List["autoSaveSteps"]
-        # print(x, y)
-        self.Edits_Counter += 1
-        if self.Edits_Counter == self.masterWndRef.GlobalSwitches.switches_Dict["autoSaveSteps"]:
-            self.masterWndRef.onFileAutoSave()
+        if self.Edits_Counter == -1:
             self.Edits_Counter = 0
-        self.masterWndRef.GlobalSwitches.saveSettingsToFile(self.masterWndRef.GlobalSwitches.switches_Dict, self.masterWndRef.GlobalSwitches.Settings_File)
+        else:
+            self.Edits_Counter += 1
+            if self.Edits_Counter >= self.scene.masterRef.global_switches.switches_Dict["AutoSave Trigger"]:
+                self.masterRef.onFileAutoSave()
+                self.Edits_Counter = 0
+            self.scene.masterRef.global_switches.save_settings_to_file(
+                self.scene.masterRef.global_switches.switches_Dict, self.masterRef.global_switches.Settings_File)
 
     def captureCurrentSelection(self) -> dict:
         """

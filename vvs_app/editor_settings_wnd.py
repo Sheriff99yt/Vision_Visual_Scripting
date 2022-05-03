@@ -1,5 +1,4 @@
 from functools import partial
-
 from PyQt5 import *
 from vvs_app.master_window import *
 
@@ -9,8 +8,6 @@ class settingsWidget(QWidget):
         super().__init__(parent)
 
         self.masterRef = None
-
-        self.settingsCategoriesList = [[Appearance.__name__, Appearance], [System.__name__, System], [KeyMapping.__name__, KeyMapping]]
 
         self.settingsLayout = QVBoxLayout()
         self.setLayout(self.settingsLayout)
@@ -25,204 +22,160 @@ class settingsWidget(QWidget):
         self.settingsTree.setMinimumWidth(150)
         self.settingsSplitter.addWidget(self.settingsTree)
 
-        for Item in self.settingsCategoriesList:
-            self.Setting = QTreeWidgetItem([Item[0]])
-            self.Setting.setData(5, 6, Item[1])
-            self.settingsTree.addTopLevelItem(self.Setting)
+        self.holderWdg = QStackedWidget()
+        self.settingsSplitter.addWidget(self.holderWdg)
 
-        self.currentSettingsWidget = QWidget()
-        self.settingsSplitter.addWidget(self.currentSettingsWidget)
+        self.init_appearance_wdg()
+        self.init_system_wdg()
+        self.init_key_mapping_wdg()
 
-        self.settingsTree.clicked.connect(self.settingsWidgetChange)
+        self.settingsTree.clicked.connect(self.setCurrentWdg)
 
+    def setCurrentWdg(self):
+        current_item = self.settingsTree.currentItem().data(5, 6)
+        self.holderWdg.setCurrentWidget(current_item)
+        self.fill()
 
-    def settingsWidgetChange(self):
-        selected = self.settingsTree.selectedItems()
-        old = self.settingsSplitter.widget(1)
-        old.deleteLater()
+    def init_wdg_ui(self, wdg, name):
+        self.v_layout = QVBoxLayout()
+        wdg.setLayout(self.v_layout)
+        wdg.layout().setAlignment(Qt.AlignTop)
 
-        self.currentSettingsWidget = selected[0].data(5, 6)()
-        self.settingsSplitter.addWidget(self.currentSettingsWidget)
-        self.currentSettingsWidget.masterRef = self.masterRef
-        self.currentSettingsWidget.fill()
+        self.appearance_wnd_name = QLabel(name)
+        self.v_layout.addWidget(self.appearance_wnd_name)
 
-        # FW = self.currentSettingsWidget.Layout.itemAtPosition(2, 0).widget()
-        # FW.setMinimumWidth(100)
-        # FW.setAlignment(Qt.AlignCenter, Qt.AlignRight)
-        # Add Reset Btn
-        self.resetBtn = QPushButton("Rest")
-        self.currentSettingsWidget.Layout.addWidget(self.resetBtn, self.currentSettingsWidget.Layout.rowCount() + 1, 1)
-        self.resetBtn.setFixedWidth(100)
-        self.resetBtn.clicked.connect(lambda: self.masterRef.GlobalSwitches.change_Switches(self.masterRef.GlobalSwitches.Default_switches_Dict, self.currentSettingsWidget.settingsList, False))
+        self.spacer1 = QSpacerItem(50, 50)
+        self.v_layout.addItem(self.spacer1)
 
-class Appearance(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+        self.Grid_Layout = QGridLayout()
+        self.v_layout.addLayout(self.Grid_Layout)
 
-        self.masterRef = None
+        self.spacer2 = QWidget()
+        self.spacer2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.v_layout.addWidget(self.spacer2)
 
+        name_item = QTreeWidgetItem([name])
+        name_item.setData(5, 6, wdg)
+        name_item.setData(7, 8, self.Grid_Layout)
+        self.settingsTree.addTopLevelItem(name_item)
+        self.holderWdg.addWidget(wdg)
 
-        self.Layout = QGridLayout()
-        self.AppearanceWnd_Name = QLabel(Appearance.__name__)
-        self.Layout.addWidget(self.AppearanceWnd_Name, 0, 0)
+        # Add The Buttons Layout
+        self.h_layout = QHBoxLayout()
+        self.v_layout.addLayout(self.h_layout)
+        self.h_layout.setAlignment(Qt.AlignBottom)
 
-        self.spacer = QSpacerItem(50, 50)
-        self.Layout.addItem(self.spacer, 1, 0)
+        self.reset_btn = QPushButton("Rest")
+        self.h_layout.addWidget(self.reset_btn, Qt.AlignRight)
+        self.reset_btn.setFixedWidth(100)
+        self.reset_btn.clicked.connect(lambda: self.apply_or_reset(True))
+
+        self.spacer3 = QWidget()
+        self.spacer3.setMinimumWidth(QSizePolicy.Expanding)
+        self.h_layout.addWidget(self.spacer3)
+
+        self.apply_btn = QPushButton("Apply")
+        self.h_layout.addWidget(self.apply_btn)
+        self.apply_btn.setFixedWidth(100)
+        self.apply_btn.clicked.connect(lambda: self.apply_or_reset(False))
+
+        self.cancel_btn = QPushButton("Close")
+        self.h_layout.addWidget(self.cancel_btn)
+        self.cancel_btn.setFixedWidth(100)
+        self.cancel_btn.clicked.connect(self.closeEvent)
+
+    def init_appearance_wdg(self):
+        self.appearance_wdg = QWidget()
+
+        self.init_wdg_ui(self.appearance_wdg, "Appearance")
+
+        self.Appearance_settings_list =[]
+
+    def init_system_wdg(self):
+
+        self.system_wdg = QWidget()
+
+        self.init_wdg_ui(self.system_wdg, "System")
 
         # Content
-        self.settingsList =[]
+        self.System_settings_list = ["AutoSave Trigger", "AutoSave Folder MaxSize"]
 
-        self.setLayout(self.Layout)
-        self.layout().setAlignment(Qt.AlignTop)
-
-    def fill(self):
-        pass
-
-class System(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.masterRef = None
-
-        self.Layout = QGridLayout()
-        self.SystemWnd_Name = QLabel(System.__name__)
-        self.Layout.addWidget(self.SystemWnd_Name, 0, 0)
-
-        self.spacer = QSpacerItem(50, 50)
-        self.Layout.addItem(self.spacer, 1, 0)
-
-        # Content
-        self.settingsList = ["autoSaveSteps", "AutoSave Folder Max Size"]
-
-            # Edits AutoSave Trigger
+        # Edits AutoSave Trigger
         self.autoSaveLbl = QLabel("AutoSave Trigger")
-        self.Layout.addWidget(self.autoSaveLbl, 2, 0, Qt.AlignRight)
-        self.Layout.setColumnMinimumWidth(0, 50)
+        self.Grid_Layout.addWidget(self.autoSaveLbl, 0, 0, Qt.AlignRight)
+        self.Grid_Layout.setColumnMinimumWidth(0, 50)
 
         self.autoSaveSteps = QSpinBox()
-        self.Layout.addWidget(self.autoSaveSteps, 2, 1, 1, 10, Qt.AlignLeft)
+        self.Grid_Layout.addWidget(self.autoSaveSteps, 0, 1, 1, 10, Qt.AlignLeft)
         self.autoSaveSteps.setMinimumWidth(50)
-        self.autoSaveSteps.editingFinished.connect(lambda : self.masterRef.GlobalSwitches.change_Switches(self.autoSaveSteps.value(), ["autoSaveSteps"], CounterReset=True))
 
-            # Edit AutoSave Folder Max Size
-        self.autoSaveFolderMaxSizeLbl = QLabel("AutoSave Folder Max Size (GB)")
-        self.Layout.addWidget(self.autoSaveFolderMaxSizeLbl, 3, 0, Qt.AlignRight)
-        self.Layout.setColumnMinimumWidth(0, 50)
+        # Edit AutoSave Folder MaxSize
+        self.autoSaveFolderMaxSizeLbl = QLabel("AutoSave Folder MaxSize")
+        self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeLbl, 1, 0, Qt.AlignRight)
+        self.Grid_Layout.setColumnMinimumWidth(0, 50)
 
         self.autoSaveFolderMaxSizeSB = QDoubleSpinBox()
-        self.autoSaveFolderMaxSizeSB.setDecimals(5)
-        self.Layout.addWidget(self.autoSaveFolderMaxSizeSB, 3, 1, Qt.AlignLeft)
+        self.autoSaveFolderMaxSizeSB.setDecimals(3)
+        self.autoSaveFolderMaxSizeSB.setMinimum(0.001)
+        self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeSB, 1, 1, Qt.AlignLeft)
         self.autoSaveFolderMaxSizeSB.setMinimumWidth(50)
-        self.autoSaveFolderMaxSizeSB.editingFinished.connect(lambda: self.masterRef.GlobalSwitches.change_Switches(self.autoSaveFolderMaxSizeSB.value(), ["AutoSave Folder Max Size"], CounterReset=True))
 
-        self.setLayout(self.Layout)
-        self.layout().setAlignment(Qt.AlignTop)
+    def init_key_mapping_wdg(self):
 
-    def fill(self):
-        self.autoSaveSteps.setValue(self.masterRef.GlobalSwitches.switches_Dict["autoSaveSteps"])
-        self.autoSaveFolderMaxSizeSB.setValue(self.masterRef.GlobalSwitches.switches_Dict["AutoSave Folder Max Size"])
+        self.key_mapping_wdg = QWidget()
 
-class KeyMapping(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.masterRef = None
-
-        self.Layout = QGridLayout()
-        self.KeyMappingWnd_Name = QLabel(KeyMapping.__name__)
-        self.Layout.addWidget(self.KeyMappingWnd_Name, 0, 0)
-
-        self.spacer = QSpacerItem(50, 50)
-        self.Layout.addItem(self.spacer, 1, 0)
+        self.init_wdg_ui(self.key_mapping_wdg, "Key Mapping")
 
         # Content
-        self.settingsList = ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
-                             "Undo", "Redo", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
-        for item in self.settingsList:
+        self.Key_Mapping_settings_list = ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
+                                          "Undo", "Redo", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
+
+        for item in self.Key_Mapping_settings_list:
             lbl = QLabel(item)
-            self.Layout.addWidget(lbl, self.settingsList.index(item) + 2, 0, Qt.AlignRight)
-            self.Layout.setColumnMinimumWidth(0, 50)
+            self.Grid_Layout.addWidget(lbl, self.Key_Mapping_settings_list.index(item), 0, Qt.AlignRight)
 
             KeySequence = QKeySequenceEdit()
-            self.Layout.addWidget(KeySequence, self.settingsList.index(item) + 2, 1, 1, 10, alignment=Qt.AlignLeft)
+            self.Grid_Layout.addWidget(KeySequence, self.Key_Mapping_settings_list.index(item), 1, 1, 10, Qt.AlignLeft)
             KeySequence.setMaximumWidth(100)
 
-        # # Add Reset Btn
-        # self.resetBtn = QPushButton("Rest")
-        # self.Layout.addWidget(self.resetBtn, self.Layout.rowCount() + 1, 1)
-        # self.resetBtn.setFixedWidth(100)
-        # self.resetBtn.clicked.connect(lambda: self.masterRef.GlobalSwitches.onReset(self.settingsList))
-
-        self.setLayout(self.Layout)
-        self.layout().setAlignment(Qt.AlignTop)
-
-        self.Btns_Connects()
-
     def fill(self):
-        for i in range(self.Layout.rowCount() - 2):
-            if self.Layout.itemAtPosition(i + 2, 0):
-                Label = self.Layout.itemAtPosition(i + 2, 0).widget().text()
-                currentKS = self.masterRef.GlobalSwitches.switches_Dict[Label]
-                self.Layout.itemAtPosition(i + 2, 1).widget().setKeySequence(currentKS)
+        grid_layout = self.settingsTree.currentItem().data(7, 8)
+        grid_row_count = grid_layout.rowCount()
 
-    def Btns_Connects(self):
-        # File Shortcuts
-        self.Layout.itemAtPosition(
-            self.settingsList.index("New Graph") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actNew, self.masterRef.actOpen, "New Graph", 1))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Open") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actOpen, self.masterRef.actSetProjectDir, "Open", 1))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Set Project Location") + 2,2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actSetProjectDir, self.masterRef.actSave, "Set Project Location", 1))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Save") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actSave, self.masterRef.actSaveAs, "Save", 1))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Save As") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actSaveAs, self.masterRef.actExit, "Save As", 1))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Exit") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actExit, None, "Exit", 1))
+        for i in range(grid_row_count):
+            try:
+                if grid_layout.itemAtPosition(i, 1).widget():
+                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                    self.masterRef.set_settings_content(grid_layout.itemAtPosition(i, 1).widget(), self.masterRef.global_switches.switches_Dict[lbl])
+            except Exception as e:
+                print("Window Has Fields to fill that's why", e)
 
-        # Edit Shortcuts
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Undo") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actUndo, self.masterRef.actRedo, "Undo", 2))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Redo") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actRedo, self.masterRef.actCut, "Redo", 2))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Cut") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actCut, self.masterRef.actCopy, "Cut", 2))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Copy") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actCopy, self.masterRef.actPaste, "Copy", 2))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Paste") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actPaste, self.masterRef.actDelete, "Paste", 2))
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Delete") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.actDelete, None, "Delete", 2))
+    def apply_or_reset(self, reset):
+        grid_layout = self.settingsTree.currentItem().data(7, 8)
+        grid_row_count = grid_layout.rowCount()
 
-        self.Layout.itemAtPosition(
-            self.settingsList.index("Settings Window") + 2, 2).widget().editingFinished.connect(
-            lambda: self.shortcutEdit(self.masterRef.settingsBtn, None, "Settings Window", 3))
+        if reset:
+            for i in range(grid_row_count):
+                lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                self.masterRef.global_switches.switches_Dict[lbl] = self.masterRef.global_switches.Default_switches_Dict[lbl]
+            self.fill()
+        else:
+            for i in range(grid_row_count):
+                lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
+                self.masterRef.global_switches.switches_Dict[lbl] = txt
 
-    def shortcutEdit(self, ChangingAct, NextAct, Text, Num):
-        index = self.settingsList.index(Text)
-        NewShortcut = self.Layout.itemAtPosition(index + 2, 2).widget().keySequence().toString()
+        if self.settingsTree.currentItem().data(5, 6) == self.key_mapping_wdg:
+            for i in range(grid_row_count):
+                lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
+                self.masterRef.actions_list[lbl].setShortcut(txt)
+        elif self.settingsTree.currentItem().data(5, 6) == self.system_wdg:
+            if self.masterRef.CurrentNodeEditor():
+                self.masterRef.CurrentNodeEditor().scene.history.Edits_Counter = 0
 
-        self.masterRef.GlobalSwitches.change_Switches(NewShortcut, [Text], CounterReset=False)
+        self.masterRef.global_switches.save_settings_to_file(self.masterRef.global_switches.switches_Dict, self.masterRef.global_switches.Settings_File)
 
-        if Num == 1:
-            self.masterRef.fileMenu.removeAction(ChangingAct)
-            ChangingAct.setShortcut(NewShortcut)
-            self.masterRef.fileMenu.insertAction(NextAct, ChangingAct)
-        elif Num == 2:
-            self.masterRef.editMenu.removeAction(ChangingAct)
-            ChangingAct.setShortcut(NewShortcut)
-            self.masterRef.editMenu.insertAction(NextAct, ChangingAct)
-        elif Num == 3:
-            ChangingAct.setShortcut(NewShortcut)
+    def closeEvent(self, event):
+        self.masterRef.settingsBtn.setChecked(False)
+        self.hide()

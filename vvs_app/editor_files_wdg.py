@@ -22,7 +22,6 @@ class FilesWDG(QWidget):
         self.tree_wdg.sortByColumn(0, Qt.AscendingOrder)
         self.tree_wdg.hideColumn(1)
         self.tree_wdg.hideColumn(2)
-        self.tree_wdg.setStyleSheet("color: white")
         layout.addWidget(self.tree_wdg)
 
         self.tree_wdg.clicked.connect(self.OpenSelectedFiles)
@@ -66,8 +65,13 @@ class FilesWDG(QWidget):
 
     def new_graph_name(self, subwnd, all_names):
         x = 1
+        names = []
+        for item in all_names:
+            item = item.replace("*", "")
+            names.append(item)
+
         newName = f"New Graph {x}"
-        while all_names.__contains__(newName):
+        while names.__contains__(newName):
             x += 1
             newName = f"New Graph {x}"
         else:
@@ -85,8 +89,8 @@ class FilesWDG(QWidget):
 
         FolderContentSizeInGBs = FolderContentSize/(1000 * 1000 * 1000)
 
-        if FolderContentSizeInGBs >= self.masterRef.GlobalSwitches.switches_Dict["AutoSave Folder Max Size"]:
-            ToDelete = dirContentList[0:len(dirContentList)//2]
-            for file in ToDelete:
-                file = os.path.join(AutoSaveDir, file)
-                os.remove(file)
+        if FolderContentSizeInGBs >= self.masterRef.global_switches.switches_Dict["AutoSave Folder MaxSize"]:
+            self.msg = QMessageBox()
+            self.msg.setText(f"AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes")
+            self.msg.show()
+            # self.masterRef.statusBar().showMessage(f"""AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes""")

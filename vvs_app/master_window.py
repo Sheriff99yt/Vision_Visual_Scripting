@@ -15,7 +15,7 @@ from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.editor_var_events_lists import VarEventList
 from vvs_app.editor_proterties_list import PropertiesList
-from vvs_app.global_switchs import *
+from vvs_app.global_switches import *
 
 from nodeeditor.utils import dumpException
 # from vvs_app.nodes_configuration import FUNCTIONS
@@ -42,7 +42,6 @@ class MasterWindow(NodeEditorWindow):
     def MakeCopyOfClass(self, classRef):
         class NewVEList(classRef):
             pass
-
         return NewVEList
 
     def initUI(self):
@@ -59,10 +58,12 @@ class MasterWindow(NodeEditorWindow):
             print("Registered nodes:")
             # pp(FUNCTIONS)
 
-        self.GlobalSwitches = GlobalSwitches()
-        self.GlobalSwitches.masterRef = self
+        self.global_switches = GlobalSwitches()
+        self.global_switches.MasterRef = self
 
-        self.all_VE_lists = []
+        self.settingsWidget = None
+
+        # self.all_VE_lists = []
 
         self.stackedDisplay = QStackedWidget()
 
@@ -88,6 +89,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+
 
 
         # Create Welcome Screen and allow user to set the project Directory
@@ -118,6 +120,7 @@ class MasterWindow(NodeEditorWindow):
         self.LibrariesWnd()
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
+
 
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
@@ -260,9 +263,11 @@ class MasterWindow(NodeEditorWindow):
 
         # Add and connect self.settingsBtn
         self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
+        self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
-        self.settingsBtn.setShortcut(QKeySequence("`"))
+        self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Settings Window"]))
         self.tools_bar.addAction(self.settingsBtn)
+        self.actions_list["Settings Window"] = self.settingsBtn
 
         # Add Separator
         self.tools_bar.addSeparator()
@@ -313,12 +318,20 @@ class MasterWindow(NodeEditorWindow):
         self.copy_code_btn.setShortcut(QKeySequence("Ctrl+Shift+C"))
 
     def onSettingsOpen(self):
-        self.settingsWidget = settingsWidget()
-        self.settingsWidget.masterRef = self
-        self.settingsWidget.show()
+        if self.settingsWidget:
+            if self.settingsWidget.isHidden():
+                self.settingsWidget.show()
+                self.settingsBtn.setChecked(True)
+            else:
+                self.settingsWidget.hide()
+        else:
+            self.settingsWidget = settingsWidget()
+            self.settingsWidget.masterRef = self
+            self.settingsWidget.show()
+            self.settingsBtn.setChecked(True)
 
-        self.settingsWidget.setWindowTitle("Settings")
-        self.settingsWidget.setGeometry(300, 150, 1200, 800)
+            self.settingsWidget.setWindowTitle("Settings")
+            self.settingsWidget.setGeometry(300, 150, 1200, 800)
 
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
@@ -367,6 +380,20 @@ class MasterWindow(NodeEditorWindow):
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
         self.actDoc = QAction("&Documentation", self, triggered=self.open_doc)
+
+        self.actions_list = {"New Graph": self.actNew,
+                             "Open": self.actOpen,
+                             "Set Project Location": self.actSetProjectDir,
+                             "Save": self.actSave,
+                             "Save As": self.actSaveAs,
+                             "Exit": self.actExit,
+
+                             "Undo": self.actUndo,
+                             "Redo": self.actRedo,
+                             "Cut": self.actCut,
+                             "Copy": self.actCopy,
+                             "Paste": self.actPaste,
+                             "Delete": self.actDelete}
 
     def open_doc(self):
         subprocess.Popen('hh.exe "VVS-Help.chm"')
@@ -418,18 +445,11 @@ class MasterWindow(NodeEditorWindow):
                         if node_editor.fileLoad(file_name):
                             self.statusBar().showMessage("File %s loaded" % file_name, 5000)
                             node_editor.setWindowTitle(os.path.splitext(os.path.basename(file_name))[0])
-
                         else:
                             node_editor.close()
 
         except Exception as e:
             dumpException(e)
-
-    def about(self):
-        QMessageBox.about(self, "About Calculator NodeEditor Example",
-                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
-                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
 
     def createMenus(self):
         super().createMenus()
@@ -473,6 +493,7 @@ class MasterWindow(NodeEditorWindow):
 
     def updateEditMenu(self):
         try:
+            # print("update Edit Menu")
             active = self.CurrentNodeEditor()
             hasMdiChild = (active is not None)
 
@@ -666,7 +687,7 @@ class MasterWindow(NodeEditorWindow):
     def CreateNewVEList(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
         new_wdg = new_wdg()
-        self.all_VE_lists.append(new_wdg)
+        # self.all_VE_lists.append(new_wdg)
 
         self.VEStackedWdg.addWidget(new_wdg)
 
@@ -675,7 +696,7 @@ class MasterWindow(NodeEditorWindow):
         return new_wdg
 
     def DeleteVEList(self, ref):
-        self.all_VE_lists.remove(ref)
+        # self.all_VE_lists.remove(ref)
         self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):
@@ -696,7 +717,7 @@ class MasterWindow(NodeEditorWindow):
 
 
         node_editor.scene.masterRef = self
-        node_editor.scene.history.masterWndRef = self
+        node_editor.scene.history.masterRef = self
 
         subwnd = QMdiSubWindow()
         subwnd.setAttribute(Qt.WA_DeleteOnClose, True)
@@ -742,3 +763,31 @@ class MasterWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
+
+    def get_settings_content(self, widget):
+        if type(widget) == QKeySequenceEdit:
+            value = widget.keySequence().toString()
+        elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
+            value = widget.value()
+        elif type(widget) == QLineEdit or type(widget) == QLabel:
+            value = widget.text()
+        else:
+            value = None
+            print("Widget Not Supported")
+        return value
+
+    def set_settings_content(self, widget, new_value:int):
+        if type(widget) == QKeySequenceEdit:
+            widget.setKeySequence(new_value)
+        elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
+            widget.setValue(new_value)
+        elif type(widget) == QLineEdit or type(widget) == QLabel:
+            widget.setText(new_value)
+        else:
+            print("Widget Not Supported")
+
+    def about(self):
+        QMessageBox.about(self, "About Calculator NodeEditor Example",
+                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
+                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
+                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")

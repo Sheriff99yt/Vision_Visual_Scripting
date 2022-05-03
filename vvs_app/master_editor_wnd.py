@@ -29,6 +29,7 @@ class MasterEditorWnd(NodeEditorWidget):
 
         self._close_event_listeners = []
 
+
         self.setup_new_graph()
 
     def getNodeClassFromType(self, data):
@@ -250,8 +251,11 @@ class MasterEditorWnd(NodeEditorWidget):
             selected = item.socket.node
 
         if action == delete:
-            item.node.scene.getView().deleteSelected()
-
+            self.scene.getView().deleteSelected()
+        if action == copy:
+            self.scene.masterRef.onEditCopy()
+        if action == cut:
+            self.scene.masterRef.onEditCut()
 
     def handleEdgeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: EDGE")
