@@ -63,8 +63,6 @@ class MasterWindow(NodeEditorWindow):
 
         self.settingsWidget = None
 
-        # self.all_VE_lists = []
-
         self.stackedDisplay = QStackedWidget()
 
         self.graphs_parent_wdg = QMdiArea()
@@ -687,7 +685,6 @@ class MasterWindow(NodeEditorWindow):
     def CreateNewVEList(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
         new_wdg = new_wdg()
-        # self.all_VE_lists.append(new_wdg)
 
         self.VEStackedWdg.addWidget(new_wdg)
 
@@ -696,7 +693,6 @@ class MasterWindow(NodeEditorWindow):
         return new_wdg
 
     def DeleteVEList(self, ref):
-        # self.all_VE_lists.remove(ref)
         self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):
