@@ -15,7 +15,7 @@ from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.editor_var_events_lists import VarEventList
 from vvs_app.editor_proterties_list import PropertiesList
-from vvs_app.Global_Switchs import *
+from vvs_app.global_switches import *
 
 from nodeeditor.utils import dumpException
 # from vvs_app.nodes_configuration import FUNCTIONS
@@ -58,12 +58,12 @@ class MasterWindow(NodeEditorWindow):
             print("Registered nodes:")
             # pp(FUNCTIONS)
 
-        self.GlobalSwitches = GlobalSwitches()
-        self.GlobalSwitches.MasterRef = self
+        self.global_switches = GlobalSwitches()
+        self.global_switches.MasterRef = self
 
-        self.graphsNames = []
+        self.settingsWidget = None
 
-        self.all_VE_lists = []
+        # self.all_VE_lists = []
 
         self.stackedDisplay = QStackedWidget()
 
@@ -76,20 +76,21 @@ class MasterWindow(NodeEditorWindow):
 
 
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
+
         self.stackedDisplay.addWidget(self.node_designer)
 
         self.graphs_parent_wdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.graphs_parent_wdg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-
         self.graphs_parent_wdg.setTabsClosable(True)
         self.graphs_parent_wdg.setTabsMovable(True)
+        self.graphs_parent_wdg.subWindowActivated.connect(self.active_graph_switched)
+
         self.setCentralWidget(self.stackedDisplay)
 
-        self.graphs_parent_wdg.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
-        self.graphs_parent_wdg.subWindowActivated.connect(self.ActiveGraphSwitched)
+
 
         # Create Welcome Screen and allow user to set the project Directory
         self.CreateWelcomeScreen()
@@ -119,6 +120,7 @@ class MasterWindow(NodeEditorWindow):
         self.LibrariesWnd()
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
+
 
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
@@ -155,12 +157,14 @@ class MasterWindow(NodeEditorWindow):
             self.Offline_Dir = os.makedirs(os.getenv('AppData') + "/VVS/Offline Library")
 
         self.library_offline_list.setRootIndex(self.Model.index(self.Offline_Dir))
+
     # def onSetProjectFolder(self):
     #     Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
     #     if Dir != "":
     #         self.Offline_Dir = Dir
     #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
     #         self.MakeDir(self.Offline_Dir)
+
     def CreateLibraryWnd(self):
         self.librariesDock = QDockWidget("Libraries")
         self.library_subwnd = QTabWidget()
@@ -232,18 +236,21 @@ class MasterWindow(NodeEditorWindow):
 
         self.onFileOpen(all_files)
 
-    def ActiveGraphSwitched(self):
+    def active_graph_switched(self):
+        self.updateMenus()
         if self.CurrentNodeEditor():
             self.VEStackedWdg.setCurrentWidget(self.CurrentNodeEditor().scene.VEListWdg)
 
-        self.isGraphsEmpty()
-
-    def isGraphsEmpty(self):
-        if len(self.graphs_parent_wdg.subWindowList()) > 0:
-            if self.stackedDisplay.currentIndex() != 0: self.stackedDisplay.setCurrentIndex(0)
-
-        else:
-            if self.stackedDisplay.currentIndex() != 2: self.stackedDisplay.setCurrentIndex(2)
+    def update_display(self, Welcome=False,Editor=False, Designer=False, Library=False):
+        # Use the Argument To Force Activate the Specified Window
+        if Welcome:
+            self.stackedDisplay.setCurrentIndex(2)
+        elif Editor or Library:
+            self.stackedDisplay.setCurrentIndex(0)
+            return
+        elif Designer:
+            self.stackedDisplay.setCurrentIndex(1)
+            return
 
     def CreateToolBar(self):
         # Create Tools self.tools_bar
@@ -258,35 +265,45 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
-        self.settingsBtn.setShortcut(QKeySequence(self.GlobalSwitches.switches_Dict["Settings Window"]))
+        self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Settings Window"]))
         self.tools_bar.addAction(self.settingsBtn)
+        self.actions_list["Settings Window"] = self.settingsBtn
 
         # Add Separator
         self.tools_bar.addSeparator()
 
         # Add and connect self.node_editor_btn
         self.node_editor_btn = QAction(QIcon("icons/Edit 2.png"), "&Node Editor", self)
-        self.node_editor_btn.triggered.connect(self.ActivateEditorWnd)
-        # self.node_designer_btn.setShortcut(QKeySequence("`"))
+        self.node_editor_btn.setCheckable(True)
+        self.node_editor_btn.triggered.connect(self.activate_editor_wnd)
+        # self.node_designer_btn.setShortcut(QKeySequence("key"))
         self.tools_bar.addAction(self.node_editor_btn)
 
         # Add and connect self.node_designer_btn
         self.node_designer_btn = QAction(QIcon("icons/node design.png"), "&Node Designer", self)
         self.node_designer_btn.setEnabled(False)
+        self.node_designer_btn.setCheckable(True)
         self.node_designer_btn.triggered.connect(self.ActivateDesignerWnd)
         # self.node_designer_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.node_designer_btn)
 
         # Add and connect self.library_btn
         self.library_btn = QAction(QIcon("icons/library.png"), "&Library", self)
-        self.library_btn.triggered.connect(self.ActivateLibraryWnd)
+        self.library_btn.setCheckable(True)
+        self.library_btn.triggered.connect(self.activate_library_wnd)
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
+
+        # Add Separator
+        self.tools_bar.addSeparator()
 
         # Add Spacer Wdg
         mySpacer = QWidget()
         mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.tools_bar.addWidget(mySpacer)
+
+        # Add Separator
+        self.tools_bar.addSeparator()
 
         # Add and connect self.code_orientation_btn
         self.code_orientation_btn = QAction(QIcon("icons/Orientation.png"), "&Code Window View Mode", self)
@@ -301,15 +318,24 @@ class MasterWindow(NodeEditorWindow):
         self.copy_code_btn.setShortcut(QKeySequence("Ctrl+Shift+C"))
 
     def onSettingsOpen(self):
-        self.settingsWidget = settingsWidget()
-        self.settingsWidget.masterRef = self
-        self.settingsWidget.show()
+        if self.settingsWidget:
+            if self.settingsWidget.isHidden():
+                self.settingsWidget.show()
+                self.settingsBtn.setChecked(True)
+            else:
+                self.settingsWidget.hide()
+        else:
+            self.settingsWidget = settingsWidget()
+            self.settingsWidget.masterRef = self
+            self.settingsWidget.show()
+            self.settingsBtn.setChecked(True)
 
-        self.settingsWidget.setWindowTitle("Settings")
-        self.settingsWidget.setGeometry(100, 100, 800, 600)
+            self.settingsWidget.setWindowTitle("Settings")
+            self.settingsWidget.setGeometry(300, 150, 1200, 800)
 
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
+
         if node_editor:
 
             node_editor.text_code_wnd.selectAll()
@@ -355,6 +381,20 @@ class MasterWindow(NodeEditorWindow):
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
         self.actDoc = QAction("&Documentation", self, triggered=self.open_doc)
 
+        self.actions_list = {"New Graph": self.actNew,
+                             "Open": self.actOpen,
+                             "Set Project Location": self.actSetProjectDir,
+                             "Save": self.actSave,
+                             "Save As": self.actSaveAs,
+                             "Exit": self.actExit,
+
+                             "Undo": self.actUndo,
+                             "Redo": self.actRedo,
+                             "Cut": self.actCut,
+                             "Copy": self.actCopy,
+                             "Paste": self.actPaste,
+                             "Delete": self.actDelete}
+
     def open_doc(self):
         subprocess.Popen('hh.exe "VVS-Help.chm"')
 
@@ -371,20 +411,22 @@ class MasterWindow(NodeEditorWindow):
         # Overrides Node Editor Window > actNew action
         try:
             subwnd = self.newGraphTab()
-            if isinstance(subwnd.widget(), NodeEditorWidget):
-                subwnd.widget().setup_new_graph()
 
-            subwnd.show()
+            all_names = []
+            for item in self.graphs_parent_wdg.subWindowList(): all_names.append(item.widget().windowTitle())
 
-            self.filesWidget.new_graph_name(subwnd)
+            self.filesWidget.new_graph_name(subwnd, all_names)
+
         except Exception as e:
             dumpException(e)
 
     def onFileOpen(self, all_files=False):
+
         if all_files == False:
             file_names, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file',
                                                               self.filesWidget.Project_Directory,
                                                               self.getFileDialogFilter())
+
         else:
             file_names = all_files
 
@@ -393,37 +435,35 @@ class MasterWindow(NodeEditorWindow):
                 if file_name:
                     if self.findMdiChild(file_name):
                         subwnd = self.findMdiChild(file_name)
-
-                        nodeEditor = subwnd.widget()
-
-                        nodeEditor.scene.masterRef = self
-
                         self.graphs_parent_wdg.setActiveSubWindow(subwnd)
 
                     else:
                         # We need to create new subWindow and open the file
-                        nodeEditor = MasterEditorWnd()
-                        subwnd = self.newGraphTab(nodeEditor)
+                        subwnd = self.newGraphTab()
+                        node_editor = subwnd.widget()
 
-                        if nodeEditor.fileLoad(file_name):
+                        if node_editor.fileLoad(file_name):
                             self.statusBar().showMessage("File %s loaded" % file_name, 5000)
-                            nodeEditor.setWindowTitle(os.path.splitext(os.path.basename(file_name))[0])
-                            subwnd.show()
+                            node_editor.setWindowTitle(os.path.splitext(os.path.basename(file_name))[0])
                         else:
-                            nodeEditor.close()
-
-                    nodeEditor.scene.history.storeInitialHistoryStamp()
+                            node_editor.close()
 
         except Exception as e:
             dumpException(e)
 
     def createMenus(self):
         super().createMenus()
+
         self.node_editor_menu = self.menuBar().addMenu("&Node Editor")
+
         self.library_menu = self.menuBar().addMenu("&Library")
+
         self.node_designer_menu = self.menuBar().addMenu("&Node Designer")
+
         self.updateWindowMenu()
+        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
         self.menuBar().addSeparator()
+
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actDoc)
         self.helpMenu.addAction(self.actAbout)
@@ -435,8 +475,11 @@ class MasterWindow(NodeEditorWindow):
         active = self.CurrentNodeEditor()
         hasMdiChild = (active is not None)
 
+        # Update File Menu
         self.actSave.setEnabled(hasMdiChild)
         self.actSaveAs.setEnabled(hasMdiChild)
+
+        # Update Node Editor Menu
         self.actClose.setEnabled(hasMdiChild)
         self.actCloseAll.setEnabled(hasMdiChild)
         self.actTile.setEnabled(hasMdiChild)
@@ -445,6 +488,7 @@ class MasterWindow(NodeEditorWindow):
         self.actPrevious.setEnabled(hasMdiChild)
         self.actSeparator.setVisible(hasMdiChild)
 
+        # Update Edit Menu
         self.updateEditMenu()
 
     def updateEditMenu(self):
@@ -461,6 +505,7 @@ class MasterWindow(NodeEditorWindow):
 
             self.actUndo.setEnabled(hasMdiChild and active.canUndo())
             self.actRedo.setEnabled(hasMdiChild and active.canRedo())
+
         except Exception as e:
             dumpException(e)
 
@@ -545,10 +590,15 @@ class MasterWindow(NodeEditorWindow):
         self.graphsDock.setFeatures(self.graphsDock.DockWidgetClosable | self.graphsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.graphsDock)
 
-    def ActivateEditorWnd(self):
+    def activate_editor_wnd(self):
+        self.update_display(Editor=True)
+
+        self.node_editor_btn.setChecked(True)
+        self.node_designer_btn.setChecked(False)
+        self.library_btn.setChecked(False)
+
         self.node_editor_menu.setEnabled(True)
         self.library_menu.setEnabled(False)
-        self.isGraphsEmpty()
 
         self.toolbar_library.setChecked(False)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
@@ -563,6 +613,10 @@ class MasterWindow(NodeEditorWindow):
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
     def ActivateDesignerWnd(self):
+        self.node_designer_btn.setChecked(True)
+        self.library_btn.setChecked(False)
+        self.node_editor_btn.setChecked(False)
+
         self.node_editor_menu.setEnabled(False)
         self.library_menu.setEnabled(False)
         self.stackedDisplay.setCurrentIndex(1)
@@ -571,10 +625,15 @@ class MasterWindow(NodeEditorWindow):
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
 
-    def ActivateLibraryWnd(self):
+    def activate_library_wnd(self):
+        self.update_display(Library=True)
+
+        self.library_btn.setChecked(True)
+        self.node_editor_btn.setChecked(False)
+        self.node_designer_btn.setChecked(False)
+
         self.node_editor_menu.setEnabled(False)
         self.library_menu.setEnabled(True)
-        self.isGraphsEmpty()
 
         self.toolbar_library.setChecked(True)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
@@ -600,7 +659,7 @@ class MasterWindow(NodeEditorWindow):
         self.filesWidget = FilesWDG()
         self.filesWidget.masterRef = self
 
-        self.brows_btn.clicked.connect(self.filesWidget.onSetProjectFolder)
+        self.brows_btn.clicked.connect(self.filesWidget.on_open_folder)
 
         self.filesDock = QDockWidget("Project Files")
         self.filesDock.setWidget(self.filesWidget)
@@ -628,7 +687,7 @@ class MasterWindow(NodeEditorWindow):
     def CreateNewVEList(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
         new_wdg = new_wdg()
-        self.all_VE_lists.append(new_wdg)
+        # self.all_VE_lists.append(new_wdg)
 
         self.VEStackedWdg.addWidget(new_wdg)
 
@@ -637,7 +696,7 @@ class MasterWindow(NodeEditorWindow):
         return new_wdg
 
     def DeleteVEList(self, ref):
-        self.all_VE_lists.remove(ref)
+        # self.all_VE_lists.remove(ref)
         self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):
@@ -647,40 +706,43 @@ class MasterWindow(NodeEditorWindow):
         if self.CurrentNodeEditor():
             self.CurrentNodeEditor().UpdateTextWndRot()
 
-    def newGraphTab(self, oldNodeEditor=None):
+    def newGraphTab(self):
 
         VEL = self.CreateNewVEList()
 
-        nodeEditor = oldNodeEditor if oldNodeEditor is not None else MasterEditorWnd()
+        node_editor = MasterEditorWnd()
 
-        nodeEditor.scene.VEListWdg = VEL
-        VEL.Scene = nodeEditor.scene
+        node_editor.scene.VEListWdg = VEL
+        VEL.Scene = node_editor.scene
 
-        nodeEditor.scene.masterRef = self
-        nodeEditor.scene.history.masterWndRef = self
+
+        node_editor.scene.masterRef = self
+        node_editor.scene.history.masterRef = self
 
         subwnd = QMdiSubWindow()
         subwnd.setAttribute(Qt.WA_DeleteOnClose, True)
-        subwnd.setWidget(nodeEditor)
+        subwnd.setWidget(node_editor)
 
+        self.update_display(Editor=True)
         self.graphs_parent_wdg.addSubWindow(subwnd)
-        self.isGraphsEmpty()
         subwnd.setWindowIcon(self.empty_icon)
-        # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)
-        # nodeeditor.scene.addItemsDeselectedListener(self.updateEditMenu)
-        nodeEditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
-        nodeEditor.addCloseEventListener(self.onSubWndClose)
+
+        node_editor.scene.addItemSelectedListener(self.updateEditMenu)
+        node_editor.scene.addItemsDeselectedListener(self.updateEditMenu)
+
+        node_editor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        node_editor.addCloseEventListener(self.onSubWndClose)
 
         self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
 
-
+        subwnd.show()
         return subwnd
 
     def onSubWndClose(self, widget, event):
-
         self.DeleteVEList(widget.scene.VEListWdg)
 
         existing = self.findMdiChild(widget.filename)
+
         self.graphs_parent_wdg.setActiveSubWindow(existing)
 
         if self.maybeSave():
@@ -688,6 +750,9 @@ class MasterWindow(NodeEditorWindow):
 
         else:
             event.ignore()
+
+        if len(self.graphs_parent_wdg.subWindowList()) == 1:
+            self.update_display(Welcome=True)
 
     def findMdiChild(self, filename):
         for window in self.graphs_parent_wdg.subWindowList():
@@ -698,6 +763,28 @@ class MasterWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
+
+    def get_settings_content(self, widget):
+        if type(widget) == QKeySequenceEdit:
+            value = widget.keySequence().toString()
+        elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
+            value = widget.value()
+        elif type(widget) == QLineEdit or type(widget) == QLabel:
+            value = widget.text()
+        else:
+            value = None
+            print("Widget Not Supported")
+        return value
+
+    def set_settings_content(self, widget, new_value:int):
+        if type(widget) == QKeySequenceEdit:
+            widget.setKeySequence(new_value)
+        elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
+            widget.setValue(new_value)
+        elif type(widget) == QLineEdit or type(widget) == QLabel:
+            widget.setText(new_value)
+        else:
+            print("Widget Not Supported")
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",

@@ -210,32 +210,25 @@ class NodeEditorWindow(QMainWindow):
     def onFileAutoSave(self):
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            now = datetime.now()
-            Now = str(now).replace(":", ".")[0:19]
-            print(Now)
+            Now = str(datetime.now()).replace(":", ".")[0:19]
+            fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{(current_node_editor.windowTitle()).replace("*","")} {Now}.json"""
+            self.onBeforeSaveAs(current_node_editor, fname)
+            current_node_editor.fileAutoSave(fname)
+            self.filesWidget.deleteOldAutoSaves()
+            self.statusBar().showMessage("Successfully Auto Saved %s" % fname , 5000)
 
-            if os.path.isfile(
-                    f"""{self.filesWidget.Project_Directory}/{current_node_editor.windowTitle()}.json""") and os.path.isfile(
-                    f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()} {Now}.json"""):
-                self.onFileSave()
+            # support for MDI app
+            if hasattr(current_node_editor, "setTitle"):
+                current_node_editor.setTitle()
             else:
-                fname = f"""{self.filesWidget.Project_Directory}/AutoSave/{current_node_editor.windowTitle()} {Now}.json"""
-                self.onBeforeSaveAs(current_node_editor, fname)
-                current_node_editor.fileSave(fname)
-                self.statusBar().showMessage("Successfully Auto Saved %s" % current_node_editor.filename, 5000)
-
-                # support for MDI app
-                if hasattr(current_node_editor, "setTitle"):
-                    current_node_editor.setTitle()
-                else:
-                    self.setTitle()
-                return True
+                self.setTitle()
+            return True
 
     def onFileSaveAs(self):
         """Handle File Save As operation"""
         current_node_editor = self.CurrentNodeEditor()
         if current_node_editor is not None:
-            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', self.filesWidget.Project_Directory, self.getFileDialogFilter())
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.filesWidget.Project_Directory}/{self.CurrentNodeEditor().windowTitle().replace("*","")}""", self.getFileDialogFilter())
             if fname == '': return False
 
             self.onBeforeSaveAs(current_node_editor, fname)
