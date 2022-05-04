@@ -128,6 +128,7 @@ class Node(Serializable):
 
     def initSettings(self):
         """Initialize properties and socket information"""
+
         self.socket_spacing = 20
         self.LR_offset = 6
         self.input_socket_position = LEFT_TOP
@@ -190,6 +191,7 @@ class Node(Serializable):
             counter += 1
             self.outputs.append(socket)
 
+        self.grNode.init_sockets_labels()
         self.grNode.AutoResizeGrNode()
 
 

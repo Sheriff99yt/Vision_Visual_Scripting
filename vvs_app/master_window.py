@@ -62,8 +62,6 @@ class MasterWindow(NodeEditorWindow):
         self.GlobalSwitches = GlobalSwitches()
         self.GlobalSwitches.masterRef = self
 
-        self.all_VE_lists = []
-
         self.stackedDisplay = QStackedWidget()
 
         self.graphs_parent_wdg = QMdiArea()
@@ -72,7 +70,6 @@ class MasterWindow(NodeEditorWindow):
 
         # Create Node Designer Window
         self.node_designer = MasterDesignerWnd()
-
 
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
 
@@ -88,7 +85,6 @@ class MasterWindow(NodeEditorWindow):
 
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
-
 
         # Create Welcome Screen and allow user to set the project Directory
         self.CreateWelcomeScreen()
@@ -666,7 +662,6 @@ class MasterWindow(NodeEditorWindow):
     def CreateNewVEList(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
         new_wdg = new_wdg()
-        self.all_VE_lists.append(new_wdg)
 
         self.VEStackedWdg.addWidget(new_wdg)
 
@@ -675,7 +670,6 @@ class MasterWindow(NodeEditorWindow):
         return new_wdg
 
     def DeleteVEList(self, ref):
-        self.all_VE_lists.remove(ref)
         self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):

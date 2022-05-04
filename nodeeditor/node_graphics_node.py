@@ -33,6 +33,10 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initAssets()
         self.initUI()
 
+        # init title
+        self.initNames()
+        self.name = self.node.name
+
         # creating a QGraphicsDropShadowEffect object
         # shadow = QGraphicsDropShadowEffect()
         # shadow.setColor(QColor(14, 14, 14))
@@ -77,12 +81,6 @@ class QDMGraphicsNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setAcceptHoverEvents(True)
-
-        # init title
-        self.initName()
-        self.name = self.node.name
-
-        # self.initContent()
 
     def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
@@ -199,16 +197,33 @@ class QDMGraphicsNode(QGraphicsItem):
             self.height
         ).normalized()
 
-    def initName(self):
+    def init_sockets_labels(self):
+        for socket in self.node.inputs + self.node.outputs:
+            socket_label = QGraphicsTextItem(self)
+            socket_label.hide()
+            socket.socket_label = socket_label
+
+            socket_label.node = self.node
+            socket_label.setDefaultTextColor(self._title_color)
+            socket_label.setFont(self._title_font)
+            socket_label.setPlainText("Text")
+            socket_label.adjustSize()
+            tw = socket_label.textWidth()
+
+            if self.node.outputs.__contains__(socket):
+                socket_label.setPos(socket.grSocket.pos().x() + socket.grSocket.radius, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
+            else:
+                socket_label.setPos(socket.grSocket.pos().x() - socket.grSocket.radius - tw, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
+
+    def initNames(self):
         """Set up the title Graphics representation: font, color, position, etc."""
+
         self.name_item = QGraphicsTextItem(self)
-        # self.name_item
         self.name_item.node = self.node
         self.name_item.setDefaultTextColor(self._title_color)
         self.name_item.setFont(self._title_font)
         self.name_item.setPos(self.title_horizontal_padding, 0)
         # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
-
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""

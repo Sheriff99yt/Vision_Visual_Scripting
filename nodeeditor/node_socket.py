@@ -3,6 +3,7 @@
 A module containing NodeEditor's class for representing Socket and Socket Position Constants.
 """
 import math
+from time import sleep
 
 from qtpy.QtGui import *
 from qtpy.QtCore import *
@@ -77,8 +78,9 @@ class QDMGraphicsSocket(QGraphicsItem):
         self.radius = 6
         self.outline_width = 1
 
-        self.initAssets()
         self.paint = self.myPaint
+
+        self.initAssets()
 
         # shadow = QGraphicsDropShadowEffect()
         # shadow.setXOffset(-2)
@@ -94,12 +96,14 @@ class QDMGraphicsSocket(QGraphicsItem):
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
         self.hovered = True
+        self.socket.socket_label.show()
         self.update()
 
     def hoverLeaveEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
         self.hovered = False
         self.update()
+        self.socket.socket_label.hide()
 
     @property
     def socket_type(self):
@@ -261,7 +265,7 @@ class Socket(Serializable):
         self.socketEdges = []
 
         self.userInputWdg = self.SocketInputs()
-
+        self.socket_label = None
 
     def getSocketCode(self):
         if self.socket_type == 0:
@@ -328,6 +332,7 @@ class Socket(Serializable):
         self.grSocket.setParentItem(None)
         self.node.scene.grScene.removeItem(self.grSocket)
         del self.grSocket
+        del self.socket_label
 
     def changeSocketType(self, new_socket_type: int) -> bool:
         """
