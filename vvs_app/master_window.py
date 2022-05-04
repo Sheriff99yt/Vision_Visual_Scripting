@@ -8,7 +8,7 @@ from qtpy.QtCore import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from vvs_app.editor_settings_wnd import settingsWidget
+from vvs_app.editor_settings_wnd import SettingsWidget
 from vvs_app.master_editor_wnd import MasterEditorWnd
 from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
@@ -91,7 +91,7 @@ class MasterWindow(NodeEditorWindow):
 
 
         # Create Welcome Screen and allow user to set the project Directory
-        self.CreateWelcomeScreen()
+        self.create_welcome_screen()
 
         # Create Details List Window
         self.CreatePropertiesDock()
@@ -123,7 +123,7 @@ class MasterWindow(NodeEditorWindow):
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
 
-    def CreateWelcomeScreen(self):
+    def create_welcome_screen(self):
         Elayout = QVBoxLayout()
         Elayout.setAlignment(Qt.AlignCenter)
         Elayout.setSpacing(20)
@@ -239,15 +239,22 @@ class MasterWindow(NodeEditorWindow):
         if self.CurrentNodeEditor():
             self.VEStackedWdg.setCurrentWidget(self.CurrentNodeEditor().scene.VEListWdg)
 
-    def update_display(self, Welcome=False,Editor=False, Designer=False, Library=False):
+    def switch_display(self, Welcome=False, Editor=False, Designer=False, Library=False):
         # Use the Argument To Force Activate the Specified Window
-        if Welcome:
-            self.stackedDisplay.setCurrentIndex(2)
-        elif Editor or Library:
-            self.stackedDisplay.setCurrentIndex(0)
+
+        if Editor or Library:
+            if self.graphs_parent_wdg.subWindowList():
+                self.stackedDisplay.setCurrentIndex(0)
+            else:
+                self.stackedDisplay.setCurrentIndex(2)
             return
+
         elif Designer:
             self.stackedDisplay.setCurrentIndex(1)
+            return
+
+        elif Welcome:
+            self.stackedDisplay.setCurrentIndex(2)
             return
 
     def CreateToolBar(self):
@@ -323,7 +330,7 @@ class MasterWindow(NodeEditorWindow):
             else:
                 self.settingsWidget.hide()
         else:
-            self.settingsWidget = settingsWidget()
+            self.settingsWidget = SettingsWidget()
             self.settingsWidget.masterRef = self
             self.settingsWidget.show()
             self.settingsBtn.setChecked(True)
@@ -589,7 +596,7 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.graphsDock)
 
     def activate_editor_wnd(self):
-        self.update_display(Editor=True)
+        self.switch_display(Editor=True)
 
         self.node_editor_btn.setChecked(True)
         self.node_designer_btn.setChecked(False)
@@ -624,7 +631,7 @@ class MasterWindow(NodeEditorWindow):
 
 
     def activate_library_wnd(self):
-        self.update_display(Library=True)
+        self.switch_display(Library=True)
 
         self.library_btn.setChecked(True)
         self.node_editor_btn.setChecked(False)
@@ -703,6 +710,9 @@ class MasterWindow(NodeEditorWindow):
             self.CurrentNodeEditor().UpdateTextWndRot()
 
     def newGraphTab(self):
+        # This Check Prevents The Parent graph from opening in Cascade view-mode
+        if not self.graphs_parent_wdg.subWindowList():
+            self.stackedDisplay.setCurrentIndex(0)
 
         VEL = self.CreateNewVEList()
 
@@ -719,7 +729,6 @@ class MasterWindow(NodeEditorWindow):
         subwnd.setAttribute(Qt.WA_DeleteOnClose, True)
         subwnd.setWidget(node_editor)
 
-        self.update_display(Editor=True)
         self.graphs_parent_wdg.addSubWindow(subwnd)
         subwnd.setWindowIcon(self.empty_icon)
 
@@ -748,7 +757,7 @@ class MasterWindow(NodeEditorWindow):
             event.ignore()
 
         if len(self.graphs_parent_wdg.subWindowList()) == 1:
-            self.update_display(Welcome=True)
+            self.switch_display(Welcome=True)
 
     def findMdiChild(self, filename):
         for window in self.graphs_parent_wdg.subWindowList():
