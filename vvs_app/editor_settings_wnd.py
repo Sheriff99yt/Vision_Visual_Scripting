@@ -2,10 +2,9 @@ import time
 from functools import partial
 from PyQt5 import *
 from vvs_app.master_window import *
-from qroundprogressbar import QRoundProgressBar
+from vvs_app.QRoundPB import QRoundProgressBar
 
-
-class settingsWidget(QWidget):
+class SettingsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -19,6 +18,7 @@ class settingsWidget(QWidget):
         self.settingsSplitter = QSplitter(Qt.Horizontal)
         self.settingsLayout.addWidget(self.settingsSplitter)
         self.settingsSplitter.setChildrenCollapsible(False)
+        self.settingsLayout.setContentsMargins(0, 0, 0, 0)
 
         self.settingsTree = QTreeWidget()
         self.settingsTree.header().hide()
@@ -111,9 +111,10 @@ class settingsWidget(QWidget):
 
     def reset_fun(self):
         progress = QRoundProgressBar()
-        progress.text_visiablity = False
-        progress.m_dataPenWidth = 2.5
+        progress.setTextVisiable(False)
+        progress.setDataPenWidth(2.5)
         progress.setValue(0)
+
         progress.setBarStyle(QRoundProgressBar.BarStyle.LINE)
         progress.setStyleSheet("background-color: #565656")
         progress.setFixedSize(30, 30)
