@@ -23,7 +23,7 @@ class MasterGraphicsNode(QDMGraphicsNode):
 
     def UpdateIcon(self, icon: None):
         self.icons = QImage(icon)
-        print(self.icons)
+        # print(self.icons)
 
 
 class MasterNode(Node):
