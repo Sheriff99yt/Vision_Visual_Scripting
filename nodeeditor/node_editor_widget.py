@@ -70,7 +70,6 @@ class NodeEditorWidget(QWidget):
         self.text_code_wnd.setReadOnly(True)
 
         self.code_output = QTextEdit()
-        self.code_output.setReadOnly(True)
         self.code_output.setStyleSheet("background-color: #282828")
         self.code_output.setFont(QFont('Roboto', 12))
 
