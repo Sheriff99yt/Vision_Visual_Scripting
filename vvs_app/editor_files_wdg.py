@@ -25,8 +25,25 @@ class FilesWDG(QWidget):
         layout.addWidget(self.tree_wdg)
 
         self.tree_wdg.clicked.connect(self.OpenSelectedFiles)
-
+        self.tree_wdg.contextMenuEvent = self.tree_wdg_contextMenuEvent
         self.CreateDefaultDir()
+
+    def tree_wdg_contextMenuEvent(self, event):
+        context_menu = QMenu(self)
+        delete = context_menu.addAction("Delete")
+        context_menu.addAction("Cancel")
+        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+
+        if action == delete:
+            file_path = QFileSystemModel().filePath(self.tree_wdg.selectedIndexes()[0])
+
+            msgBox = QMessageBox()
+            msgBox.setIcon(QMessageBox.Warning)
+            msgBox.setText(f"You Are About To Delete\n\n{file_path}\n\nThis is Irreversible Are You Sure?")
+            msgBox.setWindowTitle("Warning !")
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+            msgBox.buttonClicked.connect(lambda: os.remove(file_path))
+            msgBox.exec_()
 
     def OpenSelectedFiles(self):
         all_files = []
@@ -93,4 +110,3 @@ class FilesWDG(QWidget):
             self.msg = QMessageBox()
             self.msg.setText(f"AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes")
             self.msg.show()
-            # self.masterRef.statusBar().showMessage(f"""AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes""")

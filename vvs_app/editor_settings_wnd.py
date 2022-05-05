@@ -33,9 +33,9 @@ class SettingsWidget(QWidget):
         self.init_system_wdg()
         self.init_key_mapping_wdg()
 
-        self.settingsTree.clicked.connect(self.setCurrentWdg)
+        self.settingsTree.clicked.connect(self.set_current_wdg)
 
-    def setCurrentWdg(self):
+    def set_current_wdg(self):
         current_item = self.settingsTree.currentItem().data(5, 6)
         self.holderWdg.setCurrentWidget(current_item)
         self.fill()
@@ -79,22 +79,7 @@ class SettingsWidget(QWidget):
         self.message = QLabel("")
         self.h_layout.addWidget(self.message)
         name_item.setData(9, 10, self.message)
-        # # reset btn
-        # self.reset_btn = QPushButton("Rest")
-        # self.h_layout.addWidget(self.reset_btn)
-        # self.reset_btn.setFixedWidth(100)
-        #
-        # self.message = QLabel("")
-        # self.h_layout.addWidget(self.message)
-        # name_item.setData(9, 10, self.message)
-        #
-        # self.reset_btn.pressed.connect(self.button_pressed)
-        # self.reset_btn.released.connect(self.button_released)
-        #
-        # self.timer_button = QTimer()
-        # self.timer_button.timeout.connect(lambda: self.button_event_check())
-        # self.button_held_time = 0
-        # # reset btn
+
         self.spacer3 = QWidget()
         self.spacer3.setMinimumWidth(QSizePolicy.Expanding)
         self.h_layout.addWidget(self.spacer3)
@@ -111,7 +96,7 @@ class SettingsWidget(QWidget):
 
     def reset_fun(self):
         progress = QRoundProgressBar()
-        progress.setTextVisiable(False)
+        progress.setTextVisabile(False)
         progress.setDataPenWidth(2.5)
         progress.setValue(0)
 
@@ -141,7 +126,6 @@ class SettingsWidget(QWidget):
         self.Appearance_settings_list =[]
 
     def init_system_wdg(self):
-
         self.system_wdg = QWidget()
 
         self.init_wdg_ui(self.system_wdg, "System")
@@ -170,7 +154,6 @@ class SettingsWidget(QWidget):
         self.autoSaveFolderMaxSizeSB.setMinimumWidth(50)
 
     def init_key_mapping_wdg(self):
-
         self.key_mapping_wdg = QWidget()
 
         self.init_wdg_ui(self.key_mapping_wdg, "Key Mapping")
@@ -183,7 +166,7 @@ class SettingsWidget(QWidget):
             lbl = QLabel(item)
             self.Grid_Layout.addWidget(lbl, self.Key_Mapping_settings_list.index(item), 0, Qt.AlignRight)
 
-            KeySequence = QKeySequenceEdit()
+            KeySequence = QKeySequenceEditM()
             self.Grid_Layout.addWidget(KeySequence, self.Key_Mapping_settings_list.index(item), 1, 1, 10, Qt.AlignLeft)
             KeySequence.setMaximumWidth(100)
 
@@ -200,33 +183,48 @@ class SettingsWidget(QWidget):
                 print("Window Has Fields to fill that's why", e)
 
     def apply_or_reset(self, reset):
-        self.settingsTree.currentItem().data(9, 10).show()
-        grid_layout = self.settingsTree.currentItem().data(7, 8)
-        grid_row_count = grid_layout.rowCount()
+        if self.settingsTree.currentItem().data(7, 8).itemAtPosition(0, 0):
 
-        if grid_layout.itemAtPosition(0, 0):
+            self.settingsTree.currentItem().data(9, 10).show()
+            current_widget = self.settingsTree.currentItem().data(5, 6)
+            grid_layout = self.settingsTree.currentItem().data(7, 8)
+            grid_row_count = grid_layout.rowCount()
+            changed_settings_dict = {}
+
+            for i in range(grid_row_count):
+                if grid_layout.itemAtPosition(i, 1).widget().isWindowModified() or type(grid_layout.itemAtPosition(i, 1).widget()) != QKeySequenceEditM:
+                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                    txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
+                    grid_layout.itemAtPosition(i, 1).widget().setWindowModified(False)
+                    changed_settings_dict[lbl] = txt
+
+            if changed_settings_dict:
+                for i in range(len(changed_settings_dict)):
+                    lbl, txt = list(changed_settings_dict.keys())[i], list(changed_settings_dict.values())[i]
+                    self.masterRef.global_switches.switches_Dict[lbl] = txt
+                    self.settingsTree.currentItem().data(9, 10).setText("Applied")
+                if current_widget == self.key_mapping_wdg:
+                    for i in range(grid_row_count):
+                        lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                        txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
+                        self.masterRef.actions_list[lbl].setShortcut(txt)
+                elif current_widget == self.system_wdg:
+                    if self.masterRef.CurrentNodeEditor():
+                        self.masterRef.CurrentNodeEditor().scene.history.Edits_Counter = 0
+            else:
+                self.settingsTree.currentItem().data(9, 10).setText("No Changed")
+                self.fill()
+                for i in range(grid_row_count):
+                    grid_layout.itemAtPosition(i, 1).widget().setStyleSheet("background-color: transparent")
+
             if reset:
                 for i in range(grid_row_count):
                     lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
                     self.masterRef.global_switches.switches_Dict[lbl] = self.masterRef.global_switches.Default_switches_Dict[lbl]
+                    if type(grid_layout.itemAtPosition(i, 1).widget()) == QKeySequenceEditM:
+                        grid_layout.itemAtPosition(i, 1).widget().setStyleSheet("background-color: transparent")
                 self.fill()
-
                 self.settingsTree.currentItem().data(9, 10).setText("Reset")
-            else:
-                self.settingsTree.currentItem().data(9, 10).setText("Applied")
-                for i in range(grid_row_count):
-                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
-                    txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
-                    self.masterRef.global_switches.switches_Dict[lbl] = txt
-
-            if self.settingsTree.currentItem().data(5, 6) == self.key_mapping_wdg:
-                for i in range(grid_row_count):
-                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
-                    txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
-                    self.masterRef.actions_list[lbl].setShortcut(txt)
-            elif self.settingsTree.currentItem().data(5, 6) == self.system_wdg:
-                if self.masterRef.CurrentNodeEditor():
-                    self.masterRef.CurrentNodeEditor().scene.history.Edits_Counter = 0
 
             self.masterRef.global_switches.save_settings_to_file(self.masterRef.global_switches.switches_Dict, self.masterRef.global_switches.Settings_File)
 
@@ -261,3 +259,23 @@ class SettingsWidget(QWidget):
             self.apply_or_reset(True)
         progress.setValue(float(self.progress_counter)) # progress
         self.progress_counter += 1
+
+class QKeySequenceEditM(QKeySequenceEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.editingFinished.connect(self.setStat)
+
+    def setStat(self):
+        grid_layout = self.parentWidget().layout().itemAt(2)
+        grid_row_count = self.parentWidget().layout().itemAt(2).rowCount()
+        count = 0
+
+        for i in range(grid_row_count):
+            txt = grid_layout.itemAtPosition(i, 1).widget().keySequence().toString()
+            if txt == self.keySequence().toString():
+                count += 1
+
+        if count > 1:
+            self.setStyleSheet("background-color: red")
+        else:
+            self.setWindowModified(True)

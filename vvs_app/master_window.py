@@ -8,7 +8,7 @@ from qtpy.QtCore import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from vvs_app.editor_settings_wnd import SettingsWidget
+from vvs_app.editor_settings_wnd import SettingsWidget, QKeySequenceEditM
 from vvs_app.master_editor_wnd import MasterEditorWnd
 from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
@@ -119,10 +119,6 @@ class MasterWindow(NodeEditorWindow):
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
 
-
-        # self.NodeDesignerBtn.setChecked(True)
-        # self.updateActiveWnd()
-
     def create_welcome_screen(self):
         Elayout = QVBoxLayout()
         Elayout.setAlignment(Qt.AlignCenter)
@@ -155,13 +151,6 @@ class MasterWindow(NodeEditorWindow):
             self.Offline_Dir = os.makedirs(os.getenv('AppData') + "/VVS/Offline Library")
 
         self.library_offline_list.setRootIndex(self.Model.index(self.Offline_Dir))
-
-    # def onSetProjectFolder(self):
-    #     Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
-    #     if Dir != "":
-    #         self.Offline_Dir = Dir
-    #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
-    #         self.MakeDir(self.Offline_Dir)
 
     def CreateLibraryWnd(self):
         self.librariesDock = QDockWidget("Libraries")
@@ -770,7 +759,7 @@ class MasterWindow(NodeEditorWindow):
             self.graphs_parent_wdg.setActiveSubWindow(window)
 
     def get_settings_content(self, widget):
-        if type(widget) == QKeySequenceEdit:
+        if type(widget) == QKeySequenceEdit or type(widget) == QKeySequenceEditM:
             value = widget.keySequence().toString()
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
             value = widget.value()
@@ -782,7 +771,7 @@ class MasterWindow(NodeEditorWindow):
         return value
 
     def set_settings_content(self, widget, new_value:int):
-        if type(widget) == QKeySequenceEdit:
+        if type(widget) == QKeySequenceEdit or type(widget) == QKeySequenceEditM:
             widget.setKeySequence(new_value)
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
             widget.setValue(new_value)
