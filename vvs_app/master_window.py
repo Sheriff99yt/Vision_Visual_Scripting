@@ -175,6 +175,7 @@ class MasterWindow(NodeEditorWindow):
         self.library_offline_list.hideColumn(1)
         self.library_offline_list.hideColumn(2)
         self.library_offline_list.setStyleSheet("color: white")
+        self.library_offline_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
 
         offline_Vlayout.addWidget(self.library_offline_list)
 
@@ -660,13 +661,14 @@ class MasterWindow(NodeEditorWindow):
         self.filesDock.setFeatures(self.filesDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
+        self.filesWidget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+
     def CreatePropertiesDock(self):
         self.proprietiesWdg = PropertiesList()
 
         self.proprietiesDock = QDockWidget("Properties")
         self.proprietiesDock.setWidget(self.proprietiesWdg)
         self.proprietiesDock.setFeatures(self.proprietiesDock.DockWidgetMovable)
-
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
     def CreateVarEventDock(self):

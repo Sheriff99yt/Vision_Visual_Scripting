@@ -20,7 +20,6 @@ class VarEventList(QTabWidget):
         self.InitUI()
 
     def InitUI(self):
-
         # Add QTabWidget and add Both Variables Tab and Events Tab
         tab1 = QWidget()
         tab2 = QWidget()
@@ -117,10 +116,7 @@ class VarEventList(QTabWidget):
         return NewNode
 
     def InitList(self):
-        Event = 0
-        # Events = list(FUNCTIONS.keys())[0]
-        # Events.sort()
-        # for node_type in Events:
+        Event = list(EVENTS.keys())[0]
 
         node = get_node_by_type(Event)
         self.eventCompoBox.addItem(node.name)
