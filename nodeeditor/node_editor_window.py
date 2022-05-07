@@ -14,7 +14,6 @@ class NodeEditorWindow(QMainWindow):
     NodeEditorWidget_class = NodeEditorWidget
 
     """Class representing NodeEditor's Main Window"""
-
     def __init__(self):
 
         """
