@@ -288,25 +288,13 @@ class MasterWindow(NodeEditorWindow):
         # Add Separator
         self.tools_bar.addSeparator()
 
-        # Add Spacer Wdg
-        mySpacer = QWidget()
-        mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.tools_bar.addWidget(mySpacer)
+        # # Add Spacer Wdg
+        # mySpacer = QWidget()
+        # mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.tools_bar.addWidget(mySpacer)
 
-        # Add Separator
-        self.tools_bar.addSeparator()
-
-        # Add and connect self.code_orientation_btn
-        self.code_orientation_btn = QAction(QIcon("icons/Orientation.png"), "&Code Window View Mode", self)
-        self.tools_bar.addAction(self.code_orientation_btn)
-        self.code_orientation_btn.triggered.connect(self.RotateTextCodeWnd)
-        self.code_orientation_btn.setShortcut(QKeySequence("Ctrl+Shift+R"))
-
-        # Add and connect self.code_copy_btn
-        self.copy_code_btn = QAction(QIcon("icons/Copy.png"), "&Copy The Code From The Code Window", self)
-        self.tools_bar.addAction(self.copy_code_btn)
-        self.copy_code_btn.triggered.connect(self.CopyTextCode)
-        self.copy_code_btn.setShortcut(QKeySequence("Ctrl+Shift+C"))
+        # # Add Separator
+        # self.tools_bar.addSeparator()
 
     def onSettingsOpen(self):
         if self.settingsWidget:
@@ -323,26 +311,6 @@ class MasterWindow(NodeEditorWindow):
 
             self.settingsWidget.setWindowTitle("Settings")
             self.settingsWidget.setGeometry(300, 150, 1200, 800)
-
-    def CopyTextCode(self):
-        node_editor = self.CurrentNodeEditor()
-
-        if node_editor:
-
-            node_editor.text_code_wnd.selectAll()
-            node_editor.text_code_wnd.copy()
-            python_file_name = node_editor.windowTitle()
-
-            text = node_editor.text_code_wnd.toPlainText()
-            if os.listdir(self.filesWidget.Project_Directory).__contains__("Generated Scripts") is False:
-                os.makedirs(self.filesWidget.Project_Directory + "/Generated Scripts")
-                f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-                with open(f, 'w') as newPyFile:
-                    newPyFile.writelines(text)
-            else:
-                f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-                with open(f, 'w') as newPyFile:
-                    newPyFile.writelines(text)
 
     def closeEvent(self, event):
         self.graphs_parent_wdg.closeAllSubWindows()
@@ -658,7 +626,6 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_library.setChecked(False)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
-
     def activate_library_wnd(self):
         self.switch_display(Library=True)
 
@@ -734,10 +701,6 @@ class MasterWindow(NodeEditorWindow):
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
-
-    def RotateTextCodeWnd(self):
-        if self.CurrentNodeEditor():
-            self.CurrentNodeEditor().UpdateTextWndRot()
 
     def newGraphTab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode

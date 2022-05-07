@@ -43,69 +43,75 @@ class NodeEditorWidget(QWidget):
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
 
-
-        widget_layout = QHBoxLayout()
-        widget_layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(widget_layout)
-
-        text_code_layout = QVBoxLayout()
-        text_code_layout.setContentsMargins(0, 0, 0, 0)
-
-        text_code_widget = QWidget()
-        text_code_widget.resize(800, 100)
-        text_code_widget.setLayout(text_code_layout)
-
         # crate graphics scene
         self.scene = self.__class__.Scene_class()
 
         # create graphics view
         self.graph_graphics_view = self.__class__.GraphGraphics_class(self.scene.grScene, self)
 
-        # create widget splitter
+        widget_layout = QHBoxLayout()
+        widget_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(widget_layout)
+
         self.v_splitter = QSplitter(Qt.Vertical)
+        widget_layout.addWidget(self.v_splitter)
 
         self.editor_wnd = QSplitter(Qt.Horizontal)
+        self.v_splitter.addWidget(self.editor_wnd)
+        self.editor_wnd.addWidget(self.graph_graphics_view)
+
+        text_code_widget = QWidget()
+        text_code_widget.resize(800, 100)
+        self.editor_wnd.addWidget(text_code_widget)
+
+        text_code_layout = QVBoxLayout()
+        text_code_layout.setContentsMargins(0, 0, 0, 0)
+        text_code_widget.setLayout(text_code_layout)
+
+        code_wnd_bar = QHBoxLayout()
+        code_wnd_bar.setContentsMargins(4, 4, 4, 4)
+        code_wnd_bar.addItem(QSpacerItem(20, 0, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum))
+        code_wnd_bar.addWidget(QLabel("Select Syntax"))
+        text_code_layout.addLayout(code_wnd_bar)
 
         self.text_code_wnd = QTextEdit()
         self.text_code_wnd.setReadOnly(True)
+        text_code_layout.addWidget(self.text_code_wnd)
 
+        # Termenal
         self.code_output = QTextEdit()
         self.code_output.setStyleSheet("background-color: #282828")
         self.code_output.setFont(QFont('Roboto', 12))
+        self.v_splitter.addWidget(self.code_output)
 
         self.syntax_selector = QComboBox()
         self.syntax_selector.setMinimumWidth(80)
         self.syntax_selector.currentTextChanged.connect(self.UpdateTextCode)
         self.syntax_selector.addItem("Python")
         self.syntax_selector.addItem("C++")
+        code_wnd_bar.addWidget(self.syntax_selector)
+
+        self.code_orientation_btn = QPushButton()
+        self.code_orientation_btn.setMaximumSize(25, 25)
+        self.code_orientation_btn.setIcon(QIcon("icons/Orientation.png"))
+        self.code_orientation_btn.clicked.connect(self.UpdateTextWndRot)
+        code_wnd_bar.addWidget(self.code_orientation_btn)
+
+        self.copy_code_btn = QPushButton()
+        self.copy_code_btn.setMaximumSize(25, 25)
+        self.copy_code_btn.setIcon(QIcon("icons/Copy.png"))
+        self.copy_code_btn.clicked.connect(self.CopyTextCode)
+        code_wnd_bar.addWidget(self.copy_code_btn)
 
         self.run_btn = QPushButton()
-        self.run_btn.setMaximumSize(30, 30)
+        self.run_btn.setMaximumSize(25, 25)
         self.run_btn.setIcon(QIcon("icons/run.png"))
         self.run_btn.clicked.connect(self.run_code)
-
-        code_wnd_bar = QHBoxLayout()
-        code_wnd_bar.setContentsMargins(4, 4, 4, 4)
-        code_wnd_bar.addWidget(QLabel("Select Syntax"))
-        code_wnd_bar.addWidget(self.syntax_selector)
-        code_wnd_bar.addItem(QSpacerItem(20, 0, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum))
-        code_wnd_bar.addWidget(QLabel("Run"))
         code_wnd_bar.addWidget(self.run_btn)
-
-        text_code_layout.addLayout(code_wnd_bar)
-        text_code_layout.addWidget(self.text_code_wnd)
 
         # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
         self.scene.setNodeEditorWidget(self)
         self.graph_graphics_view.setNodeEditorWidget(self)
-
-        self.editor_wnd.addWidget(self.graph_graphics_view)
-        self.editor_wnd.addWidget(text_code_widget)
-
-        self.v_splitter.addWidget(self.editor_wnd)
-        self.v_splitter.addWidget(self.code_output)
-
-        widget_layout.addWidget(self.v_splitter)
 
     def UpdateTextWndRot(self):
         if self.editor_wnd.orientation() == Qt.Horizontal:
@@ -284,7 +290,6 @@ class NodeEditorWidget(QWidget):
         self.code_output.clear()
         self.Project_Directory = self.scene.masterRef.filesWidget.Project_Directory
         fname = self.Project_Directory + f"""/Generated Scripts/{self.windowTitle().replace("*", "")}.py"""
-        # fname = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"+f"""/code_runner.py"""
         with open(fname, 'w') as newPyFile:
             newPyFile.writelines(self.text_code_wnd.toPlainText())
 
@@ -311,3 +316,20 @@ class NodeEditorWidget(QWidget):
                 self.text_code_wnd.append(node.getNodeCode())
         # print(self.text_code_wnd.find("f"))
         # print("o")
+
+    def CopyTextCode(self):
+        self.Project_Directory = self.scene.masterRef.filesWidget.Project_Directory
+        self.text_code_wnd.selectAll()
+        self.text_code_wnd.copy()
+        python_file_name = self.windowTitle().replace("*", "")
+
+        text = self.text_code_wnd.toPlainText()
+        if os.listdir(self.Project_Directory).__contains__("Generated Scripts") is False:
+            os.makedirs(self.Project_Directory + "/Generated Scripts")
+            f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+            with open(f, 'w') as newPyFile:
+                newPyFile.writelines(text)
+        else:
+            f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+            with open(f, 'w') as newPyFile:
+                newPyFile.writelines(text)
