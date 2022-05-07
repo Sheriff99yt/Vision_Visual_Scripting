@@ -235,7 +235,6 @@ class MasterWindow(NodeEditorWindow):
             else:
                 self.stackedDisplay.setCurrentIndex(2)
             return
-
         elif Designer:
             self.stackedDisplay.setCurrentIndex(1)
             return
@@ -461,12 +460,15 @@ class MasterWindow(NodeEditorWindow):
         self.node_designer_menu = self.menuBar().addMenu("&Node Designer")
 
         self.updateWindowMenu()
+        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+        self.menuBar().addSeparator()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actDoc)
         self.helpMenu.addAction(self.actAbout)
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
+
         # self.Logo = QLabel()
         # p = QPixmap("icons/VVS_Logo_Thick.png").scaledToHeight(self.menu.height())
         # self.Logo.setPixmap(p)
@@ -655,6 +657,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.toolbar_library.setChecked(False)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
+
 
     def activate_library_wnd(self):
         self.switch_display(Library=True)
