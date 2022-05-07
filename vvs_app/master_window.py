@@ -8,7 +8,7 @@ from qtpy.QtCore import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from vvs_app.editor_settings_wnd import SettingsWidget, QKeySequenceEditM
+from vvs_app.editor_settings_wnd import SettingsWidget
 from vvs_app.master_editor_wnd import MasterEditorWnd
 from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
@@ -72,7 +72,6 @@ class MasterWindow(NodeEditorWindow):
         # Create Node Designer Window
         self.node_designer = MasterDesignerWnd()
 
-
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
 
         self.stackedDisplay.addWidget(self.node_designer)
@@ -87,8 +86,6 @@ class MasterWindow(NodeEditorWindow):
 
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
-
-
 
         # Create Welcome Screen and allow user to set the project Directory
         self.create_welcome_screen()
@@ -250,7 +247,7 @@ class MasterWindow(NodeEditorWindow):
     def CreateToolBar(self):
         # Create Tools self.tools_bar
         self.tools_bar = QToolBar("Tools", self)
-        self.tools_bar.setIconSize(QSize(26, 26))
+        self.tools_bar.setIconSize(QSize(20, 20))
         self.tools_bar.setFloatable(False)
 
         # Add self.tools_bar To Main Window
@@ -363,12 +360,20 @@ class MasterWindow(NodeEditorWindow):
     def createActions(self):
         super().createActions()
 
-        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.graphs_parent_wdg.closeActiveSubWindow)
-        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.graphs_parent_wdg.closeAllSubWindows)
-        self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.graphs_parent_wdg.tileSubWindows)
-        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows", triggered=self.graphs_parent_wdg.cascadeSubWindows)
-        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild, statusTip="Move the focus to the next window", triggered=self.graphs_parent_wdg.activateNextSubWindow)
-        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild, statusTip="Move the focus to the previous window", triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
+        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
+                                triggered=self.graphs_parent_wdg.closeActiveSubWindow)
+        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",
+                                   triggered=self.graphs_parent_wdg.closeAllSubWindows)
+        self.actTile = QAction("&Tile", self, statusTip="Tile the windows",
+                               triggered=self.graphs_parent_wdg.tileSubWindows)
+        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows",
+                                  triggered=self.graphs_parent_wdg.cascadeSubWindows)
+        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild,
+                               statusTip="Move the focus to the next window",
+                               triggered=self.graphs_parent_wdg.activateNextSubWindow)
+        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild,
+                                   statusTip="Move the focus to the previous window",
+                                   triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
 
         self.actSeparator = QAction(self)
         self.actSeparator.setSeparator(True)
@@ -456,14 +461,46 @@ class MasterWindow(NodeEditorWindow):
         self.node_designer_menu = self.menuBar().addMenu("&Node Designer")
 
         self.updateWindowMenu()
-        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
-        self.menuBar().addSeparator()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actDoc)
         self.helpMenu.addAction(self.actAbout)
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
+        # self.Logo = QLabel()
+        # p = QPixmap("icons/VVS_Logo_Thick.png").scaledToHeight(self.menu.height())
+        # self.Logo.setPixmap(p)
+        # self.Logo.setStyleSheet("background-color: transparent")
+        # self.menu.addWidget(self.Logo)
+        #
+        # self.menu.addWidget(self.menuBar())
+        #
+        # mySpacer = QWidget()
+        # mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.menu.addWidget(mySpacer)
+        #
+        # self.Minimize_btn = QPushButton(QIcon("icons/Minimize.png"), "_", self)
+        # self.Minimize_btn.setFont(QFont("Arial", 10))
+        # self.Minimize_btn.setMaximumSize(50, 50)
+        # self.Minimize_btn.setStyleSheet("border: 0px")
+        # self.Minimize_btn.setMaximumWidth(20)
+        # self.menu.addWidget(self.Minimize_btn)
+        # self.Minimize_btn.clicked.connect(self.showMinimized)
+        #
+        # self.Resize_btn = QPushButton(QIcon("icons/Resize.png"), "□", self)
+        # self.Resize_btn.setFont(QFont("Arial", 15))
+        # self.Resize_btn.setMaximumSize(50, 50)
+        # self.Resize_btn.setStyleSheet("border: 0px")
+        # self.Resize_btn.setMaximumWidth(20)
+        # self.menu.addWidget(self.Resize_btn)
+        # self.Resize_btn.clicked.connect(lambda: self.showNormal() if self.isMaximized() else self.showMaximized())
+        #
+        # self.exit_btn = QPushButton(QIcon("icons/close.png"), "x", self)
+        # self.exit_btn.setFont(QFont("Arial", 15))
+        # self.exit_btn.setMaximumSize(50, 50)
+        # self.exit_btn.setStyleSheet("border: 0px")
+        # self.menu.addWidget(self.exit_btn)
+        # self.exit_btn.clicked.connect(self.close)
 
     def updateMenus(self):
         # print("update Menus")
@@ -619,7 +656,6 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_library.setChecked(False)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
-
     def activate_library_wnd(self):
         self.switch_display(Library=True)
 
@@ -712,7 +748,6 @@ class MasterWindow(NodeEditorWindow):
         node_editor.scene.VEListWdg = VEL
         VEL.Scene = node_editor.scene
 
-
         node_editor.scene.masterRef = self
         node_editor.scene.history.masterRef = self
 
@@ -761,7 +796,7 @@ class MasterWindow(NodeEditorWindow):
             self.graphs_parent_wdg.setActiveSubWindow(window)
 
     def get_settings_content(self, widget):
-        if type(widget) == QKeySequenceEdit or type(widget) == QKeySequenceEditM:
+        if type(widget) == QKeySequenceEdit:
             value = widget.keySequence().toString()
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
             value = widget.value()
@@ -772,8 +807,8 @@ class MasterWindow(NodeEditorWindow):
             print("Widget Not Supported")
         return value
 
-    def set_settings_content(self, widget, new_value:int):
-        if type(widget) == QKeySequenceEdit or type(widget) == QKeySequenceEditM:
+    def set_settings_content(self, widget, new_value: int):
+        if type(widget) == QKeySequenceEdit:
             widget.setKeySequence(new_value)
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
             widget.setValue(new_value)

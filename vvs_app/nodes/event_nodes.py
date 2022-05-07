@@ -5,12 +5,12 @@ from nodeeditor.node_editor_widget import *
 
 
 
-@set_event_ID(EVENT)
 class Event(MasterNode):
     icon = "icons/event.png"
-    node_type = EVENT
+    node_type = None
     name = "Event"
-    content_label_objname = "calc_node_event"
+    category = "EVENT"
+    sub_category = "EVENT"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[0])
@@ -75,3 +75,4 @@ def {self.name}():
             getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
             return getCode
+regester_Node(Event)

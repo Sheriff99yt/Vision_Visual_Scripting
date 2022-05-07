@@ -23,15 +23,12 @@ class MasterGraphicsNode(QDMGraphicsNode):
 
     def UpdateIcon(self, icon: None):
         self.icons = QImage(icon)
-        # print(self.icons)
 
 
 class MasterNode(Node):
     icon = ""
     node_type = 0
     name = "Undefined"
-    content_label = ""
-    content_label_objname = "calc_node_bg"
     node_Value = None
 
     GraphicsNode_class = MasterGraphicsNode

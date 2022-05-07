@@ -4,6 +4,7 @@ from PyQt5 import *
 from vvs_app.master_window import *
 from vvs_app.QRoundPB import QRoundProgressBar
 
+
 class SettingsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -166,9 +167,11 @@ class SettingsWidget(QWidget):
             lbl = QLabel(item)
             self.Grid_Layout.addWidget(lbl, self.Key_Mapping_settings_list.index(item), 0, Qt.AlignRight)
 
-            KeySequence = QKeySequenceEditM()
+            KeySequence = QKeySequenceEdit()
             self.Grid_Layout.addWidget(KeySequence, self.Key_Mapping_settings_list.index(item), 1, 1, 10, Qt.AlignLeft)
             KeySequence.setMaximumWidth(100)
+            KeySequence.setStat = setStat
+            KeySequence.__init__ = newinit(KeySequence)
 
     def fill(self):
         grid_layout = self.settingsTree.currentItem().data(7, 8)
@@ -192,7 +195,7 @@ class SettingsWidget(QWidget):
             changed_settings_dict = {}
 
             for i in range(grid_row_count):
-                if grid_layout.itemAtPosition(i, 1).widget().isWindowModified() or type(grid_layout.itemAtPosition(i, 1).widget()) != QKeySequenceEditM:
+                if grid_layout.itemAtPosition(i, 1).widget().isWindowModified() or type(grid_layout.itemAtPosition(i, 1).widget()) != QKeySequenceEdit:
                     lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
                     txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
                     grid_layout.itemAtPosition(i, 1).widget().setWindowModified(False)
@@ -221,7 +224,7 @@ class SettingsWidget(QWidget):
                 for i in range(grid_row_count):
                     lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
                     self.masterRef.global_switches.switches_Dict[lbl] = self.masterRef.global_switches.Default_switches_Dict[lbl]
-                    if type(grid_layout.itemAtPosition(i, 1).widget()) == QKeySequenceEditM:
+                    if type(grid_layout.itemAtPosition(i, 1).widget()) == QKeySequenceEdit:
                         grid_layout.itemAtPosition(i, 1).widget().setStyleSheet("background-color: transparent")
                 self.fill()
                 self.settingsTree.currentItem().data(9, 10).setText("Reset")
@@ -260,22 +263,20 @@ class SettingsWidget(QWidget):
         progress.setValue(float(self.progress_counter)) # progress
         self.progress_counter += 1
 
-class QKeySequenceEditM(QKeySequenceEdit):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.editingFinished.connect(self.setStat)
+def newinit(self, *__args):
+    self.editingFinished.connect(lambda: self.setStat(self))
 
-    def setStat(self):
-        grid_layout = self.parentWidget().layout().itemAt(2)
-        grid_row_count = self.parentWidget().layout().itemAt(2).rowCount()
-        count = 0
+def setStat(self):
+    grid_layout = self.parentWidget().layout().itemAt(2)
+    grid_row_count = self.parentWidget().layout().itemAt(2).rowCount()
+    count = 0
 
-        for i in range(grid_row_count):
-            txt = grid_layout.itemAtPosition(i, 1).widget().keySequence().toString()
-            if txt == self.keySequence().toString():
-                count += 1
+    for i in range(grid_row_count):
+        txt = grid_layout.itemAtPosition(i, 1).widget().keySequence().toString()
+        if txt == self.keySequence().toString():
+            count += 1
 
-        if count > 1:
-            self.setStyleSheet("background-color: red")
-        else:
-            self.setWindowModified(True)
+    if count > 1:
+        self.setStyleSheet("background-color: red")
+    else:
+        self.setWindowModified(True)

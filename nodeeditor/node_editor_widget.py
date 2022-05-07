@@ -202,7 +202,6 @@ class NodeEditorWidget(QWidget):
             return False
         except InvalidFile as e:
             dumpException(e)
-            # QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, "Error loading %s" % os.path.basename(filename), str(e))
             return False
         finally:
@@ -283,7 +282,9 @@ class NodeEditorWidget(QWidget):
 
     def run_code(self):
         self.code_output.clear()
-        fname = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"+f"""/code_runner.py"""
+        self.Project_Directory = self.scene.masterRef.filesWidget.Project_Directory
+        fname = self.Project_Directory + f"""/Generated Scripts/{self.windowTitle().replace("*", "")}.py"""
+        # fname = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"+f"""/code_runner.py"""
         with open(fname, 'w') as newPyFile:
             newPyFile.writelines(self.text_code_wnd.toPlainText())
 

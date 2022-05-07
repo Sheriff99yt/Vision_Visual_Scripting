@@ -135,6 +135,6 @@ QDMNodeContentWidget QLabel{color:#FFFFFF}
 QGraphicsView{selection-background-color:#FFFFFF}
 
 
-QLabel{color:#FFFFFF;}
+QLabel{color:#FFFFFF; background-color: transparent}
 
 

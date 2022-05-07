@@ -36,14 +36,15 @@ class FilesWDG(QWidget):
 
         if action == delete:
             file_path = QFileSystemModel().filePath(self.tree_wdg.selectedIndexes()[0])
+            delete_Q = QMessageBox.warning(self, "Warning !", f"You Are About To Delete\n\n{file_path}\n\nThis is Irreversible Are You Sure?", QMessageBox.Save | QMessageBox.Cancel)
+            if delete_Q == QMessageBox.Save:
+                try:
+                    os.remove(file_path)
+                except Exception:
+                    warning = QMessageBox(QMessageBox.Warning, "Permissions Error",
+                                       "You Don't have Permissions To Delete a Directory", QMessageBox.Ok)
+                    warning.exec_()
 
-            msgBox = QMessageBox()
-            msgBox.setIcon(QMessageBox.Warning)
-            msgBox.setText(f"You Are About To Delete\n\n{file_path}\n\nThis is Irreversible Are You Sure?")
-            msgBox.setWindowTitle("Warning !")
-            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-            msgBox.buttonClicked.connect(lambda: os.remove(file_path))
-            msgBox.exec_()
 
     def OpenSelectedFiles(self):
         all_files = []

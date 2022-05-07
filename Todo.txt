@@ -1,6 +1,6 @@
 # inProgress
     - ** Deleting Vars and Events.
-    - **** functions categories (Tree Wiget).
+    - **** functions category open and close indicators
 
 
 # urgent
@@ -14,9 +14,11 @@
     - **** save all graphs & close all graphs Qactions.
     - * merging (+, -, *, /, modulo) in one node.
     - beginner friendly mode
+    - default node content serialisation
 
 
 # Done
+    - **** functions categories (Tree Widget).
     - warning if the shortcut is already in use.
     - hold reset btn to reset settings with a progress par.
     - Socket name For each socket on the node itself.
