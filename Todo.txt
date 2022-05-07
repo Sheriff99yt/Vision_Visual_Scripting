@@ -1,6 +1,5 @@
 # inProgress
     - ** Deleting Vars and Events.
-    - **** functions category open and close indicators
 
 
 # urgent
@@ -18,6 +17,7 @@
 
 
 # Done
+    - **** functions category open and close indicators
     - **** functions categories (Tree Widget).
     - warning if the shortcut is already in use.
     - hold reset btn to reset settings with a progress par.
