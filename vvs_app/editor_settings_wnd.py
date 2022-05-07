@@ -225,8 +225,8 @@ class SettingsWidget(QWidget):
                     txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
                     self.masterRef.actions_list[lbl].setShortcut(txt)
             elif self.settingsTree.currentItem().data(5, 6) == self.system_wdg:
-                if self.masterRef.CurrentNodeEditor():
-                    self.masterRef.CurrentNodeEditor().scene.history.Edits_Counter = 0
+                if self.masterRef.currentNodeEditor():
+                    self.masterRef.currentNodeEditor().scene.history.Edits_Counter = 0
 
             self.masterRef.global_switches.save_settings_to_file(self.masterRef.global_switches.switches_Dict, self.masterRef.global_switches.Settings_File)
 

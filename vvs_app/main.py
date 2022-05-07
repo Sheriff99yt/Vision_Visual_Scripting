@@ -2,6 +2,7 @@ import ctypes
 import os
 import sys
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
 
@@ -23,6 +24,7 @@ if __name__ == '__main__':
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     wnd = MasterWindow()
+    # wnd.setWindowFlag(Qt.FramelessWindowHint)
     wnd.showMaximized()
 
     sys.exit(app.exec_())

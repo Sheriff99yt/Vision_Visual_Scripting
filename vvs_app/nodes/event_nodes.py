@@ -11,23 +11,15 @@ class Event(MasterNode):
     node_type = EVENT
     name = "Event"
     content_label_objname = "calc_node_event"
-
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[0])
-        self.isEvent = True
+    def __init__(self, scene, isSetter):
+        super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
+        self.is_setter = isSetter
+        self.is_event = True
         self.nodeColor = "#90FF1010"
         self.grNode._brush_title = QBrush(QColor(self.nodeColor))
 
-    def toGetter(self):
-        self.isSetter = False
-        self.initSockets(inputs=[0], outputs=[0])
-
-    def toSetter(self):
-        self.isSetter = True
-        self.initSockets(inputs=[], outputs=[0])
-
     def getNodeCode(self):
-        if self.isSetter:
+        if self.is_setter:
             if self.syntax == "Python":
                 childCode = self.get_other_socket_code(0)
 

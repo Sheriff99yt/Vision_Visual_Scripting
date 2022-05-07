@@ -22,8 +22,10 @@ class Node(Serializable):
     """
     GraphicsNode_class = QDMGraphicsNode
     Socket_class = Socket
+    node_type = None
 
-    def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [], outputs: list = []):
+    def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [], outputs: list = [],
+                 isSetter=None):
         """
 
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
@@ -49,9 +51,9 @@ class Node(Serializable):
         self.scene = scene
 
         # Additional Code
-        self.isVar = False
-        self.isEvent = False
-        self.isSetter = None
+        self.is_var = False
+        self.is_event = False
+        self.is_setter = isSetter
         self.showCode = True
 
         self.nodeID = None
@@ -59,9 +61,8 @@ class Node(Serializable):
         self.syntax = ""
 
         # just to be sure, init these variables
-        self.grNode = None
+        self.grNode = self.__class__.GraphicsNode_class(node=self)
 
-        self.initInnerClasses()
         self.initSettings()
 
         self.name = name
@@ -118,14 +119,6 @@ class Node(Serializable):
         """
         self.grNode.setPos(x, y)
 
-    def initInnerClasses(self):
-        """Sets up graphics Node (PyQt) and Content Widget"""
-        graphics_node_class = self.getGraphicsNodeClass()
-        if graphics_node_class is not None: self.grNode = graphics_node_class(self)
-
-    def getGraphicsNodeClass(self):
-        return self.__class__.GraphicsNode_class
-
     def initSettings(self):
         """Initialize properties and socket information"""
 
@@ -178,6 +171,7 @@ class Node(Serializable):
 
             counter += 1
             self.inputs.append(socket)
+            self.grNode.init_sockets_label(socket)
 
         counter = 0
         for item in outputs:
@@ -190,8 +184,8 @@ class Node(Serializable):
 
             counter += 1
             self.outputs.append(socket)
+            self.grNode.init_sockets_label(socket)
 
-        self.grNode.init_sockets_labels()
         self.grNode.AutoResizeGrNode()
 
 
@@ -217,7 +211,7 @@ class Node(Serializable):
 
         pass
 
-    def onDeserialized(self, data: dict):
+    def on_node_deserialized(self, data: dict):
         """Event manually called when this node was deserialized. Currently called when node is deserialized from scene
         Passing `data` containing the data which have been deserialized
         """
@@ -568,14 +562,18 @@ class Node(Serializable):
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
             ('outputs', outputs),
-            ('is_var', self.isVar),
-            ('is_setter', self.isSetter),
+            ('is_var', self.is_var),
+            ('is_event', self.is_event),
+            ('is_setter', self.is_setter),
         ])
 
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
         try:
             if restore_id: self.id = data['id']
             hashmap[data['id']] = self
+            self.is_var = data['is_var']
+            self.is_event = data['is_event']
+            self.is_setter = data['is_setter']
 
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
@@ -631,13 +629,7 @@ class Node(Serializable):
                     self.outputs.append(found)  # append newly created output to the list
                 found.deserialize(socket_data, hashmap, restore_id)
 
-
-            self.isVar = data['is_var']
-            self.isSetter = data['is_setter']
-
-            if self.isVar or self.isEvent:
-                self.getNodeCode()
-                self.grNode.AutoResizeGrNode()
+            self.grNode.AutoResizeGrNode()
 
 
 
@@ -646,11 +638,6 @@ class Node(Serializable):
 
         return True
 
-    def toSetter(self):
-        pass
-
-    def toGetter(self):
-        pass
 
     def initUI(self):
         pass

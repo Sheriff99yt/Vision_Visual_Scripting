@@ -28,12 +28,14 @@ VAR_LIST = 24
 ######################
 
 FUNCTIONS = {}
-VARIABLES = {}
-EVENTS = {}
-
+MATH_OPERATORS = {}
+LOGIC_OPERATORS = {}
+NUMPY = {}
 
 ######################
 
+VARIABLES = {}
+EVENTS = {}
 
 ######################
 

@@ -36,8 +36,9 @@ class MasterNode(Node):
 
     GraphicsNode_class = MasterGraphicsNode
 
-    def __init__(self, scene, inputs=[2,2], outputs=[1]):
+    def __init__(self, scene, inputs, outputs):
         super().__init__(scene, self.__class__.name, inputs, outputs)
+        pass
 
     def initSettings(self):
         super().initSettings()

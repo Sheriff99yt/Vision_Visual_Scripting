@@ -197,23 +197,21 @@ class QDMGraphicsNode(QGraphicsItem):
             self.height
         ).normalized()
 
-    def init_sockets_labels(self):
-        for socket in self.node.inputs + self.node.outputs:
-            socket_label = QGraphicsTextItem(self)
-            socket_label.hide()
-            socket.socket_label = socket_label
+    def init_sockets_label(self, socket):
+        socket_label = QGraphicsTextItem(self)
+        socket_label.hide()
+        socket.socket_label = socket_label
+        socket_label.node = self.node
+        socket_label.setDefaultTextColor(self._title_color)
+        socket_label.setFont(self._title_font)
+        # socket_label.setPlainText("Text")
+        socket_label.adjustSize()
+        tw = socket_label.textWidth()
 
-            socket_label.node = self.node
-            socket_label.setDefaultTextColor(self._title_color)
-            socket_label.setFont(self._title_font)
-            socket_label.setPlainText("Text")
-            socket_label.adjustSize()
-            tw = socket_label.textWidth()
-
-            if self.node.outputs.__contains__(socket):
-                socket_label.setPos(socket.grSocket.pos().x() + socket.grSocket.radius, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
-            else:
-                socket_label.setPos(socket.grSocket.pos().x() - socket.grSocket.radius - tw, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
+        if self.node.outputs.__contains__(socket):
+            socket_label.setPos(socket.grSocket.pos().x() + socket.grSocket.radius, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
+        else:
+            socket_label.setPos(socket.grSocket.pos().x() - socket.grSocket.radius - tw, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
 
     def initNames(self):
         """Set up the title Graphics representation: font, color, position, etc."""
