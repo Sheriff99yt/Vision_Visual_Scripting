@@ -6,12 +6,14 @@ LISTBOX_MIMETYPE = "application/x-item"
 # Process = {}
 
 FUNCTIONS = {}
-VARIABLES = {}
-EVENTS = {}
-
+MATH_OPERATORS = {}
+LOGIC_OPERATORS = {}
+NUMPY = {}
 
 ######################
 
+VARIABLES = {}
+EVENTS = {}
 
 class ConfException(Exception):
     pass

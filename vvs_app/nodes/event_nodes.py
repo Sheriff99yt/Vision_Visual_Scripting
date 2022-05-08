@@ -10,7 +10,7 @@ class Event(MasterNode):
     name = "Event"
     category = "EVENT"
     sub_category = "Event"
-
+    
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter

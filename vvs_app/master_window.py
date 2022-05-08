@@ -291,11 +291,6 @@ class MasterWindow(NodeEditorWindow):
         # Add Separator
         self.tools_bar.addSeparator()
 
-        # # Add Spacer Wdg
-        # mySpacer = QWidget()
-        # mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        # self.tools_bar.addWidget(mySpacer)
-
         # # Add Separator
         # self.tools_bar.addSeparator()
 
