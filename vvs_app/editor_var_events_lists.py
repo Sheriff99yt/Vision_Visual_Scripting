@@ -134,7 +134,7 @@ class VarEventList(QTabWidget):
             type = self.varsIds.__getitem__(self.varCompoBox.currentIndex())
 
         else:
-            name = self.varCompoBox.currentText()
+            name = self.eventCompoBox.currentText()
             type = self.eventsIds.__getitem__(self.eventCompoBox.currentIndex())
 
         self.create_user_node(self.autoNodeRename(name), None, type)
@@ -163,7 +163,7 @@ class VarEventList(QTabWidget):
         new_node.name = name
         # Save new Var to list of vars with [Type, ID, Name, Value]
         self.user_nodes_data.append(node_data)
-        A_list = self.EventList if type == 0 else self.VarList
+        A_list = self.EventList if new_node.category == "EVENT" else self.VarList
         # Add new QListItem to the UI List using Init Data
         self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
 
@@ -270,7 +270,6 @@ class VarEventList(QTabWidget):
             item = self.VarList.currentItem()
         else:
             item = self.EventList.currentItem()
-
 
         oldName = item.data(91)
         tryName = self.node_name_input.text()

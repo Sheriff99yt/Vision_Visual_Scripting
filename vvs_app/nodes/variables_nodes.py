@@ -51,7 +51,6 @@ class FloatVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-register_Node(FloatVar)
 
 
 class IntegerVar(MasterNode):
@@ -97,7 +96,6 @@ class IntegerVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-register_Node(IntegerVar)
 
 
 class BooleanVar(MasterNode):
@@ -143,7 +141,6 @@ class BooleanVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-register_Node(BooleanVar)
 
 
 class StringVar(MasterNode):
@@ -189,7 +186,6 @@ class StringVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-register_Node(StringVar)
 
 
 class ListVar(MasterNode):
@@ -240,4 +236,3 @@ class ListVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-register_Node(ListVar)

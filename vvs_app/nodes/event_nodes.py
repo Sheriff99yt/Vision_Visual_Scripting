@@ -67,4 +67,3 @@ def {self.name}():
             getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
             return getCode
-register_Node(Event)
