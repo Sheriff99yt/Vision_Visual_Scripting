@@ -25,8 +25,26 @@ class FilesWDG(QWidget):
         layout.addWidget(self.tree_wdg)
 
         self.tree_wdg.clicked.connect(self.OpenSelectedFiles)
-
+        self.tree_wdg.contextMenuEvent = self.tree_wdg_contextMenuEvent
         self.CreateDefaultDir()
+
+    def tree_wdg_contextMenuEvent(self, event):
+        context_menu = QMenu(self)
+        delete = context_menu.addAction("Delete")
+        context_menu.addAction("Cancel")
+        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+
+        if action == delete:
+            file_path = QFileSystemModel().filePath(self.tree_wdg.selectedIndexes()[0])
+            delete_Q = QMessageBox.warning(self, "Warning !", f"You Are About To Delete\n\n{file_path}\n\nThis is Irreversible Are You Sure?", QMessageBox.Save | QMessageBox.Cancel)
+            if delete_Q == QMessageBox.Save:
+                try:
+                    os.remove(file_path)
+                except Exception:
+                    warning = QMessageBox(QMessageBox.Warning, "Permissions Error",
+                                       "You Don't have Permissions To Delete a Directory", QMessageBox.Ok)
+                    warning.exec_()
+
 
     def OpenSelectedFiles(self):
         all_files = []

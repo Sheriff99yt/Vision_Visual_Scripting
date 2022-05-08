@@ -39,46 +39,30 @@ class MasterEditorWnd(NodeEditorWidget):
         else:
             return get_node_by_type(data['node_type'])
 
-    # def doEvalOutputs(self):
-    #     # eval all output nodes
-    #     for node in self.scene.nodes:
-    #         if node.__class__.__name__ == "CalcNode_Output":
-    #             node.eval()
-
     def onHistoryRestored(self):
-        # self.doEvalOutputs()
         pass
 
     def initNewNodeActions(self):
         self.node_actions = {}
         Funs = list(FUNCTIONS.keys())
-        Funs.sort()
-        # Vars = list(USERVARS.keys())
-        # Vars.sort()
+
         for key in Funs:
             node = FUNCTIONS[key]
             self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
             self.node_actions[node.node_type].setData(node.node_type)
-        # for key in Vars:
-        #     node = USERVARS[key]
-        #     self.node_actions[node.node_type] = QAction(QIcon(node.icon), node.name)
-        #     self.node_actions[node.node_type].setData(node.node_type)
 
     def initNodesContextMenu(self):
         context_menu = QMenu(self)
         Funs = list(FUNCTIONS.keys())
         Funs.sort()
-        # Vars = list(USERVARS.keys())
-        # Vars.sort()
+
         for key in Funs:
             context_menu.addAction(self.node_actions[key])
-        # for key in Vars:
-        #     context_menu.addAction(self.node_actions[key])
+
         return context_menu
 
     def setTitle(self):
         self.setWindowTitle(self.getUserFriendlyFilename())
-        # self.setWindowTitle(self.windowTitle())
 
     def addCloseEventListener(self, callback):
         self._close_event_listeners.append(callback)
@@ -131,18 +115,12 @@ class MasterEditorWnd(NodeEditorWidget):
                     node.setPos(self.scene_position.x(), self.scene_position.y())
                     self.scene.history.storeHistory("Created Node %s" % node.__class__.__name__)
 
-
-                isEvent = False
-                is_var = False
-                isNode = False
-
             except Exception as e:
                 dumpException(e)
 
             event.setDropAction(Qt.MoveAction)
             event.accept()
         else:
-            # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
         self.scene.NodeEditor.UpdateTextCode()
 
@@ -200,26 +178,6 @@ class MasterEditorWnd(NodeEditorWidget):
             return super().contextMenuEvent(event)
         except Exception as e:
             dumpException(e)
-
-    # def contextMenuEvent(self, event):
-    #     try:
-    #         item = self.scene.getItemAt(event.pos())
-    #         if DEBUG_CONTEXT: print(item)
-    #
-    #         if type(item) == QGraphicsProxyWidget:
-    #             item = item.widget()
-    #
-    #         if hasattr(item, 'node') or hasattr(item, 'socket'):
-    #             self.handleNodeContextMenu(event)
-    #         elif hasattr(item, 'edge'):
-    #             self.handleEdgeContextMenu(event)
-    #         # elif item is None:
-    #         else:
-    #             self.handleNewNodeContextMenu(event)
-    #
-    #         return super().contextMenuEvent(event)
-    #     except Exception as e:
-    #         dumpException(e)
 
     def handleNodeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: NODE")

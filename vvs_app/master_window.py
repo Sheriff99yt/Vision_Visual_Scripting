@@ -28,6 +28,8 @@ from nodeeditor.node_edge_validators import (
 )
 
 # Edge.registerEdgeValidator(edge_validator_debug)
+from vvs_app.master_node import MasterNode
+from vvs_app.nodes.nodes_configuration import register_Node
 
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
@@ -58,6 +60,9 @@ class MasterWindow(NodeEditorWindow):
             print("Registered nodes:")
             # pp(FUNCTIONS)
 
+        for cls in MasterNode.__subclasses__():
+            register_Node(cls)
+
         self.global_switches = GlobalSwitches()
         self.global_switches.MasterRef = self
 
@@ -71,7 +76,6 @@ class MasterWindow(NodeEditorWindow):
 
         # Create Node Designer Window
         self.node_designer = MasterDesignerWnd()
-
 
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
 
@@ -87,8 +91,6 @@ class MasterWindow(NodeEditorWindow):
 
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
-
-
 
         # Create Welcome Screen and allow user to set the project Directory
         self.create_welcome_screen()
@@ -119,9 +121,6 @@ class MasterWindow(NodeEditorWindow):
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
 
-
-        # self.NodeDesignerBtn.setChecked(True)
-        # self.updateActiveWnd()
 
     def create_welcome_screen(self):
         Elayout = QVBoxLayout()
@@ -156,13 +155,6 @@ class MasterWindow(NodeEditorWindow):
 
         self.library_offline_list.setRootIndex(self.Model.index(self.Offline_Dir))
 
-    # def onSetProjectFolder(self):
-    #     Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
-    #     if Dir != "":
-    #         self.Offline_Dir = Dir
-    #         self.tree_wdg.setRootIndex(self.Model.index(self.Offline_Dir))
-    #         self.MakeDir(self.Offline_Dir)
-
     def CreateLibraryWnd(self):
         self.librariesDock = QDockWidget("Libraries")
         self.library_subwnd = QTabWidget()
@@ -186,6 +178,7 @@ class MasterWindow(NodeEditorWindow):
         self.library_offline_list.hideColumn(1)
         self.library_offline_list.hideColumn(2)
         self.library_offline_list.setStyleSheet("color: white")
+        self.library_offline_list.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
 
         offline_Vlayout.addWidget(self.library_offline_list)
 
@@ -245,7 +238,6 @@ class MasterWindow(NodeEditorWindow):
         if Editor or Library:
             self.stackedDisplay.setCurrentIndex(0)
             return
-
         elif Designer:
             self.stackedDisplay.setCurrentIndex(1)
             return
@@ -299,25 +291,8 @@ class MasterWindow(NodeEditorWindow):
         # Add Separator
         self.tools_bar.addSeparator()
 
-        # Add Spacer Wdg
-        mySpacer = QWidget()
-        mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.tools_bar.addWidget(mySpacer)
-
-        # Add Separator
-        self.tools_bar.addSeparator()
-
-        # Add and connect self.code_orientation_btn
-        self.code_orientation_btn = QAction(QIcon("icons/Orientation.png"), "&Code Window View Mode", self)
-        self.tools_bar.addAction(self.code_orientation_btn)
-        self.code_orientation_btn.triggered.connect(self.rotate_text_code_wnd)
-        self.code_orientation_btn.setShortcut(QKeySequence("Ctrl+Shift+R"))
-
-        # Add and connect self.code_copy_btn
-        self.copy_code_btn = QAction(QIcon("icons/Copy.png"), "&Copy The Code From The Code Window", self)
-        self.tools_bar.addAction(self.copy_code_btn)
-        self.copy_code_btn.triggered.connect(self.CopyTextCode)
-        self.copy_code_btn.setShortcut(QKeySequence("Ctrl+Shift+C"))
+        # # Add Separator
+        # self.tools_bar.addSeparator()
 
     def onSettingsOpen(self):
         if self.settingsWidget:
@@ -334,26 +309,6 @@ class MasterWindow(NodeEditorWindow):
 
             self.settingsWidget.setWindowTitle("Settings")
             self.settingsWidget.setGeometry(300, 150, 1200, 800)
-
-    def CopyTextCode(self):
-        node_editor = self.currentNodeEditor()
-
-        if node_editor:
-
-            node_editor.text_code_wnd.selectAll()
-            node_editor.text_code_wnd.copy()
-            python_file_name = node_editor.windowTitle()
-
-            text = node_editor.text_code_wnd.toPlainText()
-            if os.listdir(self.filesWidget.Project_Directory).__contains__("Generated Scripts") is False:
-                os.makedirs(self.filesWidget.Project_Directory + "/Generated Scripts")
-                f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-                with open(f, 'w') as newPyFile:
-                    newPyFile.writelines(text)
-            else:
-                f = self.filesWidget.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-                with open(f, 'w') as newPyFile:
-                    newPyFile.writelines(text)
 
     def closeEvent(self, event):
         self.graphs_parent_wdg.closeAllSubWindows()
@@ -701,10 +656,6 @@ class MasterWindow(NodeEditorWindow):
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
-    def rotate_text_code_wnd(self):
-        if self.currentNodeEditor():
-            self.currentNodeEditor().UpdateTextWndRot()
-
     def new_graph_tab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode
         if not self.graphs_parent_wdg.subWindowList():
@@ -716,7 +667,6 @@ class MasterWindow(NodeEditorWindow):
 
         node_editor.scene.user_nodes_wdg = VEL
         VEL.Scene = node_editor.scene
-
 
         node_editor.scene.masterRef = self
         node_editor.scene.history.masterRef = self
@@ -778,7 +728,7 @@ class MasterWindow(NodeEditorWindow):
             print("Widget Not Supported")
         return value
 
-    def set_settings_content(self, widget, new_value:int):
+    def set_settings_content(self, widget, new_value: int):
         if type(widget) == QKeySequenceEdit:
             widget.setKeySequence(new_value)
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:

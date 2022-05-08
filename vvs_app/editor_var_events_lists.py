@@ -110,14 +110,12 @@ class VarEventList(QTabWidget):
         return NewNode
 
     def InitList(self):
-        Event = 0
-        # Events = list(FUNCTIONS.keys())[0]
-        # Events.sort()
-        # for node_type in Events:
-
-        node = get_node_by_type(Event)
-        self.eventCompoBox.addItem(node.name)
-        self.eventsIds.append(node.node_type)
+        Events = list(EVENTS.keys())
+        Events.sort()
+        for node_type in Events:
+            node = get_node_by_type(node_type)
+            self.eventCompoBox.addItem(node.name)
+            self.eventsIds.append(node.node_type)
 
         Vars = list(VARIABLES.keys())
         Vars.sort()
@@ -148,6 +146,16 @@ class VarEventList(QTabWidget):
         new_node = self.MakeCopyOfClass(node)
 
         node_data = [name, node_id, type]
+
+        # Add new copy of Var class Info to Dict of USER_VARS
+        new_id = self.set_user_node_Id_now(new_node)
+        new_node.nodeID = node_data[1] = new_id
+        new_node.name = name
+
+        # Save new Var to list of vars with [Type, ID, Name, Value]
+        self.user_nodes_data.append(node_data)
+        A_list = self.EventList if new_node.category == "EVENT" else self.VarList
+
 
         # Add new copy of Var class Info to Dict of USER_VARS
         new_id = self.set_user_node_Id_now(new_node)
@@ -270,18 +278,13 @@ class VarEventList(QTabWidget):
         if newName == None:
             return
         else:
+          
+            # get ref to user variable copy
+            node_ref = self.get_user_node_by_id(item.data(90))
+
             # set item text to new name
             item.setText(newName)
             item.setData(91, newName)
-
-            if var:
-                # get ref to user variable copy
-                node_ref = self.get_user_node_by_id(item.data(90))
-            else:
-                node_ref = self.get_user_event_by_ID(item.data(90))
-
-            # set item text to new name
-            item.setText(newName)
 
             # set name of parent var
             node_ref.name = newName
@@ -352,11 +355,10 @@ class VarEventList(QTabWidget):
             node_name = item_ref.data(91)
             self.USER_NODES.pop(item_ref.data(90))
             selected = []
-
             for item in self.user_nodes_data:
                 if item[0] == node_name:
                     self.user_nodes_data.remove(item)
-
+                    
             for node in self.Scene.nodes:
                 if node.name == node_name:
                     selected.append(node)

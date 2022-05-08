@@ -5,12 +5,12 @@ from nodeeditor.node_editor_widget import *
 
 
 
-@set_event_ID(EVENT)
 class Event(MasterNode):
     icon = "icons/event.png"
-    node_type = EVENT
     name = "Event"
-    content_label_objname = "calc_node_event"
+    category = "EVENT"
+    sub_category = "Event"
+    
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter
@@ -67,3 +67,4 @@ def {self.name}():
             getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
             return getCode
+register_Node(Event)

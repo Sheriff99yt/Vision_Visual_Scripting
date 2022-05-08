@@ -12,6 +12,7 @@ from PyQt5.QtGui import QColor
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
 from nodeeditor.utils import dumpException, pp
+from vvs_app.nodes.nodes_configuration import register_Node
 
 DEBUG = False
 
@@ -74,7 +75,6 @@ class Node(Serializable):
         self.outputs = []
 
         self.initSockets(inputs, outputs)
-
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)

@@ -9,12 +9,12 @@ IntegerColor = "#aa0070FF"
 BooleanColor = "#aaFF1010"
 StringColor = "#70FF10FF"
 
-@set_var_ID(VAR_FLOAT)
+
 class FloatVar(MasterNode):
     icon = ""
-    node_type = VAR_FLOAT
     name = "float"
-    content_label_objname = "var_node_float"
+    category = "VARIABLE"
+    sub_category = "VARIABLE"
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[1]) if not isSetter else super().__init__(scene, inputs=[0, 1], outputs=[0, 1])
@@ -51,14 +51,14 @@ class FloatVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
+register_Node(FloatVar)
 
 
-@set_var_ID(VAR_INTEGER)
 class IntegerVar(MasterNode):
     icon = ""
-    node_type = VAR_INTEGER
     name = "integer"
-    content_label_objname = "var_node_integer"
+    category = "VARIABLE"
+    sub_category = "VARIABLE"
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[2]) if not isSetter else super().__init__(scene, inputs=[0, 2], outputs=[0, 2])
@@ -97,13 +97,14 @@ class IntegerVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
+register_Node(IntegerVar)
 
-@set_var_ID(VAR_BOOLEAN)
+
 class BooleanVar(MasterNode):
     icon = ""
-    node_type = VAR_BOOLEAN
     name = "boolean"
-    content_label_objname = "var_node_boolean"
+    category = "VARIABLE"
+    sub_category = "VARIABLE"
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[3]) if not isSetter else super().__init__(scene, inputs=[0, 3], outputs=[0, 3])
@@ -142,13 +143,14 @@ class BooleanVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
+register_Node(BooleanVar)
 
-@set_var_ID(VAR_STRING)
+
 class StringVar(MasterNode):
     icon = ""
-    node_type = VAR_STRING
     name = "string"
-    content_label_objname = "var_node_string"
+    category = "VARIABLE"
+    sub_category = "VARIABLE"
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[4]) if not isSetter else super().__init__(scene, inputs=[0, 4], outputs=[0, 4])
@@ -187,14 +189,14 @@ class StringVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
+register_Node(StringVar)
 
 
-@set_var_ID(VAR_LIST)
 class ListVar(MasterNode):
     icon = ""
-    node_type = VAR_LIST
     name = "list"
-    content_label_objname = "var_node_list"
+    category = "VARIABLE"
+    sub_category = "VARIABLE"
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[5]) if not isSetter else super().__init__(scene, inputs=[0, 5], outputs=[0, 5])
@@ -238,4 +240,4 @@ class ListVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-
+register_Node(ListVar)

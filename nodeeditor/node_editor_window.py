@@ -23,11 +23,9 @@ class NodeEditorWindow(QMainWindow):
         - **name_product** - name of this App, used for permanent profile settings
         """
         super().__init__()
-
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
         self.initUI()
-
 
     def initUI(self):
 
@@ -41,14 +39,12 @@ class NodeEditorWindow(QMainWindow):
         self.central_window.scene.addHasBeenModifiedListener(self.setTitle)
         self.setCentralWidget(self.central_window)
 
-
         self.createStatusBar()
 
         # set window properties
         # self.setGeometry(200, 200, 800, 600)
         self.setTitle()
         self.show()
-
 
     def sizeHint(self):
         return QSize(800, 600)
@@ -78,9 +74,33 @@ class NodeEditorWindow(QMainWindow):
 
     def create_menus(self):
         """Create Menus for `File` and `Edit`"""
+        # self.menu = QToolBar()
+        # self.menu.setStyleSheet("padding: 0px")
+        # self.menu.setFloatable(False)
+        # self.menu.setMovable(False)
+        # self.addToolBar(self.menu)
+        # self.menu.setMaximumHeight(22)
+        #
+        # self.menu.mousePressEvent = self.menu_new_press_event
+        # self.menu.mouseMoveEvent = self.menu_new_move_event
+
+        # self.test_menu = QMenuBar(self.menu)
+        #
+        # self.test_menu.setMinimumWidth(600)
+
+        # self.setMenuBar(self.test_menu)
+
         self.createFileMenu()
         self.createEditMenu()
-
+    # def menu_new_press_event(self, event):
+    #     self.oldPosition = event.globalPos()
+    #
+    # def menu_new_move_event(self, event):
+    #     self.showNormal()
+    #
+    #     delta = QPoint(event.globalPos() - self.oldPosition)
+    #     self.move(self.x() + delta.x(), self.y() + delta.y())
+    #     self.oldPosition = event.globalPos()
     def createFileMenu(self):
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('&File')
@@ -111,7 +131,6 @@ class NodeEditorWindow(QMainWindow):
         title += self.currentNodeEditor().getUserFriendlyFilename()
 
         self.setWindowTitle(title)
-
 
     def closeEvent(self, event):
         """Handle close event. Ask before we loose work"""
@@ -189,7 +208,8 @@ class NodeEditorWindow(QMainWindow):
     def on_file_open(self):
         """Handle File Open operation"""
         if self.maybeSave():
-            fname, filter = QFileDialog.getOpenFileName(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+            fname, filter = QFileDialog.getOpenFileName(self, 'Open graph from file', self.getFileDialogDirectory(),
+                                                        self.getFileDialogFilter())
             if fname != '' and os.path.isfile(fname):
                 self.currentNodeEditor().fileLoad(fname)
                 self.setTitle()
@@ -211,11 +231,11 @@ class NodeEditorWindow(QMainWindow):
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
             Now = str(datetime.now()).replace(":", ".")[0:19]
-            fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{(current_node_editor.windowTitle()).replace("*","")} {Now}.json"""
+            fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{(current_node_editor.windowTitle()).replace("*", "")} {Now}.json"""
             self.onBeforeSaveAs(current_node_editor, fname)
             current_node_editor.fileAutoSave(fname)
             self.filesWidget.deleteOldAutoSaves()
-            self.statusBar().showMessage("Successfully Auto Saved %s" % fname , 5000)
+            self.statusBar().showMessage("Successfully Auto Saved %s" % fname, 5000)
 
             # support for MDI app
             if hasattr(current_node_editor, "setTitle"):
