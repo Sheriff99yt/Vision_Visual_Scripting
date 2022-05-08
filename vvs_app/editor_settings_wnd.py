@@ -212,8 +212,8 @@ class SettingsWidget(QWidget):
                         txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
                         self.masterRef.actions_list[lbl].setShortcut(txt)
                 elif current_widget == self.system_wdg:
-                    if self.masterRef.CurrentNodeEditor():
-                        self.masterRef.CurrentNodeEditor().scene.history.Edits_Counter = 0
+                    if self.masterRef.currentNodeEditor():
+                        self.masterRef.currentNodeEditor().scene.history.Edits_Counter = 0
             else:
                 self.settingsTree.currentItem().data(9, 10).setText("No Changed")
                 self.fill()

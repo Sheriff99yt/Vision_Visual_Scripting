@@ -28,6 +28,8 @@ from nodeeditor.node_edge_validators import (
 )
 
 # Edge.registerEdgeValidator(edge_validator_debug)
+from vvs_app.master_node import MasterNode
+from vvs_app.nodes.nodes_configuration import register_Node
 
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
@@ -57,6 +59,9 @@ class MasterWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
+
+        for cls in MasterNode.__subclasses__():
+            register_Node(cls)
 
         self.global_switches = GlobalSwitches()
         self.global_switches.MasterRef = self
@@ -91,30 +96,31 @@ class MasterWindow(NodeEditorWindow):
         self.create_welcome_screen()
 
         # Create Details List Window
-        self.CreatePropertiesDock()
+        self.create_properties_dock()
 
         # Create Nodes List
-        self.CreateFunctionsDock()
+        self.create_functions_dock()
 
         # Create Files Dock
-        self.CreateFilesDock()
+        self.create_files_dock()
 
         # Create Variable List
-        self.CreateVarEventDock()
+        self.create_var_event_dock()
 
         self.createActions()
-        self.createMenus()
+        self.create_menus()
         self.createStatusBar()
-        self.updateMenus()
+        self.update_menus()
 
         self.readSettings()
 
         self.CreateToolBar()
 
         self.setWindowTitle("Vision Visual Scripting")
-        self.LibrariesWnd()
+        self.update_libraries_wnd()
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
+
 
     def create_welcome_screen(self):
         Elayout = QVBoxLayout()
@@ -138,7 +144,7 @@ class MasterWindow(NodeEditorWindow):
         Elayout.addWidget(self.brows_btn)
 
         self.stackedDisplay.addWidget(self.empty_screen)
-        self.stackedDisplay.setCurrentIndex(2)
+        self.switch_display(Welcome=True)
 
     def CreateOfflineDir(self):
         self.Offline_Dir = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS/Offline Library"
@@ -219,21 +225,18 @@ class MasterWindow(NodeEditorWindow):
                     all_files.append(file_path)
                     # print(all_files)
 
-        self.onFileOpen(all_files)
+        self.on_file_open(all_files)
 
     def active_graph_switched(self):
-        self.updateMenus()
-        if self.CurrentNodeEditor():
-            self.VEStackedWdg.setCurrentWidget(self.CurrentNodeEditor().scene.VEListWdg)
+        self.update_menus()
+        if self.currentNodeEditor():
+            self.VEStackedWdg.setCurrentWidget(self.currentNodeEditor().scene.user_nodes_wdg)
 
     def switch_display(self, Welcome=False, Editor=False, Designer=False, Library=False):
         # Use the Argument To Force Activate the Specified Window
 
         if Editor or Library:
-            if self.graphs_parent_wdg.subWindowList():
-                self.stackedDisplay.setCurrentIndex(0)
-            else:
-                self.stackedDisplay.setCurrentIndex(2)
+            self.stackedDisplay.setCurrentIndex(0)
             return
         elif Designer:
             self.stackedDisplay.setCurrentIndex(1)
@@ -274,7 +277,7 @@ class MasterWindow(NodeEditorWindow):
         self.node_designer_btn = QAction(QIcon("icons/node design.png"), "&Node Designer", self)
         self.node_designer_btn.setEnabled(False)
         self.node_designer_btn.setCheckable(True)
-        self.node_designer_btn.triggered.connect(self.ActivateDesignerWnd)
+        self.node_designer_btn.triggered.connect(self.activate_designer_wnd)
         # self.node_designer_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.node_designer_btn)
 
@@ -327,20 +330,12 @@ class MasterWindow(NodeEditorWindow):
     def createActions(self):
         super().createActions()
 
-        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
-                                triggered=self.graphs_parent_wdg.closeActiveSubWindow)
-        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",
-                                   triggered=self.graphs_parent_wdg.closeAllSubWindows)
-        self.actTile = QAction("&Tile", self, statusTip="Tile the windows",
-                               triggered=self.graphs_parent_wdg.tileSubWindows)
-        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows",
-                                  triggered=self.graphs_parent_wdg.cascadeSubWindows)
-        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild,
-                               statusTip="Move the focus to the next window",
-                               triggered=self.graphs_parent_wdg.activateNextSubWindow)
-        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild,
-                                   statusTip="Move the focus to the previous window",
-                                   triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
+        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.graphs_parent_wdg.closeActiveSubWindow)
+        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.graphs_parent_wdg.closeAllSubWindows)
+        self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.graphs_parent_wdg.tileSubWindows)
+        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows", triggered=self.graphs_parent_wdg.cascadeSubWindows)
+        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild, statusTip="Move the focus to the next window", triggered=self.graphs_parent_wdg.activateNextSubWindow)
+        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild, statusTip="Move the focus to the previous window", triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
 
         self.actSeparator = QAction(self)
         self.actSeparator.setSeparator(True)
@@ -365,7 +360,7 @@ class MasterWindow(NodeEditorWindow):
     def open_doc(self):
         subprocess.Popen('hh.exe "VVS-Help.chm"')
 
-    def CurrentNodeEditor(self):
+    def currentNodeEditor(self):
         """ we're returning NodeEditorWidget here... """
         activeSubWindow = self.graphs_parent_wdg.activeSubWindow()
 
@@ -374,10 +369,10 @@ class MasterWindow(NodeEditorWindow):
         else:
             return None
 
-    def onNewGraphTab(self):
+    def on_new_graph_tab(self):
         # Overrides Node Editor Window > actNew action
         try:
-            subwnd = self.newGraphTab()
+            subwnd = self.new_graph_tab()
 
             all_names = []
             for item in self.graphs_parent_wdg.subWindowList(): all_names.append(item.widget().windowTitle())
@@ -387,7 +382,7 @@ class MasterWindow(NodeEditorWindow):
         except Exception as e:
             dumpException(e)
 
-    def onFileOpen(self, all_files=False):
+    def on_file_open(self, all_files=False):
 
         if all_files == False:
             file_names, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file',
@@ -406,7 +401,7 @@ class MasterWindow(NodeEditorWindow):
 
                     else:
                         # We need to create new subWindow and open the file
-                        subwnd = self.newGraphTab()
+                        subwnd = self.new_graph_tab()
                         node_editor = subwnd.widget()
 
                         if node_editor.fileLoad(file_name):
@@ -418,8 +413,8 @@ class MasterWindow(NodeEditorWindow):
         except Exception as e:
             dumpException(e)
 
-    def createMenus(self):
-        super().createMenus()
+    def create_menus(self):
+        super().create_menus()
 
         self.node_editor_menu = self.menuBar().addMenu("&Node Editor")
 
@@ -427,54 +422,17 @@ class MasterWindow(NodeEditorWindow):
 
         self.node_designer_menu = self.menuBar().addMenu("&Node Designer")
 
-        self.updateWindowMenu()
-        # self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
-        self.menuBar().addSeparator()
+        self.update_window_menu()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actDoc)
         self.helpMenu.addAction(self.actAbout)
 
-        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+        self.editMenu.aboutToShow.connect(self.update_edit_menu)
 
-        # self.Logo = QLabel()
-        # p = QPixmap("icons/VVS_Logo_Thick.png").scaledToHeight(self.menu.height())
-        # self.Logo.setPixmap(p)
-        # self.Logo.setStyleSheet("background-color: transparent")
-        # self.menu.addWidget(self.Logo)
-        #
-        # self.menu.addWidget(self.menuBar())
-        #
-        # mySpacer = QWidget()
-        # mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        # self.menu.addWidget(mySpacer)
-        #
-        # self.Minimize_btn = QPushButton(QIcon("icons/Minimize.png"), "_", self)
-        # self.Minimize_btn.setFont(QFont("Arial", 10))
-        # self.Minimize_btn.setMaximumSize(50, 50)
-        # self.Minimize_btn.setStyleSheet("border: 0px")
-        # self.Minimize_btn.setMaximumWidth(20)
-        # self.menu.addWidget(self.Minimize_btn)
-        # self.Minimize_btn.clicked.connect(self.showMinimized)
-        #
-        # self.Resize_btn = QPushButton(QIcon("icons/Resize.png"), "□", self)
-        # self.Resize_btn.setFont(QFont("Arial", 15))
-        # self.Resize_btn.setMaximumSize(50, 50)
-        # self.Resize_btn.setStyleSheet("border: 0px")
-        # self.Resize_btn.setMaximumWidth(20)
-        # self.menu.addWidget(self.Resize_btn)
-        # self.Resize_btn.clicked.connect(lambda: self.showNormal() if self.isMaximized() else self.showMaximized())
-        #
-        # self.exit_btn = QPushButton(QIcon("icons/close.png"), "x", self)
-        # self.exit_btn.setFont(QFont("Arial", 15))
-        # self.exit_btn.setMaximumSize(50, 50)
-        # self.exit_btn.setStyleSheet("border: 0px")
-        # self.menu.addWidget(self.exit_btn)
-        # self.exit_btn.clicked.connect(self.close)
-
-    def updateMenus(self):
+    def update_menus(self):
         # print("update Menus")
-        active = self.CurrentNodeEditor()
+        active = self.currentNodeEditor()
         hasMdiChild = (active is not None)
 
         # Update File Menu
@@ -491,12 +449,12 @@ class MasterWindow(NodeEditorWindow):
         self.actSeparator.setVisible(hasMdiChild)
 
         # Update Edit Menu
-        self.updateEditMenu()
+        self.update_edit_menu()
 
-    def updateEditMenu(self):
+    def update_edit_menu(self):
         try:
             # print("update Edit Menu")
-            active = self.CurrentNodeEditor()
+            active = self.currentNodeEditor()
             hasMdiChild = (active is not None)
 
             self.actPaste.setEnabled(hasMdiChild)
@@ -511,31 +469,31 @@ class MasterWindow(NodeEditorWindow):
         except Exception as e:
             dumpException(e)
 
-    def updateWindowMenu(self):
+    def update_window_menu(self):
 
         self.toolbar_library = self.library_menu.addAction("Libraries Window")
         self.toolbar_library.setCheckable(True)
-        self.toolbar_library.triggered.connect(self.LibrariesWnd)
+        self.toolbar_library.triggered.connect(self.update_libraries_wnd)
         self.toolbar_library.setChecked(False)
 
         self.toolbar_properties = self.node_editor_menu.addAction("Properties Window")
         self.toolbar_properties.setCheckable(True)
-        self.toolbar_properties.triggered.connect(self.DetailsWnd)
+        self.toolbar_properties.triggered.connect(self.update_details_wnd)
         self.toolbar_properties.setChecked(True)
 
         self.toolbar_files = self.node_editor_menu.addAction("Project Files Window")
         self.toolbar_files.setCheckable(True)
-        self.toolbar_files.triggered.connect(self.FilesWnd)
+        self.toolbar_files.triggered.connect(self.update_files_wnd)
         self.toolbar_files.setChecked(True)
 
         self.toolbar_events_vars = self.node_editor_menu.addAction("Variables & Events Window")
         self.toolbar_events_vars.setCheckable(True)
-        self.toolbar_events_vars.triggered.connect(self.EventsVarsWnd)
+        self.toolbar_events_vars.triggered.connect(self.update_events_vars_wnd)
         self.toolbar_events_vars.setChecked(True)
 
         self.toolbar_functions = self.node_editor_menu.addAction("Functions Window")
         self.toolbar_functions.setCheckable(True)
-        self.toolbar_functions.triggered.connect(self.FunctionsWnd)
+        self.toolbar_functions.triggered.connect(self.update_functions_wnd)
         self.toolbar_functions.setChecked(True)
 
         self.node_editor_menu.addSeparator()
@@ -562,31 +520,31 @@ class MasterWindow(NodeEditorWindow):
 
             action = self.node_editor_menu.addAction(text)
             action.setCheckable(True)
-            action.setChecked(child is self.CurrentNodeEditor())
+            action.setChecked(child is self.currentNodeEditor())
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
-    def FunctionsWnd(self):
+    def update_functions_wnd(self):
         self.toolbar_functions.setChecked(self.toolbar_functions.isChecked())
         self.functionsDock.setVisible(self.toolbar_functions.isChecked())
 
-    def EventsVarsWnd(self):
+    def update_events_vars_wnd(self):
         self.toolbar_events_vars.setChecked(self.toolbar_events_vars.isChecked())
         self.varsEventsDock.setVisible(self.toolbar_events_vars.isChecked())
 
-    def DetailsWnd(self):
+    def update_details_wnd(self):
         self.toolbar_properties.setChecked(self.toolbar_properties.isChecked())
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
-    def LibrariesWnd(self):
+    def update_libraries_wnd(self):
         self.toolbar_library.setChecked(self.toolbar_library.isChecked())
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
-    def FilesWnd(self):
+    def update_files_wnd(self):
         self.toolbar_files.setChecked(self.toolbar_files.isChecked())
         self.filesDock.setVisible(self.toolbar_files.isChecked())
 
-    def createGraphsDock(self):
+    def create_graphs_dock(self):
         self.graphsDock = QDockWidget("Graphs")
         self.graphsDock.setWidget(self.graphs_parent_wdg)
         self.graphsDock.setFeatures(self.graphsDock.DockWidgetClosable | self.graphsDock.DockWidgetMovable)
@@ -614,17 +572,19 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_properties.setChecked(True)
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
-    def ActivateDesignerWnd(self):
+    def activate_designer_wnd(self):
+        self.switch_display(Designer=True)
+
         self.node_designer_btn.setChecked(True)
         self.library_btn.setChecked(False)
         self.node_editor_btn.setChecked(False)
 
         self.node_editor_menu.setEnabled(False)
         self.library_menu.setEnabled(False)
-        self.stackedDisplay.setCurrentIndex(1)
 
         self.toolbar_library.setChecked(False)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
+
 
     def activate_library_wnd(self):
         self.switch_display(Library=True)
@@ -648,7 +608,7 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_properties.setChecked(False)
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
-    def CreateFunctionsDock(self):
+    def create_functions_dock(self):
         self.nodesListWidget = NodeList()
 
         self.functionsDock = QDockWidget("Functions")
@@ -656,7 +616,7 @@ class MasterWindow(NodeEditorWindow):
         self.functionsDock.setFeatures(self.functionsDock.DockWidgetMovable)
         self.addDockWidget(Qt.RightDockWidgetArea, self.functionsDock)
 
-    def CreateFilesDock(self):
+    def create_files_dock(self):
         self.filesWidget = FilesWDG()
         self.filesWidget.masterRef = self
 
@@ -667,17 +627,16 @@ class MasterWindow(NodeEditorWindow):
         self.filesDock.setFeatures(self.filesDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
-        self.filesWidget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-
-    def CreatePropertiesDock(self):
+    def create_properties_dock(self):
         self.proprietiesWdg = PropertiesList()
 
         self.proprietiesDock = QDockWidget("Properties")
         self.proprietiesDock.setWidget(self.proprietiesWdg)
         self.proprietiesDock.setFeatures(self.proprietiesDock.DockWidgetMovable)
+
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
-    def CreateVarEventDock(self):
+    def create_var_event_dock(self):
         self.varsEventsDock = QDockWidget("Variables & Events")
 
         self.VEStackedWdg = QStackedWidget()
@@ -686,7 +645,7 @@ class MasterWindow(NodeEditorWindow):
         self.varsEventsDock.setFeatures(self.varsEventsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsEventsDock)
 
-    def CreateNewVEList(self):
+    def create_user_nodes_list(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
         new_wdg = new_wdg()
 
@@ -696,22 +655,22 @@ class MasterWindow(NodeEditorWindow):
 
         return new_wdg
 
-    def DeleteVEList(self, ref):
+    def delete_user_nodes_wgd(self, ref):
         self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
-    def newGraphTab(self):
+    def new_graph_tab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode
         if not self.graphs_parent_wdg.subWindowList():
-            self.stackedDisplay.setCurrentIndex(0)
+            self.switch_display(Editor=True)
 
-        VEL = self.CreateNewVEList()
+        VEL = self.create_user_nodes_list()
 
         node_editor = MasterEditorWnd()
 
-        node_editor.scene.VEListWdg = VEL
+        node_editor.scene.user_nodes_wdg = VEL
         VEL.Scene = node_editor.scene
 
         node_editor.scene.masterRef = self
@@ -724,19 +683,19 @@ class MasterWindow(NodeEditorWindow):
         self.graphs_parent_wdg.addSubWindow(subwnd)
         subwnd.setWindowIcon(self.empty_icon)
 
-        node_editor.scene.addItemSelectedListener(self.updateEditMenu)
-        node_editor.scene.addItemsDeselectedListener(self.updateEditMenu)
+        node_editor.scene.addItemSelectedListener(self.update_edit_menu)
+        node_editor.scene.addItemsDeselectedListener(self.update_edit_menu)
 
-        node_editor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
-        node_editor.addCloseEventListener(self.onSubWndClose)
+        node_editor.scene.history.addHistoryModifiedListener(self.update_edit_menu)
+        node_editor.addCloseEventListener(self.on_sub_wnd_close)
 
         self.graphs_parent_wdg.setViewMode(QMdiArea.TabbedView)
 
         subwnd.show()
         return subwnd
 
-    def onSubWndClose(self, widget, event):
-        self.DeleteVEList(widget.scene.VEListWdg)
+    def on_sub_wnd_close(self, widget, event):
+        self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
 
         existing = self.findMdiChild(widget.filename)
 
@@ -744,12 +703,13 @@ class MasterWindow(NodeEditorWindow):
 
         if self.maybeSave():
             event.accept()
+            if (len(self.graphs_parent_wdg.subWindowList())-1) == 0:
+                self.switch_display(Welcome=True)
+            else:
+                self.switch_display(Editor=True)
 
         else:
             event.ignore()
-
-        if len(self.graphs_parent_wdg.subWindowList()) == 1:
-            self.switch_display(Welcome=True)
 
     def findMdiChild(self, filename):
         for window in self.graphs_parent_wdg.subWindowList():

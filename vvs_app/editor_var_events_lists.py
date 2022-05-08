@@ -11,15 +11,13 @@ class VarEventList(QTabWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.user_vars_data = []
-        self.user_events_data = []
-        self.var_event_names = []
-        self.USERVARS = {}
-        self.USEREVENTS = {}
+        self.user_nodes_data = []
+        self.USER_NODES = {}
 
         self.InitUI()
 
     def InitUI(self):
+
         # Add QTabWidget and add Both Variables Tab and Events Tab
         tab1 = QWidget()
         tab2 = QWidget()
@@ -71,56 +69,53 @@ class VarEventList(QTabWidget):
         self.EventList.setDragEnabled(True)
 
         self.Scene = None
+
         self.VarList.startDrag = self.VarStartDrag
         self.EventList.startDrag = self.EventStartDrag
 
-        self.VarList.itemClicked.connect(self.VarSelectionChanged)
-        self.EventList.itemClicked.connect(self.EventSelectionChanged)
-        # self.VarList.itemSelectionChanged.connect()
+        # self.VarList.startDrag.connect()
+
+        self.VarList.itemClicked.connect(lambda: self.list_selection_changed(var=True))
+        self.EventList.itemClicked.connect(lambda: self.list_selection_changed(var=False))
+
+        # self.VarList.itemSelectionChanged.connect(lambda : self.list_selection_changed(var=True))
+        # self.EventList.itemSelectionChanged.connect(lambda : self.list_selection_changed(var=False))
 
         self.varsIds = []
         self.eventsIds = []
 
         self.InitList()
 
-    def set_user_var_ID_now(self, var_ID, class_reference):
-        if var_ID in self.USERVARS:
-            raise InvalidNodeRegistration(
-                "Duplicate User Variable registration of '%s'. There is already %s" % (var_ID, self.USERVARS[var_ID]))
+    def set_user_node_Id_now(self, class_reference):
+        id = 0
+        while id in self.USER_NODES:
+            id = id+1
+            # raise InvalidNodeRegistration(
+            #     "Duplicate User Variable registration of '%s'. There is already %s" % (var_ID, self.USERVARS[var_ID]))
         else:
-            self.USERVARS[var_ID] = class_reference
+            print(id)
+            self.USER_NODES[id] = class_reference
+            return id
 
-    def set_user_event_ID_now(self, event_ID, class_reference):
-        if event_ID in self.USEREVENTS:
-            raise InvalidNodeRegistration(
-                "Duplicate Event registration of '%s'. There is already %s" % (event_ID, self.USEREVENTS[event_ID]))
+    def get_user_node_by_id(self, node_id):
+        if node_id not in self.USER_NODES:
+            raise NodeTypeNotRegistered("node_type '%d' is not registered" % node_id)
         else:
-            self.USEREVENTS[event_ID] = class_reference
+            return self.USER_NODES[node_id]
 
-    def get_user_var_by_ID(self, var_ID):
-        if var_ID not in self.USERVARS:
-            raise NodeTypeNotRegistered("node_type '%d' is not registered" % var_ID)
-        else:
-            return self.USERVARS[var_ID]
-
-    def get_user_event_by_ID(self, event_ID):
-        if event_ID not in self.USEREVENTS:
-            raise NodeTypeNotRegistered("Event '%d' is not registered" % event_ID)
-        else:
-            return self.USEREVENTS[event_ID]
-
-    def MakeCopyOfClass(self, var):
-        class NewNode(var):
+    def MakeCopyOfClass(self, node):
+        class NewNode(node):
             pass
 
         return NewNode
 
     def InitList(self):
-        Event = list(EVENTS.keys())[0]
-
-        node = get_node_by_type(Event)
-        self.eventCompoBox.addItem(node.name)
-        self.eventsIds.append(node.node_type)
+        Events = list(EVENTS.keys())
+        Events.sort()
+        for node_type in Events:
+            node = get_node_by_type(node_type)
+            self.eventCompoBox.addItem(node.name)
+            self.eventsIds.append(node.node_type)
 
         Vars = list(VARIABLES.keys())
         Vars.sort()
@@ -130,78 +125,40 @@ class VarEventList(QTabWidget):
             self.varsIds.append(node.node_type)
 
         # self.loadVars(self.userData.LoadData())
-        self.varAddBtn.clicked.connect(self.addNewVariable)
-        self.eventAddBtn.clicked.connect(self.addNewEvent)
+        self.varAddBtn.clicked.connect(lambda: self.add_new_node(var=True))
+        self.eventAddBtn.clicked.connect(lambda: self.add_new_node(var=False))
 
-    def LoadVar(self, name, id, type):
+    def add_new_node(self, var):
+        if var:
+            name = self.varCompoBox.currentText()
+            type = self.varsIds.__getitem__(self.varCompoBox.currentIndex())
+
+        else:
+            name = self.eventCompoBox.currentText()
+            type = self.eventsIds.__getitem__(self.eventCompoBox.currentIndex())
+
+        self.create_user_node(self.autoNodeRename(name), None, type)
+
+    def create_user_node(self, name, node_id, type):
 
         # Get new Variable type and construct new Variable object
         node = get_node_by_type(type)
-        newVar = self.MakeCopyOfClass(node)
+        new_node = self.MakeCopyOfClass(node)
 
-        varData = [name, id, type]
-        self.var_event_names.append(varData[0])
+        node_data = [name, node_id, type]
 
-        newVar.name = varData[0]
-        newVar.nodeID = varData[1]
-        newVar.node_type = varData[2]
+        # Add new copy of Var class Info to Dict of USER_VARS
+        new_id = self.set_user_node_Id_now(new_node)
+        new_node.nodeID = node_data[1] = new_id
+        new_node.name = name
 
-        self.user_vars_data.append(varData)
-
-        # Add new copy of Var class Info to Dict of
-        self.set_user_var_ID_now(varData[1], newVar)
-
-        # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newVar.name, newVar.icon, varData[1], node.node_type, self.VarList)
-
-    def LoadEvent(self, name, id, type):
-        # Get new Variable type and construct new Variable object
-        node = get_node_by_type(type)
-        newEvent = self.MakeCopyOfClass(node)
-
-        eventData = [name, id, type]
-        self.var_event_names.append(eventData[0])
-
-        newEvent.name = eventData[0]
-        newEvent.nodeID = eventData[1]
-        newEvent.node_type = eventData[2]
-
-        self.user_events_data.append(eventData)
-
-        # Add new copy of Var class Info to Dict of
-        self.set_user_event_ID_now(eventData[1], newEvent)
+        # Save new Var to list of vars with [Type, ID, Name, Value]
+        self.user_nodes_data.append(node_data)
+        A_list = self.EventList if new_node.category == "EVENT" else self.VarList
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newEvent.name, newEvent.icon, eventData[1], node.node_type, self.EventList)
+        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
 
-    def addNewVariable(self):
-        # Get new Variable type and construct new Variable object
-        node = get_node_by_type(self.varsIds.__getitem__(self.varCompoBox.currentIndex()))
-
-        newVar = self.MakeCopyOfClass(node)
-
-        varData = self.AddVar(newVar)
-
-        # Add new copy of Var class Info to Dict of USERVARS
-        self.set_user_var_ID_now(varData[1], newVar)
-        newVar.nodeID = varData[1]
-
-        # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newVar.name, newVar.icon, varData[1], node.node_type, self.VarList)
-
-    def addNewEvent(self):
-        # Get new Event type and construct new Variable object
-        node = get_node_by_type(self.eventsIds.__getitem__(self.eventCompoBox.currentIndex()))
-
-        newEvent = self.MakeCopyOfClass(node)
-
-        eventData = self.AddEvent(newEvent)
-        newEvent.nodeID = eventData[1]
-        # Add new copy of Var class Info to Dict of USEREVENTS
-        self.set_user_event_ID_now(eventData[1], newEvent)
-
-        # Add new QListItem to the UI List using Init Data
-        self.addMyItem(newEvent.name, newEvent.icon, eventData[1], node.node_type, self.EventList)
 
     def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
@@ -220,65 +177,33 @@ class VarEventList(QTabWidget):
 
         item.setData(91, name)
 
-    def EventSelectionChanged(self, *args, **kwargs):
-        self.Scene.masterRef.proprietiesWdg.varStart = True
-
-        item = self.EventList.currentItem()
-        self.eventNameInput = QLineEdit()
-
-        self.eventNameInput.setText(f"{item.data(91)}")
-
-        self.eventNameInput.returnPressed.connect(self.updateEventName)
-
-        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Event Name", self.eventNameInput, self.Scene.getSelectedItems())
-
-    def VarSelectionChanged(self, *args, **kwargs):
+    def list_selection_changed(self, var, *args, **kwargs):
         # Name line edite setup
+        if var:
+            list_ref = self.VarList
+            item = self.VarList.currentItem()
+        else:
+            list_ref = self.EventList
+            item = self.EventList.currentItem()
+
+
+        self.node_name_input = QLineEdit()
+        self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
+        self.node_name_input.setText(f"{item.data(91)}")
+        self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
+
         self.Scene.masterRef.proprietiesWdg.varStart = True
-        item = self.VarList.currentItem()
-        self.varNameInput = QLineEdit()
-        self.varNameInput.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
-        self.varNameInput.setText(f"{item.data(91)}")
-        self.varNameInput.returnPressed.connect(self.updateVarName)
-        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Variable Name", self.varNameInput,
+        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input,
+                                                          self.Scene.getSelectedItems() if self.Scene is not None else [])
+
+
+        self.delete_btn = QPushButton(f"Delete {item.data(91)}")
+        self.delete_btn.clicked.connect(lambda: self.delete_node(item, list_ref))
+        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn,
                                      self.Scene.getSelectedItems() if self.Scene is not None else [])
-
-
-        #
-        # if item.data(80) == 20:
-        #     self.floatInput = QDoubleSpinBox()
-        #     self.floatInput.setDecimals(6)
-        #     # self.Proprieties.varUpdate("Float Value", self.floatInput)
-        #     self.floatInput.valueChanged.connect(self.floatVarChanged)
-        #
-        #     if item.data(92) is not None:   self.floatInput.setValue(item.data(92))
-        #
-        # elif item.data(80) == 21:
-        #     self.intInput = QSpinBox()
-        #     self.intInput.valueChanged.connect(self.intVarChanged)
-        #     # self.Proprieties.varUpdate("Integer Value", self.intInput)
-        #
-        #     if item.data(92) is not None:   self.intInput.setValue(item.data(92))
-        #
-        # elif item.data(80) == 22:
-        #     self.boolInput = QCheckBox()
-        #     self.boolInput.stateChanged.connect(self.boolVarChanged)
-        #     # self.Proprieties.varUpdate("Boolean Value", self.boolInput)
-        #
-        #     if item.data(92) is not None:   self.boolInput.setChecked(item.data(92))
-        #
-        # elif item.data(80) == 23:
-        #     self.stringInput = QLineEdit()
-        #
-        #     self.stringInput.returnPressed.connect(self.stringVarChanged)
-        #     # self.Proprieties.varUpdate("String Value", self.stringInput)
-        #
-        #     if item.data(92) is not None:   self.stringInput.setText(item.data(92))
 
     def VarStartDrag(self, *args, **kwargs):
         try:
-            self.VarSelectionChanged()
-
             item = self.VarList.currentItem()
             var_ID = item.data(90)
 
@@ -306,7 +231,6 @@ class VarEventList(QTabWidget):
 
     def EventStartDrag(self, *args, **kwargs):
         try:
-            self.EventSelectionChanged()
 
             item = self.EventList.currentItem()
             event_ID = item.data(90)
@@ -332,51 +256,28 @@ class VarEventList(QTabWidget):
         except Exception as e:
             dumpException(e)
 
-    def updateVarName(self):
-        item = self.VarList.currentItem()
+    def update_node_name(self, var):
+        if var:
+            item = self.VarList.currentItem()
+        else:
+            item = self.EventList.currentItem()
+
+
         oldName = item.data(91)
-        tryName = self.varNameInput.text()
+        tryName = self.node_name_input.text()
         newName = self.userRename(oldName=oldName, tryName=tryName)
         if newName == None:
-            pass
+            return
         else:
-            item.setData(91, newName)
-
             # get ref to user variable copy
-            varRef = self.get_user_var_by_ID(item.data(90))
+            node_ref = self.get_user_node_by_id(item.data(90))
 
             # set item text to new name
             item.setText(newName)
+            item.setData(91, newName)
 
             # set name of parent var
-            varRef.name = newName
-
-            # rename all children grNode vars that have the old name
-            for node in self.Scene.nodes:
-                if node.name == oldName:
-                    node.name = newName
-                    node.grNode.name = newName
-
-            self.Scene.NodeEditor.UpdateTextCode()
-
-    def updateEventName(self):
-        item = self.EventList.currentItem()
-        oldName = item.data(91)
-        tryName = self.eventNameInput.text()
-        newName = self.userRename(oldName=oldName, tryName=tryName)
-        if newName == None:
-            pass
-        else:
-            item.setData(91, newName)
-
-            # get ref to user event copy
-            eventRef = self.get_user_event_by_ID(item.data(90))
-
-            # set item text to new name
-            item.setText(newName)
-
-            # set name of parent event
-            eventRef.name = newName
+            node_ref.name = newName
 
             # rename all children grNode vars that have the old name
             for node in self.Scene.nodes:
@@ -392,115 +293,72 @@ class VarEventList(QTabWidget):
                 Litem = self.VarList.item(item)
                 if Litem.text() == selectedNodes[0].name:
                     self.VarList.setCurrentItem(Litem)
-                    self.VarSelectionChanged()
                     self.setCurrentIndex(0)
+                    self.list_selection_changed(True)
                     return Litem
 
             for item in range(self.EventList.count()):
                 Litem = self.EventList.item(item)
                 if Litem.text() == selectedNodes[0].name:
                     self.EventList.setCurrentItem(Litem)
-                    self.EventSelectionChanged()
+                    self.list_selection_changed(False)
                     self.setCurrentIndex(1)
                     return Litem
 
-    # def floatVarChanged(self):
-    #     item = self.VarList.currentItem()
-    #     varRef = self.get_user_var_by_ID(item.data(90))
-    #     newValue = self.floatInput.value()
-    #     varRef.value = newValue
-    #     self.Scene.NodeEditor.UpdateTextCode()
-    #     item.setData(92, newValue)
-    #
-    # def intVarChanged(self):
-    #     item = self.VarList.currentItem()
-    #     varRef = self.get_user_var_by_ID(item.data(90))
-    #     newValue = self.intInput.value()
-    #     varRef.value = newValue
-    #     self.Scene.NodeEditor.UpdateTextCode()
-    #     item.setData(92, newValue)
-    #
-    # def boolVarChanged(self):
-    #     item = self.VarList.currentItem()
-    #     varRef = self.get_user_var_by_ID(item.data(90))
-    #     newValue = self.boolInput.isChecked()
-    #     varRef.value = newValue
-    #     self.Scene.NodeEditor.UpdateTextCode()
-    #     item.setData(92, newValue)
-    #
-    # def stringVarChanged(self):
-    #     item = self.VarList.currentItem()
-    #     varRef = self.get_user_var_by_ID(item.data(90))
-    #     newValue = self.stringInput.text()
-    #     varRef.value = newValue
-    #     self.Scene.NodeEditor.UpdateTextCode()
-    #     item.setData(92, newValue)
-
-
-
 ###################################
-    # User Data
+    # Data
 ###################################
 
-
-    def AddVar(self, newVarRef: 'Node'):
-
-        # Rename the Variable to an Unoccupied name
-        self.autoNodeRename(newVarRef)
-
-        # Give new Var New Object ID
-        newVarID = len(self.user_vars_data)
-
-        # Save new Var to list of vars with [Type, ID, Name, Value]
-        varData = [newVarRef.name, newVarID, newVarRef.node_type]
-
-        self.user_vars_data.append(varData)
-        return varData
-
-    def AddEvent(self, newEventRef: 'Node'):
-
-        # Rename the Variable to an Unoccupied name
-        self.autoNodeRename(newEventRef)
-
-        # Give new Var New Object ID
-        newEventID = len(self.user_events_data)
-
-        # Save new Var to list of vars with [Type, ID, Name, Value]
-        eventData = [newEventRef.name, newEventID, newEventRef.node_type]
-
-        self.user_events_data.append(eventData)
-
-        return eventData
 
     def userRename(self, oldName, tryName: str):
-        if self.var_event_names.__contains__(tryName):
+        names = []
+        for item in self.user_nodes_data:
+            names.append(item[0])
+
+        if names.__contains__(tryName):
             return None
         else:
-            self.var_event_names.remove(oldName)
-            self.var_event_names.append(tryName)
-
-            for item in self.user_vars_data:
+            for item in self.user_nodes_data:
                 if item[0] == oldName:
                     item[0] = tryName
                     return tryName
 
-            for item in self.user_events_data:
-                if item[0] == oldName:
-                    item[0] = tryName
-                    return tryName
-
-
-    def autoNodeRename(self, node: 'Node'):
+    def autoNodeRename(self, name: 'Node'):
         x = 0
-        newName = node.name
+        newName = name
+
         # does a variable already has this name ?
-        while self.var_event_names.__contains__(newName):
+        names = []
+        for item in self.user_nodes_data:
+            names.append(item[0])
+        print(names)
+        while names.__contains__(newName):
             x += 1
-            newName = f"{node.name}{x}"
+            newName = f"{name}{x}"
 
         else:
-            self.var_event_names.append(newName)
-            node.name = newName
+            return newName
 
-    def LoadData(self):
-        return self.user_vars_data
+    def delete_node(self, item_ref, list_ref):
+        if list_ref.findItems(item_ref.data(91), Qt.MatchExactly):
+            # Only Delete Item if it Exists in the List
+            node_name = item_ref.data(91)
+            self.USER_NODES.pop(item_ref.data(90))
+            selected = []
+
+            for item in self.user_nodes_data:
+                if item[0] == node_name:
+                    self.user_nodes_data.remove(item)
+
+            for node in self.Scene.nodes:
+                if node.name == node_name:
+                    selected.append(node)
+
+            # This is split into two loops to prevent bugs that happen while deleting nodes
+            for node in selected:
+                node.remove()
+
+            self.VarList.takeItem(self.VarList.currentRow())
+            self.VarList.clearSelection()
+
+            self.Scene.NodeEditor.UpdateTextCode()

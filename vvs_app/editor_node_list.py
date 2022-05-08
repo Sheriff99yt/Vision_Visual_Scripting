@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton
 from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QAbstractItemView, QListWidgetItem
@@ -23,23 +24,22 @@ class NodeList(QTreeWidget):
         self.setColumnCount(2)
         self.setColumnWidth(0, 70)
 
-        self.categories = {"+ Process": None, "+ Logic": None, "+ Math": None, "+ Input": None, "+ Output": None}
+        # self.collapse_btn = QPushButton("►")
+        # self.collapse_btn.setFixedSize(22,22)
+        # item = QTreeWidgetItem(self)
+        # item.setFont(0, QFont("Arial", 9))
+        # self.setItemWidget(item, 0, self.collapse_btn)
+
+        self.categories = {"► Process": None, "► Logic": None, "► Math": None, "► Input": None, "► Output": None}
         for category in list(self.categories.keys()):
             item = QTreeWidgetItem(self, [category])
+            item.setFont(0, QFont("Arial", 9))
             item.setSizeHint(1, QSize(18, 18))
-            self.categories[category.replace("+ ", "")] = item
+            self.categories[category.replace("► ", "")] = item
             del self.categories[category]
-            once = True
-            for i in range(len(FUNCTIONS)):
-                if FUNCTIONS[i].sub_category == category.replace("+ ", "") and once:
-                    item.setData(Qt.UserRole + 2, Qt.UserRole + 3, FUNCTIONS[i].node_type)
-                    item.setData(Qt.UserRole, Qt.UserRole + 1, FUNCTIONS[i].icon)
-                    item.setText(1, FUNCTIONS[i].name)
-                    item.setIcon(1,QIcon(QPixmap(FUNCTIONS[i].icon)))
-                    once = False
 
-        self.itemClicked.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("+", "-")) if self.currentItem().text(0).__contains__("+") else self.currentItem().setText(0, self.currentItem().text(0).replace("-", "+")))
-        self.itemClicked.connect(lambda: self.currentItem().setExpanded(True) if self.currentItem().text(0).__contains__("-") else self.currentItem().setExpanded(False))
+        self.itemClicked.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►", "▼")) if self.currentItem().text(0).__contains__("►") else self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
+        self.itemClicked.connect(lambda: self.currentItem().setExpanded(True) if self.currentItem().text(0).__contains__("▼") else self.currentItem().setExpanded(False))
         self.setExpandsOnDoubleClick(False)
 
         self.addMyFunctions()
@@ -60,38 +60,39 @@ class NodeList(QTreeWidget):
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
         # setup data
-        item.setData(Qt.UserRole, Qt.UserRole + 1, pixmap)
-        item.setData(Qt.UserRole + 2, Qt.UserRole + 3, node.node_type)
+        item.setData(0, Qt.UserRole + 1, pixmap)
+        item.setData(0, Qt.UserRole + 2, node.node_type)
 
     def startDrag(self, *args, **kwargs):
         try:
-            item = self.currentItem()
-            node_type = item.data(Qt.UserRole + 2, Qt.UserRole + 3)
+            if self.currentItem().data(0, Qt.UserRole + 2) is not None:
+                item = self.currentItem()
+                node_type = item.data(0, Qt.UserRole + 2)
 
-            pixmap = QPixmap(item.data(Qt.UserRole, Qt.UserRole + 1))
+                pixmap = QPixmap(item.data(0, Qt.UserRole + 1))
 
-            itemData = QByteArray()
-            dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            dataStream << pixmap
-            dataStream.writeInt(node_type)
-            dataStream.writeQString(item.text(0))
-            dataStream.writeQStringList(["N"])
+                itemData = QByteArray()
+                dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+                dataStream << pixmap
+                dataStream.writeInt(node_type)
+                dataStream.writeQString(item.text(0))
+                dataStream.writeQStringList(["N"])
 
-            mimeData = QMimeData()
-            mimeData.setData(LISTBOX_MIMETYPE, itemData)
+                mimeData = QMimeData()
+                mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
-            drag = QDrag(self)
-            drag.setMimeData(mimeData)
-            drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
-            drag.setPixmap(pixmap)
+                drag = QDrag(self)
+                drag.setMimeData(mimeData)
+                drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
+                drag.setPixmap(pixmap)
 
-            drag.exec_(Qt.MoveAction)
+                drag.exec_(Qt.MoveAction)
 
-            if item.parent():
-                iteme = item.parent()
-                iteme.setData(Qt.UserRole + 2, Qt.UserRole + 3, FUNCTIONS[node_type].node_type)
-                iteme.setData(Qt.UserRole, Qt.UserRole + 1, FUNCTIONS[node_type].icon)
-                iteme.setText(1, FUNCTIONS[node_type].name)
-                iteme.setIcon(1, QIcon(QPixmap(FUNCTIONS[node_type].icon)))
+                if item.parent():
+                    iteme = item.parent()
+                    iteme.setData(0, Qt.UserRole + 2, FUNCTIONS[node_type].node_type)
+                    iteme.setData(0, Qt.UserRole + 1, FUNCTIONS[node_type].icon)
+                    iteme.setText(1, FUNCTIONS[node_type].name)
+                    iteme.setIcon(1, QIcon(QPixmap(FUNCTIONS[node_type].icon)))
         except Exception as e:
             dumpException(e)

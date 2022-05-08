@@ -59,7 +59,7 @@ class FilesWDG(QWidget):
                     all_files.append(file_path)
                     # print(all_files)
 
-        self.masterRef.onFileOpen(all_files)
+        self.masterRef.on_file_open(all_files)
 
     def CreateDefaultDir(self):
 

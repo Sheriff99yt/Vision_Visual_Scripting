@@ -16,7 +16,6 @@ def Indent(String):
 # Process
 class IfStatement(MasterNode):
     icon = "icons/if.png"
-    node_type = None
     name = "IF Statement"
     category = "FUNCTION"
     sub_category = "Process"
@@ -61,12 +60,9 @@ if {condition}:
         code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
-regester_Node(IfStatement)
-
 
 class ForLoop(MasterNode):
     icon = "icons/Loop.png"
-    node_type = None
     name = "For Loop"
     category = "FUNCTION"
     sub_category = "Process"
@@ -99,12 +95,9 @@ for item in range({range}):
         styled_code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return styled_code
-regester_Node(ForLoop)
-
 
 class ForEachLoop(MasterNode):
     icon = "icons/Loop.png"
-    node_type = None
     name = "For Each Loop"
     category = "FUNCTION"
     sub_category = "Process"
@@ -140,12 +133,9 @@ for item in {list}:
         styled_code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return styled_code
-regester_Node(ForEachLoop)
-
 
 class GreaterThan(MasterNode):
     icon = "icons/more_than.png"
-    node_type = None
     name = "Greater Than"
     category = "FUNCTION"
     sub_category = "Process"
@@ -169,12 +159,9 @@ class GreaterThan(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(GreaterThan)
-
 
 class LessThan(MasterNode):
     icon = "icons/less_than.png"
-    node_type = None
     name = "Less Than"
     category = "FUNCTION"
     sub_category = "Process"
@@ -198,12 +185,9 @@ class LessThan(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(LessThan)
-
 
 class Equal(MasterNode):
     icon = "icons/equal.png"
-    node_type = None
     name = "Equal"
     category = "FUNCTION"
     sub_category = "Process"
@@ -227,12 +211,10 @@ class Equal(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(Equal)
 
 # Logic
 class And(MasterNode):
     icon = "icons/and.png"
-    node_type = None
     name = "And"
     category = "FUNCTION"
     sub_category = "Logic"
@@ -256,13 +238,10 @@ class And(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(And)
-
 
 # Math
 class Add(MasterNode):
     icon = "icons/add.png"
-    node_type = None
     name = "Add"
     category = "FUNCTION"
     sub_category = "Math"
@@ -286,12 +265,9 @@ class Add(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(Add)
-
 
 class Sub(MasterNode):
     icon = "icons/sub.png"
-    node_type = None
     name = "Subtract"
     category = "FUNCTION"
     sub_category = "Math"
@@ -315,12 +291,9 @@ class Sub(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(Sub)
-
 
 class Mul(MasterNode):
     icon = "icons/mul.png"
-    node_type = None
     name = "Multiply"
     category = "FUNCTION"
     sub_category = "Math"
@@ -344,12 +317,9 @@ class Mul(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(Mul)
-
 
 class Div(MasterNode):
     icon = "icons/divide.png"
-    node_type = None
     name = "Divide"
     category = "FUNCTION"
     sub_category = "Math"
@@ -373,12 +343,10 @@ class Div(MasterNode):
             raw_code = self.syntax
 
         return raw_code
-regester_Node(Div)
 
 # Input
 class UserInput(MasterNode):
     icon = ""
-    node_type = None
     name = "User Input"
     category = "FUNCTION"
     sub_category = "Input"
@@ -416,12 +384,9 @@ class UserInput(MasterNode):
         code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
-regester_Node(UserInput)
-
 
 class RawCode(MasterNode):
     icon = ""
-    node_type = None
     name = "Raw Code"
     category = "FUNCTION"
     sub_category = "Input"
@@ -457,12 +422,10 @@ class RawCode(MasterNode):
         code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
-regester_Node(RawCode)
 
 # Output
 class Print(MasterNode):
     icon = "icons/print.png"
-    node_type = None
     name = "Print"
     category = "FUNCTION"
     sub_category = "Output"
@@ -503,8 +466,6 @@ print("{printCode}")
         code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
-regester_Node(Print)
-
 # Khyria Efforts
 # code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
 # if {condition}:

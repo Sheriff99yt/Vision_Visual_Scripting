@@ -28,7 +28,7 @@ class NodeTypeNotRegistered(ConfException):
 ######################
 
 
-def regester_Node(Node_Class):
+def register_Node(Node_Class):
     Node_Type = len({**FUNCTIONS, **VARIABLES, **EVENTS})
     Node_Class.node_type = Node_Type
 

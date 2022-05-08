@@ -135,7 +135,11 @@ class SceneClipboard():
         self.scene.doDeselectItems()
 
         for node_data in data['nodes']:
-            new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
+            if node_data['is_var'] or node_data['is_event']:
+                new_node = self.scene.getNodeClassFromData(node_data)(self.scene,node_data['is_setter'])
+            else:
+                new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
+
             new_node.deserialize(data=node_data, hashmap=hashmap, restore_id=False, *args, **kwargs)
             created_nodes.append(new_node)
 

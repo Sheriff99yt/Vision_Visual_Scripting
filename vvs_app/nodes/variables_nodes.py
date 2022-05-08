@@ -12,26 +12,18 @@ StringColor = "#70FF10FF"
 
 class FloatVar(MasterNode):
     icon = ""
-    node_type = None
     name = "float"
     category = "VARIABLE"
     sub_category = "VARIABLE"
 
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[1])
-        self.isVar = True
+    def __init__(self, scene, isSetter):
+        super().__init__(scene, inputs=[], outputs=[1]) if not isSetter else super().__init__(scene, inputs=[0, 1], outputs=[0, 1])
+        self.is_setter = isSetter
+        self.is_var = True
         self.grNode._brush_title = QBrush(QColor(FloatColor))
 
-    def toGetter(self):
-        self.isSetter = False
-        self.initSockets(inputs=[], outputs=[1])
-
-    def toSetter(self):
-        self.isSetter = True
-        self.initSockets(inputs=[0, 1], outputs=[0, 1])
-
     def getNodeCode(self):
-        if self.isSetter:
+        if self.is_setter:
             if self.syntax == "Python":
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
@@ -59,31 +51,23 @@ class FloatVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-regester_Node(FloatVar)
+register_Node(FloatVar)
 
 
 class IntegerVar(MasterNode):
     icon = ""
-    node_type = None
     name = "integer"
     category = "VARIABLE"
     sub_category = "VARIABLE"
 
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[2])
-        self.isVar = True
+    def __init__(self, scene, isSetter):
+        super().__init__(scene, inputs=[], outputs=[2]) if not isSetter else super().__init__(scene, inputs=[0, 2], outputs=[0, 2])
+        self.is_setter = isSetter
+        self.is_var = True
         self.grNode._brush_title = QBrush(QColor(IntegerColor))
 
-    def toGetter(self):
-        self.isSetter = False
-        self.initSockets(inputs=[], outputs=[2])
-
-    def toSetter(self):
-        self.isSetter = True
-        self.initSockets(inputs=[0, 2], outputs=[0, 2])
-
     def getNodeCode(self):
-        if self.isSetter:
+        if self.is_setter:
             if self.syntax == "Python":
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
@@ -113,31 +97,23 @@ class IntegerVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-regester_Node(IntegerVar)
+register_Node(IntegerVar)
 
 
 class BooleanVar(MasterNode):
     icon = ""
-    node_type = None
     name = "boolean"
     category = "VARIABLE"
     sub_category = "VARIABLE"
 
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
-        self.isVar = True
+    def __init__(self, scene, isSetter):
+        super().__init__(scene, inputs=[], outputs=[3]) if not isSetter else super().__init__(scene, inputs=[0, 3], outputs=[0, 3])
+        self.is_setter = isSetter
+        self.is_var = True
         self.grNode._brush_title = QBrush(QColor(BooleanColor))
 
-    def toGetter(self):
-        self.isSetter = False
-        self.initSockets(inputs=[], outputs=[3])
-
-    def toSetter(self):
-        self.isSetter = True
-        self.initSockets(inputs=[0, 3], outputs=[0, 3])
-
     def getNodeCode(self):
-        if self.isSetter:
+        if self.is_setter:
             if self.syntax == "Python":
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
@@ -167,31 +143,23 @@ class BooleanVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-regester_Node(BooleanVar)
+register_Node(BooleanVar)
 
 
 class StringVar(MasterNode):
     icon = ""
-    node_type = None
     name = "string"
     category = "VARIABLE"
     sub_category = "VARIABLE"
 
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[4])
-        self.isVar = True
+    def __init__(self, scene, isSetter):
+        super().__init__(scene, inputs=[], outputs=[4]) if not isSetter else super().__init__(scene, inputs=[0, 4], outputs=[0, 4])
+        self.is_setter = isSetter
+        self.is_var = True
         self.grNode._brush_title = QBrush(QColor(StringColor))
 
-    def toGetter(self):
-        self.isSetter = False
-        self.initSockets(inputs=[], outputs=[4])
-
-    def toSetter(self):
-        self.isSetter = True
-        self.initSockets(inputs=[0, 4], outputs=[0, 4])
-
     def getNodeCode(self):
-        if self.isSetter:
+        if self.is_setter:
             if self.syntax == "Python":
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
@@ -221,31 +189,23 @@ class StringVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-regester_Node(StringVar)
+register_Node(StringVar)
 
 
 class ListVar(MasterNode):
     icon = ""
-    node_type = None
     name = "list"
     category = "VARIABLE"
     sub_category = "VARIABLE"
 
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[5])
-        self.isVar = True
+    def __init__(self, scene, isSetter):
+        super().__init__(scene, inputs=[], outputs=[5]) if not isSetter else super().__init__(scene, inputs=[0, 5], outputs=[0, 5])
+        self.is_setter = isSetter
+        self.is_var = True
         self.grNode._brush_title = QBrush(QColor(StringColor))
 
-    def toGetter(self):
-        self.isSetter = False
-        self.initSockets(inputs=[], outputs=[5])
-
-    def toSetter(self):
-        self.isSetter = True
-        self.initSockets(inputs=[0, 5], outputs=[0, 5])
-
     def getNodeCode(self):
-        if self.isSetter:
+        if self.is_setter:
             if self.syntax == "Python":
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
@@ -280,4 +240,4 @@ class ListVar(MasterNode):
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name
             return getCode
-regester_Node(ListVar)
+register_Node(ListVar)

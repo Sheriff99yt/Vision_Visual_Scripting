@@ -36,7 +36,7 @@ class NodeScene(Serializable):
         """
         super().__init__()
         self.NodeEditor = None
-        self.VEListWdg = None
+        self.user_nodes_wdg = None
         self.nodes = []
         self.edges = []
         self.masterRef = None
@@ -135,7 +135,7 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Selection Changed")
 
         self.NodeEditor.UpdateTextCode()
-        self.VEListWdg.findListItem(self.getSelectedNodes())
+        self.user_nodes_wdg.findListItem(self.getSelectedNodes())
 
     def getSelectedNodes(self):
         selectedNodes = []
@@ -382,35 +382,19 @@ class NodeScene(Serializable):
         """
         return Node if self.node_class_selector is None else self.node_class_selector(data)
 
-    def UVSerialize(self):
-
+    def serialize_user_nodes(self):
         # Serialize all item in UserVarsData
-        self.userVars = []
-        if self.VEListWdg:
-            for item in self.VEListWdg.user_vars_data:
-                userVar = OrderedDict([
+        self.user_nodes = []
+        if self.user_nodes_wdg:
+            for item in self.user_nodes_wdg.user_nodes_data:
+                user_nodes = OrderedDict([
                     ('title', item[0]),
                     ('id', item[1]),
                     ('type', item[2]),
                 ])
 
-                self.userVars.append(userVar)
-        return self.userVars
-
-    def UESerialize(self):
-
-        # Serialize all item in UserEventsData
-        self.userEvents = []
-        if self.VEListWdg:
-            for item in self.VEListWdg.user_events_data:
-                userEvent = OrderedDict([
-                    ('title', item[0]),
-                    ('id', item[1]),
-                    ('type', item[2]),
-                ])
-
-                self.userEvents.append(userEvent)
-        return self.userEvents
+                self.user_nodes.append(user_nodes)
+        return self.user_nodes
 
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
@@ -421,8 +405,7 @@ class NodeScene(Serializable):
             ('id', self.id),
             ('scene_width', self.scene_width),
             ('scene_height', self.scene_height),
-            ('user_vars', self.UVSerialize()),
-            ('user_events', self.UESerialize()),
+            ('user_nodes', self.serialize_user_nodes()),
             ('nodes', nodes),
             ('edges', edges),
         ])
@@ -436,13 +419,8 @@ class NodeScene(Serializable):
 
         if not history_call:
             # Deserialize the User Vars
-            for var_data in data['user_vars']:
-                self.VEListWdg.LoadVar(type=var_data['type'], name=var_data['title'], id=var_data['id'])
-
-            # Deserialize the User Events
-            for event_data in data['user_events']:
-                self.VEListWdg.LoadEvent(type=event_data['type'], name=event_data['title'], id=event_data['id'])
-
+            for node_data in data['user_nodes']:
+                self.user_nodes_wdg.create_user_node(type=node_data['type'], name=node_data['title'], node_id=node_data['id'])
 
         # -- deserialize NODES
         # Instead of recreating all the nodes, reuse existing ones...
@@ -460,16 +438,20 @@ class NodeScene(Serializable):
 
             if not found:
                 try:
-                    new_node = self.getNodeClassFromData(node_data)(self)
+                    if node_data['is_var'] or node_data['is_event']:
+                        new_node = self.getNodeClassFromData(node_data)(self, node_data['is_setter'])
+                    else:
+                        new_node = self.getNodeClassFromData(node_data)(self)
+
                     new_node.deserialize(data=node_data, hashmap=hashmap, restore_id=restore_id, *args, **kwargs)
-                    new_node.onDeserialized(node_data)
+                    new_node.on_node_deserialized(node_data)
                     # print("New node for", node_data['title'])
                 except:
                     dumpException()
             else:
                 try:
                     found.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
-                    found.onDeserialized(node_data)
+                    found.on_node_deserialized(node_data)
                     all_nodes.remove(found)
                     # print("Reused", node_data['title'])
                 except:

@@ -90,7 +90,7 @@ class MasterEditorWnd(NodeEditorWidget):
             nodeType = newNodeData[0]
 
             isEvent = False
-            isVar = False
+            is_var = False
             isNode = False
 
             if nodeType == "E":
@@ -98,7 +98,7 @@ class MasterEditorWnd(NodeEditorWidget):
             elif nodeType == "N":
                 isNode = True
             elif nodeType == "V":
-                isVar = True
+                is_var = True
 
 
             mouse_position = event.pos()
@@ -107,10 +107,8 @@ class MasterEditorWnd(NodeEditorWidget):
             if DEBUG: print("GOT DROP: [%d] '%s'" % (self.node_type, text), "mouse:", mouse_position, "scene:", self.scene_position)
 
             try:
-                if isEvent:
-                    self.eventSelectMenu(event)
-                elif isVar:
-                    self.varSelectMenu(event)
+                if isEvent or is_var:
+                    self.varSelectMenu(event,is_var)
                 else:
                     node = get_node_by_type(self.node_type)(self.scene)
                     node.setPos(self.scene_position.x(), self.scene_position.y())
@@ -126,12 +124,20 @@ class MasterEditorWnd(NodeEditorWidget):
         self.scene.NodeEditor.UpdateTextCode()
 
     def ActiveScene(self):
-        return self.scene.masterRef.CurrentNodeEditor().scene
+        return self.scene.masterRef.currentNodeEditor().scene
 
-    def varSelectMenu(self, event):
+    def varSelectMenu(self, event, is_var):
         context_menu = QMenu(self)
-        getter = context_menu.addAction("Get")
-        setter = context_menu.addAction("Set")
+        if is_var:
+            set_text = 'Set'
+            get_text = 'Get'
+        else:
+            set_text = 'Write'
+            get_text = 'Call'
+
+        getter = context_menu.addAction(get_text)
+        setter = context_menu.addAction(set_text)
+
         cancel = context_menu.addAction("Cancel")
 
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
@@ -140,35 +146,17 @@ class MasterEditorWnd(NodeEditorWidget):
             return
         else:
             scene = self.ActiveScene()
-            userVar = scene.VEListWdg.get_user_var_by_ID(self.node_type)(scene)
+            user_node = None
+
             if action == setter:
-                userVar.toSetter()
+                user_node = scene.user_nodes_wdg.get_user_node_by_id(self.node_type)(scene, isSetter=True)
+
             elif action == getter:
-                userVar.toGetter()
+                user_node = scene.user_nodes_wdg.get_user_node_by_id(self.node_type)(scene, isSetter=False)
 
-            userVar.setPos(self.scene_position.x(), self.scene_position.y())
-            self.scene.history.storeHistory("Created user Variable %s" % userVar.__class__.__name__)
-
-    def eventSelectMenu(self, event):
-        context_menu = QMenu(self)
-        call = context_menu.addAction("Call Event")
-        write = context_menu.addAction("Write Event")
-        cancel = context_menu.addAction("Cancel")
-
-        action = context_menu.exec_(self.mapToGlobal(event.pos()))
-
-        if action is cancel or action is None:
-            return
-        else:
-            scene = self.ActiveScene()
-            userEvent = scene.VEListWdg.get_user_event_by_ID(self.node_type)(scene)
-            if action == write:
-                userEvent.toSetter()
-            elif action == call:
-                userEvent.toGetter()
-
-            userEvent.setPos(self.scene_position.x(), self.scene_position.y())
-            self.scene.history.storeHistory("Created user Variable %s" % userEvent.__class__.__name__)
+            if user_node:
+                user_node.setPos(self.scene_position.x(), self.scene_position.y())
+                self.scene.history.storeHistory("Created user Variable %s" % user_node.__class__.__name__)
 
     def contextMenuEvent(self, event):
         try:

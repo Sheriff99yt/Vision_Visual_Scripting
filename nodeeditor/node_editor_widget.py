@@ -69,8 +69,7 @@ class NodeEditorWidget(QWidget):
         text_code_widget.setLayout(text_code_layout)
 
         code_wnd_bar = QHBoxLayout()
-        code_wnd_bar.setContentsMargins(4, 4, 4, 4)
-        code_wnd_bar.addItem(QSpacerItem(20, 0, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum))
+        code_wnd_bar.setContentsMargins(0, 0, 5, 0)
         code_wnd_bar.addWidget(QLabel("Select Syntax"))
         text_code_layout.addLayout(code_wnd_bar)
 
@@ -78,11 +77,6 @@ class NodeEditorWidget(QWidget):
         self.text_code_wnd.setReadOnly(True)
         text_code_layout.addWidget(self.text_code_wnd)
 
-        # Termenal
-        self.code_output = QTextEdit()
-        self.code_output.setStyleSheet("background-color: #282828")
-        self.code_output.setFont(QFont('Roboto', 12))
-        self.v_splitter.addWidget(self.code_output)
 
         self.syntax_selector = QComboBox()
         self.syntax_selector.setMinimumWidth(80)
@@ -90,6 +84,8 @@ class NodeEditorWidget(QWidget):
         self.syntax_selector.addItem("Python")
         self.syntax_selector.addItem("C++")
         code_wnd_bar.addWidget(self.syntax_selector)
+
+        code_wnd_bar.addItem(QSpacerItem(10, 0, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum))
 
         self.code_orientation_btn = QPushButton()
         self.code_orientation_btn.setMaximumSize(25, 25)
@@ -112,6 +108,13 @@ class NodeEditorWidget(QWidget):
         # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
         self.scene.setNodeEditorWidget(self)
         self.graph_graphics_view.setNodeEditorWidget(self)
+
+
+        # Termenal
+        self.code_output = QTextEdit()
+        self.code_output.setStyleSheet("background-color: #282828")
+        self.code_output.setFont(QFont('Roboto', 12))
+        self.v_splitter.addWidget(self.code_output)
 
     def UpdateTextWndRot(self):
         if self.editor_wnd.orientation() == Qt.Horizontal:
