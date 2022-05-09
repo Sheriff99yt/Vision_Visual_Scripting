@@ -97,6 +97,7 @@ class SceneHistory():
     def redo(self):
         """Redo operation"""
         if DEBUG: print("REDO")
+
         if self.canRedo():
             self.history_current_step += 1
             self.restoreHistory()
@@ -219,7 +220,7 @@ class SceneHistory():
             previous_selection = self.captureCurrentSelection()
             if DEBUG_SELECTION: print("selected nodes before restore:", previous_selection['nodes'])
 
-            self.scene.deserialize(data=history_stamp['snapshot'], history_call=True)
+            self.scene.deserialize(data=history_stamp['snapshot'])
 
             # restore selection
 

@@ -1,8 +1,8 @@
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem
 from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
-from qtpy.QtWidgets import QAbstractItemView, QListWidgetItem
+from qtpy.QtWidgets import QAbstractItemView
 
 from vvs_app.nodes.nodes_configuration import FUNCTIONS, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
@@ -24,12 +24,6 @@ class NodeList(QTreeWidget):
         self.setColumnCount(2)
         self.setColumnWidth(0, 70)
 
-        # self.collapse_btn = QPushButton("►")
-        # self.collapse_btn.setFixedSize(22,22)
-        # item = QTreeWidgetItem(self)
-        # item.setFont(0, QFont("Arial", 9))
-        # self.setItemWidget(item, 0, self.collapse_btn)
-
         self.categories = {"► Process": None, "► Logic": None, "► Math": None, "► Input": None, "► Output": None}
         for category in list(self.categories.keys()):
             item = QTreeWidgetItem(self, [category])
@@ -37,6 +31,7 @@ class NodeList(QTreeWidget):
             item.setSizeHint(1, QSize(18, 18))
             self.categories[category.replace("► ", "")] = item
             del self.categories[category]
+
 
         self.itemClicked.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►", "▼")) if self.currentItem().text(0).__contains__("►") else self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
         self.itemClicked.connect(lambda: self.currentItem().setExpanded(True) if self.currentItem().text(0).__contains__("▼") else self.currentItem().setExpanded(False))

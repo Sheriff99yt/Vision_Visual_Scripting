@@ -5,6 +5,7 @@ A module containing the representation of the NodeEditor's Scene
 import os, sys, json
 from collections import OrderedDict
 
+from PyQt5.QtCore import Qt
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException, pp
@@ -388,7 +389,7 @@ class NodeScene(Serializable):
         if self.user_nodes_wdg:
             for item in self.user_nodes_wdg.user_nodes_data:
                 user_nodes = OrderedDict([
-                    ('title', item[0]),
+                    ('name', item[0]),
                     ('id', item[1]),
                     ('type', item[2]),
                 ])
@@ -410,28 +411,46 @@ class NodeScene(Serializable):
             ('edges', edges),
         ])
 
-    def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, history_call=False, *args, **kwargs) -> bool:
+    def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
         # Start with the scene ID
 
         hashmap = {}
         if restore_id:
             self.id = data['id']
 
-        if not history_call:
-            # Deserialize the User Vars
-            for node_data in data['user_nodes']:
-                self.user_nodes_wdg.create_user_node(type=node_data['type'], name=node_data['title'], node_id=node_data['id'])
+        # Create a list of all Existing User Nodes
+        current_user_nodes = []
+        for node_data in self.user_nodes_wdg.user_nodes_data:
+            node_name = node_data[0]
+            current_user_nodes.append(node_name)
+
+        # If the Node Doesn't Exist Then Create It !
+        for user_node in data['user_nodes']:
+            node_name = user_node['name']
+            if not current_user_nodes.__contains__(node_name):
+                self.user_nodes_wdg.create_user_node(type=user_node['type'], name=user_node['name'],
+                                                     node_id=user_node['id'])
+
+        # Create a list of all Stored User Nodes at the History Stamp
+        stored_user_nodes = []
+        for node_date in data['user_nodes']:
+            stored_user_nodes.append(node_date['name'])
+
+        # If the Node Doesn't Exist in the History stamp then Delete IT
+        for user_node in current_user_nodes:
+            if not stored_user_nodes.__contains__(user_node):
+                self.user_nodes_wdg.delete_node(item_name=user_node)
 
         # -- deserialize NODES
         # Instead of recreating all the nodes, reuse existing ones...
         # get list of all current nodes:
-        all_nodes = self.nodes.copy()
+        current_nodes = self.nodes.copy()
 
         # go through deserialized nodes:
         for node_data in data['nodes']:
             # can we find this node in the scene?
             found = False
-            for node in all_nodes:
+            for node in current_nodes:
                 if node.id == node_data['id']:
                     found = node
                     break
@@ -452,15 +471,15 @@ class NodeScene(Serializable):
                 try:
                     found.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
                     found.on_node_deserialized(node_data)
-                    all_nodes.remove(found)
+                    current_nodes.remove(found)
                     # print("Reused", node_data['title'])
                 except:
                     dumpException()
 
         # remove nodes which are left in the scene and were NOT in the serialized data!
         # that means they were not in the graph before...
-        while all_nodes != []:
-            node = all_nodes.pop()
+        while current_nodes != []:
+            node = current_nodes.pop()
             node.remove()
 
         # -- deserialize EDGES

@@ -7,7 +7,7 @@ from PyQt5.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
 
 # This Import Is Important for Node Registration.. (Do not remove !!!)
-from vvs_app.nodes import *
+# from vvs_app.nodes import *
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "", ".."))
 

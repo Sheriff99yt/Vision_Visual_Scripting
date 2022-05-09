@@ -60,8 +60,6 @@ class MasterWindow(NodeEditorWindow):
             print("Registered nodes:")
             # pp(FUNCTIONS)
 
-        for cls in MasterNode.__subclasses__():
-            register_Node(cls)
 
         self.global_switches = GlobalSwitches()
         self.global_switches.MasterRef = self
@@ -690,7 +688,6 @@ class MasterWindow(NodeEditorWindow):
         return subwnd
 
     def on_sub_wnd_close(self, widget, event):
-        self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
 
         existing = self.findMdiChild(widget.filename)
 
@@ -698,8 +695,10 @@ class MasterWindow(NodeEditorWindow):
 
         if self.maybeSave():
             event.accept()
+            self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
             if (len(self.graphs_parent_wdg.subWindowList())-1) == 0:
                 self.switch_display(Welcome=True)
+
             else:
                 self.switch_display(Editor=True)
 

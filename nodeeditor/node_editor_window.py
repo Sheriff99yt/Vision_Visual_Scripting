@@ -9,6 +9,9 @@ from qtpy.QtWidgets import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from datetime import datetime
 
+from vvs_app.master_node import MasterNode
+from vvs_app.nodes.nodes_configuration import register_Node
+
 
 class NodeEditorWindow(QMainWindow):
     NodeEditorWidget_class = NodeEditorWidget
@@ -23,6 +26,10 @@ class NodeEditorWindow(QMainWindow):
         - **name_product** - name of this App, used for permanent profile settings
         """
         super().__init__()
+
+        for cls in MasterNode.__subclasses__():
+            register_Node(cls)
+
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
         self.initUI()
