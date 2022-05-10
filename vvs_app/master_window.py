@@ -690,10 +690,9 @@ class MasterWindow(NodeEditorWindow):
     def on_sub_wnd_close(self, widget, event):
 
         existing = self.findMdiChild(widget.filename)
-
         self.graphs_parent_wdg.setActiveSubWindow(existing)
 
-        if self.maybeSave():
+        if self.ask_save():
             event.accept()
             self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
             if (len(self.graphs_parent_wdg.subWindowList())-1) == 0:

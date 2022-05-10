@@ -141,7 +141,7 @@ class NodeEditorWindow(QMainWindow):
 
     def closeEvent(self, event):
         """Handle close event. Ask before we loose work"""
-        if self.maybeSave():
+        if self.ask_save():
             event.accept()
         else:
             event.ignore()
@@ -163,7 +163,7 @@ class NodeEditorWindow(QMainWindow):
         """
         return self.centralWidget()
 
-    def maybeSave(self) -> bool:
+    def ask_save(self) -> bool:
         """If current `Scene` is modified, ask a dialog to save the changes. Used before
         closing window / mdi child document
 
@@ -173,15 +173,19 @@ class NodeEditorWindow(QMainWindow):
         if not self.isModified():
             return True
 
-        res = QMessageBox.warning(self, "About to loose your work?",
-                "The document has been modified.\n Do you want to save your changes?",
-                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
-              )
-
-        if res == QMessageBox.Save:
+        auto_save_before_closing = True
+        if auto_save_before_closing:
             return self.onFileSave()
-        elif res == QMessageBox.Cancel:
-            return False
+        else:
+            res = QMessageBox.warning(self, "About to loose your work?",
+                    "The document has been modified.\n Do you want to save your changes?",
+                    QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+                  )
+
+            if res == QMessageBox.Save:
+                return self.onFileSave()
+            elif res == QMessageBox.Cancel:
+                return False
 
         return True
 
@@ -214,7 +218,7 @@ class NodeEditorWindow(QMainWindow):
 
     def on_file_open(self):
         """Handle File Open operation"""
-        if self.maybeSave():
+        if self.ask_save():
             fname, filter = QFileDialog.getOpenFileName(self, 'Open graph from file', self.getFileDialogDirectory(),
                                                         self.getFileDialogFilter())
             if fname != '' and os.path.isfile(fname):
@@ -256,7 +260,15 @@ class NodeEditorWindow(QMainWindow):
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
             fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.filesWidget.Project_Directory}/{self.currentNodeEditor().windowTitle().replace("*", "")}""", self.getFileDialogFilter())
-            if fname == '': return False
+            if fname == '':
+                res = QMessageBox.warning(self, "About to loose your work?",
+                                          "The document has not been Saved.\n Do you want to Discard this File !?",
+                                          QMessageBox.Discard | QMessageBox.No
+                                          )
+                if res == QMessageBox.No:
+                    return False
+
+                return True
 
             self.onBeforeSaveAs(current_node_editor, fname)
             current_node_editor.fileSave(fname)
