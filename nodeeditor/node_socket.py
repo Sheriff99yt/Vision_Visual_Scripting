@@ -303,7 +303,7 @@ class Socket(Serializable):
                 userInputWdg.setFixedSize(self.grSocket.radius * 2, self.grSocket.radius * 2)
                 # userInputWdg.setIconSize(QSize(self.grSocket.radius, self.grSocket.radius))
 
-            elif self.socket_type == 4 or self.socket_type == 5 or self.socket_type == 6:
+            elif [4, 5, 6].__contains__(self.socket_type):
                 userInputWdg = QTextEdit()
                 userInputWdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
                 userInputWdg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -443,14 +443,30 @@ class Socket(Serializable):
             # probably older version of file, make RIGHT socket multi edged by default
             return data['position'] in (RIGHT_BOTTOM, RIGHT_TOP)
 
+    def get_wdg_value(self):
+
+        if self.is_input:
+            value = None
+            if [1, 2].__contains__(self.socket_type):
+                value = self.userInputWdg.value()
+
+            elif self.socket_type == 3:
+                value = self.userInputWdg.isChecked()
+
+            elif [4, 5, 6].__contains__(self.socket_type):
+                value = self.userInputWdg.text()
+
+            return value
 
     def serialize(self) -> OrderedDict:
+
         return OrderedDict([
             ('id', self.id),
             ('index', self.index),
             ('multi_edges', self.is_multi_edges),
             ('position', self.position),
             ('socket_type', self.socket_type),
+            ('socket_value', self.get_wdg_value()),
         ])
 
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True) -> bool:
@@ -458,4 +474,15 @@ class Socket(Serializable):
         self.is_multi_edges = self.determineMultiEdges(data)
         self.changeSocketType(data['socket_type'])
         hashmap[data['id']] = self
-        return True
+
+        if self.is_input:
+            if [1, 2].__contains__(self.socket_type):
+                self.userInputWdg.setValue(data['socket_value'])
+
+            elif self.socket_type == 3:
+                self.userInputWdg.setChecked(data['socket_value'])
+
+            elif [4, 5, 6].__contains__(self.socket_type):
+                self.userInputWdg.setText(data['socket_value'])
+
+            return True
