@@ -93,7 +93,7 @@ class VarEventList(QTabWidget):
             # raise InvalidNodeRegistration(
             #     "Duplicate User Variable registration of '%s'. There is already %s" % (var_ID, self.USERVARS[var_ID]))
         else:
-            print(id)
+            # print(id)
             self.USER_NODES[id] = class_reference
             return id
 
@@ -194,14 +194,15 @@ class VarEventList(QTabWidget):
         self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
 
         self.Scene.masterRef.proprietiesWdg.varStart = True
-        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input,
-                                                          self.Scene.getSelectedItems() if self.Scene is not None else [])
+        self.Scene.masterRef.proprietiesWdg.clear()
+        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
 
 
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
-        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn,
-                                     self.Scene.getSelectedItems() if self.Scene is not None else [])
+        self.delete_btn.setShortcut(
+            QKeySequence(f"""Shift+{self.Scene.masterRef.global_switches.switches_Dict["Delete"]}"""))
+        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
 
     def VarStartDrag(self, *args, **kwargs):
         try:
@@ -333,7 +334,7 @@ class VarEventList(QTabWidget):
         names = []
         for item in self.user_nodes_data:
             names.append(item[0])
-        print(names)
+        # print(names)
         while names.__contains__(newName):
             x += 1
             newName = f"{name}{x}"
@@ -370,7 +371,7 @@ class VarEventList(QTabWidget):
 
             list_ref.takeItem(list_ref.currentRow())
             list_ref.clearSelection()
-
+            self.Scene.masterRef.proprietiesWdg.clear()
             self.Scene.NodeEditor.UpdateTextCode()
 
             if user:

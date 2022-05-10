@@ -323,7 +323,7 @@ class NodeScene(Serializable):
         """
         with open(filename, "w") as file:
             file.write(json.dumps(self.serialize(), indent=4))
-            print("saving to", filename, "was successful.")
+            # print("saving to", filename, "was successful.")
 
             self.has_been_modified = False
             self.filename = filename

@@ -1,26 +1,22 @@
-# inProgress
-    - ** Deleting Vars and Events.
-
-
-# urgent
-    - * c++ code.
-    - **** enableing input in the termenal.
-    - ** Always save before closing option.
-
-
-# ToDos
-    - ** saveing of app window Values that doesn't need to be a setting
-    - **** save all graphs & close all graphs Qactions.
-    - * merging (+, -, *, /, modulo) in one node.
-    - beginner friendly mode
-    - default node content serialisation
-
-
-# Done
-    - **** functions category open and close indicators
-    - **** functions categories (Tree Widget).
-    - warning if the shortcut is already in use.
-    - hold reset btn to reset settings with a progress par.
-    - Socket name For each socket on the node itself.
-    - fixing input widgets
-    - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things
+#
+# # inProgress
+#     - * c++ code.
+#     - ** Always save before closing option.
+#
+# # urgent
+#     - **** enableing input in the termenal.
+#
+# # ToDos
+#     - **** save all graphs & close all graphs Qactions.
+#     - beginner friendly mode
+#     - default node content serialisation
+#
+# # Done
+#     - ** Deleting Vars and Events.
+#     - **** functions category open and close indicators
+#     - **** functions categories (Tree Widget).
+#     - warning if the shortcut is already in use.
+#     - hold reset btn to reset settings with a progress par.
+#     - Socket name For each socket on the node itself.
+#     - fixing input widgets
+#     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things

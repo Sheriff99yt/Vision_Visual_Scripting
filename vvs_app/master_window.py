@@ -621,7 +621,7 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
     def create_properties_dock(self):
-        self.proprietiesWdg = PropertiesList()
+        self.proprietiesWdg = PropertiesList(master_ref=self)
 
         self.proprietiesDock = QDockWidget("Properties")
         self.proprietiesDock.setWidget(self.proprietiesWdg)

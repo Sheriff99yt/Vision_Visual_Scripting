@@ -4,25 +4,27 @@ from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
 
+
 class PropertiesList(QScrollArea):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, master_ref=None):
         super().__init__(parent)
-
         self.setWidgetResizable(True)
+        self.master_ref = master_ref
+        self.myForm = None
 
-        self.varStart = True
-        self.infoStart = True
+    def clear(self):
+        widget = QFrame()
+        self.setWidget(widget)
+        self.myForm = None
 
-
-    def detailsUpdate(self, name, type, grNodesRef):
-
-        if self.varStart == True:
-            self.varStart = False
-            self.infoStart = True
-
+    def detailsUpdate(self, name, type):
+        grNodesRef = self.master_ref.currentNodeEditor().scene.getSelectedItems()
+        if self.myForm:
+            self.myForm.addRow(QLabel(f"{name}"), type)
+        else:
+            self.myForm = QFormLayout()
             widget = QFrame()
             self.setWidget(widget)
-            self.myForm = QFormLayout()
             widget.setLayout(self.myForm)
             self.myForm.setSpacing(8)
             self.myForm.setAlignment(Qt.AlignTop)
@@ -34,8 +36,6 @@ class PropertiesList(QScrollArea):
                 self.order.valueChanged.connect(self.orderChanged)
                 self.myForm.addRow(QLabel(f"Node Order"), self.order)
 
-            self.myForm.addRow(QLabel(f"{name}"), type)
-        else:
             self.myForm.addRow(QLabel(f"{name}"), type)
 
     def orderChanged(self):
