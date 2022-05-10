@@ -1,7 +1,6 @@
-#
+
 # # inProgress
 #     - * c++ code.
-#     - ** Always save before closing option.
 #
 # # urgent
 #     - **** enableing input in the termenal.
@@ -20,3 +19,4 @@
 #     - Socket name For each socket on the node itself.
 #     - fixing input widgets
 #     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things
+#     - ** Always save before closing option.

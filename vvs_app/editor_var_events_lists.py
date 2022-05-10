@@ -206,7 +206,7 @@ class VarEventList(QTabWidget):
 
     def VarStartDrag(self, *args, **kwargs):
         try:
-
+            self.list_selection_changed(True)
             item = self.VarList.currentItem()
             var_ID = item.data(90)
 
@@ -234,7 +234,7 @@ class VarEventList(QTabWidget):
 
     def EventStartDrag(self, *args, **kwargs):
         try:
-
+            self.list_selection_changed(False)
             item = self.EventList.currentItem()
             event_ID = item.data(90)
             pixmap = QPixmap(item.data(Qt.UserRole))
