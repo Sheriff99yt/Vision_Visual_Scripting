@@ -64,8 +64,6 @@ class MasterWindow(NodeEditorWindow):
             # pp(FUNCTIONS)
 
 
-        self.global_switches = GlobalSwitches()
-        self.global_switches.MasterRef = self
 
         self.settingsWidget = None
 

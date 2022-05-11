@@ -132,31 +132,21 @@ class SettingsWidget(QWidget):
         self.init_wdg_ui(self.system_wdg, "System")
 
         # Content
-        self.System_settings_list = ["AutoSave Trigger", "AutoSave Folder MaxSize"]
+        self.system_settings_list = {"AutoSave Steps": QSpinBox(),
+                                     "AutoSave Folder MaxSize": QDoubleSpinBox(),
+                                     "Always Save Before Closing": QCheckBox(),
+                                     "Save Unsaved Files to Project Folder": QCheckBox()}
 
-        # Edits AutoSave Trigger
-        self.autoSaveLbl = QLabel("AutoSave Trigger")
-        self.Grid_Layout.addWidget(self.autoSaveLbl, 0, 0, Qt.AlignRight)
-        self.Grid_Layout.setColumnMinimumWidth(0, 50)
+        for item in self.system_settings_list:
+            lbl = QLabel(item)
+            self.Grid_Layout.addWidget(lbl, list(self.system_settings_list.keys()).index(item), 0, Qt.AlignRight)
 
-        self.autoSaveSteps = QSpinBox()
-        self.Grid_Layout.addWidget(self.autoSaveSteps, 0, 1, 1, 10, Qt.AlignLeft)
-        self.autoSaveSteps.setMinimumWidth(80)
-
-        # Edit AutoSave Folder MaxSize
-        self.autoSaveFolderMaxSizeLbl = QLabel("AutoSave Folder MaxSize")
-        self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeLbl, 1, 0, Qt.AlignRight)
-        self.Grid_Layout.setColumnMinimumWidth(0, 50)
-
-        self.autoSaveFolderMaxSizeSB = QDoubleSpinBox()
-        self.autoSaveFolderMaxSizeSB.setDecimals(3)
-        self.autoSaveFolderMaxSizeSB.setMinimum(0.001)
-        self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeSB, 1, 1, Qt.AlignLeft)
-        self.autoSaveFolderMaxSizeSB.setMinimumWidth(80)
-
-        self.autoSaveFolderMaxSizeLbl = QLabel("MBs")
-        self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeLbl, 1, 2, Qt.AlignLeft)
-        self.Grid_Layout.setColumnMinimumWidth(0, 50)
+            variable = self.system_settings_list[item]
+            self.Grid_Layout.addWidget(variable, list(self.system_settings_list.keys()).index(item), 1, 1, 10,
+                                       Qt.AlignLeft)
+            variable.setMaximumWidth(100)
+            if type(variable) == QDoubleSpinBox:
+                variable.setMaximum(100000.000)
 
     def init_key_mapping_wdg(self):
         self.key_mapping_wdg = QWidget()

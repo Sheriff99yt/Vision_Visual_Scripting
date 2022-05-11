@@ -9,6 +9,7 @@ from qtpy.QtWidgets import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from datetime import datetime
 
+from vvs_app.global_switches import GlobalSwitches
 from vvs_app.master_node import MasterNode
 from vvs_app.nodes.nodes_configuration import register_Node
 
@@ -29,6 +30,9 @@ class NodeEditorWindow(QMainWindow):
 
         for cls in MasterNode.__subclasses__():
             register_Node(cls)
+
+        self.global_switches = GlobalSwitches()
+        self.global_switches.MasterRef = self
 
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
@@ -151,26 +155,35 @@ class NodeEditorWindow(QMainWindow):
         :return: ``True`` if we can continue in the `Close Event` and shutdown. ``False`` if we should cancel
         :rtype: ``bool``
         """
+
+        auto_save_before_closing = self.global_switches.switches_Dict["Always Save Before Closing"]
         if not self.isModified():
             return True
-
-        auto_save_before_closing = True
-        if auto_save_before_closing:
-            return self.onFileSave()
+        elif auto_save_before_closing:
+            if self.onFileSave():
+                return True
+            else:
+                return self.save_message()
+        elif self.global_switches.switches_Dict["Save Unsaved Files to Project Folder"]:
+            return self.onFileAutoSave(True)
         else:
-            res = QMessageBox.warning(self, "About to loose your work?",
-                    "The document has been modified.\n Do you want to save your changes?",
-                    QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
-                  )
+            return self.save_message()
 
-            if res == QMessageBox.Save:
-                return self.onFileSave()
-            elif res == QMessageBox.Cancel:
-                return False
+    def save_message(self):
+        res = QMessageBox.warning(self, "About to loose your work?",
+                "The document has been modified.\n Do you want to save your changes?",
+                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
 
-        return True
+        if res == QMessageBox.Save:
+            return self.onFileSave()
 
-    def onScenePosChanged(self, x:int, y:int):
+        elif res == QMessageBox.Cancel:
+            return False
+
+        elif res == QMessageBox.Discard:
+            return True
+
+    def onScenePosChanged(self, x: int, y: int):
         """Handle event when cursor position changed on the `Scene`
 
         :param x: new cursor x position
@@ -187,14 +200,6 @@ class NodeEditorWindow(QMainWindow):
     def getFileDialogFilter(self):
         """Returns ``str`` standard file open/save filter for ``QFileDialog``"""
         return 'Graph (*.json);;All files (*)'
-
-    # def onNewGraphTab(self):
-    #     # This is overridden by Master Window Function
-    #     """Hande New Graph operation"""
-    #     print("No Waaaayyyyy")
-    #     if self.maybeSave():
-    #         self.CurrentNodeEditor().setup_new_graph()
-    #         self.setTitle()
 
     def on_file_open(self):
         """Handle File Open operation"""
@@ -218,37 +223,32 @@ class NodeEditorWindow(QMainWindow):
             else: self.setTitle()
             return True
 
-    def onFileAutoSave(self):
+    def onFileAutoSave(self, on_close=False):
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
-            Now = str(datetime.now()).replace(":", ".")[0:19]
-            fname = f"""{self.filesWidget.Project_Directory}/VVS AutoSave/{(current_node_editor.windowTitle()).replace("*", "")} {Now}.json"""
-            self.onBeforeSaveAs(current_node_editor, fname)
-            current_node_editor.fileAutoSave(fname)
-            self.filesWidget.deleteOldAutoSaves()
-            self.statusBar().showMessage("Successfully Auto Saved %s" % fname, 5000)
-
-            # support for MDI app
-            if hasattr(current_node_editor, "setTitle"):
-                current_node_editor.setTitle()
+            if self.currentNodeEditor().filename:
+                self.onFileSave()
             else:
-                self.setTitle()
-            return True
+                Now = str(datetime.now()).replace(":", ".")[0:19]
+                fname = f"""{self.filesWidget.Project_Directory}/VVS Auto Backup/{(current_node_editor.windowTitle()).replace("*", "")}{" Unsaved" if on_close else""} {Now}.json"""
+                self.onBeforeSaveAs(current_node_editor, fname)
+                current_node_editor.fileAutoSave(fname)
+                self.filesWidget.deleteOldAutoSaves()
+                self.statusBar().showMessage("Successfully Auto Saved %s" % fname, 5000)
+
+                # support for MDI app
+                if hasattr(current_node_editor, "setTitle"):
+                    current_node_editor.setTitle()
+                else:
+                    self.setTitle()
+                return True
 
     def on_file_save_as(self):
         """Handle File Save As operation"""
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
             fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.filesWidget.Project_Directory}/{self.currentNodeEditor().windowTitle().replace("*", "")}""", self.getFileDialogFilter())
-            if fname == '':
-                res = QMessageBox.warning(self, "About to loose your work?",
-                                          "The document has not been Saved.\n Do you want to Discard this File !?",
-                                          QMessageBox.Discard | QMessageBox.No
-                                          )
-                if res == QMessageBox.No:
-                    return False
-
-                return True
+            if fname == '':return False
 
             self.onBeforeSaveAs(current_node_editor, fname)
             current_node_editor.fileSave(fname)

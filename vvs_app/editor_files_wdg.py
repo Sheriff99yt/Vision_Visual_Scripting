@@ -78,8 +78,8 @@ class FilesWDG(QWidget):
             self.MakeDir(self.Project_Directory)
 
     def MakeDir(self, Dir):
-        if os.listdir(self.Project_Directory).__contains__("VVS AutoSave") is False:
-            os.makedirs(Dir + "/VVS AutoSave")
+        if os.listdir(self.Project_Directory).__contains__("VVS Auto Backup") is False:
+            os.makedirs(Dir + "/VVS Auto Backup")
 
     def new_graph_name(self, subwnd, all_names):
         x = 1
@@ -97,7 +97,7 @@ class FilesWDG(QWidget):
             subwnd.widget().setWindowTitle(newName)
 
     def deleteOldAutoSaves(self):
-        AutoSaveDir = self.Project_Directory + "/VVS AutoSave"
+        AutoSaveDir = self.Project_Directory + "/VVS Auto Backup"
         dirContentList = os.listdir(AutoSaveDir)
 
         FolderContentSize = 0

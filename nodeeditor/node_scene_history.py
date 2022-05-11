@@ -169,7 +169,7 @@ class SceneHistory():
             self.Edits_Counter = 0
         else:
             self.Edits_Counter += 1
-            if self.Edits_Counter >= self.scene.masterRef.global_switches.switches_Dict["AutoSave Trigger"]:
+            if self.Edits_Counter >= self.scene.masterRef.global_switches.switches_Dict["AutoSave Steps"]:
                 self.masterRef.onFileAutoSave()
                 self.Edits_Counter = 0
             self.scene.masterRef.global_switches.save_settings_to_file(

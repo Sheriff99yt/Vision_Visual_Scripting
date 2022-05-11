@@ -8,8 +8,10 @@ class GlobalSwitches:
         self.Settings_Directory = f"C:/Users/{os.getlogin()}/Documents/VVS"
         self.Settings_File = self.Settings_Directory + f"/Settings.json"
 
-        self.Default_switches_Dict = {"AutoSave Trigger": 30,
+        self.Default_switches_Dict = {"AutoSave Steps": 30,
                                       "AutoSave Folder MaxSize": 500,
+                                      "Always Save Before Closing": True,
+                                      "Save Unsaved Files to Project Folder": False,
 
                                       "New Graph": "Ctrl+N",
                                       "Open": "Ctrl+O",
