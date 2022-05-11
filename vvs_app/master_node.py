@@ -3,7 +3,6 @@ from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
 from nodeeditor.node_node import Node
-from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException
 

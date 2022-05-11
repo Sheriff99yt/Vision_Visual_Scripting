@@ -317,6 +317,7 @@ class Socket(Serializable):
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(scene_pos.x() + self.grSocket.radius + 4), int(scene_pos.y() - self.grSocket.radius))
 
+                # if selected_theme == night:
                 userInputWdg.setStyleSheet("background-color: #555555; border-width: 1px; border-style: solid; border-color: transparent; color: white")
 
             return userInputWdg
@@ -444,19 +445,8 @@ class Socket(Serializable):
             return data['position'] in (RIGHT_BOTTOM, RIGHT_TOP)
 
     def get_wdg_value(self):
-
-        if self.is_input:
-            value = None
-            if [1, 2].__contains__(self.socket_type):
-                value = self.userInputWdg.value()
-
-            elif self.socket_type == 3:
-                value = self.userInputWdg.isChecked()
-
-            elif [4, 5, 6].__contains__(self.socket_type):
-                value = self.userInputWdg.text()
-
-            return value
+        if self.is_input and self.userInputWdg:
+            return self.node.scene.masterRef.get_QWidget_content(self.userInputWdg)
 
     def serialize(self) -> OrderedDict:
 
@@ -475,14 +465,6 @@ class Socket(Serializable):
         self.changeSocketType(data['socket_type'])
         hashmap[data['id']] = self
 
-        if self.is_input:
-            if [1, 2].__contains__(self.socket_type):
-                self.userInputWdg.setValue(data['socket_value'])
-
-            elif self.socket_type == 3:
-                self.userInputWdg.setChecked(data['socket_value'])
-
-            elif [4, 5, 6].__contains__(self.socket_type):
-                self.userInputWdg.setText(data['socket_value'])
-
+        if self.is_input and self.userInputWdg:
+            self.node.scene.masterRef.set_QWidget_content(self.userInputWdg, data['socket_value'])
             return True

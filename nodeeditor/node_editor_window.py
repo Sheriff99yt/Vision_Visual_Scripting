@@ -74,6 +74,7 @@ class NodeEditorWindow(QMainWindow):
         self.actExit = QAction('E&xit', self, shortcut=self.global_switches.switches_Dict["Exit"], statusTip="Exit application", triggered=self.close)
         self.actUndo = QAction('&Undo', self, shortcut=self.global_switches.switches_Dict["Undo"], statusTip="Undo last operation", triggered=self.onEditUndo)
         self.actRedo = QAction('&Redo', shortcut=self.global_switches.switches_Dict["Redo"], statusTip="Redo last operation", triggered=self.onEditRedo)
+        self.actSelectAll = QAction('Select&All', shortcut=self.global_switches.switches_Dict["Select All"], statusTip="Select's All Nodes", triggered=self.selectAllNodes)
         self.actCut = QAction('Cu&t', shortcut=self.global_switches.switches_Dict["Cut"], statusTip="Cut to clipboard", triggered=self.onEditCut)
         self.actCopy = QAction('&Copy', shortcut=self.global_switches.switches_Dict["Copy"], statusTip="Copy to clipboard", triggered=self.onEditCopy)
         self.actPaste = QAction('&Paste', shortcut=self.global_switches.switches_Dict["Paste"], statusTip="Paste from clipboard", triggered=self.onEditPaste)
@@ -81,33 +82,9 @@ class NodeEditorWindow(QMainWindow):
 
     def create_menus(self):
         """Create Menus for `File` and `Edit`"""
-        # self.menu = QToolBar()
-        # self.menu.setStyleSheet("padding: 0px")
-        # self.menu.setFloatable(False)
-        # self.menu.setMovable(False)
-        # self.addToolBar(self.menu)
-        # self.menu.setMaximumHeight(22)
-        #
-        # self.menu.mousePressEvent = self.menu_new_press_event
-        # self.menu.mouseMoveEvent = self.menu_new_move_event
-
-        # self.test_menu = QMenuBar(self.menu)
-        #
-        # self.test_menu.setMinimumWidth(600)
-
-        # self.setMenuBar(self.test_menu)
-
         self.createFileMenu()
         self.createEditMenu()
-    # def menu_new_press_event(self, event):
-    #     self.oldPosition = event.globalPos()
-    #
-    # def menu_new_move_event(self, event):
-    #     self.showNormal()
-    #
-    #     delta = QPoint(event.globalPos() - self.oldPosition)
-    #     self.move(self.x() + delta.x(), self.y() + delta.y())
-    #     self.oldPosition = event.globalPos()
+
     def createFileMenu(self):
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('&File')
@@ -126,11 +103,15 @@ class NodeEditorWindow(QMainWindow):
         self.editMenu.addAction(self.actUndo)
         self.editMenu.addAction(self.actRedo)
         self.editMenu.addSeparator()
+        self.editMenu.addAction(self.actSelectAll)
         self.editMenu.addAction(self.actCut)
         self.editMenu.addAction(self.actCopy)
         self.editMenu.addAction(self.actPaste)
         self.editMenu.addSeparator()
         self.editMenu.addAction(self.actDelete)
+
+    def selectAllNodes(self):
+        return self.currentNodeEditor().select_all_nodes()
 
     def setTitle(self):
         """Function responsible for setting window title"""
@@ -188,7 +169,6 @@ class NodeEditorWindow(QMainWindow):
                 return False
 
         return True
-
 
     def onScenePosChanged(self, x:int, y:int):
         """Handle event when cursor position changed on the `Scene`

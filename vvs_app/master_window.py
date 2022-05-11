@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
@@ -49,10 +50,12 @@ class MasterWindow(NodeEditorWindow):
     def initUI(self):
         self.name_company = 'MyTeam'
         self.name_product = 'Vision Visual Scripting'
+        self.qss_theme = "qss/nodeeditor-night.qss"
+        # self.qss_theme = "qss/nodeeditor-light.qss"
 
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-night.qss")
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.qss_theme)
         loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-night.qss"), self.stylesheet_filename)
+            os.path.join(os.path.dirname(__file__), self.qss_theme), self.stylesheet_filename)
 
         self.empty_icon = QIcon(".")
 
@@ -118,7 +121,6 @@ class MasterWindow(NodeEditorWindow):
         self.update_libraries_wnd()
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
-
 
     def create_welcome_screen(self):
         Elayout = QVBoxLayout()
@@ -348,7 +350,9 @@ class MasterWindow(NodeEditorWindow):
                              "Cut": self.actCut,
                              "Copy": self.actCopy,
                              "Paste": self.actPaste,
-                             "Delete": self.actDelete}
+                             "Delete": self.actDelete,
+                             "Select All": self.actSelectAll
+                             }
 
     def open_doc(self):
         subprocess.Popen('hh.exe "VVS-Help.chm"')
@@ -433,6 +437,7 @@ class MasterWindow(NodeEditorWindow):
         self.actSaveAs.setEnabled(hasMdiChild)
 
         # Update Node Editor Menu
+        self.actSelectAll.setEnabled(hasMdiChild)
         self.actClose.setEnabled(hasMdiChild)
         self.actCloseAll.setEnabled(hasMdiChild)
         self.actTile.setEnabled(hasMdiChild)
@@ -453,6 +458,7 @@ class MasterWindow(NodeEditorWindow):
             self.actPaste.setEnabled(hasMdiChild)
 
             self.actCut.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actSelectAll.setEnabled(hasMdiChild)
             self.actCopy.setEnabled(hasMdiChild and active.hasSelectedItems())
             self.actDelete.setEnabled(hasMdiChild and active.hasSelectedItems())
 
@@ -714,25 +720,31 @@ class MasterWindow(NodeEditorWindow):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
 
-    def get_settings_content(self, widget):
+    def get_QWidget_content(self, widget):
         if type(widget) == QKeySequenceEdit:
             value = widget.keySequence().toString()
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
             value = widget.value()
         elif type(widget) == QLineEdit or type(widget) == QLabel:
             value = widget.text()
+        elif type(widget) == QTextEdit:
+            value = widget.toPlainText()
+        elif type(widget) == QCheckBox:
+            value = widget.isChecked()
         else:
             value = None
             print("Widget Not Supported")
         return value
 
-    def set_settings_content(self, widget, new_value: int):
+    def set_QWidget_content(self, widget, new_value):
         if type(widget) == QKeySequenceEdit:
             widget.setKeySequence(new_value)
         elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
             widget.setValue(new_value)
-        elif type(widget) == QLineEdit or type(widget) == QLabel:
+        elif type(widget) == QLineEdit or type(widget) == QLabel or type(widget) == QTextEdit:
             widget.setText(new_value)
+        elif type(widget) == QCheckBox:
+            widget.setChecked(new_value)
         else:
             print("Widget Not Supported")
 

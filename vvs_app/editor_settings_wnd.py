@@ -141,7 +141,7 @@ class SettingsWidget(QWidget):
 
         self.autoSaveSteps = QSpinBox()
         self.Grid_Layout.addWidget(self.autoSaveSteps, 0, 1, 1, 10, Qt.AlignLeft)
-        self.autoSaveSteps.setMinimumWidth(50)
+        self.autoSaveSteps.setMinimumWidth(80)
 
         # Edit AutoSave Folder MaxSize
         self.autoSaveFolderMaxSizeLbl = QLabel("AutoSave Folder MaxSize")
@@ -152,7 +152,11 @@ class SettingsWidget(QWidget):
         self.autoSaveFolderMaxSizeSB.setDecimals(3)
         self.autoSaveFolderMaxSizeSB.setMinimum(0.001)
         self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeSB, 1, 1, Qt.AlignLeft)
-        self.autoSaveFolderMaxSizeSB.setMinimumWidth(50)
+        self.autoSaveFolderMaxSizeSB.setMinimumWidth(80)
+
+        self.autoSaveFolderMaxSizeLbl = QLabel("MBs")
+        self.Grid_Layout.addWidget(self.autoSaveFolderMaxSizeLbl, 1, 2, Qt.AlignLeft)
+        self.Grid_Layout.setColumnMinimumWidth(0, 50)
 
     def init_key_mapping_wdg(self):
         self.key_mapping_wdg = QWidget()
@@ -161,7 +165,7 @@ class SettingsWidget(QWidget):
 
         # Content
         self.Key_Mapping_settings_list = ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
-                                          "Undo", "Redo", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
+                                          "Undo", "Redo", "Select All", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
 
         for item in self.Key_Mapping_settings_list:
             lbl = QLabel(item)
@@ -180,8 +184,8 @@ class SettingsWidget(QWidget):
         for i in range(grid_row_count):
             try:
                 if grid_layout.itemAtPosition(i, 1).widget():
-                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
-                    self.masterRef.set_settings_content(grid_layout.itemAtPosition(i, 1).widget(), self.masterRef.global_switches.switches_Dict[lbl])
+                    lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
+                    self.masterRef.set_QWidget_content(grid_layout.itemAtPosition(i, 1).widget(), self.masterRef.global_switches.switches_Dict[lbl])
             except Exception as e:
                 print("Window Has Fields to fill that's why", e)
 
@@ -196,8 +200,8 @@ class SettingsWidget(QWidget):
 
             for i in range(grid_row_count):
                 if grid_layout.itemAtPosition(i, 1).widget().isWindowModified() or type(grid_layout.itemAtPosition(i, 1).widget()) != QKeySequenceEdit:
-                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
-                    txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
+                    lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
+                    txt = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 1).widget())
                     grid_layout.itemAtPosition(i, 1).widget().setWindowModified(False)
                     changed_settings_dict[lbl] = txt
 
@@ -208,8 +212,8 @@ class SettingsWidget(QWidget):
                     self.settingsTree.currentItem().data(9, 10).setText("Applied")
                 if current_widget == self.key_mapping_wdg:
                     for i in range(grid_row_count):
-                        lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
-                        txt = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 1).widget())
+                        lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
+                        txt = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 1).widget())
                         self.masterRef.actions_list[lbl].setShortcut(txt)
                 elif current_widget == self.system_wdg:
                     if self.masterRef.currentNodeEditor():
@@ -222,7 +226,7 @@ class SettingsWidget(QWidget):
 
             if reset:
                 for i in range(grid_row_count):
-                    lbl = self.masterRef.get_settings_content(grid_layout.itemAtPosition(i, 0).widget())
+                    lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
                     self.masterRef.global_switches.switches_Dict[lbl] = self.masterRef.global_switches.Default_switches_Dict[lbl]
                     if type(grid_layout.itemAtPosition(i, 1).widget()) == QKeySequenceEdit:
                         grid_layout.itemAtPosition(i, 1).widget().setStyleSheet("background-color: transparent")
@@ -273,7 +277,7 @@ def setStat(self):
 
     for i in range(grid_row_count):
         txt = grid_layout.itemAtPosition(i, 1).widget().keySequence().toString()
-        if txt == self.keySequence().toString():
+        if txt == self.keySequence().toString() or self.keySequence().toString() == "Shift+Del":
             count += 1
 
     if count > 1:

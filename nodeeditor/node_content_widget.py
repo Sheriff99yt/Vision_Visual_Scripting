@@ -69,7 +69,7 @@ class QDMTextEdit(QTextEdit):
             This class is an example of a ``QTextEdit`` modification that handles the `Delete` key event with an overridden
             Qt's ``keyPressEvent`` (when not using ``QActions`` in menu or toolbar)
 
-        Overridden ``QTextEdit`` which sends a notification about being edited to its parent's container :py:class:`QDMNodeContentWidget`
+        Overridden ``QTextEdit`` which sends a notification about being edited to its parent's container :py:class:`NodeContentWidget`
     """
 
     def focusInEvent(self, event: 'QFocusEvent'):

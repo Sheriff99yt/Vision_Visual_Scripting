@@ -20,7 +20,7 @@ class FloatVar(MasterNode):
         super().__init__(scene, inputs=[], outputs=[1]) if not isSetter else super().__init__(scene, inputs=[0, 1], outputs=[0, 1])
         self.is_setter = isSetter
         self.is_var = True
-        self.grNode._brush_title = QBrush(QColor(FloatColor))
+        self.set_node_color(FloatColor)
 
     def getNodeCode(self):
         if self.is_setter:
@@ -63,7 +63,7 @@ class IntegerVar(MasterNode):
         super().__init__(scene, inputs=[], outputs=[2]) if not isSetter else super().__init__(scene, inputs=[0, 2], outputs=[0, 2])
         self.is_setter = isSetter
         self.is_var = True
-        self.grNode._brush_title = QBrush(QColor(IntegerColor))
+        self.set_node_color(IntegerColor)
 
     def getNodeCode(self):
         if self.is_setter:
@@ -108,7 +108,7 @@ class BooleanVar(MasterNode):
         super().__init__(scene, inputs=[], outputs=[3]) if not isSetter else super().__init__(scene, inputs=[0, 3], outputs=[0, 3])
         self.is_setter = isSetter
         self.is_var = True
-        self.grNode._brush_title = QBrush(QColor(BooleanColor))
+        self.set_node_color(BooleanColor)
 
     def getNodeCode(self):
         if self.is_setter:
@@ -153,7 +153,8 @@ class StringVar(MasterNode):
         super().__init__(scene, inputs=[], outputs=[4]) if not isSetter else super().__init__(scene, inputs=[0, 4], outputs=[0, 4])
         self.is_setter = isSetter
         self.is_var = True
-        self.grNode._brush_title = QBrush(QColor(StringColor))
+        self.set_node_color(StringColor)
+
 
     def getNodeCode(self):
         if self.is_setter:
@@ -198,7 +199,7 @@ class ListVar(MasterNode):
         super().__init__(scene, inputs=[], outputs=[5]) if not isSetter else super().__init__(scene, inputs=[0, 5], outputs=[0, 5])
         self.is_setter = isSetter
         self.is_var = True
-        self.grNode._brush_title = QBrush(QColor(StringColor))
+        self.set_node_color("#555555")
 
     def getNodeCode(self):
         if self.is_setter:

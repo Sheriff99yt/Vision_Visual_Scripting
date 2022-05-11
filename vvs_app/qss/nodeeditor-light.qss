@@ -1,10 +1,10 @@
 
 QMdiArea QTabBar QToolButton,QPushButton:pressed, QToolButton:pressed, QComboBox:hover, QComboBox:focus, QToolBar, QHeaderView::section, QHeaderView, QDialog, QMainWindow, QSplitter, QStatusBar, QMainWindow::separator,QMenuBar ,QListView::item:selected,QListView::item::active:selected{
-    background-color:#282828}
+    background-color:#FFFFFF}
 QMdiArea QTabBar::tab:top:selected,QPushButton:hover, QToolButton:hover,QPushButton:disabled, QToolButton:disabled,QFrame,QTabBar,QStatusBar,QMenu::active,QMenu::item:selected,QMenuBar::item:selected,QMenuBar::item:pressed,QLineEdit,QTextEdit,QListView {
-    background-color:#565656}
+    background-color:#E0E0E0;}
 QDockWidget::title,QPushButton, QToolButton:checked,QComboBox::drop-down,QComboBox QAbstractItemView,QComboBox,QPushButton,QToolButton,QMenu,QMenu::item,QMenuBar::item{
-    background-color: #1F1F1F;}
+    background-color: #FFFCAF;}
 QMdiArea QTabBar::tab:top:!selected:hover,QListView::item:hover{
     background-color: #828282;}
 QMdiSubWindow{
@@ -16,9 +16,9 @@ QLabel{
 
 
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover,QMdiArea QTabBar QToolButton,QDockWidget,QDockWidget::title,QListView::item:selected,QListView::item::active:selected,QListView::item,QListView::item::active:hover,QMenuBar::item,QPushButton:disabled, QToolButton:disabled,QPushButton, QToolButton,QListView::item:selected,QListView::item::active:selected,QLineEdit,QTextEdit,QDMNodeContentWidget,QDMNodeContentWidget QFrame,QDMNodeContentWidget QTextEdit,QDMNodeContentWidget QLabel,QLabel,QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover,QHeaderView,QTreeView,QTabBar,QStatusBar,QComboBox,QMenu::active,QMenu::item {
-    color: #FFFFFF;}
+    color: #282828;}
 QMenu::separator,QMenu::disabled,QMenu::item:disabled{
-    color:#828282;}
+    color:#282828;}
 
 
 
@@ -26,7 +26,7 @@ QMenu::separator,QMenu::disabled,QMenu::item:disabled{
 QGraphicsView{
     selection-background-color:#FFFFFF}
 QComboBox {
-    selection-background-color: #565656;}
+    selection-background-color: #E0E0E0;}
 
 
 
@@ -54,7 +54,7 @@ QMenuBar::item,QLineEdit,QMenuBar::item,QToolBar,QPushButton, QToolButton,QPushB
 
 
 QPushButton:disabled, QToolButton:disabled,QMenu,QComboBox:hover, QComboBox:focus {
-    border: 4px solid #1F1F1F;}
+    border: 4px solid #E0E0E0;}
 
 
 
@@ -77,7 +77,7 @@ QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea 
     border-top-right-radius:0px;
     padding:0px 0px;padding-top:0;
     padding-bottom:0px;min-width:8ex;
-    border:1px solid #282828;
+    border:1px solid #E0E0E0;
     border-bottom:0}
 
 QMdiArea QTabBar QToolButton::left-arrow{image:url(":icons/arrow_left.png")}
@@ -92,17 +92,4 @@ QDockWidget{font-weight:normal;titlebar-close-icon:url(":icons/close.png");title
 QDockWidget::title{padding-top:6px;padding-left:6px;}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+E0E0E0  FFFFFF  282828  FFFCAF

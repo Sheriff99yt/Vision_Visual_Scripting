@@ -8,7 +8,7 @@ from collections import OrderedDict
 from PyQt5.QtWidgets import *
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QBrush
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
 from nodeeditor.utils import dumpException, pp
@@ -58,7 +58,7 @@ class Node(Serializable):
         self.showCode = True
 
         self.nodeID = None
-
+        self.nodeColor = "#FFFFFF"
         self.syntax = ""
 
         # just to be sure, init these variables
@@ -549,7 +549,7 @@ class Node(Serializable):
             outs.append(other_socket.node)
         return outs
 
-    # serialization functions
+
 
     def serialize(self) -> OrderedDict:
         inputs, outputs = [], []
@@ -638,9 +638,12 @@ class Node(Serializable):
 
         return True
 
+    def set_node_color(self, color):
+        self.nodeColor = color
+        self.grNode._brush_title = QBrush(QColor(color))
 
-    def initUI(self):
-        pass
+    def set_input_label_text(self, index, text):
+        self.grNode.set_input_label_text(index, text)
 
     def getNodeCode(self):
         return None

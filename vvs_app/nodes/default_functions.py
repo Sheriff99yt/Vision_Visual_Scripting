@@ -22,8 +22,8 @@ class IfStatement(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
-        self.nodeColor = "#90FF5733"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#90FF5733")
+        self.set_input_label_text(1, "Condition")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -69,8 +69,7 @@ class ForLoop(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 2], outputs=[0])
-        self.nodeColor = "#905050FF"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#905050FF")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -104,8 +103,7 @@ class ForEachLoop(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 5], outputs=[0, 6])
-        self.nodeColor = "#905050FF"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#905050FF")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -143,7 +141,7 @@ class GreaterThan(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(logicOperators))
+        self.set_node_color(logicOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -169,7 +167,9 @@ class LessThan(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(logicOperators))
+        self.set_node_color(logicOperators)
+
+
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -195,7 +195,8 @@ class Equal(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(logicOperators))
+        self.set_node_color(logicOperators)
+
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -222,7 +223,7 @@ class And(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[3, 3], outputs=[3])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(logicOperators))
+        self.set_node_color(logicOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -249,7 +250,7 @@ class Add(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(mathOperators))
+        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -275,7 +276,7 @@ class Sub(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(mathOperators))
+        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -301,7 +302,7 @@ class Mul(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(mathOperators))
+        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -327,7 +328,7 @@ class Div(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.grNode._brush_title = QBrush(QColor(mathOperators))
+        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -354,7 +355,7 @@ class UserInput(MasterNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 6, 4], outputs=[0])
         self.nodeColor = "#505050"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#505050")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -393,8 +394,7 @@ class RawCode(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 4], outputs=[0])
-        self.nodeColor = "#303030"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#303030")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -432,8 +432,7 @@ class Print(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 6], outputs=[0])
-        self.nodeColor = "#90702070"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#90702070")
 
     def getNodeCode(self):
         if self.syntax == "Python":

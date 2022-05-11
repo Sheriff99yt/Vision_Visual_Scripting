@@ -95,7 +95,7 @@ class NodeEditorWidget(QWidget):
 
         self.copy_code_btn = QPushButton()
         self.copy_code_btn.setMaximumSize(25, 25)
-        self.copy_code_btn.setIcon(QIcon("icons/Copy.png"))
+        self.copy_code_btn.setIcon(QIcon("icons/copy.png"))
         self.copy_code_btn.clicked.connect(self.CopyTextCode)
         code_wnd_bar.addWidget(self.copy_code_btn)
 
@@ -112,6 +112,7 @@ class NodeEditorWidget(QWidget):
 
         # Termenal
         self.code_output = QTextEdit()
+        # if selected_theme == night:
         self.code_output.setStyleSheet("background-color: #282828")
         self.code_output.setFont(QFont('Roboto', 12))
         self.v_splitter.addWidget(self.code_output)

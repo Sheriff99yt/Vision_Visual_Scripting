@@ -15,8 +15,7 @@ class Event(MasterNode):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter
         self.is_event = True
-        self.nodeColor = "#90FF1010"
-        self.grNode._brush_title = QBrush(QColor(self.nodeColor))
+        self.set_node_color("#90FF1010")
 
     def getNodeCode(self):
         if self.is_setter:

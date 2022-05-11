@@ -33,6 +33,10 @@ class MasterEditorWnd(NodeEditorWidget):
 
         self.setup_new_graph()
 
+    def select_all_nodes(self):
+        for node in self.scene.nodes:
+            node.doSelect(True)
+
     def getNodeClassFromType(self, data):
         if 'node_type' not in data:
             return Node

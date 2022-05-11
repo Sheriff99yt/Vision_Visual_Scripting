@@ -9,7 +9,7 @@ class GlobalSwitches:
         self.Settings_File = self.Settings_Directory + f"/Settings.json"
 
         self.Default_switches_Dict = {"AutoSave Trigger": 30,
-                                      "AutoSave Folder MaxSize": 5.0,
+                                      "AutoSave Folder MaxSize": 500,
 
                                       "New Graph": "Ctrl+N",
                                       "Open": "Ctrl+O",
@@ -25,7 +25,9 @@ class GlobalSwitches:
                                       "Paste": "Ctrl+V",
                                       "Delete": "Del",
 
-                                      "Settings Window": "Ctrl+Shift+S"}
+                                      "Settings Window": "Ctrl+Shift+S",
+                                      "Select All": "Ctrl+A"
+                                      }
 
         if os.path.isfile(self.Settings_File):
             # Read data from file

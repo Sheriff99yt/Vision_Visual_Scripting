@@ -105,10 +105,10 @@ class FilesWDG(QWidget):
             file = os.path.join(AutoSaveDir, file)
             FolderContentSize += os.stat(file).st_size
 
-        FolderContentSizeInGBs = FolderContentSize/(1000 * 1000 * 1000)
+        FolderContentSizeInGBs = FolderContentSize/(1000 * 1000)
 
         if FolderContentSizeInGBs >= self.masterRef.global_switches.switches_Dict["AutoSave Folder MaxSize"]:
             self.msg = QMessageBox()
-            self.msg.setText(f"AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes")
+            self.msg.setText(f"AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} MB")
             self.msg.show()
             # self.masterRef.statusBar().showMessage(f"""AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes""")
