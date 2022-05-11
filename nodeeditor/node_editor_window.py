@@ -9,6 +9,7 @@ from qtpy.QtWidgets import *
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from datetime import datetime
 
+from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.global_switches import GlobalSwitches
 from vvs_app.master_node import MasterNode
 from vvs_app.nodes.nodes_configuration import register_Node
@@ -31,11 +32,13 @@ class NodeEditorWindow(QMainWindow):
         for cls in MasterNode.__subclasses__():
             register_Node(cls)
 
-        self.global_switches = GlobalSwitches()
-        self.global_switches.MasterRef = self
-
+        self.files_widget = FilesWDG()
+        self.files_widget.masterRef = self
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
+
+        self.global_switches = GlobalSwitches(master=self)
+
         self.initUI()
 
     def initUI(self):
@@ -72,7 +75,7 @@ class NodeEditorWindow(QMainWindow):
         """Create basic `File` and `Edit` actions"""
         self.actNew = QAction('&New Graph', self, shortcut=self.global_switches.switches_Dict["New Graph"], statusTip="Create new graph", triggered=self.on_new_graph_tab)
         self.actOpen = QAction('&Open', self, shortcut=self.global_switches.switches_Dict["Open"], statusTip="Open file", triggered=self.on_file_open)
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.filesWidget.on_open_folder)
+        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
         self.actSave = QAction('&Save', self, shortcut=self.global_switches.switches_Dict["Save"], statusTip="Save file", triggered=self.onFileSave)
         self.actSaveAs = QAction('Save &As...', self, shortcut=self.global_switches.switches_Dict["Save As"], statusTip="Save file as...", triggered=self.on_file_save_as)
         self.actExit = QAction('E&xit', self, shortcut=self.global_switches.switches_Dict["Exit"], statusTip="Exit application", triggered=self.close)
@@ -155,27 +158,35 @@ class NodeEditorWindow(QMainWindow):
         :return: ``True`` if we can continue in the `Close Event` and shutdown. ``False`` if we should cancel
         :rtype: ``bool``
         """
-
-        auto_save_before_closing = self.global_switches.switches_Dict["Always Save Before Closing"]
+        print(self.isModified())
         if not self.isModified():
             return True
-        elif auto_save_before_closing:
+        elif self.global_switches.switches_Dict["Always Save Before Closing"]:
             if self.onFileSave():
                 return True
             else:
                 return self.save_message()
+
         elif self.global_switches.switches_Dict["Save Unsaved Files to Project Folder"]:
-            return self.onFileAutoSave(True)
+            return self.save_unsaved_files()
+
         else:
             return self.save_message()
 
-    def save_message(self):
-        res = QMessageBox.warning(self, "About to loose your work?",
-                "The document has been modified.\n Do you want to save your changes?",
+    def save_message(self, new_dir=False):
+        if new_dir:
+            msg = "The Folder has not been Set.\n Do you want to save your changes?"
+        else:
+            msg = "The document has been modified.\n Do you want to save your changes?"
+
+        res = QMessageBox.warning(self, "About to loose your work?", msg,
                 QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
 
         if res == QMessageBox.Save:
-            return self.onFileSave()
+            if new_dir:
+                return self.files_widget.set_project_folder()
+            else:
+                return self.onFileSave()
 
         elif res == QMessageBox.Cancel:
             return False
@@ -212,6 +223,8 @@ class NodeEditorWindow(QMainWindow):
 
     def onFileSave(self):
         """Handle File Save operation"""
+        # This Function Overrides the File With the same name
+        # Check If a file Already Exists with the same name
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
             if not current_node_editor.isFilenameSet(): return self.on_file_save_as()
@@ -223,31 +236,46 @@ class NodeEditorWindow(QMainWindow):
             else: self.setTitle()
             return True
 
-    def onFileAutoSave(self, on_close=False):
+    def save_unsaved_files(self):
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
-            if self.currentNodeEditor().filename:
-                self.onFileSave()
-            else:
-                Now = str(datetime.now()).replace(":", ".")[0:19]
-                fname = f"""{self.filesWidget.Project_Directory}/VVS Auto Backup/{(current_node_editor.windowTitle()).replace("*", "")}{" Unsaved" if on_close else""} {Now}.json"""
-                self.onBeforeSaveAs(current_node_editor, fname)
-                current_node_editor.fileAutoSave(fname)
-                self.filesWidget.deleteOldAutoSaves()
-                self.statusBar().showMessage("Successfully Auto Saved %s" % fname, 5000)
+            must_change = self.files_widget.Project_Directory == self.files_widget.default_system_dir
 
-                # support for MDI app
-                if hasattr(current_node_editor, "setTitle"):
-                    current_node_editor.setTitle()
+            if must_change:
+                new = self.files_widget.set_project_folder()
+                if new:
+                    return current_node_editor.fileSave(
+                        f'{self.files_widget.Project_Directory}/{current_node_editor.windowTitle().replace("*", "")}.json')
                 else:
-                    self.setTitle()
-                return True
+                    return self.save_message(new_dir=True)
+            else:
+                return current_node_editor.fileSave(
+                    f'{self.files_widget.Project_Directory}/{current_node_editor.windowTitle().replace("*", "")}.json')
+
+
+    def onFileAutoSave(self):
+        current_node_editor = self.currentNodeEditor()
+        if current_node_editor is not None:
+            Now = str(datetime.now()).replace(":", ".")[0:19]
+            fname = f"""{self.files_widget.Project_Directory}/VVS Auto Backup/{(current_node_editor.windowTitle()).replace("*", "")} {Now}.json"""
+            self.onBeforeSaveAs(current_node_editor, fname)
+            current_node_editor.fileAutoSave(fname)
+            self.files_widget.size_limit_warning()
+            self.statusBar().showMessage("Successfully Auto Saved %s" % fname, 5000)
+
+            # # support for MDI app
+            # if hasattr(current_node_editor, "setTitle"):
+            #     current_node_editor.setTitle()
+            # else:
+            #     self.setTitle()
+
+            return True
 
     def on_file_save_as(self):
         """Handle File Save As operation"""
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
-            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.filesWidget.Project_Directory}/{self.currentNodeEditor().windowTitle().replace("*", "")}""", self.getFileDialogFilter())
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"""{self.files_widget.Project_Directory}/{self.currentNodeEditor().windowTitle().replace("*", "")}""", self.getFileDialogFilter())
             if fname == '':return False
 
             self.onBeforeSaveAs(current_node_editor, fname)

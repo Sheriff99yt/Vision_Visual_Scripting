@@ -4,6 +4,7 @@ from vvs_app.master_window import *
 class FilesWDG(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.default_system_dir = f"C:/Users/{os.getlogin()}/Documents/VVS"
 
         self.masterRef = None
 
@@ -62,20 +63,22 @@ class FilesWDG(QWidget):
         self.masterRef.on_file_open(all_files)
 
     def CreateDefaultDir(self):
-
-        self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
+        self.Project_Directory = self.default_system_dir
         if os.path.exists(self.Project_Directory) is False:
-            self.Project_Directory = f"C:/Users/{os.getlogin()}/AppData/Roaming/VVS"
+            self.Project_Directory = self.default_system_dir
 
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)
 
-    def on_open_folder(self):
-        Dir = QFileDialog.getExistingDirectory(self, "Set Project Location")
+    def set_project_folder(self):
+        Dir = QFileDialog.getExistingDirectory(self, "Select Project Folder", self.Project_Directory)
         if Dir != "":
             self.Project_Directory = Dir
             self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
             self.MakeDir(self.Project_Directory)
+            return True
+        else:
+            return False
 
     def MakeDir(self, Dir):
         if os.listdir(self.Project_Directory).__contains__("VVS Auto Backup") is False:
@@ -96,7 +99,7 @@ class FilesWDG(QWidget):
             subwnd.setWindowTitle(newName)
             subwnd.widget().setWindowTitle(newName)
 
-    def deleteOldAutoSaves(self):
+    def size_limit_warning(self):
         AutoSaveDir = self.Project_Directory + "/VVS Auto Backup"
         dirContentList = os.listdir(AutoSaveDir)
 

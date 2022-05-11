@@ -134,8 +134,8 @@ class SettingsWidget(QWidget):
         # Content
         self.system_settings_list = {"AutoSave Steps": QSpinBox(),
                                      "AutoSave Folder MaxSize": QDoubleSpinBox(),
-                                     "Always Save Before Closing": QCheckBox(),
-                                     "Save Unsaved Files to Project Folder": QCheckBox()}
+                                     "Always Save Before Closing": QRadioButton(),
+                                     "Save Unsaved Files to Project Folder": QRadioButton()}
 
         for item in self.system_settings_list:
             lbl = QLabel(item)

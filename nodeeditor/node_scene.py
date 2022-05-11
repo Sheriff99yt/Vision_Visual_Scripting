@@ -314,7 +314,7 @@ class NodeScene(Serializable):
 
         self.has_been_modified = False
 
-    def saveToFile(self, filename: str):
+    def saveToFile(self, filename: str, silent=False):
         """
         Save this `Scene` to the file on disk.
 
@@ -325,7 +325,7 @@ class NodeScene(Serializable):
             file.write(json.dumps(self.serialize(), indent=4))
             # print("saving to", filename, "was successful.")
 
-            self.has_been_modified = False
+            self.has_been_modified = silent
             self.filename = filename
 
     def loadFromFile(self, filename: str):

@@ -372,7 +372,7 @@ class MasterWindow(NodeEditorWindow):
             all_names = []
             for item in self.graphs_parent_wdg.subWindowList(): all_names.append(item.widget().windowTitle())
 
-            self.filesWidget.new_graph_name(subwnd, all_names)
+            self.files_widget.new_graph_name(subwnd, all_names)
 
         except Exception as e:
             dumpException(e)
@@ -381,7 +381,7 @@ class MasterWindow(NodeEditorWindow):
 
         if all_files == False:
             file_names, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file',
-                                                              self.filesWidget.Project_Directory,
+                                                              self.files_widget.Project_Directory,
                                                               self.getFileDialogFilter())
 
         else:
@@ -614,13 +614,10 @@ class MasterWindow(NodeEditorWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.functionsDock)
 
     def create_files_dock(self):
-        self.filesWidget = FilesWDG()
-        self.filesWidget.masterRef = self
-
-        self.brows_btn.clicked.connect(self.filesWidget.on_open_folder)
+        self.brows_btn.clicked.connect(self.files_widget.set_project_folder)
 
         self.filesDock = QDockWidget("Project Files")
-        self.filesDock.setWidget(self.filesWidget)
+        self.filesDock.setWidget(self.files_widget)
         self.filesDock.setFeatures(self.filesDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
 
@@ -719,15 +716,15 @@ class MasterWindow(NodeEditorWindow):
             self.graphs_parent_wdg.setActiveSubWindow(window)
 
     def get_QWidget_content(self, widget):
-        if type(widget) == QKeySequenceEdit:
+        if [QKeySequenceEdit].__contains__(type(widget)):
             value = widget.keySequence().toString()
-        elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
+        elif [QSpinBox, QDoubleSpinBox].__contains__(type(widget)):
             value = widget.value()
-        elif type(widget) == QLineEdit or type(widget) == QLabel:
+        elif [QLineEdit, QLabel].__contains__(type(widget)):
             value = widget.text()
-        elif type(widget) == QTextEdit:
+        elif [QTextEdit].__contains__(type(widget)):
             value = widget.toPlainText()
-        elif type(widget) == QCheckBox:
+        elif [QRadioButton,QCheckBox].__contains__(type(widget)):
             value = widget.isChecked()
         else:
             value = None
@@ -735,13 +732,13 @@ class MasterWindow(NodeEditorWindow):
         return value
 
     def set_QWidget_content(self, widget, new_value):
-        if type(widget) == QKeySequenceEdit:
+        if [QKeySequenceEdit].__contains__(type(widget)):
             widget.setKeySequence(new_value)
-        elif type(widget) == QSpinBox or type(widget) == QDoubleSpinBox:
+        elif [QSpinBox, QDoubleSpinBox].__contains__(type(widget)):
             widget.setValue(new_value)
-        elif type(widget) == QLineEdit or type(widget) == QLabel or type(widget) == QTextEdit:
+        elif [QLineEdit, QLabel].__contains__(type(widget)):
             widget.setText(new_value)
-        elif type(widget) == QCheckBox:
+        elif [QRadioButton,QCheckBox].__contains__(type(widget)):
             widget.setChecked(new_value)
         else:
             print("Widget Not Supported")

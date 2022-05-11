@@ -240,7 +240,7 @@ class NodeEditorWidget(QWidget):
         """
 
         QApplication.setOverrideCursor(Qt.WaitCursor)
-        self.scene.saveToFile(filename)
+        self.scene.saveToFile(filename, silent=True)
         QApplication.restoreOverrideCursor()
 
         return True
@@ -292,7 +292,7 @@ class NodeEditorWidget(QWidget):
 
     def run_code(self):
         self.code_output.clear()
-        self.Project_Directory = self.scene.masterRef.filesWidget.Project_Directory
+        self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
         fname = self.Project_Directory + f"""/Generated Scripts/{self.windowTitle().replace("*", "")}.py"""
         with open(fname, 'w') as newPyFile:
             newPyFile.writelines(self.text_code_wnd.toPlainText())
@@ -322,7 +322,7 @@ class NodeEditorWidget(QWidget):
         # print("o")
 
     def CopyTextCode(self):
-        self.Project_Directory = self.scene.masterRef.filesWidget.Project_Directory
+        self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
         self.text_code_wnd.selectAll()
         self.text_code_wnd.copy()
         python_file_name = self.windowTitle().replace("*", "")
