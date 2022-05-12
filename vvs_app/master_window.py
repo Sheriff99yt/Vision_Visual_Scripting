@@ -15,7 +15,7 @@ from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.editor_var_events_lists import VarEventList
-from vvs_app.editor_proterties_list import PropertiesList
+from vvs_app.editor_properties_list import PropertiesList
 from vvs_app.global_switches import *
 
 from nodeeditor.utils import dumpException
@@ -45,7 +45,7 @@ class MasterWindow(NodeEditorWindow):
     def MakeCopyOfClass(self, classRef):
         class NewVEList(classRef):
             pass
-        return NewVEList
+        return NewVEList()
 
     def initUI(self):
         self.name_company = 'MyTeam'
@@ -94,17 +94,17 @@ class MasterWindow(NodeEditorWindow):
         # Create Welcome Screen and allow user to set the project Directory
         self.create_welcome_screen()
 
+        # Create Files Dock
+        self.create_files_dock()
+
         # Create Details List Window
         self.create_properties_dock()
 
         # Create Nodes List
         self.create_functions_dock()
 
-        # Create Files Dock
-        self.create_files_dock()
-
         # Create Variable List
-        self.create_var_event_dock()
+        self.create_user_nodes_dock()
 
         self.createActions()
         self.create_menus()
@@ -159,7 +159,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.librariesDock.setWidget(self.library_subwnd)
         self.librariesDock.setFeatures(self.librariesDock.DockWidgetMovable)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.librariesDock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.librariesDock)
 
         offline_Vlayout = QVBoxLayout()
         offline_Vlayout.setContentsMargins(0, 0, 0, 0)
@@ -233,11 +233,32 @@ class MasterWindow(NodeEditorWindow):
     def switch_display(self, Welcome=False, Editor=False, Designer=False, Library=False):
         # Use the Argument To Force Activate the Specified Window
 
-        if Editor or Library:
+        if Editor:
             self.stackedDisplay.setCurrentIndex(0)
+            self.library_btn.setChecked(False)
+            self.node_editor_btn.setChecked(True)
+            self.node_designer_btn.setChecked(False)
             return
+
+        if Library:
+            self.stackedDisplay.setCurrentIndex(0)
+            self.library_btn.setChecked(True)
+            self.node_editor_btn.setChecked(False)
+            self.node_designer_btn.setChecked(False)
+            return
+
         elif Designer:
             self.stackedDisplay.setCurrentIndex(1)
+            self.library_btn.setChecked(False)
+            self.node_editor_btn.setChecked(False)
+            self.node_designer_btn.setChecked(True)
+
+            self.node_editor_menu.setEnabled(False)
+            self.library_menu.setEnabled(False)
+
+            self.toolbar_library.setChecked(False)
+            self.librariesDock.setVisible(self.toolbar_library.isChecked())
+
             return
 
         elif Welcome:
@@ -267,7 +288,7 @@ class MasterWindow(NodeEditorWindow):
         # Add and connect self.node_editor_btn
         self.node_editor_btn = QAction(QIcon("icons/Edit 2.png"), "&Node Editor", self)
         self.node_editor_btn.setCheckable(True)
-        self.node_editor_btn.triggered.connect(self.activate_editor_wnd)
+        self.node_editor_btn.triggered.connect(self.activate_editor_mode)
         # self.node_designer_btn.setShortcut(QKeySequence("key"))
         self.tools_bar.addAction(self.node_editor_btn)
 
@@ -275,14 +296,14 @@ class MasterWindow(NodeEditorWindow):
         self.node_designer_btn = QAction(QIcon("icons/node design.png"), "&Node Designer", self)
         self.node_designer_btn.setEnabled(False)
         self.node_designer_btn.setCheckable(True)
-        self.node_designer_btn.triggered.connect(self.activate_designer_wnd)
+        self.node_designer_btn.triggered.connect(self.activate_designer_mode)
         # self.node_designer_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.node_designer_btn)
 
         # Add and connect self.library_btn
         self.library_btn = QAction(QIcon("icons/library.png"), "&Library", self)
         self.library_btn.setCheckable(True)
-        self.library_btn.triggered.connect(self.activate_library_wnd)
+        self.library_btn.triggered.connect(self.activate_library_mode)
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
 
@@ -475,7 +496,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.toolbar_properties = self.node_editor_menu.addAction("Properties Window")
         self.toolbar_properties.setCheckable(True)
-        self.toolbar_properties.triggered.connect(self.update_details_wnd)
+        self.toolbar_properties.triggered.connect(self.update_properties_wnd)
         self.toolbar_properties.setChecked(True)
 
         self.toolbar_files = self.node_editor_menu.addAction("Project Files Window")
@@ -529,7 +550,7 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_events_vars.setChecked(self.toolbar_events_vars.isChecked())
         self.varsEventsDock.setVisible(self.toolbar_events_vars.isChecked())
 
-    def update_details_wnd(self):
+    def update_properties_wnd(self):
         self.toolbar_properties.setChecked(self.toolbar_properties.isChecked())
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
@@ -541,18 +562,12 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_files.setChecked(self.toolbar_files.isChecked())
         self.filesDock.setVisible(self.toolbar_files.isChecked())
 
-    def create_graphs_dock(self):
-        self.graphsDock = QDockWidget("Graphs")
-        self.graphsDock.setWidget(self.graphs_parent_wdg)
-        self.graphsDock.setFeatures(self.graphsDock.DockWidgetClosable | self.graphsDock.DockWidgetMovable)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.graphsDock)
+    def activate_editor_mode(self):
+        if self.graphs_parent_wdg.subWindowList():
+            self.switch_display(Editor=True)
+        else:
+            self.switch_display(Welcome=True)
 
-    def activate_editor_wnd(self):
-        self.switch_display(Editor=True)
-
-        self.node_editor_btn.setChecked(True)
-        self.node_designer_btn.setChecked(False)
-        self.library_btn.setChecked(False)
 
         self.node_editor_menu.setEnabled(True)
         self.library_menu.setEnabled(False)
@@ -569,26 +584,17 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_properties.setChecked(True)
         self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
 
-    def activate_designer_wnd(self):
+    def activate_designer_mode(self):
         self.switch_display(Designer=True)
 
-        self.node_designer_btn.setChecked(True)
-        self.library_btn.setChecked(False)
-        self.node_editor_btn.setChecked(False)
 
-        self.node_editor_menu.setEnabled(False)
-        self.library_menu.setEnabled(False)
+    def activate_library_mode(self):
+        if self.graphs_parent_wdg.subWindowList():
+            self.switch_display(Library=True)
+        else:
+            self.switch_display(Welcome=True)
 
-        self.toolbar_library.setChecked(False)
-        self.librariesDock.setVisible(self.toolbar_library.isChecked())
-
-
-    def activate_library_wnd(self):
-        self.switch_display(Library=True)
-
-        self.library_btn.setChecked(True)
-        self.node_editor_btn.setChecked(False)
-        self.node_designer_btn.setChecked(False)
+        # Handel buttons State
 
         self.node_editor_menu.setEnabled(False)
         self.library_menu.setEnabled(True)
@@ -596,30 +602,27 @@ class MasterWindow(NodeEditorWindow):
         self.toolbar_library.setChecked(True)
         self.librariesDock.setVisible(self.toolbar_library.isChecked())
 
-        self.toolbar_functions.setChecked(False)
-        self.functionsDock.setVisible(self.toolbar_functions.isChecked())
-
         self.toolbar_files.setChecked(False)
         self.filesDock.setVisible(self.toolbar_files.isChecked())
 
-        self.toolbar_properties.setChecked(False)
-        self.proprietiesDock.setVisible(self.toolbar_properties.isChecked())
-
     def create_functions_dock(self):
+        self.functionsDock = QDockWidget("Functions")
         self.nodesListWidget = NodeList()
 
-        self.functionsDock = QDockWidget("Functions")
+        self.nodesListWidget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+
         self.functionsDock.setWidget(self.nodesListWidget)
         self.functionsDock.setFeatures(self.functionsDock.DockWidgetMovable)
-        self.addDockWidget(Qt.RightDockWidgetArea, self.functionsDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.functionsDock)
 
     def create_files_dock(self):
         self.brows_btn.clicked.connect(self.files_widget.set_project_folder)
+        self.files_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 
         self.filesDock = QDockWidget("Project Files")
         self.filesDock.setWidget(self.files_widget)
         self.filesDock.setFeatures(self.filesDock.DockWidgetMovable)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.filesDock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.filesDock)
 
     def create_properties_dock(self):
         self.proprietiesWdg = PropertiesList(master_ref=self)
@@ -630,23 +633,19 @@ class MasterWindow(NodeEditorWindow):
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.proprietiesDock)
 
-    def create_var_event_dock(self):
+    def create_user_nodes_dock(self):
         self.varsEventsDock = QDockWidget("Variables & Events")
-
         self.VEStackedWdg = QStackedWidget()
 
+        # self.VEStackedWdg.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.varsEventsDock.setWidget(self.VEStackedWdg)
         self.varsEventsDock.setFeatures(self.varsEventsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsEventsDock)
 
     def create_user_nodes_list(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
-        new_wdg = new_wdg()
-
         self.VEStackedWdg.addWidget(new_wdg)
-
         self.VEStackedWdg.setCurrentWidget(new_wdg)
-
         return new_wdg
 
     def delete_user_nodes_wgd(self, ref):

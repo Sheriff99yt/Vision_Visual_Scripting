@@ -68,7 +68,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.name_item.adjustSize()
 
         if self.name_item.textWidth()+20 > self.width:
-            while self.name_item.textWidth()+20 > self.width:
+            while self.name_item.textWidth() + self.title_height > self.width:
                 self.grName = self.grName[0: -1]
                 self.name_item.setPlainText(self.grName)
                 self.name_item.adjustSize()
@@ -84,31 +84,31 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
-        self.width = 120
+        self.width = 140
         self.height = 80
-        self.edge_roundnes = 2
+        self.edge_roundnes = 4
         self.edge_padding = 0
-        self.title_height = 20
+        self.title_height = 26
         self.title_horizontal_padding = 16
         self.title_vertical_padding = 10
 
 
     def AutoResizeGrNode(self):
-        socketsHeight = self.title_height
+        socketsHeight = 0
         if len(self.node.inputs) > len(self.node.outputs):
             maxSockets = self.node.inputs
         else:
             maxSockets = self.node.outputs
 
         for socket in maxSockets:
-            socketsHeight += self.node.socket_spacing
+            socketsHeight += socket.grSocket.radius*2.5
 
-        self.height = socketsHeight
+        self.height = socketsHeight + self.title_height + self.title_vertical_padding
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Roboto", 10)
+        self._title_font = QFont("Roboto", 14)
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")

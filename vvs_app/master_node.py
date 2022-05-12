@@ -38,10 +38,6 @@ class MasterNode(Node):
         super().__init__(scene, self.__class__.name, inputs, outputs)
         pass
 
-    def initSettings(self):
-        super().initSettings()
-        pass
-
     def onInputChanged(self, socket=None):
         pass
 

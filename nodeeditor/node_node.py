@@ -121,9 +121,6 @@ class Node(Serializable):
 
     def initSettings(self):
         """Initialize properties and socket information"""
-
-        self.socket_spacing = 20
-        self.LR_offset = 6
         self.input_socket_position = LEFT_TOP
         self.output_socket_position = RIGHT_TOP
         self.input_multi_edged = False
@@ -240,7 +237,7 @@ class Node(Serializable):
                 return True
         return False
 
-    def getSocketPosition(self, index: int, position: int, num_out_of: int = 1) -> '(x, y)':
+    def getSocketPosition(self, index: int, position: int, num_out_of: int = 1, radius=100) -> '(x, y)':
         """
         Get the relative `x, y` position of a :class:`~nodeeditor.node_socket.Socket`. This is used for placing
         the `Graphics Sockets` on `Graphics Node`.
@@ -255,13 +252,16 @@ class Node(Serializable):
         :rtype: ``x, y``
         """
 
-        x = self.socket_offsets[position] + self.LR_offset if (
+        diameter = radius*2
+        padded_diameter = diameter*1.5
+
+        x = self.socket_offsets[position] + radius if (
                 position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[
-            position] - self.LR_offset
+            position] - radius
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
             # start from bottom
-            y = self.grNode.height - self.grNode.edge_roundnes - self.grNode.title_vertical_padding - index * self.socket_spacing
+            y = self.grNode.height - self.grNode.edge_roundnes - self.grNode.title_vertical_padding - index * padded_diameter
 
         elif position in (LEFT_CENTER, RIGHT_CENTER):
             num_sockets = num_out_of
@@ -269,17 +269,17 @@ class Node(Serializable):
             top_offset = self.grNode.title_height + 2 * self.grNode.title_vertical_padding + self.grNode.edge_padding
             available_height = node_height - top_offset
 
-            total_height_of_all_sockets = num_sockets * self.socket_spacing
+            total_height_of_all_sockets = num_sockets * padded_diameter
             new_top = available_height - total_height_of_all_sockets
 
             # y = top_offset + index * self.socket_spacing + new_top / 2
-            y = top_offset + available_height / 2.0 + (index - 0.5) * self.socket_spacing
+            y = top_offset + available_height / 2.0 + (index - 0.5) * padded_diameter
             if num_sockets > 1:
-                y -= self.socket_spacing * (num_sockets - 1) / 2
+                y -= padded_diameter * (num_sockets - 1) / 2
 
         elif position in (LEFT_TOP, RIGHT_TOP):
             # start from top
-            y = self.grNode.title_height + self.grNode.title_vertical_padding + self.grNode.edge_roundnes + index * self.socket_spacing
+            y = self.grNode.title_height + self.grNode.title_vertical_padding + self.grNode.edge_roundnes + index * padded_diameter
         else:
             # this should never happen
             y = 0

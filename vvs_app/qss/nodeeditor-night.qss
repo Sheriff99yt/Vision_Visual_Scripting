@@ -91,7 +91,7 @@ QMdiArea QTabBar::close-button:hover{image:url("icons/close.png")}
 QDockWidget{font-weight:normal;titlebar-close-icon:url(":icons/close.png");titlebar-normal-icon:url(":icons/sub.png")}
 QDockWidget::title{padding-top:6px;padding-left:6px;}
 
-
+QWidget{font: 16px; font-family: "Roboto"}
 
 
 
