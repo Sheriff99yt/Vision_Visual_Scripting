@@ -133,8 +133,6 @@ class SettingsWidget(QWidget):
 
         self.init_wdg_ui(self.appearance_wdg, "Appearance")
 
-        # self.setStyleSheet("QWidget {font: 32px}")
-
         self.appearance_settings_list = {"Theme": QComboBox(), "Font Size": QSpinBox()}
 
         for item in self.appearance_settings_list:

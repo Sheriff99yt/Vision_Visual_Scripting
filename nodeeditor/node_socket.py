@@ -75,7 +75,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.isHighlighted = False
 
-        self.radius = 6
+        self.radius = 8
         self.outline_width = 1
 
         self.paint = self.myPaint
@@ -353,7 +353,7 @@ class Socket(Serializable):
     def setSocketPosition(self):
         """Helper function to set `Graphics Socket` position. Exact socket position is calculated
         inside :class:`~nodeeditor.node_node.Node`."""
-        self.grSocket.setPos(*self.node.getSocketPosition(self.index, self.position, self.count_on_this_node_side))
+        self.grSocket.setPos(*self.node.getSocketPosition(self.index, self.position, self.count_on_this_node_side,self.grSocket.radius))
 
     def getSocketPosition(self):
         """
@@ -362,7 +362,7 @@ class Socket(Serializable):
         :rtype: ``x, y`` position
         """
         if DEBUG: print("  GSP: ", self.index, self.position, "nodeeditor:", self.node)
-        res = self.node.getSocketPosition(self.index, self.position, self.count_on_this_node_side)
+        res = self.node.getSocketPosition(self.index, self.position, self.count_on_this_node_side, self.grSocket.radius)
         if DEBUG: print("  res", res)
         return res
 
