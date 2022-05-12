@@ -24,7 +24,7 @@ class InvalidFile(Exception): pass
 
 class NodeScene(Serializable):
     """Class representing NodeEditor's `Scene`"""
-    def __init__(self):
+    def __init__(self, masterRef):
         """
         :Instance Attributes:
 
@@ -40,10 +40,9 @@ class NodeScene(Serializable):
         self.user_nodes_wdg = None
         self.nodes = []
         self.edges = []
-        self.masterRef = None
+        self.masterRef = masterRef
         # current filename assigned to this scene
         self.filename = None
-
         self.scene_width = 8000
         self.scene_height = 8000
 
@@ -62,7 +61,7 @@ class NodeScene(Serializable):
         self.node_class_selector = None
 
         self.initUI()
-        self.history = SceneHistory(self)
+        self.history = SceneHistory(scene=self, masterRef=self.masterRef)
         self.clipboard = SceneClipboard(self)
 
         self.grScene.itemSelected.connect(self.onItemSelected)

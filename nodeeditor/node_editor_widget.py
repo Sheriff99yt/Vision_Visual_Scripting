@@ -22,7 +22,7 @@ class NodeEditorWidget(QWidget):
     GraphGraphics_class = GraphGraphics
     """The ``NodeEditorWidget`` class"""
 
-    def __init__(self, parent: QWidget = None):
+    def __init__(self, masterRef, parent: QWidget = None):
         """
         :param parent: parent widget
         :type parent: ``QWidget``
@@ -35,6 +35,10 @@ class NodeEditorWidget(QWidget):
 
         self.filename = None
         self.file_path = ''
+
+        # crate graphics scene
+        self.scene = self.__class__.Scene_class(masterRef)
+
         self.createWidgetWindow()
 
     def createWidgetWindow(self):
@@ -43,8 +47,7 @@ class NodeEditorWidget(QWidget):
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
 
-        # crate graphics scene
-        self.scene = self.__class__.Scene_class()
+        self.scene.masterRef.files_widget.make_generated_scripts_dir()
 
         # create graphics view
         self.graph_graphics_view = self.__class__.GraphGraphics_class(self.scene.grScene, self)
@@ -260,7 +263,6 @@ class NodeEditorWidget(QWidget):
 
         self.scene.history.storeInitialHistoryStamp()
 
-
     def addDebugContent(self):
         """Testing method to put random QGraphicsItems and elements into QGraphicsScene"""
         greenBrush = QBrush(Qt.green)
@@ -289,11 +291,11 @@ class NodeEditorWidget(QWidget):
         line.setFlag(QGraphicsItem.ItemIsMovable)
         line.setFlag(QGraphicsItem.ItemIsSelectable)
 
-
     def run_code(self):
         self.code_output.clear()
         self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
         fname = self.Project_Directory + f"""/Generated Scripts/{self.windowTitle().replace("*", "")}.py"""
+
         with open(fname, 'w') as newPyFile:
             newPyFile.writelines(self.text_code_wnd.toPlainText())
 
@@ -328,12 +330,7 @@ class NodeEditorWidget(QWidget):
         python_file_name = self.windowTitle().replace("*", "")
 
         text = self.text_code_wnd.toPlainText()
-        if os.listdir(self.Project_Directory).__contains__("Generated Scripts") is False:
-            os.makedirs(self.Project_Directory + "/Generated Scripts")
-            f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-            with open(f, 'w') as newPyFile:
-                newPyFile.writelines(text)
-        else:
-            f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-            with open(f, 'w') as newPyFile:
-                newPyFile.writelines(text)
+
+        f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+        with open(f, 'w') as newPyFile:
+            newPyFile.writelines(text)

@@ -94,7 +94,7 @@ QDockWidget::title{padding-top:6px;padding-left:6px;}
 
 
 
-
+QWidget {font-family: "Calibri"}
 
 
 

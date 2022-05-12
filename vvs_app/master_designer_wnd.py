@@ -5,7 +5,7 @@ DEBUG_CONTEXT = False
 
 
 class MasterDesignerWnd(NodeEditorWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, masterRef=None):
+        super().__init__(masterRef)
         pass
 

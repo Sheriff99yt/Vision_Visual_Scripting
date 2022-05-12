@@ -32,8 +32,8 @@ class NodeEditorWindow(QMainWindow):
         for cls in MasterNode.__subclasses__():
             register_Node(cls)
 
-        self.files_widget = FilesWDG()
-        self.files_widget.masterRef = self
+        self.files_widget = FilesWDG(self)
+
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
 
@@ -158,7 +158,6 @@ class NodeEditorWindow(QMainWindow):
         :return: ``True`` if we can continue in the `Close Event` and shutdown. ``False`` if we should cancel
         :rtype: ``bool``
         """
-        print(self.isModified())
         if not self.isModified():
             return True
         elif self.global_switches.switches_Dict["Always Save Before Closing"]:
@@ -167,7 +166,7 @@ class NodeEditorWindow(QMainWindow):
             else:
                 return self.save_message()
 
-        elif self.global_switches.switches_Dict["Save Unsaved Files to Project Folder"]:
+        elif self.global_switches.switches_Dict["Save New Project Folder On Close"]:
             return self.save_unsaved_files()
 
         else:

@@ -2,11 +2,11 @@ from vvs_app.master_window import *
 
 
 class FilesWDG(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, masterRef, parent=None):
         super().__init__(parent)
         self.default_system_dir = f"C:/Users/{os.getlogin()}/Documents/VVS"
 
-        self.masterRef = None
+        self.masterRef = masterRef
 
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -19,7 +19,7 @@ class FilesWDG(QWidget):
         self.tree_wdg.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.tree_wdg.setModel(self.Model)
         self.tree_wdg.setSortingEnabled(True)
-        self.tree_wdg.setColumnWidth(0, 130)
+        self.tree_wdg.setColumnWidth(0, 190)
         self.tree_wdg.sortByColumn(0, Qt.AscendingOrder)
         self.tree_wdg.hideColumn(1)
         self.tree_wdg.hideColumn(2)
@@ -69,6 +69,10 @@ class FilesWDG(QWidget):
 
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)
+
+    def make_generated_scripts_dir(self):
+        if os.listdir(self.Project_Directory).__contains__("Generated Scripts") is False:
+            os.makedirs(self.Project_Directory + "/Generated Scripts")
 
     def set_project_folder(self):
         Dir = QFileDialog.getExistingDirectory(self, "Select Project Folder", self.Project_Directory)

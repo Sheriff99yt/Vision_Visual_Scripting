@@ -92,4 +92,6 @@ QDockWidget{font-weight:normal;titlebar-close-icon:url(":icons/close.png");title
 QDockWidget::title{padding-top:6px;padding-left:6px;}
 
 
-E0E0E0  FFFFFF  282828  FFFCAF
+
+
+QWidget {font-family: "Calibri"}

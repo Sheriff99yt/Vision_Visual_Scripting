@@ -14,8 +14,8 @@ DEBUG_CONTEXT = False
 
 
 class MasterEditorWnd(NodeEditorWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, masterRef=None):
+        super().__init__(masterRef=masterRef)
         # self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.setTitle()
@@ -30,6 +30,7 @@ class MasterEditorWnd(NodeEditorWidget):
 
         self._close_event_listeners = []
 
+        self.scene.masterRef = masterRef
 
         self.setup_new_graph()
 
