@@ -50,24 +50,22 @@ class MasterWindow(NodeEditorWindow):
     def initUI(self):
         self.name_company = 'MyTeam'
         self.name_product = 'Vision Visual Scripting'
+        self.qss_theme = "qss/nodeeditor-night.qss"
         # self.qss_theme = "qss/nodeeditor-light.qss"
 
-        self.settingsWidget = None
-
-        self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Theme"][0]]
-
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.qss_theme)
-
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), self.qss_theme), self.stylesheet_filename)
-
-        self.global_switches.update_font_size(self.global_switches.switches_Dict["Font Size"])
 
         self.empty_icon = QIcon(".")
 
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
+
+
+
+        self.settingsWidget = None
 
         self.stackedDisplay = QStackedWidget()
 
@@ -76,7 +74,7 @@ class MasterWindow(NodeEditorWindow):
         self.CreateLibraryWnd()
 
         # Create Node Designer Window
-        self.node_designer = MasterDesignerWnd(self)
+        self.node_designer = MasterDesignerWnd()
 
         self.stackedDisplay.addWidget(self.graphs_parent_wdg)
 
@@ -96,14 +94,14 @@ class MasterWindow(NodeEditorWindow):
         # Create Welcome Screen and allow user to set the project Directory
         self.create_welcome_screen()
 
+        # Create Files Dock
+        self.create_files_dock()
+
         # Create Details List Window
         self.create_properties_dock()
 
         # Create Nodes List
         self.create_functions_dock()
-
-        # Create Files Dock
-        self.create_files_dock()
 
         # Create Variable List
         self.create_user_nodes_dock()
@@ -323,10 +321,8 @@ class MasterWindow(NodeEditorWindow):
             else:
                 self.settingsWidget.hide()
         else:
-            self.settingsWidget = SettingsWidget(masterRef=self)
-
-            self.global_switches.update_font_size(self.global_switches.switches_Dict["Font Size"])
-
+            self.settingsWidget = SettingsWidget()
+            self.settingsWidget.masterRef = self
             self.settingsWidget.show()
             self.settingsBtn.setChecked(True)
 
@@ -665,13 +661,13 @@ class MasterWindow(NodeEditorWindow):
 
         VEL = self.create_user_nodes_list()
 
-        node_editor = MasterEditorWnd(masterRef=self)
+        node_editor = MasterEditorWnd()
 
         node_editor.scene.user_nodes_wdg = VEL
         VEL.Scene = node_editor.scene
 
-        # node_editor.scene.masterRef = self
-        # node_editor.scene.history.masterRef = self
+        node_editor.scene.masterRef = self
+        node_editor.scene.history.masterRef = self
 
         subwnd = QMdiSubWindow()
         subwnd.setAttribute(Qt.WA_DeleteOnClose, True)
@@ -727,16 +723,11 @@ class MasterWindow(NodeEditorWindow):
             value = widget.text()
         elif [QTextEdit].__contains__(type(widget)):
             value = widget.toPlainText()
-        elif [QRadioButton, QCheckBox].__contains__(type(widget)):
+        elif [QRadioButton,QCheckBox].__contains__(type(widget)):
             value = widget.isChecked()
-        elif [QComboBox].__contains__(type(widget)):
-            content_list = []
-            for index in range(widget.__len__()):
-                content_list.append(widget.itemText(index))
-            value = content_list
         else:
             value = None
-            print(widget, "Widget Not Supported")
+            print("Widget Not Supported")
         return value
 
     def set_QWidget_content(self, widget, new_value):
@@ -744,14 +735,12 @@ class MasterWindow(NodeEditorWindow):
             widget.setKeySequence(new_value)
         elif [QSpinBox, QDoubleSpinBox].__contains__(type(widget)):
             widget.setValue(new_value)
-        elif [QLineEdit, QLabel, QTextEdit].__contains__(type(widget)):
+        elif [QLineEdit, QLabel].__contains__(type(widget)):
             widget.setText(new_value)
-        elif [QRadioButton, QCheckBox].__contains__(type(widget)):
+        elif [QRadioButton,QCheckBox].__contains__(type(widget)):
             widget.setChecked(new_value)
-        elif [QComboBox].__contains__(type(widget)):
-            widget.addItems(new_value)
         else:
-            print(widget, "Widget Not Supported")
+            print("Widget Not Supported")
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",
