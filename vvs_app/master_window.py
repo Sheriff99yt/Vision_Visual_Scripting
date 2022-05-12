@@ -45,7 +45,7 @@ class MasterWindow(NodeEditorWindow):
     def MakeCopyOfClass(self, classRef):
         class NewVEList(classRef):
             pass
-        return NewVEList
+        return NewVEList()
 
     def initUI(self):
         self.name_company = 'MyTeam'
@@ -648,7 +648,6 @@ class MasterWindow(NodeEditorWindow):
 
     def create_user_nodes_list(self):
         new_wdg = self.MakeCopyOfClass(VarEventList)
-        print(VarEventList)
         self.VEStackedWdg.addWidget(new_wdg)
         self.VEStackedWdg.setCurrentWidget(new_wdg)
         return new_wdg
