@@ -384,17 +384,17 @@ class NodeScene(Serializable):
 
     def serialize_user_nodes(self):
         # Serialize all item in UserVarsData
-        self.user_nodes = []
+        user_nodes = []
         if self.user_nodes_wdg:
             for item in self.user_nodes_wdg.user_nodes_data:
-                user_nodes = OrderedDict([
+                user_node = OrderedDict([
                     ('name', item[0]),
                     ('id', item[1]),
                     ('type', item[2]),
                 ])
 
-                self.user_nodes.append(user_nodes)
-        return self.user_nodes
+                user_nodes.append(user_node)
+        return user_nodes
 
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
@@ -403,7 +403,8 @@ class NodeScene(Serializable):
 
         return OrderedDict([
             ('id', self.id),
-            ('scene_width', self.scene_width),
+            ('syntax', self.NodeEditor.syntax_selector.currentText()),
+            ('scene_height', self.scene_height),
             ('scene_height', self.scene_height),
             ('user_nodes', self.serialize_user_nodes()),
             ('nodes', nodes),
@@ -416,6 +417,9 @@ class NodeScene(Serializable):
         hashmap = {}
         if restore_id:
             self.id = data['id']
+
+        self.NodeEditor.syntax_selector.setCurrentText(data['syntax'])
+        print(data['syntax'])
 
         # Create a list of all Existing User Nodes
         current_user_nodes = []

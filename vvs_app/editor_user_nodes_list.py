@@ -7,7 +7,7 @@ from vvs_app.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTB
 from nodeeditor.utils import dumpException
 
 
-class VarEventList(QTabWidget):
+class UserNodesList(QTabWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -160,6 +160,7 @@ class VarEventList(QTabWidget):
         self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
         if user:
             self.Scene.history.storeHistory("Create User Node ", setModified=True)
+        self.Scene.NodeEditor.UpdateTextCode(header=True)
 
     def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
@@ -376,6 +377,8 @@ class VarEventList(QTabWidget):
 
             if user:
                 self.Scene.history.storeHistory("Delete User Node ", setModified=True)
+
+            self.Scene.NodeEditor.UpdateTextCode(header=True)
 
         else:
             print("List Item Doesn't Exist")

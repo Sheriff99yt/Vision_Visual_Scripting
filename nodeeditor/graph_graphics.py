@@ -479,8 +479,8 @@ class GraphGraphics(QGraphicsView):
         for grSocket in items: grSocket.isHighlighted = highlighted
         return items
 
-    def setNodeEditorWidget(self, NodeEditor: None):
-        self.NodeEditor = NodeEditor
+    # def setNodeEditorWidget(self, NodeEditor: None):
+    #     self.NodeEditor = NodeEditor
 
     def deleteSelected(self):
         """Shortcut for safe deleting every object selected in the `Scene`."""

@@ -75,7 +75,7 @@ class NodeEditorWindow(QMainWindow):
         """Create basic `File` and `Edit` actions"""
         self.actNew = QAction('&New Graph', self, shortcut=self.global_switches.switches_Dict["New Graph"], statusTip="Create new graph", triggered=self.on_new_graph_tab)
         self.actOpen = QAction('&Open', self, shortcut=self.global_switches.switches_Dict["Open"], statusTip="Open file", triggered=self.on_file_open)
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
+        self.actSetProjectDir = QAction('&Set Project Folder', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
         self.actSave = QAction('&Save', self, shortcut=self.global_switches.switches_Dict["Save"], statusTip="Save file", triggered=self.onFileSave)
         self.actSaveAs = QAction('Save &As...', self, shortcut=self.global_switches.switches_Dict["Save As"], statusTip="Save file as...", triggered=self.on_file_save_as)
         self.actExit = QAction('E&xit', self, shortcut=self.global_switches.switches_Dict["Exit"], statusTip="Exit application", triggered=self.close)
