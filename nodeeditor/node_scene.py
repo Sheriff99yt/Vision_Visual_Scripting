@@ -24,7 +24,7 @@ class InvalidFile(Exception): pass
 
 class NodeScene(Serializable):
     """Class representing NodeEditor's `Scene`"""
-    def __init__(self):
+    def __init__(self, masterRef):
         """
         :Instance Attributes:
 
@@ -40,10 +40,9 @@ class NodeScene(Serializable):
         self.user_nodes_wdg = None
         self.nodes = []
         self.edges = []
-        self.masterRef = None
+        self.masterRef = masterRef
         # current filename assigned to this scene
         self.filename = None
-
         self.scene_width = 8000
         self.scene_height = 8000
 
@@ -62,7 +61,7 @@ class NodeScene(Serializable):
         self.node_class_selector = None
 
         self.initUI()
-        self.history = SceneHistory(self)
+        self.history = SceneHistory(scene=self, masterRef=self.masterRef)
         self.clipboard = SceneClipboard(self)
 
         self.grScene.itemSelected.connect(self.onItemSelected)
@@ -385,17 +384,17 @@ class NodeScene(Serializable):
 
     def serialize_user_nodes(self):
         # Serialize all item in UserVarsData
-        self.user_nodes = []
+        user_nodes = []
         if self.user_nodes_wdg:
             for item in self.user_nodes_wdg.user_nodes_data:
-                user_nodes = OrderedDict([
+                user_node = OrderedDict([
                     ('name', item[0]),
                     ('id', item[1]),
                     ('type', item[2]),
                 ])
 
-                self.user_nodes.append(user_nodes)
-        return self.user_nodes
+                user_nodes.append(user_node)
+        return user_nodes
 
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
@@ -404,7 +403,8 @@ class NodeScene(Serializable):
 
         return OrderedDict([
             ('id', self.id),
-            ('scene_width', self.scene_width),
+            ('syntax', self.NodeEditor.syntax_selector.currentText()),
+            ('scene_height', self.scene_height),
             ('scene_height', self.scene_height),
             ('user_nodes', self.serialize_user_nodes()),
             ('nodes', nodes),
@@ -417,6 +417,9 @@ class NodeScene(Serializable):
         hashmap = {}
         if restore_id:
             self.id = data['id']
+
+        self.NodeEditor.syntax_selector.setCurrentText(data['syntax'])
+        print(data['syntax'])
 
         # Create a list of all Existing User Nodes
         current_user_nodes = []

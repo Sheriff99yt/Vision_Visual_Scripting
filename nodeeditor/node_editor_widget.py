@@ -22,7 +22,7 @@ class NodeEditorWidget(QWidget):
     GraphGraphics_class = GraphGraphics
     """The ``NodeEditorWidget`` class"""
 
-    def __init__(self, parent: QWidget = None):
+    def __init__(self, masterRef, parent: QWidget = None):
         """
         :param parent: parent widget
         :type parent: ``QWidget``
@@ -35,6 +35,10 @@ class NodeEditorWidget(QWidget):
 
         self.filename = None
         self.file_path = ''
+
+        # crate graphics scene
+        self.scene = self.__class__.Scene_class(masterRef)
+
         self.createWidgetWindow()
 
     def createWidgetWindow(self):
@@ -43,8 +47,7 @@ class NodeEditorWidget(QWidget):
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
 
-        # crate graphics scene
-        self.scene = self.__class__.Scene_class()
+        self.scene.masterRef.files_widget.make_generated_scripts_dir()
 
         # create graphics view
         self.graph_graphics_view = self.__class__.GraphGraphics_class(self.scene.grScene, self)
@@ -73,12 +76,21 @@ class NodeEditorWidget(QWidget):
         code_wnd_bar.addWidget(QLabel("Select Syntax"))
         text_code_layout.addLayout(code_wnd_bar)
 
+        self.stacked_code_wnd = QStackedWidget()
         self.text_code_wnd = QTextEdit()
-        self.text_code_wnd.setReadOnly(True)
-        text_code_layout.addWidget(self.text_code_wnd)
+        self.multi_code_wnd = QTabWidget()
 
+        self.multi_code_wnd.addTab(QTextEdit(), '   .H  ')
+        self.multi_code_wnd.addTab(QTextEdit(), '   .CPP    ')
+
+        self.text_code_wnd.setReadOnly(True)
+        self.stacked_code_wnd.addWidget(self.text_code_wnd)
+        self.stacked_code_wnd.addWidget(self.multi_code_wnd)
+        self.stacked_code_wnd.setCurrentIndex(1)
+        text_code_layout.addWidget(self.stacked_code_wnd)
 
         self.syntax_selector = QComboBox()
+        self.syntax_selector.currentIndexChanged.connect(lambda: self.stacked_code_wnd.setCurrentIndex(self.syntax_selector.currentIndex()))
         self.syntax_selector.setMinimumWidth(80)
         self.syntax_selector.currentTextChanged.connect(self.UpdateTextCode)
         self.syntax_selector.addItem("Python")
@@ -107,7 +119,7 @@ class NodeEditorWidget(QWidget):
 
         # Connecting NodeEditorWidget to other Child classes to enable calling functions from Parent classes
         self.scene.setNodeEditorWidget(self)
-        self.graph_graphics_view.setNodeEditorWidget(self)
+        # self.graph_graphics_view.setNodeEditorWidget(self)
 
 
         # Termenal
@@ -260,7 +272,6 @@ class NodeEditorWidget(QWidget):
 
         self.scene.history.storeInitialHistoryStamp()
 
-
     def addDebugContent(self):
         """Testing method to put random QGraphicsItems and elements into QGraphicsScene"""
         greenBrush = QBrush(Qt.green)
@@ -289,11 +300,11 @@ class NodeEditorWidget(QWidget):
         line.setFlag(QGraphicsItem.ItemIsMovable)
         line.setFlag(QGraphicsItem.ItemIsSelectable)
 
-
     def run_code(self):
         self.code_output.clear()
         self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
         fname = self.Project_Directory + f"""/Generated Scripts/{self.windowTitle().replace("*", "")}.py"""
+
         with open(fname, 'w') as newPyFile:
             newPyFile.writelines(self.text_code_wnd.toPlainText())
 
@@ -308,18 +319,39 @@ class NodeEditorWidget(QWidget):
         self.code_output.append(output)
         self.code_output.append(code)
 
-    def UpdateTextCode(self):
-        self.text_code_wnd.clear()
-        s = self.syntax_selector.currentText()
-        for node in self.scene.nodes:
-            node.syntax = s
-            # Don't add Text Code OF Node in these cases !
-            if node.getNodeCode() is None or node.showCode is not True:
-                pass
+    def manage_imports(self, syntax):
+        pass
+
+    def UpdateTextCode(self, header=False):
+        current_synatx = self.syntax_selector.currentText()
+        self.manage_imports(current_synatx)
+        if current_synatx == "Python":
+            self.text_code_wnd.clear()
+
+            for node in self.scene.nodes:
+                node.syntax = current_synatx
+                # Don't add Text Code OF Node in these cases !
+                if node.getNodeCode() is None or node.showCode is not True:
+                    pass
+                else:
+                    self.text_code_wnd.append(node.getNodeCode())
+
+        elif current_synatx == "C++":
+            if header:
+                self.multi_code_wnd.widget(0).clear()
+                for user_node in self.scene.user_nodes_wdg.user_nodes_data:
+                    self.multi_code_wnd.widget(0).append(user_node[0])
+
             else:
-                self.text_code_wnd.append(node.getNodeCode())
-        # print(self.text_code_wnd.find("f"))
-        # print("o")
+                for node in self.scene.nodes:
+                    self.multi_code_wnd.widget(1).clear()
+                    node.syntax = current_synatx
+                    # Don't add Text Code OF Node in these cases !
+                    if node.getNodeCode() is None or node.showCode is not True:
+                        pass
+                    else:
+                        self.multi_code_wnd.widget(1).append(node.getNodeCode())
+
 
     def CopyTextCode(self):
         self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
@@ -328,12 +360,7 @@ class NodeEditorWidget(QWidget):
         python_file_name = self.windowTitle().replace("*", "")
 
         text = self.text_code_wnd.toPlainText()
-        if os.listdir(self.Project_Directory).__contains__("Generated Scripts") is False:
-            os.makedirs(self.Project_Directory + "/Generated Scripts")
-            f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-            with open(f, 'w') as newPyFile:
-                newPyFile.writelines(text)
-        else:
-            f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-            with open(f, 'w') as newPyFile:
-                newPyFile.writelines(text)
+
+        f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+        with open(f, 'w') as newPyFile:
+            newPyFile.writelines(text)

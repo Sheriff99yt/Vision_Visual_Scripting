@@ -32,8 +32,8 @@ class NodeEditorWindow(QMainWindow):
         for cls in MasterNode.__subclasses__():
             register_Node(cls)
 
-        self.files_widget = FilesWDG()
-        self.files_widget.masterRef = self
+        self.files_widget = FilesWDG(self)
+
         self.name_company = 'The Team'
         self.name_product = 'Vision Visual Scripting'
 
@@ -75,7 +75,7 @@ class NodeEditorWindow(QMainWindow):
         """Create basic `File` and `Edit` actions"""
         self.actNew = QAction('&New Graph', self, shortcut=self.global_switches.switches_Dict["New Graph"], statusTip="Create new graph", triggered=self.on_new_graph_tab)
         self.actOpen = QAction('&Open', self, shortcut=self.global_switches.switches_Dict["Open"], statusTip="Open file", triggered=self.on_file_open)
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
+        self.actSetProjectDir = QAction('&Set Project Folder', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
         self.actSave = QAction('&Save', self, shortcut=self.global_switches.switches_Dict["Save"], statusTip="Save file", triggered=self.onFileSave)
         self.actSaveAs = QAction('Save &As...', self, shortcut=self.global_switches.switches_Dict["Save As"], statusTip="Save file as...", triggered=self.on_file_save_as)
         self.actExit = QAction('E&xit', self, shortcut=self.global_switches.switches_Dict["Exit"], statusTip="Exit application", triggered=self.close)
@@ -158,7 +158,6 @@ class NodeEditorWindow(QMainWindow):
         :return: ``True`` if we can continue in the `Close Event` and shutdown. ``False`` if we should cancel
         :rtype: ``bool``
         """
-        print(self.isModified())
         if not self.isModified():
             return True
         elif self.global_switches.switches_Dict["Always Save Before Closing"]:
@@ -167,7 +166,7 @@ class NodeEditorWindow(QMainWindow):
             else:
                 return self.save_message()
 
-        elif self.global_switches.switches_Dict["Save Unsaved Files to Project Folder"]:
+        elif self.global_switches.switches_Dict["Save New Project Folder On Close"]:
             return self.save_unsaved_files()
 
         else:

@@ -6,10 +6,10 @@ from vvs_app.QRoundPB import QRoundProgressBar
 
 
 class SettingsWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, masterRef, parent=None):
         super().__init__(parent)
 
-        self.masterRef = None
+        self.masterRef = masterRef
 
         self.progress_counter = 1
 
@@ -35,6 +35,9 @@ class SettingsWidget(QWidget):
         self.init_key_mapping_wdg()
 
         self.settingsTree.clicked.connect(self.set_current_wdg)
+
+        self.settingsTree.setCurrentItem(self.settingsTree.topLevelItem(0))
+        self.set_current_wdg()
 
     def set_current_wdg(self):
         current_item = self.settingsTree.currentItem().data(5, 6)
@@ -85,7 +88,11 @@ class SettingsWidget(QWidget):
         self.spacer3.setMinimumWidth(QSizePolicy.Expanding)
         self.h_layout.addWidget(self.spacer3)
 
-        self.apply_btn = QPushButton("Apply")
+        self.apply_close_btn = QPushButton("Save & Close")
+        self.h_layout.addWidget(self.apply_close_btn)
+        self.apply_close_btn.setFixedWidth(100)
+
+        self.apply_btn = QPushButton("Save")
         self.h_layout.addWidget(self.apply_btn)
         self.apply_btn.setFixedWidth(100)
         self.apply_btn.clicked.connect(lambda: self.apply_or_reset(False))
@@ -94,6 +101,9 @@ class SettingsWidget(QWidget):
         self.h_layout.addWidget(self.cancel_btn)
         self.cancel_btn.setFixedWidth(100)
         self.cancel_btn.clicked.connect(self.closeEvent)
+        self.cancel_btn.clicked.connect(self.fill)
+
+        self.apply_close_btn.clicked.connect(lambda: self.apply_or_reset(False, True))
 
     def reset_fun(self):
         progress = QRoundProgressBar()
@@ -113,7 +123,6 @@ class SettingsWidget(QWidget):
         # name_item.setData(11, 12, progress)
         self.h_layout.addWidget(progress)
 
-
         timer_button = QTimer()
         self.reset_btn.pressed.connect(lambda: self.button_pressed(progress, timer_button))
         self.reset_btn.released.connect(lambda: self.button_released(progress, timer_button))
@@ -124,7 +133,15 @@ class SettingsWidget(QWidget):
 
         self.init_wdg_ui(self.appearance_wdg, "Appearance")
 
-        self.Appearance_settings_list =[]
+        self.appearance_settings_list = {"Theme": QComboBox(), "Font Size": QSpinBox()}
+
+        for item in self.appearance_settings_list:
+            lbl = QLabel(item)
+            self.Grid_Layout.addWidget(lbl, list(self.appearance_settings_list.keys()).index(item), 0, Qt.AlignRight)
+
+            variable = self.appearance_settings_list[item]
+            self.Grid_Layout.addWidget(variable, list(self.appearance_settings_list.keys()).index(item), 1, 1, 10, Qt.AlignLeft)
+            variable.setMinimumWidth(70)
 
     def init_system_wdg(self):
         self.system_wdg = QWidget()
@@ -135,7 +152,7 @@ class SettingsWidget(QWidget):
         self.system_settings_list = {"AutoSave Steps": QSpinBox(),
                                      "AutoSave Folder MaxSize": QDoubleSpinBox(),
                                      "Always Save Before Closing": QRadioButton(),
-                                     "Save Unsaved Files to Project Folder": QRadioButton()}
+                                     "Save New Project Folder On Close": QRadioButton()}
 
         for item in self.system_settings_list:
             lbl = QLabel(item)
@@ -144,7 +161,7 @@ class SettingsWidget(QWidget):
             variable = self.system_settings_list[item]
             self.Grid_Layout.addWidget(variable, list(self.system_settings_list.keys()).index(item), 1, 1, 10,
                                        Qt.AlignLeft)
-            variable.setMaximumWidth(100)
+            variable.setMinimumWidth(120)
             if type(variable) == QDoubleSpinBox:
                 variable.setMaximum(100000.000)
 
@@ -163,35 +180,58 @@ class SettingsWidget(QWidget):
 
             KeySequence = QKeySequenceEdit()
             self.Grid_Layout.addWidget(KeySequence, self.Key_Mapping_settings_list.index(item), 1, 1, 10, Qt.AlignLeft)
-            KeySequence.setMaximumWidth(100)
+            KeySequence.setMaximumWidth(150)
             KeySequence.setStat = setStat
-            KeySequence.__init__ = newinit(KeySequence)
+            KeySequence.__init__ = QSEnewinit(KeySequence)
 
     def fill(self):
         grid_layout = self.settingsTree.currentItem().data(7, 8)
         grid_row_count = grid_layout.rowCount()
-
         for i in range(grid_row_count):
+            lbl_wdg = grid_layout.itemAtPosition(i, 0).widget()
+            variable_wdg = grid_layout.itemAtPosition(i, 1).widget()
             try:
-                if grid_layout.itemAtPosition(i, 1).widget():
-                    lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
-                    self.masterRef.set_QWidget_content(grid_layout.itemAtPosition(i, 1).widget(), self.masterRef.global_switches.switches_Dict[lbl])
+                if grid_layout.itemAtPosition(i, 0).widget():
+                    if type(variable_wdg) == QComboBox:
+                        variable_wdg.clear()
+                    lbl = self.masterRef.get_QWidget_content(lbl_wdg)
+                    self.masterRef.set_QWidget_content(variable_wdg, self.masterRef.global_switches.switches_Dict[lbl])
             except Exception as e:
                 print("Window Has Fields to fill that's why", e)
 
-    def apply_or_reset(self, reset):
+    def apply_or_reset(self, reset, close=False):
+        if close:
+            self.close()
+
         if self.settingsTree.currentItem().data(7, 8).itemAtPosition(0, 0):
 
             self.settingsTree.currentItem().data(9, 10).show()
             current_widget = self.settingsTree.currentItem().data(5, 6)
             grid_layout = self.settingsTree.currentItem().data(7, 8)
             grid_row_count = grid_layout.rowCount()
-            changed_settings_dict = {}
 
+            changed_settings_dict = {}
             for i in range(grid_row_count):
-                if grid_layout.itemAtPosition(i, 1).widget().isWindowModified() or type(grid_layout.itemAtPosition(i, 1).widget()) != QKeySequenceEdit:
+                wdg = grid_layout.itemAtPosition(i, 1).widget()
+
+                if wdg.isWindowModified() or type(wdg) != QKeySequenceEdit:
                     lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
-                    txt = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 1).widget())
+                    if type(wdg) == QComboBox:
+                        current = wdg.currentText()
+                        wdg.removeItem(wdg.currentIndex())
+
+                        content_list = [current]
+                        for index in range(wdg.__len__()):
+                            content_list.append(wdg.itemText(index))
+                        wdg.clear()
+                        wdg.addItems(content_list)
+
+                        if lbl == "Theme":
+                            self.masterRef.global_switches.change_theme(self.masterRef.get_QWidget_content(wdg)[0])
+                    elif lbl == "Font Size":
+                        self.masterRef.global_switches.update_font_size(self.masterRef.get_QWidget_content(wdg))
+
+                    txt = self.masterRef.get_QWidget_content(wdg)
                     grid_layout.itemAtPosition(i, 1).widget().setWindowModified(False)
                     changed_settings_dict[lbl] = txt
 
@@ -216,10 +256,11 @@ class SettingsWidget(QWidget):
 
             if reset:
                 for i in range(grid_row_count):
+                    wdg = grid_layout.itemAtPosition(i, 1).widget()
                     lbl = self.masterRef.get_QWidget_content(grid_layout.itemAtPosition(i, 0).widget())
                     self.masterRef.global_switches.switches_Dict[lbl] = self.masterRef.global_switches.Default_switches_Dict[lbl]
-                    if type(grid_layout.itemAtPosition(i, 1).widget()) == QKeySequenceEdit:
-                        grid_layout.itemAtPosition(i, 1).widget().setStyleSheet("background-color: transparent")
+                    if type(wdg) == QKeySequenceEdit:
+                        wdg.setStyleSheet("background-color: transparent")
                 self.fill()
                 self.settingsTree.currentItem().data(9, 10).setText("Reset")
 
@@ -257,7 +298,7 @@ class SettingsWidget(QWidget):
         progress.setValue(float(self.progress_counter)) # progress
         self.progress_counter += 1
 
-def newinit(self, *__args):
+def QSEnewinit(self, *__args):
     self.editingFinished.connect(lambda: self.setStat(self))
 
 def setStat(self):
