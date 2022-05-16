@@ -362,7 +362,10 @@ class NodeEditorWidget(QWidget):
         elif current_synatx == "C++":
             if header:
                 self.multi_code_wnd.widget(0).clear()
-                self.get_imports(current_synatx, self.scene.user_nodes_wdg.user_nodes_data)
+                imports = self.get_imports(current_synatx, self.scene.user_nodes_wdg.user_nodes_data)
+                for item in imports:
+                    self.multi_code_wnd.widget(0).append(item)
+                self.multi_code_wnd.widget(0).append('')
                 for user_node in self.scene.user_nodes_wdg.user_nodes_data:
                     self.multi_code_wnd.widget(0).append(user_node[0])
 
