@@ -491,7 +491,7 @@ class GraphGraphics(QGraphicsView):
                 item.node.remove()
 
         self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
-        self.NodeEditor.UpdateTextCode()
+        self.grScene.scene.NodeEditor.UpdateTextCode()
 
     def debug_modifiers(self, event):
         """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""

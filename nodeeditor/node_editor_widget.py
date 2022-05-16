@@ -15,6 +15,7 @@ from nodeeditor.graph_graphics import GraphGraphics
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
+from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar, StringVar, ListVar
 
 
 class NodeEditorWidget(QWidget):
@@ -319,15 +320,41 @@ class NodeEditorWidget(QWidget):
         self.code_output.append(output)
         self.code_output.append(code)
 
-    def manage_imports(self, syntax):
-        pass
+    def CopyTextCode(self):
+        self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
+        self.text_code_wnd.selectAll()
+        self.text_code_wnd.copy()
+        python_file_name = self.windowTitle().replace("*", "")
+
+        text = self.text_code_wnd.toPlainText()
+
+        f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
+        with open(f, 'w') as newPyFile:
+            newPyFile.writelines(text)
+
+    def get_imports(self, syntax, user_nodes):
+        if syntax == "C++":
+            types = []
+            for data in user_nodes:
+                if not types.__contains__(data[2]):
+                    types.append(data[2])
+            imports = []
+            for type in types:
+                if type == FloatVar.node_type:
+                    pass
+                elif type == IntegerVar.node_type:
+                    pass
+                elif type == BooleanVar.node_type:
+                    pass
+                elif type == StringVar.node_type:
+                    imports.append("#include <string>")
+                elif type == ListVar.node_type:
+                    imports.append("#include <list>")
 
     def UpdateTextCode(self, header=False):
         current_synatx = self.syntax_selector.currentText()
-        self.manage_imports(current_synatx)
         if current_synatx == "Python":
             self.text_code_wnd.clear()
-
             for node in self.scene.nodes:
                 node.syntax = current_synatx
                 # Don't add Text Code OF Node in these cases !
@@ -339,6 +366,7 @@ class NodeEditorWidget(QWidget):
         elif current_synatx == "C++":
             if header:
                 self.multi_code_wnd.widget(0).clear()
+                self.get_imports(current_synatx, self.scene.user_nodes_wdg.user_nodes_data)
                 for user_node in self.scene.user_nodes_wdg.user_nodes_data:
                     self.multi_code_wnd.widget(0).append(user_node[0])
 
@@ -352,15 +380,3 @@ class NodeEditorWidget(QWidget):
                     else:
                         self.multi_code_wnd.widget(1).append(node.getNodeCode())
 
-
-    def CopyTextCode(self):
-        self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
-        self.text_code_wnd.selectAll()
-        self.text_code_wnd.copy()
-        python_file_name = self.windowTitle().replace("*", "")
-
-        text = self.text_code_wnd.toPlainText()
-
-        f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-        with open(f, 'w') as newPyFile:
-            newPyFile.writelines(text)
