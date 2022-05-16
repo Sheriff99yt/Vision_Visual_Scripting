@@ -340,16 +340,12 @@ class NodeEditorWidget(QWidget):
                     types.append(data[2])
             imports = []
             for type in types:
-                if type == FloatVar.node_type:
-                    pass
-                elif type == IntegerVar.node_type:
-                    pass
-                elif type == BooleanVar.node_type:
-                    pass
-                elif type == StringVar.node_type:
+                if type == StringVar.node_type:
                     imports.append("#include <string>")
                 elif type == ListVar.node_type:
                     imports.append("#include <list>")
+
+            return imports
 
     def UpdateTextCode(self, header=False):
         current_synatx = self.syntax_selector.currentText()
