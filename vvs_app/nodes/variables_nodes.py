@@ -37,7 +37,16 @@ class FloatVar(MasterNode):
 
             elif self.syntax == "C++":
 
-                raw_code = self.syntax
+                self.outputs[1].socket_code = self.name
+                self.showCode = not self.isInputConnected(0)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
+
+                python_code = f"""
+float {self.name}="{setInput}";
+{brotherCode}"""
+
+                raw_code = python_code
 
             if self.isSelected() is True:
                 colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{FloatColor};" '''
@@ -81,7 +90,16 @@ class IntegerVar(MasterNode):
 
             elif self.syntax == "C++":
 
-                raw_code = self.syntax
+                self.outputs[1].socket_code = self.name
+                self.showCode = not self.isInputConnected(0)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
+
+                python_code = f"""
+int {self.name}="{setInput}";
+{brotherCode}"""
+
+                raw_code = python_code
 
 
             if self.isSelected() is True:
@@ -126,8 +144,16 @@ class BooleanVar(MasterNode):
 
             elif self.syntax == "C++":
 
-                raw_code = self.syntax
+                self.outputs[1].socket_code = self.name
+                self.showCode = not self.isInputConnected(0)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
 
+                python_code = f"""
+bool {self.name}="{setInput}";
+{brotherCode}"""
+
+                raw_code = python_code
 
             if self.isSelected() is True:
                 colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{BooleanColor};" '''
@@ -171,8 +197,16 @@ class StringVar(MasterNode):
                 raw_code = python_code
 
             elif self.syntax == "C++":
+                self.outputs[1].socket_code = self.name
+                self.showCode = not self.isInputConnected(0)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
 
-                raw_code = self.syntax
+                python_code = f"""
+string {self.name}="{setInput}";
+{brotherCode}"""
+
+                raw_code = python_code
 
 
             if self.isSelected() is True:
@@ -222,7 +256,16 @@ class ListVar(MasterNode):
 
             elif self.syntax == "C++":
 
-                raw_code = self.syntax
+                self.outputs[1].socket_code = self.name
+                self.showCode = not self.isInputConnected(0)
+                brotherCode = self.get_other_socket_code(0)
+                setInput = self.get_my_input_code(1)
+
+                python_code = f"""
+string {self.name}="{setInput}";
+{brotherCode}"""
+
+                raw_code = python_code
 
 
             if self.isSelected() is True:
