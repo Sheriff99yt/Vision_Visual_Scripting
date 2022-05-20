@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "", ".."))
 
 from vvs_app.master_window import MasterWindow
 
-def main():
+if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     app.setStyle('Fusion')
@@ -28,8 +28,5 @@ def main():
     wnd.showMaximized()
 
     sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
 
 # if selected_theme == night:
