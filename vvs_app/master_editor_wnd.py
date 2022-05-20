@@ -114,7 +114,7 @@ class MasterEditorWnd(NodeEditorWidget):
 
             try:
                 if isEvent or is_var:
-                    self.varSelectMenu(event,is_var)
+                    self.varSelectMenu(event, is_var)
                 else:
                     node = get_node_by_type(self.node_type)(self.scene)
                     node.setPos(self.scene_position.x(), self.scene_position.y())

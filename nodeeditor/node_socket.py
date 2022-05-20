@@ -210,8 +210,6 @@ DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
 
 class Socket(Serializable):
-    Socket_GR_Class = QDMGraphicsSocket
-
     """Class representing Socket."""
 
     def __init__(self, node: 'Node', index: int = 0, position: int = LEFT_TOP, socket_type: int = 1,
@@ -258,7 +256,7 @@ class Socket(Serializable):
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for nodeeditor", self.node)
 
-        self.grSocket = self.__class__.Socket_GR_Class(self)
+        self.grSocket = QDMGraphicsSocket(self)
 
         self.setSocketPosition()
 

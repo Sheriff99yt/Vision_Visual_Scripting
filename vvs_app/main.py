@@ -17,7 +17,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     app.setStyle('Fusion')
-    app.setWindowIcon(QIcon("icons/VVS_Logo_Thick.png"))
+    app.setWindowIcon(QIcon("icons/light/VVS_Logo_Thick.png"))
 
     # Show app Icon In Task Manager
     myappid = 'mycompany.myproduct.subproduct.version'

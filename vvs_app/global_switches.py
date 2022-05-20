@@ -9,14 +9,14 @@ class GlobalSwitches:
         self.master_ref = master
         self.Settings_Directory = f"{self.master_ref.files_widget.default_system_dir}/Preferences"
         self.Settings_File = self.Settings_Directory + f"/Settings.json"
-        self.themes = {"Night": "qss/nodeeditor-night.qss", "Light": "qss/nodeeditor-light.qss"}
+        self.themes = {"Night": "qss/nodeeditor-night.qss", "light": "qss/nodeeditor-light.qss"}
 
         self.Default_switches_Dict = {"AutoSave Steps": 30,
                                       "AutoSave Folder MaxSize": 500,
                                       "Always Save Before Closing": True,
                                       "Save New Project Folder On Close": False,
 
-                                      "Theme": ["Night", "Light"],
+                                      "Theme": ["Night", "light"],
                                       "Font Size": 16,
 
                                       "New Graph": "Ctrl+N",

@@ -87,12 +87,13 @@ class NodeEditorWidget(QWidget):
 
         self.text_code_wnd.setReadOnly(True)
         self.stacked_code_wnd.addWidget(self.text_code_wnd)
+
         self.stacked_code_wnd.addWidget(self.multi_code_wnd)
         self.stacked_code_wnd.setCurrentIndex(1)
         text_code_layout.addWidget(self.stacked_code_wnd)
 
         self.syntax_selector = QComboBox()
-        self.syntax_selector.currentIndexChanged.connect(lambda: self.stacked_code_wnd.setCurrentIndex(self.syntax_selector.currentIndex()))
+        self.syntax_selector.currentIndexChanged.connect(self.syntax_changed)
         self.syntax_selector.setMinimumWidth(80)
         self.syntax_selector.currentTextChanged.connect(self.UpdateTextCode)
         self.syntax_selector.addItem("Python")
@@ -103,19 +104,19 @@ class NodeEditorWidget(QWidget):
 
         self.code_orientation_btn = QPushButton()
         self.code_orientation_btn.setMaximumSize(25, 25)
-        self.code_orientation_btn.setIcon(QIcon("icons/Orientation.png"))
+        self.code_orientation_btn.setIcon(QIcon("icons/light/orientation.png"))
         self.code_orientation_btn.clicked.connect(self.UpdateTextWndRot)
         code_wnd_bar.addWidget(self.code_orientation_btn)
 
         self.copy_code_btn = QPushButton()
         self.copy_code_btn.setMaximumSize(25, 25)
-        self.copy_code_btn.setIcon(QIcon("icons/copy.png"))
+        self.copy_code_btn.setIcon(QIcon("icons/light/copy.png"))
         self.copy_code_btn.clicked.connect(self.CopyTextCode)
         code_wnd_bar.addWidget(self.copy_code_btn)
 
         self.run_btn = QPushButton()
         self.run_btn.setMaximumSize(25, 25)
-        self.run_btn.setIcon(QIcon("icons/run.png"))
+        self.run_btn.setIcon(QIcon("icons/light/run.png"))
         self.run_btn.clicked.connect(self.run_code)
         code_wnd_bar.addWidget(self.run_btn)
 
@@ -332,6 +333,11 @@ class NodeEditorWidget(QWidget):
         f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
         with open(f, 'w') as newPyFile:
             newPyFile.writelines(text)
+
+    def syntax_changed(self):
+        self.stacked_code_wnd.setCurrentIndex(self.syntax_selector.currentIndex())
+
+        self.UpdateTextCode()
 
     def get_imports(self, syntax, user_nodes):
         if syntax == "C++":

@@ -1,21 +1,23 @@
 from vvs_app.nodes.default_functions import Indent, FontFamily, FontSize
-# from vvs_app.nodes.nodes_configuration import *
+from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
-# from nodeeditor.node_editor_widget import *
+from nodeeditor.node_editor_widget import *
+
 
 
 class Event(MasterNode):
-    icon = "icons/event.png"
+    icon = "icons/light/event.png"
     name = "Event"
     category = "EVENT"
     sub_category = "Event"
+    node_color = "#90FF1010"
+
     return_type_dict = {"None": "void"}
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter
         self.is_event = True
-        self.set_node_color("#90FF1010")
         self.return_type = self.return_type_dict[list(self.return_type_dict.keys())[0]]
 
     def getNodeCode(self):
@@ -61,13 +63,5 @@ def {self.name}():
 
                 cpp_code = f"""
 {self.name}()"""
-
                 raw_code = cpp_code
-            if self.isSelected() is True:
-                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-            else:
-                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-            getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-            return getCode
+            return self.grNode.highlight_code(raw_code)

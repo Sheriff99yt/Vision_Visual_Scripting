@@ -128,7 +128,7 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap("icons/VVS_White.png")
+        w_image = QPixmap("icons/light/VVS_White.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
@@ -190,7 +190,7 @@ class MasterWindow(NodeEditorWindow):
         search_bar_layout.addWidget(self.search_btn)
 
         self.search_btn.setMaximumSize(30, 30)
-        self.search_btn.setIcon(QIcon("icons/search.png"))
+        self.search_btn.setIcon(QIcon("icons/light/search.png"))
         self.search_line_edit.setMinimumHeight(30)
 
         topVlayout.addLayout(search_bar_layout)
@@ -273,7 +273,7 @@ class MasterWindow(NodeEditorWindow):
         self.addToolBar(self.tools_bar)
 
         # Add and connect self.settingsBtn
-        self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
+        self.settingsBtn = QAction(QIcon("icons/light/settings.png"), "&Open Settings Window", self)
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
         self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Settings Window"]))
@@ -284,14 +284,14 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addSeparator()
 
         # Add and connect self.node_editor_btn
-        self.node_editor_btn = QAction(QIcon("icons/Edit 2.png"), "&Node Editor", self)
+        self.node_editor_btn = QAction(QIcon("icons/light/edit.png"), "&Node Editor", self)
         self.node_editor_btn.setCheckable(True)
         self.node_editor_btn.triggered.connect(self.activate_editor_mode)
         # self.node_designer_btn.setShortcut(QKeySequence("key"))
         self.tools_bar.addAction(self.node_editor_btn)
 
         # Add and connect self.node_designer_btn
-        self.node_designer_btn = QAction(QIcon("icons/node design.png"), "&Node Designer", self)
+        self.node_designer_btn = QAction(QIcon("icons/light/node design.png"), "&Node Designer", self)
         self.node_designer_btn.setEnabled(False)
         self.node_designer_btn.setCheckable(True)
         self.node_designer_btn.triggered.connect(self.activate_designer_mode)
@@ -299,7 +299,7 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.node_designer_btn)
 
         # Add and connect self.library_btn
-        self.library_btn = QAction(QIcon("icons/library.png"), "&Library", self)
+        self.library_btn = QAction(QIcon("icons/light/library.png"), "&Library", self)
         self.library_btn.setCheckable(True)
         self.library_btn.triggered.connect(self.activate_library_mode)
         self.library_btn.setShortcut(QKeySequence("`"))

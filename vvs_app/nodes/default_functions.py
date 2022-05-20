@@ -15,15 +15,19 @@ def Indent(String):
 
 # Process
 class IfStatement(MasterNode):
-    icon = "icons/if.png"
+    icon = "icons/light/if.png"
     name = "IF Statement"
     category = "FUNCTION"
     sub_category = "Process"
-
+    node_color = "#90FF5733"
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
-        self.set_node_color("#90FF5733")
+
+        self.set_input_label_text(0, "Action")
         self.set_input_label_text(1, "Condition")
+
+        self.set_output_label_text(0, "True")
+        self.set_output_label_text(1, "False")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -81,19 +85,16 @@ if ({condition})
         else:
             colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return code
 
 class ForLoop(MasterNode):
-    icon = "icons/Loop.png"
+    icon = "icons/light/Loop.png"
     name = "For Loop"
     category = "FUNCTION"
     sub_category = "Process"
+    node_color = "#905050FF"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 2], outputs=[0])
-        self.set_node_color("#905050FF")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -110,24 +111,17 @@ for item in range({range}):
         elif self.syntax == "C++":
             raw_code = self.syntax
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-        styled_code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return styled_code
+        return self.grNode.highlight_code(raw_code)
 
 class ForEachLoop(MasterNode):
-    icon = "icons/Loop.png"
+    icon = "icons/light/Loop.png"
     name = "For Each Loop"
     category = "FUNCTION"
     sub_category = "Process"
+    node_color = "#905050FF"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 5], outputs=[0, 6])
-        self.set_node_color("#905050FF")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -147,25 +141,18 @@ for item in {list}:
         elif self.syntax == "C++":
             raw_code = self.syntax
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-        styled_code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return styled_code
+        return self.grNode.highlight_code(raw_code)
 
 class GreaterThan(MasterNode):
-    icon = "icons/more_than.png"
+    icon = "icons/light/more_than.png"
     name = "Greater Than"
     category = "FUNCTION"
     sub_category = "Process"
+    node_color = logicOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
-        self.set_node_color(logicOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -180,20 +167,18 @@ class GreaterThan(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 class LessThan(MasterNode):
-    icon = "icons/less_than.png"
+    icon = "icons/light/less_than.png"
     name = "Less Than"
     category = "FUNCTION"
     sub_category = "Process"
+    node_color = logicOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
-        self.set_node_color(logicOperators)
-
-
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -208,18 +193,18 @@ class LessThan(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 class Equal(MasterNode):
-    icon = "icons/equal.png"
+    icon = "icons/light/equal.png"
     name = "Equal"
     category = "FUNCTION"
     sub_category = "Process"
+    node_color = logicOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[3])
         self.showCode = False
-        self.set_node_color(logicOperators)
 
 
     def getNodeCode(self):
@@ -235,19 +220,19 @@ class Equal(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 # Logic
 class And(MasterNode):
-    icon = "icons/and.png"
+    icon = "icons/light/and.png"
     name = "And"
     category = "FUNCTION"
     sub_category = "Logic"
+    node_color = logicOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3, 3], outputs=[3])
         self.showCode = False
-        self.set_node_color(logicOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -266,15 +251,15 @@ class And(MasterNode):
 
 # Math
 class Add(MasterNode):
-    icon = "icons/add.png"
+    icon = "icons/light/add.png"
     name = "Add"
     category = "FUNCTION"
     sub_category = "Math"
+    node_color = mathOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -289,18 +274,18 @@ class Add(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 class Sub(MasterNode):
-    icon = "icons/sub.png"
+    icon = "icons/light/sub.png"
     name = "Subtract"
     category = "FUNCTION"
     sub_category = "Math"
+    node_color = mathOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -315,18 +300,18 @@ class Sub(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 class Mul(MasterNode):
-    icon = "icons/mul.png"
+    icon = "icons/light/mul.png"
     name = "Multiply"
     category = "FUNCTION"
     sub_category = "Math"
+    node_color = mathOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -341,18 +326,18 @@ class Mul(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 class Div(MasterNode):
-    icon = "icons/divide.png"
+    icon = "icons/light/divide.png"
     name = "Divide"
     category = "FUNCTION"
     sub_category = "Math"
+    node_color = mathOperators
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 1], outputs=[1])
         self.showCode = False
-        self.set_node_color(mathOperators)
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -367,7 +352,7 @@ class Div(MasterNode):
 
             raw_code = self.syntax
 
-        return raw_code
+        return self.grNode.highlight_code(raw_code)
 
 # Input
 class UserInput(MasterNode):
@@ -375,11 +360,10 @@ class UserInput(MasterNode):
     name = "User Input"
     category = "FUNCTION"
     sub_category = "Input"
+    node_color = "#505050"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 6, 4], outputs=[0])
-        self.nodeColor = "#505050"
-        self.set_node_color("#505050")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -401,24 +385,17 @@ class UserInput(MasterNode):
             raw_code = self.syntax
 
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return code
+        return self.grNode.highlight_code(raw_code)
 
 class RawCode(MasterNode):
     icon = ""
     name = "Raw Code"
     category = "FUNCTION"
     sub_category = "Input"
+    node_color = "#303030"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 4], outputs=[0])
-        self.set_node_color("#303030")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -438,25 +415,18 @@ class RawCode(MasterNode):
             raw_code = self.syntax
 
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return code
+        return self.grNode.highlight_code(raw_code)
 
 # Output
 class Print(MasterNode):
-    icon = "icons/print.png"
+    icon = "icons/light/print.png"
     name = "Print"
     category = "FUNCTION"
     sub_category = "Output"
+    node_color = "#90702070"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 6], outputs=[0])
-        self.set_node_color("#90702070")
 
     def getNodeCode(self):
         if self.syntax == "Python":
@@ -493,55 +463,8 @@ cout >> "{printCode}";
             raw_code = python_code
 
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
 
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return code
-
-
-class Return(MasterNode):
-    icon = "icons/return.png"
-    name = "Return"
-    category = "FUNCTION"
-    sub_category = "Output"
-
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 6], outputs=[])
-        self.set_node_color("#90702070")
-
-    def getNodeCode(self):
-        if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-            printCode = self.get_my_input_code(1)
-            python_code = f"""
-return {printCode} 
-"""
-
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-
-            self.showCode = not self.isInputConnected(0)
-            printCode = self.get_my_input_code(1)
-            python_code = f"""
-return {printCode};
-"""
-
-            raw_code = python_code
-
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-        return code
-
+        return self.grNode.highlight_code(raw_code)
 
 # Khyria Efforts
 # code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
