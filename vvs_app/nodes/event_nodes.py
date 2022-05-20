@@ -6,16 +6,16 @@ from nodeeditor.node_editor_widget import *
 
 
 class Event(MasterNode):
-    icon = "icons/event.png"
+    icon = "icons/light/event.png"
     name = "Event"
     category = "EVENT"
     sub_category = "Event"
-    
+    node_color = "#90FF1010"
+
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter
         self.is_event = True
-        self.set_node_color("#90FF1010")
 
     def getNodeCode(self):
         if self.is_setter:
@@ -32,15 +32,7 @@ def {self.name}():
 
                 raw_code = self.syntax
 
-
-            if self.isSelected() is True:
-                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-            else:
-                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-            setterCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-            return setterCode
+            return self.grNode.highlight_code(raw_code)
 
         else:
             if self.syntax == "Python":
@@ -57,12 +49,4 @@ def {self.name}():
 
                 raw_code = self.syntax
 
-
-            if self.isSelected() is True:
-                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-            else:
-                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
-            getCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-
-            return getCode
+            return self.grNode.highlight_code(raw_code)

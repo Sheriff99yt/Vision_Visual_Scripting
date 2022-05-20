@@ -2,6 +2,7 @@
 """
 A module containing Graphics representation of :class:`~nodeeditor.node_node.Node`
 """
+from PyQt5.QtGui import QIcon, QImage
 from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem, QGraphicsDropShadowEffect
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 from qtpy.QtCore import Qt, QRectF
@@ -10,7 +11,7 @@ from qtpy.QtCore import Qt, QRectF
 class QDMGraphicsNode(QGraphicsItem):
     """Class describing Graphics representation of :class:`~nodeeditor.node_node.Node`"""
 
-    def __init__(self, node: 'Node', parent: QWidget = None):
+    def __init__(self, node: 'Node', parent: QWidget = None, node_icon=''):
         """
         :param node: reference to :class:`~nodeeditor.node_node.Node`
         :type node: :class:`~nodeeditor.node_node.Node`
@@ -23,7 +24,7 @@ class QDMGraphicsNode(QGraphicsItem):
         """
         super().__init__(parent)
         self.node = node
-
+        self.node_icon = QImage(node_icon)
         # init our flags
         self.hovered = False
         self._was_moved = False
@@ -34,7 +35,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initUI()
 
         # init title
-        self.initNames()
+        self.init_name()
         self.name = self.node.name
 
         # creating a QGraphicsDropShadowEffect object
@@ -67,13 +68,14 @@ class QDMGraphicsNode(QGraphicsItem):
         self.name_item.setPlainText(self.grName)
         self.name_item.adjustSize()
 
-        if self.name_item.textWidth()+20 > self.width:
-            while self.name_item.textWidth() + self.title_height > self.width:
+        if self.name_item.textWidth()+self.title_horizontal_padding > self.width:
+
+            while self.name_item.textWidth() + self.title_horizontal_padding > self.width:
                 self.grName = self.grName[0: -1]
                 self.name_item.setPlainText(self.grName)
+                self.name_item.setPlainText(self.grName+"...")
                 self.name_item.adjustSize()
 
-            self.name_item.setPlainText(self.grName+"...")
             self.name_item.adjustSize()
 
     def initUI(self):
@@ -86,11 +88,10 @@ class QDMGraphicsNode(QGraphicsItem):
         """Set up internal attributes like `width`, `height`, etc."""
         self.width = 140
         self.height = 80
-        self.edge_roundnes = 4
-        self.edge_padding = 0
-        self.title_height = 26
-        self.title_horizontal_padding = 16
-        self.title_vertical_padding = 10
+        self.edge_roundnes = 1
+        self.title_height = 20
+        self.title_horizontal_padding = self.title_height
+        self.title_vertical_padding = 8
 
 
     def AutoResizeGrNode(self):
@@ -101,14 +102,14 @@ class QDMGraphicsNode(QGraphicsItem):
             maxSockets = self.node.outputs
 
         for socket in maxSockets:
-            socketsHeight += socket.grSocket.radius*2.5
+            socketsHeight += socket.grSocket.radius*2 + socket.grSocket.radius / 2
 
-        self.height = socketsHeight + self.title_height + self.title_vertical_padding
+        self.height = socketsHeight + self.title_height + 2
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Roboto", 14)
+        self._title_font = QFont("Roboto", 13)
 
         self._color = QColor("#FF000000")
         self._color_selected = QColor("#FFFFA637")
@@ -128,7 +129,6 @@ class QDMGraphicsNode(QGraphicsItem):
     def onSelected(self):
         """Our event handling when the node was selected"""
         self.node.scene.grScene.itemSelected.emit()
-
 
     def doSelect(self, new_state=True):
         """Safe version of selecting the `Graphics Node`. Takes care about the selection state flag used internally
@@ -211,7 +211,15 @@ class QDMGraphicsNode(QGraphicsItem):
             socket.socket_label.setPlainText(text)
             self.update_socket_label(socket)
         else:
-            print("Trying to access a socket_label that doesn't exist")
+            print("Trying to access an input socket_label that doesn't exist")
+
+    def set_output_label_text(self, index, text):
+        socket = self.node.outputs[index]
+        if socket.socket_label:
+            socket.socket_label.setPlainText(text)
+            self.update_socket_label(socket)
+        else:
+            print("Trying to access an output socket_label that doesn't exist")
 
     def update_socket_label(self, socket):
         socket_label = socket.socket_label
@@ -225,18 +233,26 @@ class QDMGraphicsNode(QGraphicsItem):
             else:
                 socket_label.setPos(socket.grSocket.pos().x() - socket.grSocket.radius - tw, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
 
-    def initNames(self):
+    def init_name(self):
         """Set up the title Graphics representation: font, color, position, etc."""
 
         self.name_item = QGraphicsTextItem(self)
-        self.name_item.node = self.node
         self.name_item.setDefaultTextColor(self._title_color)
         self.name_item.setFont(self._title_font)
-        self.name_item.setPos(self.title_horizontal_padding, 0)
+        self.name_item.setPos(self.title_horizontal_padding, -3)
         # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
+
+    def highlight_code(self, raw_code):
+
+        if self.isSelected():
+            code = f""" <pre><p style="font-family: Calibri "><span style="background-color:{self.node_color};" >{raw_code}</span></p></pre> """
+        else:
+            code = f""" <pre><p style="font-family: Calibri "><span>{raw_code}</span></p></pre> """
+        return code
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""
+
         # content
         path_content = QPainterPath()
         path_content.setFillRule(Qt.WindingFill)
@@ -244,6 +260,7 @@ class QDMGraphicsNode(QGraphicsItem):
         path_content.addRect(0, self.title_height, self.edge_roundnes, self.edge_roundnes)
         path_content.addRect(self.width - self.edge_roundnes, self.title_height, self.edge_roundnes,
                              self.edge_roundnes)
+
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._brush_background)
         painter.drawPath(path_content.simplified())
@@ -274,4 +291,6 @@ class QDMGraphicsNode(QGraphicsItem):
         else:
             painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
             painter.drawPath(path_outline.simplified())
+
+        painter.drawImage(QRectF(0, 0, self.title_height, self.title_height), self.node_icon)
 

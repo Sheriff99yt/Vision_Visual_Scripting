@@ -4,12 +4,12 @@
 #
 # # urgent
 #     - **** enableing input in the termenal.
-#
+#     - Missing Icons
+
 # # ToDos
 #     - **** save all graphs & close all graphs Qactions.
 #     - Beginner Friendly and Teaching Mode
-#     - Polish Icons
-#     - Add Light Ui Modes
+#     - Add light Ui Modes
 #
 # # Done
 #     - ** Deleting Vars and Events.

@@ -8,7 +8,7 @@ from collections import OrderedDict
 from PyQt5.QtWidgets import *
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
-from PyQt5.QtGui import QColor, QBrush
+from PyQt5.QtGui import QColor, QBrush, QIcon, QImage
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
 from nodeeditor.utils import dumpException, pp
@@ -21,12 +21,10 @@ class Node(Serializable):
     """
     Class representing `Node` in the `Scene`.
     """
-    GraphicsNode_class = QDMGraphicsNode
-    Socket_class = Socket
     node_type = None
 
     def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [], outputs: list = [],
-                 isSetter=None):
+                 isSetter=None, node_icon=''):
         """
 
         :param scene: reference to the :class:`~nodeeditor.node_scene.Scene`
@@ -58,12 +56,12 @@ class Node(Serializable):
         self.showCode = True
 
         self.nodeID = None
-        self.nodeColor = "#FFFFFF"
         self.syntax = ""
 
         # just to be sure, init these variables
-        self.grNode = self.__class__.GraphicsNode_class(node=self)
-
+        self.grNode = QDMGraphicsNode(node=self, node_icon=node_icon)
+        print(">>"+node_icon)
+        self.grNode.node_icon = QImage(node_icon)
         self.initSettings()
 
         self.name = name
@@ -159,7 +157,7 @@ class Node(Serializable):
         # create new sockets
         counter = 0
         for item in inputs:
-            socket = self.__class__.Socket_class(
+            socket = Socket(
                 node=self, index=counter, position=self.input_socket_position,
                 socket_type=item, multi_edges=self.input_multi_edged,
                 count_on_this_node_side=len(inputs), is_input=True)
@@ -172,7 +170,7 @@ class Node(Serializable):
 
         counter = 0
         for item in outputs:
-            socket = self.__class__.Socket_class(
+            socket = Socket(
                 node=self, index=counter, position=self.output_socket_position,
                 socket_type=item, multi_edges=self.output_multi_edged,
                 count_on_this_node_side=len(outputs), is_input=False)
@@ -253,7 +251,8 @@ class Node(Serializable):
         """
 
         diameter = radius*2
-        padded_diameter = diameter*1.5
+        padding = radius // 2
+        socket_y = index * (diameter + padding)
 
         x = self.socket_offsets[position] + radius if (
                 position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.grNode.width + self.socket_offsets[
@@ -261,25 +260,25 @@ class Node(Serializable):
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
             # start from bottom
-            y = self.grNode.height - self.grNode.edge_roundnes - self.grNode.title_vertical_padding - index * padded_diameter
+            y = self.grNode.height - self.grNode.edge_roundnes - self.grNode.title_vertical_padding - socket_y
 
         elif position in (LEFT_CENTER, RIGHT_CENTER):
             num_sockets = num_out_of
             node_height = self.grNode.height
-            top_offset = self.grNode.title_height + 2 * self.grNode.title_vertical_padding + self.grNode.edge_padding
+            top_offset = self.grNode.title_height + 2 * self.grNode.title_vertical_padding
             available_height = node_height - top_offset
 
-            total_height_of_all_sockets = num_sockets * padded_diameter
+            total_height_of_all_sockets = num_sockets * diameter
             new_top = available_height - total_height_of_all_sockets
 
             # y = top_offset + index * self.socket_spacing + new_top / 2
-            y = top_offset + available_height / 2.0 + (index - 0.5) * padded_diameter
+            y = top_offset + available_height / 2.0 + (index - 0.5) * diameter
             if num_sockets > 1:
-                y -= padded_diameter * (num_sockets - 1) / 2
+                y -= diameter * (num_sockets - 1) / 2
 
         elif position in (LEFT_TOP, RIGHT_TOP):
             # start from top
-            y = self.grNode.title_height + self.grNode.title_vertical_padding + self.grNode.edge_roundnes + index * padded_diameter
+            y = self.grNode.title_height + self.grNode.title_vertical_padding + socket_y + padding
         else:
             # this should never happen
             y = 0
@@ -602,7 +601,7 @@ class Node(Serializable):
                     # print("deserialization of socket data has not found input socket with index:", socket_data['index'])
                     # print("actual socket data:", socket_data)
                     # we can create new socket for this
-                    found = self.__class__.Socket_class(
+                    found = Socket(
                         node=self, index=socket_data['index'], position=socket_data['position'],
                         socket_type=socket_data['socket_type'], count_on_this_node_side=num_inputs,
                         is_input=True
@@ -621,7 +620,7 @@ class Node(Serializable):
                     # print("deserialization of socket data has not found output socket with index:", socket_data['index'])
                     # print("actual socket data:", socket_data)
                     # we can create new socket for this
-                    found = self.__class__.Socket_class(
+                    found = Socket(
                         node=self, index=socket_data['index'], position=socket_data['position'],
                         socket_type=socket_data['socket_type'], count_on_this_node_side=num_outputs,
                         is_input=False
@@ -639,11 +638,14 @@ class Node(Serializable):
         return True
 
     def set_node_color(self, color):
-        self.nodeColor = color
+        self.grNode.node_color = color
         self.grNode._brush_title = QBrush(QColor(color))
 
     def set_input_label_text(self, index, text):
         self.grNode.set_input_label_text(index, text)
+
+    def set_output_label_text(self, index, text):
+        self.grNode.set_output_label_text(index, text)
 
     def getNodeCode(self):
         return None

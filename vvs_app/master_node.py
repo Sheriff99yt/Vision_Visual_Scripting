@@ -6,40 +6,13 @@ from nodeeditor.node_node import Node
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException
 
-
-class MasterGraphicsNode(QDMGraphicsNode):
-
-    def initAssets(self):
-        super().initAssets()
-        pass
-
-
-    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        super().paint(painter, QStyleOptionGraphicsItem, widget)
-        self.icons = QImage("")
-        painter.drawImage(QRectF(0, 0, 30, 30), self.icons)
-
-
-    def UpdateIcon(self, icon: None):
-        self.icons = QImage(icon)
-
-
 class MasterNode(Node):
-    icon = ""
-    node_type = 0
-    name = "Undefined"
-    content_label = ""
-    content_label_objname = "calc_node_bg"
-    node_Value = None
-
-    GraphicsNode_class = MasterGraphicsNode
-
+    name = "MasterNode"
+    icon = ''
+    node_color = '#555555'
     def __init__(self, scene, inputs, outputs):
-        super().__init__(scene, self.__class__.name, inputs, outputs)
-        pass
-
-    def onInputChanged(self, socket=None):
-        pass
+        super().__init__(scene, self.name, inputs, outputs, node_icon=self.icon)
+        self.set_node_color(self.node_color)
 
     def serialize(self):
         res = super().serialize()
