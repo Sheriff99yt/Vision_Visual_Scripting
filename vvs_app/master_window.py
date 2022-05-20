@@ -48,8 +48,6 @@ class MasterWindow(NodeEditorWindow):
         return NewVEList()
 
     def initUI(self):
-        # self.qss_theme = "qss/nodeeditor-light.qss"
-
         self.settingsWidget = None
 
         self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Theme"][0]]
@@ -63,9 +61,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.empty_icon = QIcon(".")
 
-        if DEBUG:
-            print("Registered nodes:")
-            # pp(FUNCTIONS)
+        if DEBUG: print("Registered nodes:")
 
         self.stackedDisplay = QStackedWidget()
 

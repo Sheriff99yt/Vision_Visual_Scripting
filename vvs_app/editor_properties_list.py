@@ -46,4 +46,7 @@ class PropertiesList(QScrollArea):
 
         self.nodeRef.scene.NodeEditor.UpdateTextCode()
 
-
+    def change_return_type(self, New_Class_ref, all_types, current_text):
+        New_Class_ref.return_type_dict.clear()
+        New_Class_ref.return_type_dict[current_text] = all_types[current_text]
+        New_Class_ref.getNodeCode(New_Class_ref)

@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from vvs_app.nodes.default_functions import *
+from vvs_app.nodes.event_nodes import *
 from vvs_app.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
@@ -144,7 +145,6 @@ class UserNodesList(QTabWidget):
         # Get new Variable type and construct new Variable object
         node = get_node_by_type(type)
         new_node = self.MakeCopyOfClass(node)
-
         node_data = [name, node_id, type]
 
         # Add new copy of Var class Info to Dict of USER_VARS
@@ -157,12 +157,12 @@ class UserNodesList(QTabWidget):
         A_list = self.EventList if new_node.category == "EVENT" else self.VarList
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
+        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, new_node, A_list)
         if user:
             self.Scene.history.storeHistory("Create User Node ", setModified=True)
         self.Scene.NodeEditor.UpdateTextCode(header=True)
 
-    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
+    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, new_node_class_ref=None, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else "")
@@ -172,6 +172,8 @@ class UserNodesList(QTabWidget):
 
         # setup data
         item.setData(Qt.UserRole, pixmap)
+
+        item.setData(81, new_node_class_ref)
 
         item.setData(80, node_type)
 
@@ -188,22 +190,34 @@ class UserNodesList(QTabWidget):
             list_ref = self.EventList
             item = self.EventList.currentItem()
 
+        proprietiesWdg = self.Scene.masterRef.proprietiesWdg
 
         self.node_name_input = QLineEdit()
         self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
         self.node_name_input.setText(f"{item.data(91)}")
         self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
 
-        self.Scene.masterRef.proprietiesWdg.varStart = True
-        self.Scene.masterRef.proprietiesWdg.clear()
-        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
-
+        proprietiesWdg.clear()
+        proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
 
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
         self.delete_btn.setShortcut(
             QKeySequence(f"""Shift+{self.Scene.masterRef.global_switches.switches_Dict["Delete"]}"""))
-        self.Scene.masterRef.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
+        proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
+
+        self.all_types = {"None": "void", "Integer": "int", "Float": "float", "Bool": "bool", "Char": "char",
+                          "String": "string", "List": "list"}
+
+        if item.data(80) == Event.node_type:
+            self.return_type = QComboBox()
+            self.return_type.addItems(list(self.all_types.keys()))
+
+            self.return_type.setCurrentText(list(item.data(81).return_type_dict.keys())[0])
+
+            self.return_type.currentIndexChanged.connect(lambda: proprietiesWdg.change_return_type(item.data(81), self.all_types, self.return_type.currentText()))
+
+            proprietiesWdg.detailsUpdate("Return Type", self.return_type)
 
     def VarStartDrag(self, *args, **kwargs):
         try:

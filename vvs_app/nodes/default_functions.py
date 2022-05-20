@@ -35,13 +35,16 @@ class IfStatement(MasterNode):
 
             false = self.get_other_socket_code(1)
 
-            if self.isOutputConnected(1):
+            if self.isOutputConnected(1) and self.isOutputConnected(0):
                 python_code = f"""
 if {condition}:
 {Indent(true)}
 else:
 {Indent(false)}"""
-
+            elif self.isOutputConnected(1) and self.isOutputConnected(0) is False:
+                python_code = f"""
+if not {condition}:
+{Indent(false)}"""
             else:
                 python_code = f"""
 if {condition}:
@@ -49,8 +52,29 @@ if {condition}:
 
             raw_code = python_code
         elif self.syntax == "C++":
-            raw_code = self.syntax
+            self.showCode = not self.isInputConnected(0)
 
+            condition = self.get_my_input_code(1)
+
+            true = self.get_other_socket_code(0)
+
+            false = self.get_other_socket_code(1)
+
+            if self.isOutputConnected(1) and self.isOutputConnected(0):
+                python_code = f"""
+if ({condition})
+{Indent(true)}
+else
+{Indent(false)}"""
+            elif self.isOutputConnected(1) and self.isOutputConnected(0) is False:
+                python_code = f"""
+if (not {condition})
+{Indent(false)}"""
+            else:
+                python_code = f"""
+if ({condition})
+{Indent(true)}"""
+            raw_code = python_code
 
         if self.isSelected() is True:
             colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
@@ -439,7 +463,6 @@ class Print(MasterNode):
             self.showCode = not self.isInputConnected(0)
             brotherCode = self.get_other_socket_code(0)
             printCode = self.get_my_input_code(1)
-            # print(self.isInputConnected(0))
             if self.isInputConnected(1):
                 python_code = f"""
 print({printCode})
@@ -454,7 +477,20 @@ print("{printCode}")
 
         elif self.syntax == "C++":
 
-            raw_code = self.syntax
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            if self.isInputConnected(1):
+                python_code = f"""
+cout >> {printCode};
+{brotherCode}"""
+
+            else:
+                python_code = f"""
+cout >> "{printCode}";
+{brotherCode}"""
+
+            raw_code = python_code
 
 
         if self.isSelected() is True:
@@ -465,6 +501,48 @@ print("{printCode}")
         code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
 
         return code
+
+
+class Return(MasterNode):
+    icon = "icons/return.png"
+    name = "Return"
+    category = "FUNCTION"
+    sub_category = "Output"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 6], outputs=[])
+        self.set_node_color("#90702070")
+
+    def getNodeCode(self):
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
+            printCode = self.get_my_input_code(1)
+            python_code = f"""
+return {printCode} 
+"""
+
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+
+            self.showCode = not self.isInputConnected(0)
+            printCode = self.get_my_input_code(1)
+            python_code = f"""
+return {printCode};
+"""
+
+            raw_code = python_code
+
+        if self.isSelected() is True:
+            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
+        else:
+            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
+
+        code = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
+
+        return code
+
+
 # Khyria Efforts
 # code = f"""<pre><b><span style=\" Font-size:20px ; background-color:#553E0B0B;\"  >
 # if {condition}:

@@ -15,6 +15,7 @@ from nodeeditor.graph_graphics import GraphGraphics
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
+from vvs_app.nodes.event_nodes import *
 from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar, StringVar, ListVar
 
 
@@ -340,11 +341,8 @@ class NodeEditorWidget(QWidget):
                     types.append(data[2])
             imports = []
             for type in types:
-                if type == StringVar.node_type:
-                    imports.append("#include <string>")
-                elif type == ListVar.node_type:
+                if type == ListVar.node_type:
                     imports.append("#include <list>")
-
             return imports
 
     def UpdateTextCode(self, header=False):
@@ -358,7 +356,6 @@ class NodeEditorWidget(QWidget):
                     pass
                 else:
                     self.text_code_wnd.append(node.getNodeCode())
-
         elif current_synatx == "C++":
             if header:
                 self.multi_code_wnd.widget(0).clear()
@@ -368,14 +365,11 @@ class NodeEditorWidget(QWidget):
                 self.multi_code_wnd.widget(0).append('')
                 for user_node in self.scene.user_nodes_wdg.user_nodes_data:
                     self.multi_code_wnd.widget(0).append(user_node[0])
-
             else:
+                self.multi_code_wnd.widget(1).clear()
                 for node in self.scene.nodes:
-                    self.multi_code_wnd.widget(1).clear()
                     node.syntax = current_synatx
-                    # Don't add Text Code OF Node in these cases !
                     if node.getNodeCode() is None or node.showCode is not True:
                         pass
                     else:
                         self.multi_code_wnd.widget(1).append(node.getNodeCode())
-

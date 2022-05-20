@@ -64,8 +64,8 @@ class FilesWDG(QWidget):
 
     def CreateDefaultDir(self):
         self.Project_Directory = self.default_system_dir
-        if os.path.exists(self.Project_Directory) is False:
-            self.Project_Directory = self.default_system_dir
+        if os.path.exists(self.default_system_dir) is False:
+            os.makedirs(self.Project_Directory)
 
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)
