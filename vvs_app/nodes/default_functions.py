@@ -80,11 +80,6 @@ if ({condition})
 {Indent(true)}"""
             raw_code = python_code
 
-        if self.isSelected() is True:
-            colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-        else:
-            colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-
 
 class ForLoop(MasterNode):
     icon = "icons/light/Loop.png"
@@ -271,9 +266,7 @@ class Add(MasterNode):
             raw_code = python_code
 
         elif self.syntax == "C++":
-
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 class Sub(MasterNode):
@@ -297,9 +290,7 @@ class Sub(MasterNode):
             raw_code = python_code
 
         elif self.syntax == "C++":
-
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 class Mul(MasterNode):
@@ -325,7 +316,6 @@ class Mul(MasterNode):
         elif self.syntax == "C++":
 
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 class Div(MasterNode):
@@ -351,7 +341,6 @@ class Div(MasterNode):
         elif self.syntax == "C++":
 
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 # Input
@@ -383,8 +372,6 @@ class UserInput(MasterNode):
 
         elif self.syntax == "C++":
             raw_code = self.syntax
-
-
         return self.grNode.highlight_code(raw_code)
 
 class RawCode(MasterNode):
@@ -413,8 +400,6 @@ class RawCode(MasterNode):
         elif self.syntax == "C++":
 
             raw_code = self.syntax
-
-
         return self.grNode.highlight_code(raw_code)
 
 # Output
@@ -464,6 +449,38 @@ cout >> "{printCode}";
 
 
 
+        return self.grNode.highlight_code(raw_code)
+
+
+class Return(MasterNode):
+    icon = "icons/light/return.png"
+    name = "Return"
+    category = "FUNCTION"
+    sub_category = "Output"
+    node_color = "#90702070"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 6], outputs=[0])
+
+    def getNodeCode(self):
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            python_code = f"""
+return {printCode}
+{brotherCode}"""
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            python_code = f"""
+return {printCode};
+{brotherCode}"""
+            raw_code = python_code
         return self.grNode.highlight_code(raw_code)
 
 # Khyria Efforts

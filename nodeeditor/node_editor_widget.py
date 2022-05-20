@@ -377,8 +377,8 @@ class NodeEditorWidget(QWidget):
                     self.multi_code_wnd.widget(0).append(user_node[0])
 
             else:
+                self.multi_code_wnd.widget(1).clear()
                 for node in self.scene.nodes:
-                    self.multi_code_wnd.widget(1).clear()
                     node.syntax = current_synatx
                     # Don't add Text Code OF Node in these cases !
                     if node.getNodeCode() is None or node.showCode is not True:

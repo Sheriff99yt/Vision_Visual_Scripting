@@ -18,7 +18,6 @@ class Event(MasterNode):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter
         self.is_event = True
-        self.return_type = self.return_type_dict[list(self.return_type_dict.keys())[0]]
 
     def getNodeCode(self):
         if self.is_setter:
@@ -33,20 +32,16 @@ def {self.name}():
 
             elif self.syntax == "C++":
                 childCode = self.get_other_socket_code(0)
+                return_type = self.return_type_dict[list(self.return_type_dict.keys())[0]]
                 L_P = "{"
                 R_P = "}"
                 CPP_code = f"""
-{self.return_type} {self.name}()
+{return_type} {self.name}()
 {L_P}
 {Indent(childCode)}
 {R_P}"""
                 raw_code = CPP_code
-            if self.isSelected() is True:
-                colorStyle = f''' style=" Font-size:{FontSize}px ; background-color:{self.nodeColor};" '''
-            else:
-                colorStyle = f''' style=" Font-size:{FontSize}px ;" '''
-            setterCode = f""" <pre><p style="font-family: {FontFamily} "><span {colorStyle} >{raw_code}</span></p></pre> """
-            return setterCode
+            return self.grNode.highlight_code(raw_code)
         else:
             if self.syntax == "Python":
                 brotherCode = self.get_other_socket_code(0)
@@ -55,7 +50,6 @@ def {self.name}():
                 python_code = f"""
 {self.name}()
 {brotherCode}"""
-
                 raw_code = python_code
 
             elif self.syntax == "C++":
