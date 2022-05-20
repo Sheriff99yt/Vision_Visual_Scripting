@@ -383,5 +383,5 @@ class NodeEditorWidget(QWidget):
                     if node.getNodeCode() is None or node.showCode is not True:
                         pass
                     else:
-                        self.multi_code_wnd.widget(1).append(node.grNode.highlight_code())
+                        self.multi_code_wnd.widget(1).append(node.getNodeCode())
 
