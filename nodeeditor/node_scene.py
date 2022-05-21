@@ -184,6 +184,9 @@ class NodeScene(Serializable):
         :return: list of ``QGraphicsItems``
         :rtype: list[QGraphicsItem]
         """
+        if not self.grScene.selectedItems():
+            self.user_nodes_wdg.proprietiesWdg.clear()
+
         return self.grScene.selectedItems()
 
     def doDeselectItems(self, silent: bool=False) -> None:

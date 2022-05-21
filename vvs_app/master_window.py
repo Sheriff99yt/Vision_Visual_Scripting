@@ -386,7 +386,8 @@ class MasterWindow(NodeEditorWindow):
             subwnd = self.new_graph_tab()
 
             all_names = []
-            for item in self.graphs_parent_wdg.subWindowList(): all_names.append(item.widget().windowTitle())
+            for item in self.graphs_parent_wdg.subWindowList():
+                all_names.append(item.widget().windowTitle())
 
             self.files_widget.new_graph_name(subwnd, all_names)
 
@@ -642,6 +643,12 @@ class MasterWindow(NodeEditorWindow):
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
+    def before_window_close(self):
+        self.proprietiesWdg.clear()
+
+    def on_before_save_file(self):
+        self.proprietiesWdg.clear()
+
     def new_graph_tab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode
         if not self.graphs_parent_wdg.subWindowList():
@@ -690,6 +697,7 @@ class MasterWindow(NodeEditorWindow):
 
             else:
                 self.switch_display(Editor=True)
+            self.before_window_close()
 
         else:
             event.ignore()
