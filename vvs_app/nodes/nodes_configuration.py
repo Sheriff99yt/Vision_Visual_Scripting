@@ -36,7 +36,7 @@ def register_Node(Node_Class):
 
     if Node_Class.category == "FUNCTION":
         FUNCTIONS[Node_Type] = Node_Class
-    elif Node_Class.category == "EVENT":
+    elif Node_Class.category == "User_Function":
         EVENTS[Node_Type] = Node_Class
     elif Node_Class.category == "VARIABLE":
         VARIABLES[Node_Type] = Node_Class

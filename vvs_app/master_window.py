@@ -42,11 +42,6 @@ DEBUG = False
 
 class MasterWindow(NodeEditorWindow):
 
-    def MakeCopyOfClass(self, classRef):
-        class NewVEList(classRef):
-            pass
-        return NewVEList()
-
     def initUI(self):
         # self.qss_theme = "qss/nodeeditor-light.qss"
 
@@ -63,9 +58,7 @@ class MasterWindow(NodeEditorWindow):
 
         self.empty_icon = QIcon(".")
 
-        if DEBUG:
-            print("Registered nodes:")
-            # pp(FUNCTIONS)
+        if DEBUG: print("Registered nodes:")
 
         self.stackedDisplay = QStackedWidget()
 
@@ -643,12 +636,6 @@ class MasterWindow(NodeEditorWindow):
         self.varsEventsDock.setFeatures(self.varsEventsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsEventsDock)
 
-    def create_user_nodes_list(self):
-        new_wdg = self.MakeCopyOfClass(UserNodesList)
-        self.VEStackedWdg.addWidget(new_wdg)
-        self.VEStackedWdg.setCurrentWidget(new_wdg)
-        return new_wdg
-
     def delete_user_nodes_wgd(self, ref):
         self.VEStackedWdg.removeWidget(ref)
 
@@ -660,12 +647,14 @@ class MasterWindow(NodeEditorWindow):
         if not self.graphs_parent_wdg.subWindowList():
             self.switch_display(Editor=True)
 
-        VEL = self.create_user_nodes_list()
 
         node_editor = MasterEditorWnd(masterRef=self)
 
+        VEL = UserNodesList(scene=node_editor.scene, propertiesWdg=self.proprietiesWdg)
+        self.VEStackedWdg.addWidget(VEL)
+        self.VEStackedWdg.setCurrentWidget(VEL)
+
         node_editor.scene.user_nodes_wdg = VEL
-        VEL.Scene = node_editor.scene
 
         # node_editor.scene.masterRef = self
         # node_editor.scene.history.masterRef = self

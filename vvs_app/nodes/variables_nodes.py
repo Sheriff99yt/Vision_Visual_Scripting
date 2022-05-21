@@ -43,7 +43,7 @@ class FloatVar(MasterNode):
                 setInput = self.get_my_input_code(1)
 
                 python_code = f"""
-float {self.name}="{setInput}";
+float {self.name}= {setInput};
 {brotherCode}"""
 
                 raw_code = python_code
@@ -89,7 +89,7 @@ class IntegerVar(MasterNode):
                 setInput = self.get_my_input_code(1)
 
                 python_code = f"""
-int {self.name}="{setInput}";
+int {self.name}= {setInput};
 {brotherCode}"""
 
                 raw_code = python_code
@@ -135,7 +135,7 @@ class BooleanVar(MasterNode):
                 setInput = self.get_my_input_code(1)
 
                 python_code = f"""
-bool {self.name}="{setInput}";
+bool {self.name}= {setInput};
 {brotherCode}"""
 
                 raw_code = python_code

@@ -5,11 +5,11 @@ from nodeeditor.node_editor_widget import *
 
 
 
-class Event(MasterNode):
+class User_Function(MasterNode):
     icon = "icons/light/event.png"
-    name = "Event"
-    category = "EVENT"
-    sub_category = "Event"
+    name = "user_function"
+    category = "User_Function"
+    sub_category = "User_Function"
     node_color = "#90FF1010"
 
     def __init__(self, scene, isSetter):
@@ -23,17 +23,23 @@ class Event(MasterNode):
                 childCode = self.get_other_socket_code(0)
 
                 python_code = f"""
-def {self.name}():
+def {self.name}(){self.get_return()}:
 {Indent(childCode)}"""
 
                 raw_code = python_code
 
             elif self.syntax == "C++":
+                childCode = self.get_other_socket_code(0)
 
-                raw_code = self.syntax
-
+                L_P = "{"
+                R_P = "}"
+                CPP_code = f"""
+{self.get_return()} {self.name}()
+{L_P}
+{Indent(childCode)}
+{R_P}"""
+                raw_code = CPP_code
             return self.grNode.highlight_code(raw_code)
-
         else:
             if self.syntax == "Python":
                 brotherCode = self.get_other_socket_code(0)
@@ -42,11 +48,12 @@ def {self.name}():
                 python_code = f"""
 {self.name}()
 {brotherCode}"""
-
                 raw_code = python_code
 
             elif self.syntax == "C++":
+                self.showCode = not self.isInputConnected(0)
 
-                raw_code = self.syntax
-
+                cpp_code = f"""
+{self.name}()"""
+                raw_code = cpp_code
             return self.grNode.highlight_code(raw_code)

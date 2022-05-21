@@ -4,23 +4,20 @@ A module containing ``NodeEditorWidget`` class
 """
 import os
 import subprocess
-import tempfile
 
 from qtpy.QtCore import *
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 
-from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
 from nodeeditor.graph_graphics import GraphGraphics
+from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
-from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar, StringVar, ListVar
+from vvs_app.nodes.variables_nodes import StringVar, ListVar
 
 
 class NodeEditorWidget(QWidget):
-    Scene_class = NodeScene
-    GraphGraphics_class = GraphGraphics
     """The ``NodeEditorWidget`` class"""
 
     def __init__(self, masterRef, parent: QWidget = None):
@@ -38,7 +35,7 @@ class NodeEditorWidget(QWidget):
         self.file_path = ''
 
         # crate graphics scene
-        self.scene = self.__class__.Scene_class(masterRef)
+        self.scene = NodeScene(masterRef)
 
         self.createWidgetWindow()
 
@@ -51,7 +48,7 @@ class NodeEditorWidget(QWidget):
         self.scene.masterRef.files_widget.make_generated_scripts_dir()
 
         # create graphics view
-        self.graph_graphics_view = self.__class__.GraphGraphics_class(self.scene.grScene, self)
+        self.graph_graphics_view = GraphGraphics(self.scene.grScene, self)
 
         widget_layout = QHBoxLayout()
         widget_layout.setContentsMargins(0, 0, 0, 0)
@@ -376,8 +373,8 @@ class NodeEditorWidget(QWidget):
                     self.multi_code_wnd.widget(0).append(user_node[0])
 
             else:
+                self.multi_code_wnd.widget(1).clear()
                 for node in self.scene.nodes:
-                    self.multi_code_wnd.widget(1).clear()
                     node.syntax = current_synatx
                     # Don't add Text Code OF Node in these cases !
                     if node.getNodeCode() is None or node.showCode is not True:

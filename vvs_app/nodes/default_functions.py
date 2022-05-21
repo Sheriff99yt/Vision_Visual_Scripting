@@ -39,13 +39,16 @@ class IfStatement(MasterNode):
 
             false = self.get_other_socket_code(1)
 
-            if self.isOutputConnected(1):
+            if self.isOutputConnected(1) and self.isOutputConnected(0):
                 python_code = f"""
 if {condition}:
 {Indent(true)}
 else:
 {Indent(false)}"""
-
+            elif self.isOutputConnected(1) and self.isOutputConnected(0) is False:
+                python_code = f"""
+if not {condition}:
+{Indent(false)}"""
             else:
                 python_code = f"""
 if {condition}:
@@ -53,7 +56,29 @@ if {condition}:
 
             raw_code = python_code
         elif self.syntax == "C++":
-            raw_code = self.syntax
+            self.showCode = not self.isInputConnected(0)
+
+            condition = self.get_my_input_code(1)
+
+            true = self.get_other_socket_code(0)
+
+            false = self.get_other_socket_code(1)
+
+            if self.isOutputConnected(1) and self.isOutputConnected(0):
+                python_code = f"""
+if ({condition})
+{Indent(true)}
+else
+{Indent(false)}"""
+            elif self.isOutputConnected(1) and self.isOutputConnected(0) is False:
+                python_code = f"""
+if (not {condition})
+{Indent(false)}"""
+            else:
+                python_code = f"""
+if ({condition})
+{Indent(true)}"""
+            raw_code = python_code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -243,9 +268,7 @@ class Add(MasterNode):
             raw_code = python_code
 
         elif self.syntax == "C++":
-
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 class Sub(MasterNode):
@@ -269,9 +292,7 @@ class Sub(MasterNode):
             raw_code = python_code
 
         elif self.syntax == "C++":
-
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 class Mul(MasterNode):
@@ -297,7 +318,6 @@ class Mul(MasterNode):
         elif self.syntax == "C++":
 
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 class Div(MasterNode):
@@ -323,7 +343,6 @@ class Div(MasterNode):
         elif self.syntax == "C++":
 
             raw_code = self.syntax
-
         return self.grNode.highlight_code(raw_code)
 
 # Input
@@ -355,8 +374,6 @@ class UserInput(MasterNode):
 
         elif self.syntax == "C++":
             raw_code = self.syntax
-
-
         return self.grNode.highlight_code(raw_code)
 
 class RawCode(MasterNode):
@@ -385,8 +402,6 @@ class RawCode(MasterNode):
         elif self.syntax == "C++":
 
             raw_code = self.syntax
-
-
         return self.grNode.highlight_code(raw_code)
 
 # Output
@@ -419,9 +434,53 @@ print("{printCode}")
 
         elif self.syntax == "C++":
 
-            raw_code = self.syntax
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            if self.isInputConnected(1):
+                python_code = f"""
+cout >> {printCode};
+{brotherCode}"""
+
+            else:
+                python_code = f"""
+cout >> "{printCode}";
+{brotherCode}"""
+
+            raw_code = python_code
+
+        return self.grNode.highlight_code(raw_code)
 
 
+class Return(MasterNode):
+    icon = "icons/light/return.png"
+    name = "Return"
+    category = "FUNCTION"
+    sub_category = "Output"
+    node_color = "#90702070"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 6], outputs=[0])
+
+    def getNodeCode(self):
+        if self.syntax == "Python":
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            python_code = f"""
+return {printCode}
+{brotherCode}"""
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            printCode = self.get_my_input_code(1)
+            python_code = f"""
+return {printCode};
+{brotherCode}"""
+            raw_code = python_code
         return self.grNode.highlight_code(raw_code)
 
 # Khyria Efforts
