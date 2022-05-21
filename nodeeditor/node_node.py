@@ -220,7 +220,6 @@ class Node(Serializable):
 
         self.grNode.AutoResizeGrNode()
 
-
     def updateSockets(self):
         pass
 

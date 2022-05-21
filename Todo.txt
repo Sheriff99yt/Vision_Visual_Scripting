@@ -1,24 +1,27 @@
-
+#
 # # inProgress
-#     - * c++ code.
+#     - A list type combobox
 #
 # # urgent
-#     - **** enableing input in the termenal.
+#     - B c++ code
+#     - B C++ includes
+#     - B Add light Ui Modes
+#     - A Graph background color
 #     - Missing Icons
-
+#     - Splash Screen
+#
 # # ToDos
-#     - **** save all graphs & close all graphs Qactions.
-#     - Beginner Friendly and Teaching Mode
-#     - Add light Ui Modes
+#     - S save all graphs & close all graphs Qactions
+#     - B enableing input in the termenal
 #
 # # Done
-#     - ** Deleting Vars and Events.
-#     - **** functions category open and close indicators
-#     - **** functions categories (Tree Widget).
+#     - A Deleting Vars and Events.
+#     - S functions category open and close indicators.
+#     - S functions categories (Tree Widget).
 #     - warning if the shortcut is already in use.
 #     - hold reset btn to reset settings with a progress par.
 #     - Socket name For each socket on the node itself.
-#     - fixing input widgets
-#     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things
+#     - fixing input widgets.
+#     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things.
 #     - ** Always save before closing option.
-#     - default node content serialisation
+#     - default node content serialisation.

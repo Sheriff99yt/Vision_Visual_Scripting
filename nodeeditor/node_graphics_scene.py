@@ -40,7 +40,7 @@ class NodeGraphicsScene(QGraphicsScene):
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
         # settings
-        self.gridSize = 20
+        self.gridSize = 30
         self.gridSquares = 5
 
         self.initAssets()
@@ -50,8 +50,8 @@ class NodeGraphicsScene(QGraphicsScene):
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._color_background = QColor("#393939")
-        self._color_light = QColor("#2f2f2f")
-        self._color_dark = QColor("#292929")
+        self._color_light = QColor("#282828")
+        self._color_dark = QColor("#282828")
         self._color_state = QColor("#ccc")
 
         self._pen_light = QPen(self._color_light)

@@ -437,7 +437,6 @@ class NodeScene(Serializable):
             if not current_user_nodes.__contains__(node_name):
                 self.user_nodes_wdg.create_user_node(type=user_node['type'], name=user_node['name'],
                                                      node_id=user_node['id'], node_return=user_node['node_return'])
-                print(user_node['node_return'])
 
         # Create a list of all Stored User Nodes at the History Stamp
         stored_user_nodes = []
