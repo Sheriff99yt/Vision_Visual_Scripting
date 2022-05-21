@@ -42,11 +42,6 @@ DEBUG = False
 
 class MasterWindow(NodeEditorWindow):
 
-    def MakeCopyOfClass(self, classRef):
-        class NewVEList(classRef):
-            pass
-        return NewVEList()
-
     def initUI(self):
         # self.qss_theme = "qss/nodeeditor-light.qss"
 
@@ -391,7 +386,8 @@ class MasterWindow(NodeEditorWindow):
             subwnd = self.new_graph_tab()
 
             all_names = []
-            for item in self.graphs_parent_wdg.subWindowList(): all_names.append(item.widget().windowTitle())
+            for item in self.graphs_parent_wdg.subWindowList():
+                all_names.append(item.widget().windowTitle())
 
             self.files_widget.new_graph_name(subwnd, all_names)
 
@@ -641,29 +637,31 @@ class MasterWindow(NodeEditorWindow):
         self.varsEventsDock.setFeatures(self.varsEventsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.varsEventsDock)
 
-    def create_user_nodes_list(self):
-        new_wdg = self.MakeCopyOfClass(UserNodesList)
-        self.VEStackedWdg.addWidget(new_wdg)
-        self.VEStackedWdg.setCurrentWidget(new_wdg)
-        return new_wdg
-
     def delete_user_nodes_wgd(self, ref):
         self.VEStackedWdg.removeWidget(ref)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
+    def before_window_close(self):
+        self.proprietiesWdg.clear()
+
+    def on_before_save_file(self):
+        self.proprietiesWdg.clear()
+
     def new_graph_tab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode
         if not self.graphs_parent_wdg.subWindowList():
             self.switch_display(Editor=True)
 
-        VEL = self.create_user_nodes_list()
 
         node_editor = MasterEditorWnd(masterRef=self)
 
+        VEL = UserNodesList(scene=node_editor.scene, propertiesWdg=self.proprietiesWdg)
+        self.VEStackedWdg.addWidget(VEL)
+        self.VEStackedWdg.setCurrentWidget(VEL)
+
         node_editor.scene.user_nodes_wdg = VEL
-        VEL.Scene = node_editor.scene
 
         # node_editor.scene.masterRef = self
         # node_editor.scene.history.masterRef = self
@@ -696,9 +694,11 @@ class MasterWindow(NodeEditorWindow):
             self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
             if (len(self.graphs_parent_wdg.subWindowList())-1) == 0:
                 self.switch_display(Welcome=True)
+
             else:
                 self.switch_display(Editor=True)
-            self.proprietiesWdg.clear()
+            self.before_window_close()
+
         else:
             event.ignore()
 

@@ -1,3 +1,6 @@
+from qtpy.QtGui import *
+
+from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
 from textwrap import *
 
@@ -9,7 +12,6 @@ logicOperators = "#30000050"
 
 def Indent(String):
     return indent(String, '     ')
-
 
 # Process
 class IfStatement(MasterNode):
@@ -380,7 +382,6 @@ class Mul(MasterNode):
 
             raw_code = CPP_code
         return self.grNode.highlight_code(raw_code)
-
 
 class Div(MasterNode):
     icon = "icons/light/divide.png"

@@ -5,14 +5,12 @@ from nodeeditor.node_editor_widget import *
 
 
 
-class Event(MasterNode):
+class User_Function(MasterNode):
     icon = "icons/light/event.png"
-    name = "Event"
-    category = "EVENT"
-    sub_category = "Event"
+    name = "user_function"
+    category = "User_Function"
+    sub_category = "User_Function"
     node_color = "#90FF1010"
-
-    return_type_dict = {"None": "void"}
 
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
@@ -25,18 +23,18 @@ class Event(MasterNode):
                 childCode = self.get_other_socket_code(0)
 
                 python_code = f"""
-def {self.name}():
+def {self.name}(){self.get_return()}:
 {Indent(childCode)}"""
 
                 raw_code = python_code
 
             elif self.syntax == "C++":
                 childCode = self.get_other_socket_code(0)
-                return_type = self.return_type_dict[list(self.return_type_dict.keys())[0]]
+
                 L_P = "{"
                 R_P = "}"
                 CPP_code = f"""
-{return_type} {self.name}()
+{self.get_return()} {self.name}()
 {L_P}
 {Indent(childCode)}
 {R_P}"""

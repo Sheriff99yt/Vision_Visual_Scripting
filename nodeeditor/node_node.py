@@ -22,6 +22,7 @@ class Node(Serializable):
     Class representing `Node` in the `Scene`.
     """
     node_type = None
+    node_return = 'mutable'
 
     def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [], outputs: list = [],
                  isSetter=None, node_icon=''):
@@ -72,6 +73,43 @@ class Node(Serializable):
         self.outputs = []
 
         self.initSockets(inputs, outputs)
+
+    def get_return(self):
+        if self.syntax == "Python":
+            if self.node_return == 'mutable':
+                return ''
+            elif self.node_return == 'float':
+                return '-> float'
+            elif self.node_return == 'integer':
+                return '-> integer'
+            elif self.node_return == 'boolean':
+                return '-> boolean'
+            elif self.node_return == 'string':
+                return '-> string'
+            elif self.node_return == 'list':
+                return '-> list'
+            elif self.node_return == 'dictionary':
+                return '-> dictionary'
+            elif self.node_return == 'tuple':
+                return '-> tuple'
+
+        elif self.syntax == "C++":
+            if self.node_return == 'mutable':
+                return 'void'
+            elif self.node_return == 'float':
+                return 'float'
+            elif self.node_return == 'integer':
+                return 'integer'
+            elif self.node_return == 'boolean':
+                return 'boolean'
+            elif self.node_return == 'string':
+                return 'string'
+            elif self.node_return == 'list':
+                return 'list'
+            elif self.node_return == 'dictionary':
+                return 'dictionary'
+            elif self.node_return == 'tuple':
+                return 'tuple'
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
@@ -556,6 +594,7 @@ class Node(Serializable):
         return OrderedDict([
             ('id', self.id),
             ('name', self.name),
+            ('node_return', self.node_return),
             ('pos_x', self.grNode.scenePos().x()),
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
@@ -572,6 +611,7 @@ class Node(Serializable):
             self.is_var = data['is_var']
             self.is_event = data['is_event']
             self.is_setter = data['is_setter']
+            self.node_return = data['node_return']
 
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']

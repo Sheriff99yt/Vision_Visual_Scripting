@@ -181,6 +181,7 @@ class NodeEditorWindow(QMainWindow):
         res = QMessageBox.warning(self, "About to loose your work?", msg,
                 QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
 
+
         if res == QMessageBox.Save:
             if new_dir:
                 return self.files_widget.set_project_folder()
@@ -226,7 +227,8 @@ class NodeEditorWindow(QMainWindow):
         # Check If a file Already Exists with the same name
         current_node_editor = self.currentNodeEditor()
         if current_node_editor is not None:
-            if not current_node_editor.isFilenameSet(): return self.on_file_save_as()
+            if not current_node_editor.isFilenameSet():
+                return self.on_file_save_as()
             current_node_editor.fileSave()
             self.statusBar().showMessage("Successfully saved %s" % current_node_editor.filename, 5000)
 
@@ -355,3 +357,6 @@ class NodeEditorWindow(QMainWindow):
         settings = QSettings(self.name_company, self.name_product)
         settings.setValue('pos', self.pos())
         settings.setValue('size', self.size())
+
+    def before_window_close(self):
+        pass

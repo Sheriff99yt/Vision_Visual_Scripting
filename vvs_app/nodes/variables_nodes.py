@@ -224,6 +224,7 @@ class ListVar(MasterNode):
                 raw_code = python_code
 
             elif self.syntax == "C++":
+
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
