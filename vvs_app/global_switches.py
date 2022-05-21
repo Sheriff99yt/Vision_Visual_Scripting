@@ -9,14 +9,14 @@ class GlobalSwitches:
         self.master_ref = master
         self.Settings_Directory = f"{self.master_ref.files_widget.default_system_dir}/Preferences"
         self.Settings_File = self.Settings_Directory + f"/Settings.json"
-        self.themes = {"Night": "qss/nodeeditor-night.qss", "light": "qss/nodeeditor-light.qss"}
+        self.themes = {"Night": "qss/nodeeditor-night.qss", "Light": "qss/nodeeditor-light.qss"}
 
         self.Default_switches_Dict = {"AutoSave Steps": 30,
                                       "AutoSave Folder MaxSize": 500,
                                       "Always Save Before Closing": True,
                                       "Save New Project Folder On Close": False,
 
-                                      "Theme": ["Night", "light"],
+                                      "Theme": ["Night", "Light"],
                                       "Font Size": 16,
 
                                       "New Graph": "Ctrl+N",
@@ -63,6 +63,7 @@ class GlobalSwitches:
             self.master_ref.settingsWidget.setStyleSheet(f"QWidget {s}{size}px{z}")
 
     def change_theme(self, theme):
+
         self.master_ref.qss_theme = self.themes[theme]
         self.master_ref.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.master_ref.qss_theme)
 

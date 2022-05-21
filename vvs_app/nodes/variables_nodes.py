@@ -42,11 +42,11 @@ class FloatVar(MasterNode):
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
 
-                python_code = f"""
+                CPP_code = f"""
 float {self.name}= {setInput};
 {brotherCode}"""
 
-                raw_code = python_code
+                raw_code = CPP_code
 
             return self.grNode.highlight_code(raw_code)
         else:
@@ -88,11 +88,11 @@ class IntegerVar(MasterNode):
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
 
-                python_code = f"""
+                CPP_code = f"""
 int {self.name}= {setInput};
 {brotherCode}"""
 
-                raw_code = python_code
+                raw_code = CPP_code
 
             return self.grNode.highlight_code(raw_code)
         else:
@@ -134,11 +134,11 @@ class BooleanVar(MasterNode):
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
 
-                python_code = f"""
+                CPP_code = f"""
 bool {self.name}= {setInput};
 {brotherCode}"""
 
-                raw_code = python_code
+                raw_code = CPP_code
 
             return self.grNode.highlight_code(raw_code)
         else:
@@ -179,11 +179,11 @@ class StringVar(MasterNode):
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
 
-                python_code = f"""
+                CPP_code = f"""
 string {self.name}="{setInput}";
 {brotherCode}"""
 
-                raw_code = python_code
+                raw_code = CPP_code
 
             return self.grNode.highlight_code(raw_code)
         else:
@@ -224,17 +224,19 @@ class ListVar(MasterNode):
                 raw_code = python_code
 
             elif self.syntax == "C++":
-
                 self.outputs[1].socket_code = self.name
                 self.showCode = not self.isInputConnected(0)
                 brotherCode = self.get_other_socket_code(0)
                 setInput = self.get_my_input_code(1)
+                L_P = "{"
+                R_P = "}"
 
-                python_code = f"""
-string {self.name}="{setInput}";
+                CPP_code = f"""
+list &lt;int&gt; {self.name} = {L_P}{setInput}{R_P};
 {brotherCode}"""
+# int array_name[] {};
 
-                raw_code = python_code
+                raw_code = CPP_code
 
             return self.grNode.highlight_code(raw_code)
         else:

@@ -1,24 +1,25 @@
-
+#
 # # inProgress
 #     - * c++ code.
 #
 # # urgent
 #     - **** enableing input in the termenal.
 #     - Missing Icons
-
+#
 # # ToDos
+#     - ** Graph background color.
 #     - **** save all graphs & close all graphs Qactions.
-#     - Beginner Friendly and Teaching Mode
-#     - Add light Ui Modes
+#     - Beginner Friendly and Teaching Mode.
+#     - Add light Ui Modes.
 #
 # # Done
 #     - ** Deleting Vars and Events.
-#     - **** functions category open and close indicators
+#     - **** functions category open and close indicators.
 #     - **** functions categories (Tree Widget).
 #     - warning if the shortcut is already in use.
 #     - hold reset btn to reset settings with a progress par.
 #     - Socket name For each socket on the node itself.
-#     - fixing input widgets
-#     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things
+#     - fixing input widgets.
+#     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things.
 #     - ** Always save before closing option.
-#     - default node content serialisation
+#     - default node content serialisation.
