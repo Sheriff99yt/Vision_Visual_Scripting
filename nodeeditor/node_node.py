@@ -61,7 +61,6 @@ class Node(Serializable):
 
         # just to be sure, init these variables
         self.grNode = QDMGraphicsNode(node=self, node_icon=node_icon)
-        print(">>"+node_icon)
         self.grNode.node_icon = QImage(node_icon)
         self.initSettings()
 
@@ -100,7 +99,7 @@ class Node(Serializable):
             elif self.node_return == 'float':
                 return 'float'
             elif self.node_return == 'integer':
-                return 'integer'
+                return 'int'
             elif self.node_return == 'boolean':
                 return 'boolean'
             elif self.node_return == 'string':
@@ -689,4 +688,3 @@ class Node(Serializable):
 
     def getNodeCode(self):
         return None
-

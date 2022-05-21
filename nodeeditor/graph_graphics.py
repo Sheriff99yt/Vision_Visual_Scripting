@@ -249,13 +249,6 @@ class GraphGraphics(QGraphicsView):
                 super().mousePressEvent(fakeEvent)
                 return
 
-        # if hasattr(item, "node"):
-        #     if DEBUG_EDGE_INTERSECT: print('View::leftMouseButtonPress - Start dragging a node')
-        #     if self.mode == MODE_READY:
-        #         self.mode = MODE_NODE_DRAG
-        #         self.edgeIntersect.enterState(item.node)
-        #         if DEBUG_EDGE_INTERSECT: print(">> edgeIntersect start:", self.edgeIntersect.draggedNode)
-
         # support for snapping
         if self.isSnappingEnabled(event):
             item = self.snapping.getSnappedSocketItem(event)

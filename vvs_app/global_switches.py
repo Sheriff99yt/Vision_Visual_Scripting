@@ -63,6 +63,7 @@ class GlobalSwitches:
             self.master_ref.settingsWidget.setStyleSheet(f"QWidget {s}{size}px{z}")
 
     def change_theme(self, theme):
+
         self.master_ref.qss_theme = self.themes[theme]
         self.master_ref.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.master_ref.qss_theme)
 

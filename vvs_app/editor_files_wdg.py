@@ -37,8 +37,8 @@ class FilesWDG(QWidget):
 
         if action == delete:
             file_path = QFileSystemModel().filePath(self.tree_wdg.selectedIndexes()[0])
-            delete_Q = QMessageBox.warning(self, "Warning !", f"You Are About To Delete\n\n{file_path}\n\nThis is Irreversible Are You Sure?", QMessageBox.Save | QMessageBox.Cancel)
-            if delete_Q == QMessageBox.Save:
+            delete_Q = QMessageBox.warning(self, "Warning !", f"You Are About To Delete\n\n{file_path}\n\nThis is Irreversible Are You Sure?", QMessageBox.Yes | QMessageBox.Cancel)
+            if delete_Q == QMessageBox.Yes:
                 try:
                     os.remove(file_path)
                 except Exception:
