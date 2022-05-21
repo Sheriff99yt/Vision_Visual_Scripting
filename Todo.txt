@@ -8,6 +8,7 @@
 #
 # # urgent
 #     - B Missing Icons
+#     - B splash screen
 #
 # # ToDos
 #     - S save all graphs & close all graphs Qactions.
