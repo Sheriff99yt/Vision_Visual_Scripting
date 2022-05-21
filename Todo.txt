@@ -7,13 +7,13 @@
 #     - A list type combobox.
 #
 # # urgent
+#     - B Missing Icons
 #
 # # ToDos
 #     - S save all graphs & close all graphs Qactions.
 #     - B enableing input in the termenal.
 #
 # # Done
-#     - Missing Icons
 #     - A Deleting Vars and Events.
 #     - S functions category open and close indicators.
 #     - S functions categories (Tree Widget).
