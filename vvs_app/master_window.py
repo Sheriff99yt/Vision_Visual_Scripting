@@ -696,10 +696,9 @@ class MasterWindow(NodeEditorWindow):
             self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
             if (len(self.graphs_parent_wdg.subWindowList())-1) == 0:
                 self.switch_display(Welcome=True)
-
             else:
                 self.switch_display(Editor=True)
-
+            self.proprietiesWdg.clear()
         else:
             event.ignore()
 
