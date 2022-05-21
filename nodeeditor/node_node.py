@@ -99,7 +99,7 @@ class Node(Serializable):
             elif self.node_return == 'float':
                 return 'float'
             elif self.node_return == 'integer':
-                return 'integer'
+                return 'int'
             elif self.node_return == 'boolean':
                 return 'boolean'
             elif self.node_return == 'string':

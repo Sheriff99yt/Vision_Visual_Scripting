@@ -136,7 +136,7 @@ class UserNodesList(QTabWidget):
             name = self.eventCompoBox.currentText()
             type = self.eventCompoBox.itemData(self.eventCompoBox.currentIndex())
 
-        self.create_user_node(self.autoNodeRename(name), node_id=None, type=type, user=True, node_return=None)
+        self.create_user_node(self.autoNodeRename(name), node_id=None, type=type, user=True, node_return="mutable")
 
     def create_user_node(self, name, node_id, type, node_return, user=False):
 

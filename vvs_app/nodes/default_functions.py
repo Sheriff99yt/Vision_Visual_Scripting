@@ -549,7 +549,7 @@ class Return(MasterNode):
     node_color = "#90702070"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 6], outputs=[0])
+        super().__init__(scene, inputs=[0, 6], outputs=[])
 
     def getNodeCode(self):
         if self.syntax == "Python":

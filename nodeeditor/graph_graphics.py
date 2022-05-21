@@ -271,7 +271,6 @@ class GraphGraphics(QGraphicsView):
             if res: return
 
         if item is None:
-            self.grScene.scene.masterRef.proprietiesWdg.clear()
             if event.modifiers() & Qt.ControlModifier:
                 self.mode = MODE_EDGE_CUT
                 fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
