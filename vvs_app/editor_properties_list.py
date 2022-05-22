@@ -3,8 +3,6 @@ from time import sleep
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
-
-
 class PropertiesList(QScrollArea):
     def __init__(self, parent=None, master_ref=None):
         super().__init__(parent)

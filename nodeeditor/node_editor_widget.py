@@ -37,9 +37,9 @@ class NodeEditorWidget(QWidget):
         # crate graphics scene
         self.scene = NodeScene(masterRef)
 
-        self.createWidgetWindow()
+        self.create_widget_window()
 
-    def createWidgetWindow(self):
+    def create_widget_window(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
@@ -124,7 +124,7 @@ class NodeEditorWidget(QWidget):
         # Termenal
         self.code_output = QTextEdit()
         # if selected_theme == night:
-        self.code_output.setStyleSheet("background-color: #282828")
+        # self.code_output.setStyleSheet("background-color: #282828")
         self.code_output.setFont(QFont('Roboto', 12))
         self.v_splitter.addWidget(self.code_output)
 
