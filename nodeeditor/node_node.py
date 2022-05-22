@@ -2,9 +2,11 @@
 """
 A module containing NodeEditor's class for representing `Node`.
 """
+import os
 import socket
 from collections import OrderedDict
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
@@ -61,7 +63,7 @@ class Node(Serializable):
 
         # just to be sure, init these variables
         self.grNode = QDMGraphicsNode(node=self, node_icon=node_icon)
-        self.grNode.node_icon = QImage(node_icon)
+        # self.grNode.node_icon = QImage(node_icon)
         self.initSettings()
 
         self.name = name
@@ -88,42 +90,6 @@ class Node(Serializable):
     def get_return(self):
         index = self.return_dataTypes_dict["Languages"].index(self.syntax)
         return self.return_dataTypes_dict[self.node_return][index]
-
-        # if self.syntax == "Python":
-        #     if self.node_return == 'mutable':
-        #         return ''
-        #     elif self.node_return == 'float':
-        #         return '-> float'
-        #     elif self.node_return == 'integer':
-        #         return '-> integer'
-        #     elif self.node_return == 'boolean':
-        #         return '-> boolean'
-        #     elif self.node_return == 'string':
-        #         return '-> string'
-        #     elif self.node_return == 'list':
-        #         return '-> list'
-        #     elif self.node_return == 'dictionary':
-        #         return '-> dictionary'
-        #     elif self.node_return == 'tuple':
-        #         return '-> tuple'
-        #
-        # elif self.syntax == "C++":
-        #     if self.node_return == 'mutable':
-        #         return 'void'
-        #     elif self.node_return == 'float':
-        #         return 'float'
-        #     elif self.node_return == 'integer':
-        #         return 'int'
-        #     elif self.node_return == 'boolean':
-        #         return 'boolean'
-        #     elif self.node_return == 'string':
-        #         return 'string'
-        #     elif self.node_return == 'list':
-        #         return 'list'
-        #     elif self.node_return == 'dictionary':
-        #         return 'dictionary'
-        #     elif self.node_return == 'tuple':
-        #         return 'tuple'
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
@@ -691,7 +657,7 @@ class Node(Serializable):
         return True
 
     def set_node_color(self, color):
-        self.grNode.node_color = color
+        self.grNode.title_color = color
         self.grNode._brush_title = QBrush(QColor(color))
 
     def set_input_label_text(self, index, text):

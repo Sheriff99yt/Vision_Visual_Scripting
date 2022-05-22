@@ -11,6 +11,10 @@ class GlobalSwitches:
         self.Settings_File = self.Settings_Directory + f"/Settings.json"
         self.themes = {"Dark": "qss/nodeeditor-night.qss", "Light": "qss/nodeeditor-light.qss"}
 
+        self.themes_colors = {"Nodes": ["Text", "Background", "Outline", "", ""],
+                              "Dark": ["#ffffff", "#282828", "#282828", "#828282", "#ffffff"],
+                              "Light": ["#1f1f1f", "#828282", "#565656", "#282828", "#1f1f1f"]}
+
         self.Default_switches_Dict = {"AutoSave Steps": 30,
                                       "AutoSave Folder MaxSize": 500,
                                       "Always Save Before Closing": True,

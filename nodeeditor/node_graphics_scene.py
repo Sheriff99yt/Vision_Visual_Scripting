@@ -46,22 +46,16 @@ class NodeGraphicsScene(QGraphicsScene):
         self.gridSquares = 5
 
         self.initAssets()
-        self.setBackgroundBrush(self._color_background)
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self.update_background_color(init=True)
+        self.update_background_color()
         self._color_state = QColor("#ccc")
-
-        self._pen_light = QPen(self._color_light)
-        self._pen_light.setWidth(1)
-        self._pen_dark = QPen(self._color_dark)
-        self._pen_dark.setWidth(2)
 
         self._pen_state = QPen(self._color_state)
         self._font_state = QFont("Roboto", 16)
 
-    def update_background_color(self, background_color:str="555555", grid_lines_color:str="555555", init:bool=False):
+    def update_background_color(self, background_color:str="555555", grid_lines_color:str="555555"):
         if self.scene.masterRef.global_switches.switches_Dict["Theme"][0] == "Dark":
             background_color = "393939"
             grid_lines_color = "292929"
@@ -73,8 +67,12 @@ class NodeGraphicsScene(QGraphicsScene):
         self._color_light = QColor(f"#{grid_lines_color}")
         self._color_dark = QColor(f"#{grid_lines_color}")
 
-        if not init:
-            self.setBackgroundBrush(self._color_background)
+        self._pen_light = QPen(self._color_light)
+        self._pen_dark = QPen(self._color_dark)
+        self._pen_light.setWidth(1)
+        self._pen_dark.setWidth(2)
+
+        self.setBackgroundBrush(self._color_background)
 
     # the drag events won't be allowed until dragMoveEvent is overriden
     def dragMoveEvent(self, event):

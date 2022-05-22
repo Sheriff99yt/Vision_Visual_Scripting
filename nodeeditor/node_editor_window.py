@@ -3,6 +3,8 @@
 A module containing the Main Window class
 """
 import os, json
+
+from PyQt5.QtGui import QImage
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 # from nodeeditor.node_editor_widget import NodeEditorWidget
@@ -39,6 +41,7 @@ class NodeEditorWindow(QMainWindow):
             register_Node(cls)
 
         self.set_nodes_icons()
+
         self.initUI()
 
     def set_nodes_icons(self):

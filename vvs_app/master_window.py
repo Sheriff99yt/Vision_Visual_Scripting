@@ -613,7 +613,6 @@ class MasterWindow(NodeEditorWindow):
         self.functionsDock = QDockWidget("Functions")
         self.nodesListWidget = NodeList()
 
-
         self.functionsDock.setWidget(self.nodesListWidget)
         self.functionsDock.setFeatures(self.functionsDock.DockWidgetMovable)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.functionsDock)

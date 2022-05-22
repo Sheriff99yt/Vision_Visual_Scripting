@@ -253,10 +253,16 @@ class SettingsWidget(QWidget):
                 for act in self.masterRef.actions_list:
                     icon = self.masterRef.actions_list[act].iconText()
                     self.masterRef.actions_list[act].setIcon(QIcon(self.masterRef.global_switches.get_icon(icon)))
+
                 self.masterRef.set_nodes_icons()
                 self.masterRef.nodesListWidget.addMyFunctions()
                 for window in self.masterRef.graphs_parent_wdg.subWindowList():
                     window.widget().scene.grScene.update_background_color()
+                    window.widget().code_orientation_btn.setIcon(QIcon(self.masterRef.global_switches.get_icon(window.widget().code_orientation_btn.windowIconText())))
+                    window.widget().copy_code_btn.setIcon(QIcon(self.masterRef.global_switches.get_icon(window.widget().copy_code_btn.windowIconText())))
+                    window.widget().run_btn.setIcon(QIcon(self.masterRef.global_switches.get_icon(window.widget().run_btn.windowIconText())))
+                    for node in window.widget().scene.nodes:
+                        node.grNode.update_node_theme(True)
             else:
                 self.settingsTree.currentItem().data(9, 10).setText("No Changed")
                 self.fill()

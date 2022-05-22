@@ -91,11 +91,12 @@ class QDMGraphicsSocket(QGraphicsItem):
         # # adding shadow to the Socket
         # self.setGraphicsEffect(shadow)
 
-
-
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
+        current_theme = self.socket.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
         self.hovered = True
+        text_color_index = self.socket.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Text")
+        self.socket.socket_label.setDefaultTextColor(QColor(self.socket.node.scene.masterRef.global_switches.themes_colors[current_theme][text_color_index]))
         self.socket.socket_label.show()
         self.update()
 

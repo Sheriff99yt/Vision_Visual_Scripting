@@ -115,7 +115,7 @@ class NodeEditorWidget(QWidget):
         self.run_btn = QPushButton()
         self.run_btn.setMaximumSize(25, 25)
         self.run_btn.setIcon(QIcon(self.scene.masterRef.global_switches.get_icon("run.png")))
-        self.run_btn.setWindowIconText("settings.png")
+        self.run_btn.setWindowIconText("run.png")
         self.run_btn.clicked.connect(self.run_code)
         code_wnd_bar.addWidget(self.run_btn)
 
@@ -126,8 +126,6 @@ class NodeEditorWidget(QWidget):
 
         # Termenal
         self.code_output = QTextEdit()
-        # if selected_theme == night:
-        self.code_output.setStyleSheet("background-color: #282828")
         self.code_output.setFont(QFont('Roboto', 12))
         self.v_splitter.addWidget(self.code_output)
 
