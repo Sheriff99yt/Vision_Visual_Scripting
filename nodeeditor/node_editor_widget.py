@@ -37,9 +37,9 @@ class NodeEditorWidget(QWidget):
         # crate graphics scene
         self.scene = NodeScene(masterRef)
 
-        self.createWidgetWindow()
+        self.create_widget_window()
 
-    def createWidgetWindow(self):
+    def create_widget_window(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
