@@ -1,20 +1,21 @@
 #
 # # inProgress
-#     - B c++ code.
-#     - B C++ includes
-#     - B Add light Ui Modes.
-#     - A Graph background color.
 #     - A list type combobox.
+#     - B Add light Ui Modes*
 #
 # # urgent
-#     - B Missing Icons
-#     - B splash screen
+#     - B c++ code
+#     - B C++ includes
 #
 # # ToDos
-#     - S save all graphs & close all graphs Qactions.
-#     - B enableing input in the termenal.
+#     - B save all graphs & close all graphs QActions.
+#     - B enabling input in the terminal.
+#     - Beginner Friendly and Teaching Mode
 #
 # # Done
+#     - B Missing Icons*
+#     - A Graph background color
+#     - B splash screen
 #     - A Deleting Vars and Events.
 #     - S functions category open and close indicators.
 #     - S functions categories (Tree Widget).
@@ -23,5 +24,5 @@
 #     - Socket name For each socket on the node itself.
 #     - fixing input widgets.
 #     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things.
-#     - ** Always save before closing option.
+#     - A Always save before closing option.
 #     - default node content serialisation.

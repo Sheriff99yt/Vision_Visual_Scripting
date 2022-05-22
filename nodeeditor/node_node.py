@@ -74,42 +74,56 @@ class Node(Serializable):
 
         self.initSockets(inputs, outputs)
 
-    def get_return(self):
-        if self.syntax == "Python":
-            if self.node_return == 'mutable':
-                return ''
-            elif self.node_return == 'float':
-                return '-> float'
-            elif self.node_return == 'integer':
-                return '-> integer'
-            elif self.node_return == 'boolean':
-                return '-> boolean'
-            elif self.node_return == 'string':
-                return '-> string'
-            elif self.node_return == 'list':
-                return '-> list'
-            elif self.node_return == 'dictionary':
-                return '-> dictionary'
-            elif self.node_return == 'tuple':
-                return '-> tuple'
+        self.return_dataTypes_dict = {"Languages": ["Python", "C++"],
+                                        "mutable": ["", "void"],
+                                          "float": ["-> float", "float"],
+                                        "integer": ["-> integer", "int"],
+                                        "boolean": ["-> boolean", "boolean"],
+                                         "string": ["-> string", "string"],
+                                           "list": ["-> list", "list"],
+                                     "dictionary": ["-> dictionary", "dictionary"],
+                                          "tuple": ["-> tuple", "tuple"]
+                                      }
 
-        elif self.syntax == "C++":
-            if self.node_return == 'mutable':
-                return 'void'
-            elif self.node_return == 'float':
-                return 'float'
-            elif self.node_return == 'integer':
-                return 'int'
-            elif self.node_return == 'boolean':
-                return 'boolean'
-            elif self.node_return == 'string':
-                return 'string'
-            elif self.node_return == 'list':
-                return 'list'
-            elif self.node_return == 'dictionary':
-                return 'dictionary'
-            elif self.node_return == 'tuple':
-                return 'tuple'
+    def get_return(self):
+        index = self.return_dataTypes_dict["Languages"].index(self.syntax)
+        return self.return_dataTypes_dict[self.node_return][index]
+
+        # if self.syntax == "Python":
+        #     if self.node_return == 'mutable':
+        #         return ''
+        #     elif self.node_return == 'float':
+        #         return '-> float'
+        #     elif self.node_return == 'integer':
+        #         return '-> integer'
+        #     elif self.node_return == 'boolean':
+        #         return '-> boolean'
+        #     elif self.node_return == 'string':
+        #         return '-> string'
+        #     elif self.node_return == 'list':
+        #         return '-> list'
+        #     elif self.node_return == 'dictionary':
+        #         return '-> dictionary'
+        #     elif self.node_return == 'tuple':
+        #         return '-> tuple'
+        #
+        # elif self.syntax == "C++":
+        #     if self.node_return == 'mutable':
+        #         return 'void'
+        #     elif self.node_return == 'float':
+        #         return 'float'
+        #     elif self.node_return == 'integer':
+        #         return 'int'
+        #     elif self.node_return == 'boolean':
+        #         return 'boolean'
+        #     elif self.node_return == 'string':
+        #         return 'string'
+        #     elif self.node_return == 'list':
+        #         return 'list'
+        #     elif self.node_return == 'dictionary':
+        #         return 'dictionary'
+        #     elif self.node_return == 'tuple':
+        #         return 'tuple'
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)

@@ -9,15 +9,16 @@ class GlobalSwitches:
         self.master_ref = master
         self.Settings_Directory = f"{self.master_ref.files_widget.default_system_dir}/Preferences"
         self.Settings_File = self.Settings_Directory + f"/Settings.json"
-        self.themes = {"Night": "qss/nodeeditor-night.qss", "Light": "qss/nodeeditor-light.qss"}
+        self.themes = {"Dark": "qss/nodeeditor-night.qss", "Light": "qss/nodeeditor-light.qss"}
 
         self.Default_switches_Dict = {"AutoSave Steps": 30,
                                       "AutoSave Folder MaxSize": 500,
                                       "Always Save Before Closing": True,
                                       "Save New Project Folder On Close": False,
 
-                                      "Theme": ["Night", "Light"],
+                                      "Theme": ["Dark", "Light"],
                                       "Font Size": 16,
+                                      "Grid Size": 30,
 
                                       "New Graph": "Ctrl+N",
                                       "Open": "Ctrl+O",
@@ -48,6 +49,9 @@ class GlobalSwitches:
 
             self.save_settings_to_file(self.switches_Dict, self.Settings_File)
 
+        self.icons_dict = []
+        self.fill_icons_dict()
+
     def save_settings_to_file(self, data, file_path):
         """Serializes/Saves Data Into filePath
 
@@ -63,9 +67,16 @@ class GlobalSwitches:
             self.master_ref.settingsWidget.setStyleSheet(f"QWidget {s}{size}px{z}")
 
     def change_theme(self, theme):
-
         self.master_ref.qss_theme = self.themes[theme]
         self.master_ref.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.master_ref.qss_theme)
 
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), self.master_ref.qss_theme), self.master_ref.stylesheet_filename)
+
+    def fill_icons_dict(self):
+        # print(self.switches_Dict["Theme"][0])
+        for icon in os.listdir(f"""icons/{self.switches_Dict["Theme"][0]}"""):
+            self.icons_dict.append(icon)
+
+    def get_icon(self, icon):
+        return f"""icons/{self.switches_Dict["Theme"][0]}/{icon}"""

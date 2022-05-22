@@ -100,19 +100,22 @@ class NodeEditorWidget(QWidget):
 
         self.code_orientation_btn = QPushButton()
         self.code_orientation_btn.setMaximumSize(25, 25)
-        self.code_orientation_btn.setIcon(QIcon("icons/light/orientation.png"))
+        self.code_orientation_btn.setIcon(QIcon(self.scene.masterRef.global_switches.get_icon("orientation.png")))
+        self.code_orientation_btn.setWindowIconText("orientation.png")
         self.code_orientation_btn.clicked.connect(self.UpdateTextWndRot)
         code_wnd_bar.addWidget(self.code_orientation_btn)
 
         self.copy_code_btn = QPushButton()
         self.copy_code_btn.setMaximumSize(25, 25)
-        self.copy_code_btn.setIcon(QIcon("icons/light/copy.png"))
+        self.copy_code_btn.setIcon(QIcon(self.scene.masterRef.global_switches.get_icon("copy.png")))
+        self.copy_code_btn.setWindowIconText("copy.png")
         self.copy_code_btn.clicked.connect(self.CopyTextCode)
         code_wnd_bar.addWidget(self.copy_code_btn)
 
         self.run_btn = QPushButton()
         self.run_btn.setMaximumSize(25, 25)
-        self.run_btn.setIcon(QIcon("icons/light/run.png"))
+        self.run_btn.setIcon(QIcon(self.scene.masterRef.global_switches.get_icon("run.png")))
+        self.run_btn.setWindowIconText("settings.png")
         self.run_btn.clicked.connect(self.run_code)
         code_wnd_bar.addWidget(self.run_btn)
 

@@ -192,13 +192,12 @@ class UserNodesList(QTabWidget):
             list_ref = self.EventList
             item = self.EventList.currentItem()
 
-
+        self.proprietiesWdg.clear()
         self.node_name_input = QLineEdit()
         self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
         self.node_name_input.setText(f"{item.data(91)}")
         self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
 
-        self.proprietiesWdg.clear()
         self.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
 
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
@@ -210,10 +209,8 @@ class UserNodesList(QTabWidget):
         if item.data(80) == User_Function.node_type:
             self.return_type = QComboBox()
             self.return_type.addItems(self.all_return_types)
-            print(self.get_user_node_by_id(item.data(90)).node_return)
 
             self.return_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_return)
-            print(self.get_user_node_by_id(item.data(90)).node_return)
             self.return_type.currentIndexChanged.connect(lambda: self.update_node_return(item.data(91), item.data(90)))
 
             self.proprietiesWdg.detailsUpdate("Return Type", self.return_type)

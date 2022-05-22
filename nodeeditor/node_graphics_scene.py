@@ -39,19 +39,18 @@ class NodeGraphicsScene(QGraphicsScene):
 
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
+        # self.scene.masterRef.global_switches.switches_Dict["gridSize"]
+
         # settings
-        self.gridSize = 20
+        self.gridSize = self.scene.masterRef.global_switches.switches_Dict["Grid Size"]
         self.gridSquares = 5
 
         self.initAssets()
         self.setBackgroundBrush(self._color_background)
 
-
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._color_background = QColor("#393939")
-        self._color_light = QColor("#2f2f2f")
-        self._color_dark = QColor("#292929")
+        self.update_background_color(init=True)
         self._color_state = QColor("#ccc")
 
         self._pen_light = QPen(self._color_light)
@@ -61,6 +60,21 @@ class NodeGraphicsScene(QGraphicsScene):
 
         self._pen_state = QPen(self._color_state)
         self._font_state = QFont("Roboto", 16)
+
+    def update_background_color(self, background_color:str="555555", grid_lines_color:str="555555", init:bool=False):
+        if self.scene.masterRef.global_switches.switches_Dict["Theme"][0] == "Dark":
+            background_color = "393939"
+            grid_lines_color = "292929"
+        elif self.scene.masterRef.global_switches.switches_Dict["Theme"][0] == "Light":
+            background_color = "e0e0e0"
+            grid_lines_color = "eeeeee"
+
+        self._color_background = QColor(f"#{background_color}")
+        self._color_light = QColor(f"#{grid_lines_color}")
+        self._color_dark = QColor(f"#{grid_lines_color}")
+
+        if not init:
+            self.setBackgroundBrush(self._color_background)
 
     # the drag events won't be allowed until dragMoveEvent is overriden
     def dragMoveEvent(self, event):
