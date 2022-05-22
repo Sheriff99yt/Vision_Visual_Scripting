@@ -105,8 +105,6 @@ class GraphGraphics(QGraphicsView):
         self._drag_enter_listeners = []
         self._drop_listeners = []
 
-
-
     def initUI(self):
         """Set up this ``QGraphicsView``"""
         self.setRenderHints(

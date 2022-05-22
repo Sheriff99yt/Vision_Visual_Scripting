@@ -15,13 +15,15 @@ def Indent(String):
 
 # Process
 class IfStatement(MasterNode):
-    icon = "icons/light/if.png"
+    icon = "if.png"
     name = "IF Statement"
     category = "FUNCTION"
     sub_category = "Process"
     node_color = "#90FF5733"
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
+
+        # self.icon = self.scene.masterRef.global_switches.get_icon("if.png")
 
         self.set_input_label_text(0, "Action")
         self.set_input_label_text(1, "Condition")
@@ -92,7 +94,7 @@ if ({condition})
 
 
 class ForLoop(MasterNode):
-    icon = "icons/light/Loop.png"
+    icon = "Loop.png"
     name = "For Loop"
     category = "FUNCTION"
     sub_category = "Process"
@@ -128,7 +130,7 @@ for (int i=0;i&lt;{range};i++)
 
 
 class ForEachLoop(MasterNode):
-    icon = "icons/light/Loop.png"
+    icon = "Loop.png"
     name = "For Each Loop"
     category = "FUNCTION"
     sub_category = "Process"
@@ -172,7 +174,7 @@ for (auto item : {list})
 
 # Logic
 class And(MasterNode):
-    icon = "icons/light/and.png"
+    icon = "and.png"
     name = "And"
     category = "FUNCTION"
     sub_category = "Logic"
@@ -203,7 +205,7 @@ class And(MasterNode):
 
 
 class GreaterThan(MasterNode):
-    icon = "icons/light/more_than.png"
+    icon = "more_than.png"
     name = "Greater Than"
     category = "FUNCTION"
     sub_category = "Logic"
@@ -233,7 +235,7 @@ class GreaterThan(MasterNode):
 
 
 class LessThan(MasterNode):
-    icon = "icons/light/less_than.png"
+    icon = "less_than.png"
     name = "Less Than"
     category = "FUNCTION"
     sub_category = "Logic"
@@ -264,7 +266,7 @@ class LessThan(MasterNode):
 
 
 class Equal(MasterNode):
-    icon = "icons/light/equal.png"
+    icon = "equal.png"
     name = "Equal"
     category = "FUNCTION"
     sub_category = "Logic"
@@ -296,7 +298,7 @@ class Equal(MasterNode):
 
 # Math
 class Add(MasterNode):
-    icon = "icons/light/add.png"
+    icon = "add.png"
     name = "Add"
     category = "FUNCTION"
     sub_category = "Math"
@@ -325,7 +327,7 @@ class Add(MasterNode):
 
 
 class Sub(MasterNode):
-    icon = "icons/light/sub.png"
+    icon = "sub.png"
     name = "Subtract"
     category = "FUNCTION"
     sub_category = "Math"
@@ -355,7 +357,7 @@ class Sub(MasterNode):
 
 
 class Mul(MasterNode):
-    icon = "icons/light/mul.png"
+    icon = "mul.png"
     name = "Multiply"
     category = "FUNCTION"
     sub_category = "Math"
@@ -383,8 +385,9 @@ class Mul(MasterNode):
             raw_code = CPP_code
         return self.grNode.highlight_code(raw_code)
 
+
 class Div(MasterNode):
-    icon = "icons/light/divide.png"
+    icon = "divide.png"
     name = "Divide"
     category = "FUNCTION"
     sub_category = "Math"
@@ -415,7 +418,7 @@ class Div(MasterNode):
 
 # Input
 class UserInput(MasterNode):
-    icon = ""
+    icon = "user input.png"
     name = "User Input"
     category = "FUNCTION"
     sub_category = "Input"
@@ -458,7 +461,7 @@ cout &lt;&lt; "{inputCode}", cin >> {inputName};
 
 
 class RawCode(MasterNode):
-    icon = ""
+    icon = "Row Code.png"
     name = "Raw Code"
     category = "FUNCTION"
     sub_category = "Input"
@@ -495,7 +498,7 @@ class RawCode(MasterNode):
 
 # Output
 class Print(MasterNode):
-    icon = "icons/light/print.png"
+    icon = "print.png"
     name = "Print"
     category = "FUNCTION"
     sub_category = "Output"
@@ -542,7 +545,7 @@ cout &lt;&lt; "{printCode}";
 
 
 class Return(MasterNode):
-    icon = "icons/light/return.png"
+    icon = "return.png"
     name = "Return"
     category = "FUNCTION"
     sub_category = "Output"

@@ -24,6 +24,27 @@ class NodeList(QTreeWidget):
         self.setColumnCount(2)
         self.setColumnWidth(0, 70)
 
+        self.itemClicked.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►",
+                                                                                                          "▼")) if self.currentItem().text(
+            0).__contains__("►") else self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
+        self.itemClicked.connect(
+            lambda: self.currentItem().setExpanded(True) if self.currentItem().text(0).__contains__(
+                "▼") else self.currentItem().setExpanded(False))
+        self.setExpandsOnDoubleClick(False)
+
+        self.addMyFunctions()
+
+    def addMyFunctions(self):
+        self.clear()
+
+        self.init_primary_content()
+
+        Funs = list(FUNCTIONS.keys())
+        for Fun in Funs:
+            node = get_node_by_type(Fun)
+            self.addMyItem(node.name, node.icon, node)
+
+    def init_primary_content(self):
         self.categories = {"► Process": None, "► Logic": None, "► Math": None, "► Input": None, "► Output": None}
         for category in list(self.categories.keys()):
             item = QTreeWidgetItem(self, [category])
@@ -31,19 +52,6 @@ class NodeList(QTreeWidget):
             item.setSizeHint(1, QSize(18, 18))
             self.categories[category.replace("► ", "")] = item
             del self.categories[category]
-
-
-        self.itemClicked.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►", "▼")) if self.currentItem().text(0).__contains__("►") else self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
-        self.itemClicked.connect(lambda: self.currentItem().setExpanded(True) if self.currentItem().text(0).__contains__("▼") else self.currentItem().setExpanded(False))
-        self.setExpandsOnDoubleClick(False)
-
-        self.addMyFunctions()
-
-    def addMyFunctions(self):
-        Funs = list(FUNCTIONS.keys())
-        for Fun in Funs:
-            node = get_node_by_type(Fun)
-            self.addMyItem(node.name, node.icon, node)
 
     def addMyItem(self, name, icon=None, node=None):
         item = QTreeWidgetItem(self.categories[node.sub_category], [name])

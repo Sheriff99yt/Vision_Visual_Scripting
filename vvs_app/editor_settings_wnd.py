@@ -133,7 +133,7 @@ class SettingsWidget(QWidget):
 
         self.init_wdg_ui(self.appearance_wdg, "Appearance")
 
-        self.appearance_settings_list = {"Theme": QComboBox(), "Font Size": QSpinBox()}
+        self.appearance_settings_list = {"Theme": QComboBox(), "Font Size": QSpinBox(), "Grid Size": QSpinBox()}
 
         for item in self.appearance_settings_list:
             lbl = QLabel(item)
@@ -172,7 +172,8 @@ class SettingsWidget(QWidget):
 
         # Content
         self.Key_Mapping_settings_list = ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
-                                          "Undo", "Redo", "Select All", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
+                                          "Undo", "Redo", "Select All", "Cut", "Copy", "Paste", "Delete",
+                                          "Settings Window"]
 
         for item in self.Key_Mapping_settings_list:
             lbl = QLabel(item)
@@ -204,7 +205,6 @@ class SettingsWidget(QWidget):
             self.close()
 
         if self.settingsTree.currentItem().data(7, 8).itemAtPosition(0, 0):
-
             self.settingsTree.currentItem().data(9, 10).show()
             current_widget = self.settingsTree.currentItem().data(5, 6)
             grid_layout = self.settingsTree.currentItem().data(7, 8)
@@ -248,6 +248,21 @@ class SettingsWidget(QWidget):
                 elif current_widget == self.system_wdg:
                     if self.masterRef.currentNodeEditor():
                         self.masterRef.currentNodeEditor().scene.history.Edits_Counter = 0
+
+                # Apply Theme change to the icons
+                for act in self.masterRef.actions_list:
+                    icon = self.masterRef.actions_list[act].iconText()
+                    self.masterRef.actions_list[act].setIcon(QIcon(self.masterRef.global_switches.get_icon(icon)))
+
+                self.masterRef.set_nodes_icons()
+                self.masterRef.nodesListWidget.addMyFunctions()
+                for window in self.masterRef.graphs_parent_wdg.subWindowList():
+                    window.widget().scene.grScene.update_background_color()
+                    window.widget().code_orientation_btn.setIcon(QIcon(self.masterRef.global_switches.get_icon(window.widget().code_orientation_btn.windowIconText())))
+                    window.widget().copy_code_btn.setIcon(QIcon(self.masterRef.global_switches.get_icon(window.widget().copy_code_btn.windowIconText())))
+                    window.widget().run_btn.setIcon(QIcon(self.masterRef.global_switches.get_icon(window.widget().run_btn.windowIconText())))
+                    for node in window.widget().scene.nodes:
+                        node.grNode.update_node_theme(True)
             else:
                 self.settingsTree.currentItem().data(9, 10).setText("No Changed")
                 self.fill()

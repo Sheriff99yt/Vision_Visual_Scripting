@@ -123,7 +123,7 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap("icons/light/VVS_White.png")
+        w_image = QPixmap("icons/Light/VVS_White.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
@@ -185,7 +185,7 @@ class MasterWindow(NodeEditorWindow):
         search_bar_layout.addWidget(self.search_btn)
 
         self.search_btn.setMaximumSize(30, 30)
-        self.search_btn.setIcon(QIcon("icons/light/search.png"))
+        self.search_btn.setIcon(QIcon("icons/Light/search.png"))
         self.search_line_edit.setMinimumHeight(30)
 
         topVlayout.addLayout(search_bar_layout)
@@ -268,7 +268,8 @@ class MasterWindow(NodeEditorWindow):
         self.addToolBar(self.tools_bar)
 
         # Add and connect self.settingsBtn
-        self.settingsBtn = QAction(QIcon("icons/light/settings.png"), "&Open Settings Window", self)
+        self.settingsBtn = QAction(QIcon(self.global_switches.get_icon("settings.png")), "&Open Settings Window", self)
+        self.settingsBtn.setIconText("settings.png")
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
         self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Settings Window"]))
@@ -279,26 +280,33 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addSeparator()
 
         # Add and connect self.node_editor_btn
-        self.node_editor_btn = QAction(QIcon("icons/light/edit.png"), "&Node Editor", self)
+        self.node_editor_btn = QAction(QIcon(self.global_switches.get_icon("edit.png")), "&Node Editor", self)
+        self.node_editor_btn.setIconText("edit.png")
         self.node_editor_btn.setCheckable(True)
         self.node_editor_btn.triggered.connect(self.activate_editor_mode)
         # self.node_designer_btn.setShortcut(QKeySequence("key"))
         self.tools_bar.addAction(self.node_editor_btn)
+        self.actions_list["Node Editor Window"] = self.node_editor_btn
 
         # Add and connect self.node_designer_btn
-        self.node_designer_btn = QAction(QIcon("icons/light/node design.png"), "&Node Designer", self)
+        self.node_designer_btn = QAction(QIcon(self.global_switches.get_icon("node design.png")), "&Node Designer", self)
+        self.node_designer_btn.setIconText("node design.png")
         self.node_designer_btn.setEnabled(False)
         self.node_designer_btn.setCheckable(True)
         self.node_designer_btn.triggered.connect(self.activate_designer_mode)
-        # self.node_designer_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.node_designer_btn)
+        self.actions_list["Node Designer Window"] = self.node_designer_btn
+
 
         # Add and connect self.library_btn
-        self.library_btn = QAction(QIcon("icons/light/library.png"), "&Library", self)
+        self.library_btn = QAction(QIcon(self.global_switches.get_icon("library.png")), "&Library", self)
+        self.library_btn.setIconText("library.png")
         self.library_btn.setCheckable(True)
         self.library_btn.triggered.connect(self.activate_library_mode)
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
+        self.actions_list["Library Window"] = self.library_btn
+
 
         # Add Separator
         self.tools_bar.addSeparator()
@@ -365,7 +373,7 @@ class MasterWindow(NodeEditorWindow):
                              "Copy": self.actCopy,
                              "Paste": self.actPaste,
                              "Delete": self.actDelete,
-                             "Select All": self.actSelectAll
+                             "Select All": self.actSelectAll,
                              }
 
     def open_doc(self):
@@ -604,7 +612,6 @@ class MasterWindow(NodeEditorWindow):
     def create_functions_dock(self):
         self.functionsDock = QDockWidget("Functions")
         self.nodesListWidget = NodeList()
-
 
         self.functionsDock.setWidget(self.nodesListWidget)
         self.functionsDock.setFeatures(self.functionsDock.DockWidgetMovable)

@@ -2,6 +2,8 @@
 """
 A module containing Graphics representation of :class:`~nodeeditor.node_node.Node`
 """
+import os
+
 from PyQt5.QtGui import QIcon, QImage
 from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem, QGraphicsDropShadowEffect
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
@@ -49,7 +51,6 @@ class QDMGraphicsNode(QGraphicsItem):
         # # adding shadow to the grNode
         # self.setGraphicsEffect(shadow)
 
-
     @property
     def name(self):
         """title of this `Node`
@@ -84,6 +85,28 @@ class QDMGraphicsNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setAcceptHoverEvents(True)
 
+    def update_node_theme(self, all: bool=False, text_color: str = ""):
+        current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
+
+        if all:
+            icon = os.path.split(self.node.icon)[-1]
+            self.node_icon = QImage(self.node.scene.masterRef.global_switches.get_icon(icon))
+
+            # text_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Text")
+            # self.node.scene.masterRef.global_switches.themes_colors[current_theme][text_color_index]
+            if text_color != "":
+                self.name_item.setDefaultTextColor(QColor(text_color))
+
+        background_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Background")
+        self.node_background_color = QColor(self.node.scene.masterRef.global_switches.themes_colors[current_theme][background_color_index])
+        self._brush_background = QBrush(self.node_background_color)
+
+        Outline_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Outline")
+        self._color = QColor(
+            self.node.scene.masterRef.global_switches.themes_colors[current_theme][Outline_color_index])
+        self._pen_default = QPen(self._color)
+        self._pen_default.setWidthF(1.5)
+
     def updateSizes(self):
         """Set up internal attributes like `width`, `height`, etc."""
         self.width = 140
@@ -111,7 +134,11 @@ class QDMGraphicsNode(QGraphicsItem):
         self._title_color = Qt.white
         self._title_font = QFont("Roboto", 13)
 
-        self._color = QColor("#FF000000")
+        current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
+
+        Outline_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Outline")
+        self._color = QColor(
+            self.node.scene.masterRef.global_switches.themes_colors[current_theme][Outline_color_index])
         self._color_selected = QColor("#FFFFA637")
         self._color_hovered = QColor("#FFFFFF")
 
@@ -122,9 +149,13 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(1)
 
-        self.node_color = QColor("#FF313131")
-        self._brush_title = QBrush(self.node_color)
-        self._brush_background = QBrush(QColor("#FF212121"))
+        self.title_color = QColor("#FF313131")
+        self._brush_title = QBrush(self.title_color)
+
+        background_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Background")
+        self.node_background_color = QColor(
+            self.node.scene.masterRef.global_switches.themes_colors[current_theme][background_color_index])
+        self._brush_background = QBrush(self.node_background_color)
 
     def onSelected(self):
         """Our event handling when the node was selected"""
@@ -237,7 +268,11 @@ class QDMGraphicsNode(QGraphicsItem):
         """Set up the title Graphics representation: font, color, position, etc."""
 
         self.name_item = QGraphicsTextItem(self)
-        self.name_item.setDefaultTextColor(self._title_color)
+
+        # current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
+        # text_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Text")
+        self.name_item.setDefaultTextColor(Qt.white)
+
         self.name_item.setFont(self._title_font)
         self.name_item.setPos(self.title_horizontal_padding, -3)
         # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
@@ -245,7 +280,7 @@ class QDMGraphicsNode(QGraphicsItem):
     def highlight_code(self, raw_code):
 
         if self.isSelected():
-            code = f""" <pre><p style="font-family: Calibri "><span style="background-color:{self.node_color};" >{raw_code}</span></p></pre> """
+            code = f""" <pre><p style="font-family: Calibri "><span style="background-color:{self.title_color};" >{raw_code}</span></p></pre> """
         else:
             code = f""" <pre><p style="font-family: Calibri "><span>{raw_code}</span></p></pre> """
         return code
