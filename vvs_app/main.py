@@ -27,7 +27,7 @@ class Splash(QWidget):
         lo.addWidget(Logo)
 
         self.Loading_Label = QLabel("Loading")
-        self.Loading_Label.setStyleSheet("font: bold 20px; color: white") # font-family: Calibri;
+        self.Loading_Label.setStyleSheet("font: 20px; color: white") # font-family: Calibri;
         lo.addWidget(self.Loading_Label)
 
         self.timer = QTimer()
@@ -42,7 +42,7 @@ class Splash(QWidget):
 
     def run(self, Main):
         self.show()
-        self.timer.start(500)
+        self.timer.start(300)
         self.times = 0
         self.timer.timeout.connect(lambda: self.run_timeout(Main))
 

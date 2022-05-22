@@ -80,15 +80,15 @@ QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea 
     border:1px solid #282828;
     border-bottom:0}
 
-QMdiArea QTabBar QToolButton::left-arrow{image:url(":icons/arrow_left.png")}
-QMdiArea QTabBar QToolButton::right-arrow{image:url(":icons/arrow_right.png")}
-QMdiArea QTabBar::close-button:selected{image:url("icons/sub.png");origin:border;subcontrol-origin:border;subcontrol-position:right bottom}
-QMdiArea QTabBar::close-button:!selected{image:url("icons/sub.png")}
-QMdiArea QTabBar::close-button{image:url("icons/sub.png")}
-QMdiArea QTabBar::close-button:hover{image:url("icons/close.png")}
+QMdiArea QTabBar QToolButton::left-arrow{image:url(":icons/Dark/arrow_left.png")}
+QMdiArea QTabBar QToolButton::right-arrow{image:url(":icons/Dark/arrow_right.png")}
+QMdiArea QTabBar::close-button:selected{image:url("icons/Dark/sub.png");origin:border;subcontrol-origin:border;subcontrol-position:right bottom}
+QMdiArea QTabBar::close-button:!selected{image:url("icons/Dark/sub.png")}
+QMdiArea QTabBar::close-button{image:url("icons/Dark/sub.png")}
+QMdiArea QTabBar::close-button:hover{image:url("icons/Dark/close.png")}
 
 
-QDockWidget{font-weight:normal;titlebar-close-icon:url(":icons/close.png");titlebar-normal-icon:url(":icons/sub.png")}
+QDockWidget{font-weight:normal;titlebar-close-icon:url(":icons/Dark/close.png");titlebar-normal-icon:url(":icons/Dark/sub.png")}
 QDockWidget::title{padding-top:6px;padding-left:6px;}
 
 

@@ -123,7 +123,7 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap("icons/Light/VVS_White.png")
+        w_image = QPixmap("icons/Dark/VVS_White2.png" if self.global_switches.switches_Dict['Theme'][0] == 'Dark' else "icons/light/VVS_White2.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
