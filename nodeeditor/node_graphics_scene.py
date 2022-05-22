@@ -39,8 +39,6 @@ class NodeGraphicsScene(QGraphicsScene):
 
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
-        # self.scene.masterRef.global_switches.switches_Dict["gridSize"]
-
         # settings
         self.gridSize = self.scene.masterRef.global_switches.switches_Dict["Grid Size"]
         self.gridSquares = 5

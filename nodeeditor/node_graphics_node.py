@@ -295,10 +295,10 @@ class QDMGraphicsNode(QGraphicsItem):
         path_content.addRect(0, self.title_height, self.edge_roundnes, self.edge_roundnes)
         path_content.addRect(self.width - self.edge_roundnes, self.title_height, self.edge_roundnes,
                              self.edge_roundnes)
-        self.painter = painter
-        self.painter.setPen(Qt.NoPen)
-        self.painter.setBrush(self._brush_background)
-        self.painter.drawPath(path_content.simplified())
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._brush_background)
+        painter.drawPath(path_content.simplified())
 
         # title
         path_title = QPainterPath()
@@ -308,24 +308,24 @@ class QDMGraphicsNode(QGraphicsItem):
         path_title.addRect(self.width - self.edge_roundnes, self.title_height - self.edge_roundnes,
                            self.edge_roundnes, self.edge_roundnes)
 
-        self.painter.setPen(Qt.NoPen)
-        self.painter.setBrush(self._brush_title)
-        self.painter.drawPath(path_title.simplified())
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._brush_title)
+        painter.drawPath(path_title.simplified())
 
         # outline
         path_outline = QPainterPath()
         path_outline.addRoundedRect(-1, -1, self.width + 2, self.height + 2, self.edge_roundnes, self.edge_roundnes)
-        self.painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.NoBrush)
 
         if self.hovered:
-            self.painter.setBrush(QColor("#10FFFFFF"))
-            self.painter.setPen(self._pen_hovered)
-            self.painter.drawPath(path_outline.simplified())
+            painter.setBrush(QColor("#10FFFFFF"))
+            painter.setPen(self._pen_hovered)
+            painter.drawPath(path_outline.simplified())
             # painter.setPen(self._pen_default)
-            self.painter.drawPath(path_outline.simplified())
+            painter.drawPath(path_outline.simplified())
         else:
-            self.painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
-            self.painter.drawPath(path_outline.simplified())
+            painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
+            painter.drawPath(path_outline.simplified())
 
-        self.painter.drawImage(QRectF(0, 0, self.title_height, self.title_height), self.node_icon)
+        painter.drawImage(QRectF(0, 0, self.title_height, self.title_height), self.node_icon)
 

@@ -2,11 +2,9 @@
 """
 A module containing NodeEditor's class for representing `Node`.
 """
-import os
 import socket
 from collections import OrderedDict
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode

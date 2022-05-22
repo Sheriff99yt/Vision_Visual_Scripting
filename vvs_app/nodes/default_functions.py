@@ -13,7 +13,6 @@ logicOperators = "#30000050"
 def Indent(String):
     return indent(String, '     ')
 
-
 # Process
 class IfStatement(MasterNode):
     icon = "if.png"
