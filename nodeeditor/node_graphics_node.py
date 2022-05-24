@@ -86,7 +86,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.setAcceptHoverEvents(True)
 
     def update_node_theme(self, all: bool=False, text_color: str = ""):
-        current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
+        current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0]
 
         if all:
             icon = os.path.split(self.node.icon)[-1]
@@ -134,7 +134,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._title_color = Qt.white
         self._title_font = QFont("Roboto", 13)
 
-        current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
+        current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0]
 
         Outline_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Outline")
         self._color = QColor(

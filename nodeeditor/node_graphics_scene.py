@@ -40,7 +40,7 @@ class NodeGraphicsScene(QGraphicsScene):
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
         # settings
-        self.gridSize = self.scene.masterRef.global_switches.switches_Dict["Grid Size"]
+        self.gridSize = self.scene.masterRef.global_switches.switches_Dict["Appearance"]["Grid Size"]
         self.gridSquares = 5
 
         self.initAssets()
@@ -54,10 +54,10 @@ class NodeGraphicsScene(QGraphicsScene):
         self._font_state = QFont("Roboto", 16)
 
     def update_background_color(self, background_color:str="555555", grid_lines_color:str="555555"):
-        if self.scene.masterRef.global_switches.switches_Dict["Theme"][0] == "Dark":
+        if self.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0] == "Dark":
             background_color = "393939"
             grid_lines_color = "292929"
-        elif self.scene.masterRef.global_switches.switches_Dict["Theme"][0] == "Light":
+        elif self.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0] == "Light":
             background_color = "e0e0e0"
             grid_lines_color = "eeeeee"
 

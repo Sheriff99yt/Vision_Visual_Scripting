@@ -45,7 +45,6 @@ class NodeEditorWidget(QWidget):
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
 
-        self.scene.masterRef.files_widget.make_generated_scripts_dir()
 
         # create graphics view
         self.graph_graphics_view = GraphGraphics(self.scene.grScene, self)
@@ -78,8 +77,11 @@ class NodeEditorWidget(QWidget):
         self.text_code_wnd = QTextEdit()
         self.multi_code_wnd = QTabWidget()
 
-        self.multi_code_wnd.addTab(QTextEdit(), '   .H  ')
-        self.multi_code_wnd.addTab(QTextEdit(), '   .CPP    ')
+        self.header_wnd = QTextEdit()
+        self.cpp_window = QTextEdit()
+
+        self.multi_code_wnd.addTab(self.header_wnd, '   .H  ')
+        self.multi_code_wnd.addTab(self.cpp_window, '   .CPP    ')
 
         self.text_code_wnd.setReadOnly(True)
         self.stacked_code_wnd.addWidget(self.text_code_wnd)
@@ -300,15 +302,18 @@ class NodeEditorWidget(QWidget):
         line.setFlag(QGraphicsItem.ItemIsMovable)
         line.setFlag(QGraphicsItem.ItemIsSelectable)
 
+    def update_text_code_files(self):
+        data = self.get_save_directory()
+
+        for item in data:
+            with open(item[0], 'w') as newPyFile:
+                newPyFile.writelines(item[1])
+            if not item[0].endswith('.h'):
+                return item[0]
+
     def run_code(self):
         self.code_output.clear()
-        self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
-        fname = self.Project_Directory + f"""/Generated Scripts/{self.windowTitle().replace("*", "")}.py"""
-
-        with open(fname, 'w') as newPyFile:
-            newPyFile.writelines(self.text_code_wnd.toPlainText())
-
-        process = subprocess.Popen(fname, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        process = subprocess.Popen(self.update_text_code_files(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         output, error = process.communicate()
         output = output.decode('UTF-8')
         error = error.decode('UTF-8')
@@ -319,21 +324,45 @@ class NodeEditorWidget(QWidget):
         self.code_output.append(output)
         self.code_output.append(code)
 
+    def get_project_directory(self):
+        return self.scene.masterRef.files_widget.Project_Directory
+
+    def get_save_directory(self):
+        data = []
+        self.scene.masterRef.files_widget.get_scripts_dir(self.syntax_selector)
+        extensions = {'Python': '.py',
+                      'C++': '.CPP',
+                      }
+
+        if self.stacked_code_wnd.currentIndex() == 1:
+            Ex = '.h'
+            dir = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            text_code = self.header_wnd.toPlainText()
+            data.append([f"{dir}",f"{text_code}"])
+
+        Ex = extensions[f'{self.syntax_selector.currentText()}']
+        dir = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+
+        if self.stacked_code_wnd.currentIndex() == 0:
+            text_code = self.text_code_wnd.toPlainText()
+
+        elif self.stacked_code_wnd.currentIndex() == 1:
+            text_code = self.cpp_window.toPlainText()
+
+        data.append([f"{dir}", f"{text_code}"])
+
+        return data
+
+    def get_current_code(self):
+        self.scene.masterRef.files_widget.get_scripts_dir(self.syntax_selector)
+
     def CopyTextCode(self):
-        self.Project_Directory = self.scene.masterRef.files_widget.Project_Directory
         self.text_code_wnd.selectAll()
         self.text_code_wnd.copy()
-        python_file_name = self.windowTitle().replace("*", "")
-
-        text = self.text_code_wnd.toPlainText()
-
-        f = self.Project_Directory + f"""/Generated Scripts/{python_file_name}.py"""
-        with open(f, 'w') as newPyFile:
-            newPyFile.writelines(text)
+        self.update_text_code_files()
 
     def syntax_changed(self):
         self.stacked_code_wnd.setCurrentIndex(self.syntax_selector.currentIndex())
-
         self.UpdateTextCode()
 
     def get_imports(self, syntax, user_nodes):

@@ -47,14 +47,14 @@ class MasterWindow(NodeEditorWindow):
 
         self.settingsWidget = None
 
-        self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Theme"][0]]
+        self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Appearance"]["Theme"][0]] # ["Theme"][0]
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.qss_theme)
 
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), self.qss_theme), self.stylesheet_filename)
 
-        self.global_switches.update_font_size(self.global_switches.switches_Dict["Font Size"])
+        self.global_switches.update_font_size(self.global_switches.switches_Dict["Appearance"]["Font Size"])
 
         self.empty_icon = QIcon(".")
 
@@ -113,6 +113,8 @@ class MasterWindow(NodeEditorWindow):
         self.library_menu.setEnabled(False)
         self.node_designer_menu.setEnabled(False)
 
+        self.set_actions_shortcuts()
+
     def create_welcome_screen(self):
         Elayout = QVBoxLayout()
         Elayout.setAlignment(Qt.AlignCenter)
@@ -123,7 +125,7 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap("icons/Dark/VVS_White2.png" if self.global_switches.switches_Dict['Theme'][0] == 'Dark' else "icons/light/VVS_White2.png")
+        w_image = QPixmap("icons/Dark/VVS_White2.png" if self.global_switches.switches_Dict["Appearance"]['Theme'][0] == 'Dark' else "icons/light/VVS_White2.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
@@ -272,7 +274,7 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn.setIconText("settings.png")
         self.settingsBtn.setCheckable(True)
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
-        self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Settings Window"]))
+        self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Key Mapping"]["Settings Window"]))
         self.tools_bar.addAction(self.settingsBtn)
         self.actions_list["Settings Window"] = self.settingsBtn
 
@@ -284,7 +286,6 @@ class MasterWindow(NodeEditorWindow):
         self.node_editor_btn.setIconText("edit.png")
         self.node_editor_btn.setCheckable(True)
         self.node_editor_btn.triggered.connect(self.activate_editor_mode)
-        # self.node_designer_btn.setShortcut(QKeySequence("key"))
         self.tools_bar.addAction(self.node_editor_btn)
         self.actions_list["Node Editor Window"] = self.node_editor_btn
 
@@ -324,7 +325,7 @@ class MasterWindow(NodeEditorWindow):
         else:
             self.settingsWidget = SettingsWidget(masterRef=self)
 
-            self.global_switches.update_font_size(self.global_switches.switches_Dict["Font Size"])
+            self.global_switches.update_font_size(self.global_switches.switches_Dict["Appearance"]["Font Size"])
 
             self.settingsWidget.show()
             self.settingsBtn.setChecked(True)
@@ -375,6 +376,12 @@ class MasterWindow(NodeEditorWindow):
                              "Delete": self.actDelete,
                              "Select All": self.actSelectAll,
                              }
+
+    def set_actions_shortcuts(self):
+        shortcuts = self.global_switches.switches_Dict["Key Mapping"]
+        for act in self.actions_list:
+            if shortcuts.__contains__(act):
+                self.actions_list[act].setShortcut(shortcuts[act])
 
     def open_doc(self):
         subprocess.Popen('hh.exe "VVS-Help.chm"')
@@ -591,7 +598,6 @@ class MasterWindow(NodeEditorWindow):
     def activate_designer_mode(self):
         self.switch_display(Designer=True)
 
-
     def activate_library_mode(self):
         if self.graphs_parent_wdg.subWindowList():
             self.switch_display(Library=True)
@@ -721,24 +727,27 @@ class MasterWindow(NodeEditorWindow):
 
     def get_QWidget_content(self, widget):
         if [QKeySequenceEdit].__contains__(type(widget)):
-            value = widget.keySequence().toString()
+            return widget.keySequence().toString()
         elif [QSpinBox, QDoubleSpinBox].__contains__(type(widget)):
-            value = widget.value()
+            return widget.value()
         elif [QLineEdit, QLabel].__contains__(type(widget)):
-            value = widget.text()
+            return widget.text()
         elif [QTextEdit].__contains__(type(widget)):
-            value = widget.toPlainText()
+            return widget.toPlainText()
         elif [QRadioButton, QCheckBox].__contains__(type(widget)):
-            value = widget.isChecked()
+            return widget.isChecked()
         elif [QComboBox].__contains__(type(widget)):
-            content_list = []
+            current = widget.currentText()
+            widget.removeItem(widget.currentIndex())
+            content_list = [current]
             for index in range(widget.__len__()):
                 content_list.append(widget.itemText(index))
-            value = content_list
+            widget.clear()
+            widget.addItems(content_list)
+            return content_list
         else:
-            value = None
             print(widget, "Widget Not Supported")
-        return value
+            return None
 
     def set_QWidget_content(self, widget, new_value):
         if [QKeySequenceEdit].__contains__(type(widget)):

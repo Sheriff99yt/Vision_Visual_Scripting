@@ -169,11 +169,10 @@ class SceneHistory():
             self.Edits_Counter = 0
         else:
             self.Edits_Counter += 1
-            if self.Edits_Counter >= self.scene.masterRef.global_switches.switches_Dict["AutoSave Steps"]:
+            if self.Edits_Counter >= self.scene.masterRef.global_switches.switches_Dict["System"]["AutoSave Steps"]:
                 self.masterRef.onFileAutoSave()
                 self.Edits_Counter = 0
-            self.scene.masterRef.global_switches.save_settings_to_file(
-                self.scene.masterRef.global_switches.switches_Dict, self.masterRef.global_switches.Settings_File)
+            self.scene.masterRef.global_switches.save_settings_to_file()
 
     def captureCurrentSelection(self) -> dict:
         """

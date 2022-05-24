@@ -81,19 +81,20 @@ class NodeEditorWindow(QMainWindow):
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
-        self.actNew = QAction('&New Graph', self, shortcut=self.global_switches.switches_Dict["New Graph"], statusTip="Create new graph", triggered=self.on_new_graph_tab)
-        self.actOpen = QAction('&Open', self, shortcut=self.global_switches.switches_Dict["Open"], statusTip="Open file", triggered=self.on_file_open)
-        self.actSetProjectDir = QAction('&Set Project Folder', self, shortcut=self.global_switches.switches_Dict["Set Project Location"], statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
-        self.actSave = QAction('&Save', self, shortcut=self.global_switches.switches_Dict["Save"], statusTip="Save file", triggered=self.onFileSave)
-        self.actSaveAs = QAction('Save &As...', self, shortcut=self.global_switches.switches_Dict["Save As"], statusTip="Save file as...", triggered=self.on_file_save_as)
-        self.actExit = QAction('E&xit', self, shortcut=self.global_switches.switches_Dict["Exit"], statusTip="Exit application", triggered=self.close)
-        self.actUndo = QAction('&Undo', self, shortcut=self.global_switches.switches_Dict["Undo"], statusTip="Undo last operation", triggered=self.onEditUndo)
-        self.actRedo = QAction('&Redo', shortcut=self.global_switches.switches_Dict["Redo"], statusTip="Redo last operation", triggered=self.onEditRedo)
-        self.actSelectAll = QAction('Select&All', shortcut=self.global_switches.switches_Dict["Select All"], statusTip="Select's All Nodes", triggered=self.selectAllNodes)
-        self.actCut = QAction('Cu&t', shortcut=self.global_switches.switches_Dict["Cut"], statusTip="Cut to clipboard", triggered=self.onEditCut)
-        self.actCopy = QAction('&Copy', shortcut=self.global_switches.switches_Dict["Copy"], statusTip="Copy to clipboard", triggered=self.onEditCopy)
-        self.actPaste = QAction('&Paste', shortcut=self.global_switches.switches_Dict["Paste"], statusTip="Paste from clipboard", triggered=self.onEditPaste)
-        self.actDelete = QAction('&Delete', shortcut=self.global_switches.switches_Dict["Delete"], statusTip="Delete selected items", triggered=self.onEditDelete)
+
+        self.actNew = QAction('&New Graph', self, statusTip="Create new graph", triggered=self.on_new_graph_tab)
+        self.actOpen = QAction('&Open', self,statusTip="Open file", triggered=self.on_file_open)
+        self.actSetProjectDir = QAction('&Set Project Folder', self, statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
+        self.actSave = QAction('&Save', self, statusTip="Save file", triggered=self.onFileSave)
+        self.actSaveAs = QAction('Save &As...', self, statusTip="Save file as...", triggered=self.on_file_save_as)
+        self.actExit = QAction('E&xit', self, statusTip="Exit application", triggered=self.close)
+        self.actUndo = QAction('&Undo', self, statusTip="Undo last operation", triggered=self.onEditUndo)
+        self.actRedo = QAction('&Redo', statusTip="Redo last operation", triggered=self.onEditRedo)
+        self.actSelectAll = QAction('Select&All', statusTip="Select's All Nodes", triggered=self.selectAllNodes)
+        self.actCut = QAction('Cu&t', statusTip="Cut to clipboard", triggered=self.onEditCut)
+        self.actCopy = QAction('&Copy', statusTip="Copy to clipboard", triggered=self.onEditCopy)
+        self.actPaste = QAction('&Paste', statusTip="Paste from clipboard", triggered=self.onEditPaste)
+        self.actDelete = QAction('&Delete', statusTip="Delete selected items", triggered=self.onEditDelete)
 
     def create_menus(self):
         """Create Menus for `File` and `Edit`"""
@@ -168,13 +169,13 @@ class NodeEditorWindow(QMainWindow):
         """
         if not self.isModified():
             return True
-        elif self.global_switches.switches_Dict["Always Save Before Closing"]:
+        elif self.global_switches.switches_Dict["System"]["Always Save Before Closing"]:
             if self.onFileSave():
                 return True
             else:
                 return self.save_message()
 
-        elif self.global_switches.switches_Dict["Save New Project Folder On Close"]:
+        elif self.global_switches.switches_Dict["System"]["Save New Project Folder On Close"]:
             return self.save_unsaved_files()
 
         else:

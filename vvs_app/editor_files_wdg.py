@@ -70,9 +70,11 @@ class FilesWDG(QWidget):
         self.tree_wdg.setRootIndex(self.Model.index(self.Project_Directory))
         self.MakeDir(self.Project_Directory)
 
-    def make_generated_scripts_dir(self):
-        if os.listdir(self.Project_Directory).__contains__("Generated Scripts") is False:
-            os.makedirs(self.Project_Directory + "/Generated Scripts")
+    def get_scripts_dir(self, syntax_selector):
+        if not os.listdir(self.Project_Directory).__contains__(syntax_selector.currentText()):
+            dir = self.Project_Directory + f"/{syntax_selector.currentText()}"
+            os.makedirs(dir)
+            return dir
 
     def set_project_folder(self):
         Dir = QFileDialog.getExistingDirectory(self, "Select Project Folder", self.Project_Directory)
@@ -114,7 +116,7 @@ class FilesWDG(QWidget):
 
         FolderContentSizeInGBs = FolderContentSize/(1000 * 1000)
 
-        if FolderContentSizeInGBs >= self.masterRef.global_switches.switches_Dict["AutoSave Folder MaxSize"]:
+        if FolderContentSizeInGBs >= self.masterRef.global_switches.switches_Dict["System"]["AutoSave Folder MaxSize"]:
             self.msg = QMessageBox()
             self.msg.setText(f"AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} MB")
             self.msg.show()
