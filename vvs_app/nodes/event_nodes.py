@@ -18,9 +18,10 @@ class User_Function(MasterNode):
         self.is_event = True
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.is_setter:
+            childCode = self.get_other_socket_code(0)
             if self.syntax == "Python":
-                childCode = self.get_other_socket_code(0)
 
                 python_code = f"""
 def {self.name}(){self.get_return()}:
@@ -29,8 +30,6 @@ def {self.name}(){self.get_return()}:
                 raw_code = python_code
 
             elif self.syntax == "C++":
-                childCode = self.get_other_socket_code(0)
-
                 L_P = "{"
                 R_P = "}"
                 CPP_code = f"""
@@ -41,9 +40,9 @@ def {self.name}(){self.get_return()}:
                 raw_code = CPP_code
             return self.grNode.highlight_code(raw_code)
         else:
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
             if self.syntax == "Python":
-                brotherCode = self.get_other_socket_code(0)
-                self.showCode = not self.isInputConnected(0)
 
                 python_code = f"""
 {self.name}()
@@ -51,9 +50,9 @@ def {self.name}(){self.get_return()}:
                 raw_code = python_code
 
             elif self.syntax == "C++":
-                self.showCode = not self.isInputConnected(0)
 
                 cpp_code = f"""
-{self.name}()"""
+{self.name}()
+{brotherCode}"""
                 raw_code = cpp_code
             return self.grNode.highlight_code(raw_code)

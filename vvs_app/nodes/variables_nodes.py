@@ -23,25 +23,20 @@ class FloatVar(MasterNode):
         self.is_var = True
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.is_setter:
-            if self.syntax == "Python":
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
+            self.outputs[1].socket_code = self.name
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            setInput = self.get_my_input_code(1)
 
+            if self.syntax == "Python":
                 python_code = f"""
 {self.name}={setInput}
 {brotherCode}"""
                 raw_code = python_code
 
             elif self.syntax == "C++":
-
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
-
                 CPP_code = f"""
 float {self.name}= {setInput};
 {brotherCode}"""
@@ -68,13 +63,13 @@ class IntegerVar(MasterNode):
         self.is_var = True
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.is_setter:
+            self.outputs[1].socket_code = self.name
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            setInput = self.get_my_input_code(1)
             if self.syntax == "Python":
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
-
                 python_code = f"""
 {self.name}={setInput}
 {brotherCode}"""
@@ -82,12 +77,6 @@ class IntegerVar(MasterNode):
                 raw_code = python_code
 
             elif self.syntax == "C++":
-
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
-
                 CPP_code = f"""
 int {self.name}= {setInput};
 {brotherCode}"""
@@ -114,12 +103,13 @@ class BooleanVar(MasterNode):
         self.is_var = True
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.is_setter:
+            self.outputs[1].socket_code = self.name
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            setInput = self.get_my_input_code(1)
             if self.syntax == "Python":
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
 
                 python_code = f"""
 {self.name}={setInput}
@@ -128,12 +118,6 @@ class BooleanVar(MasterNode):
                 raw_code = python_code
 
             elif self.syntax == "C++":
-
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
-
                 CPP_code = f"""
 bool {self.name}= {setInput};
 {brotherCode}"""
@@ -160,12 +144,13 @@ class StringVar(MasterNode):
         self.is_var = True
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.is_setter:
+            self.outputs[1].socket_code = self.name
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            setInput = self.get_my_input_code(1)
             if self.syntax == "Python":
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
 
                 python_code = f"""
 {self.name}="{setInput}"
@@ -174,11 +159,6 @@ class StringVar(MasterNode):
                 raw_code = python_code
 
             elif self.syntax == "C++":
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
-
                 CPP_code = f"""
 string {self.name}="{setInput}";
 {brotherCode}"""
@@ -205,12 +185,13 @@ class ListVar(MasterNode):
         self.is_var = True
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.is_setter:
+            self.outputs[1].socket_code = self.name
+            self.showCode = not self.isInputConnected(0)
+            brotherCode = self.get_other_socket_code(0)
+            setInput = self.get_my_input_code(1)
             if self.syntax == "Python":
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
                 if self.isInputConnected(1):
                     python_code = f"""
 {self.name}={setInput}
@@ -225,17 +206,12 @@ class ListVar(MasterNode):
 
             elif self.syntax == "C++":
 
-                self.outputs[1].socket_code = self.name
-                self.showCode = not self.isInputConnected(0)
-                brotherCode = self.get_other_socket_code(0)
-                setInput = self.get_my_input_code(1)
                 L_P = "{"
                 R_P = "}"
-
                 CPP_code = f"""
 list &lt;int&gt; {self.name} = {L_P}{setInput}{R_P};
 {brotherCode}"""
-# int array_name[] {};
+                # int array_name[] {};
 
                 raw_code = CPP_code
 

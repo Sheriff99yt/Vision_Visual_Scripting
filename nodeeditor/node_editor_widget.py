@@ -34,6 +34,11 @@ class NodeEditorWidget(QWidget):
         self.filename = None
         self.file_path = ''
 
+        self.files_extensions = {'Python': '.py',
+                              'C++': '.CPP',
+                              'Rust': '.rs'}
+
+
         # crate graphics scene
         self.scene = NodeScene(masterRef)
 
@@ -61,12 +66,14 @@ class NodeEditorWidget(QWidget):
         self.editor_wnd.addWidget(self.graph_graphics_view)
 
         text_code_widget = QWidget()
-        text_code_widget.resize(800, 100)
+        text_code_layout = QVBoxLayout()
+
+        text_code_widget.setLayout(text_code_layout)
         self.editor_wnd.addWidget(text_code_widget)
 
-        text_code_layout = QVBoxLayout()
+        text_code_widget.resize(800, 100)
         text_code_layout.setContentsMargins(0, 0, 0, 0)
-        text_code_widget.setLayout(text_code_layout)
+
 
         code_wnd_bar = QHBoxLayout()
         code_wnd_bar.setContentsMargins(0, 0, 5, 0)
@@ -78,10 +85,10 @@ class NodeEditorWidget(QWidget):
         self.multi_code_wnd = QTabWidget()
 
         self.header_wnd = QTextEdit()
-        self.cpp_window = QTextEdit()
+        self.cpp_wnd = QTextEdit()
 
-        self.multi_code_wnd.addTab(self.header_wnd, '   .H  ')
-        self.multi_code_wnd.addTab(self.cpp_window, '   .CPP    ')
+        self.multi_code_wnd.addTab(self.header_wnd, '    .H    ')
+        self.multi_code_wnd.addTab(self.cpp_wnd, '     .CPP    ')
 
         self.text_code_wnd.setReadOnly(True)
         self.stacked_code_wnd.addWidget(self.text_code_wnd)
@@ -94,10 +101,12 @@ class NodeEditorWidget(QWidget):
         self.syntax_selector.currentIndexChanged.connect(self.syntax_changed)
         self.syntax_selector.setMinimumWidth(80)
         self.syntax_selector.currentTextChanged.connect(self.UpdateTextCode)
+
         self.syntax_selector.addItem("Python")
         self.syntax_selector.addItem("C++")
-        code_wnd_bar.addWidget(self.syntax_selector)
+        self.syntax_selector.addItem("Rust")
 
+        code_wnd_bar.addWidget(self.syntax_selector)
         code_wnd_bar.addItem(QSpacerItem(10, 0, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum))
 
         self.code_orientation_btn = QPushButton()
@@ -330,31 +339,25 @@ class NodeEditorWidget(QWidget):
     def get_save_directory(self):
         data = []
         self.scene.masterRef.files_widget.get_scripts_dir(self.syntax_selector)
-        extensions = {'Python': '.py',
-                      'C++': '.CPP',
-                      }
 
-        if self.stacked_code_wnd.currentIndex() == 1:
+        if self.syntax_selector.currentText() == 'C++':
             Ex = '.h'
-            dir = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.header_wnd.toPlainText()
-            data.append([f"{dir}",f"{text_code}"])
+            data.append([f"{directory}", f"{text_code}"])
 
-        Ex = extensions[f'{self.syntax_selector.currentText()}']
-        dir = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            Ex = self.files_extensions[f'{self.syntax_selector.currentText()}']
+            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            text_code = self.cpp_wnd.toPlainText()
+            data.append([f"{directory}", f"{text_code}"])
 
-        if self.stacked_code_wnd.currentIndex() == 0:
+        else:
+            Ex = self.files_extensions[f'{self.syntax_selector.currentText()}']
+            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.text_code_wnd.toPlainText()
-
-        elif self.stacked_code_wnd.currentIndex() == 1:
-            text_code = self.cpp_window.toPlainText()
-
-        data.append([f"{dir}", f"{text_code}"])
+            data.append([f"{directory}", f"{text_code}"])
 
         return data
-
-    def get_current_code(self):
-        self.scene.masterRef.files_widget.get_scripts_dir(self.syntax_selector)
 
     def CopyTextCode(self):
         self.text_code_wnd.selectAll()
@@ -362,7 +365,11 @@ class NodeEditorWidget(QWidget):
         self.update_text_code_files()
 
     def syntax_changed(self):
-        self.stacked_code_wnd.setCurrentIndex(self.syntax_selector.currentIndex())
+        value = 0
+        if self.syntax_selector.currentText() == 'C++':
+            value = 1
+
+        self.stacked_code_wnd.setCurrentIndex(value)
         self.UpdateTextCode()
 
     def get_imports(self, syntax, user_nodes):
@@ -381,34 +388,34 @@ class NodeEditorWidget(QWidget):
             return imports
 
     def UpdateTextCode(self, header=False):
-        current_synatx = self.syntax_selector.currentText()
-        if current_synatx == "Python":
+        current_syntax = self.syntax_selector.currentText()
+
+        if current_syntax == "C++":
+            if header:
+                self.header_wnd.clear()
+                imports = self.get_imports(current_syntax, self.scene.user_nodes_wdg.user_nodes_data)
+                for item in imports:
+                    self.header_wnd.append(item)
+                self.header_wnd.append('')
+                for user_node in self.scene.user_nodes_wdg.user_nodes_data:
+                    self.header_wnd.append(user_node[0])
+
+            else:
+                self.cpp_wnd.clear()
+                for node in self.scene.nodes:
+                    node.syntax = current_syntax
+                    # Don't add Text Code OF Node in these cases !
+                    if node.getNodeCode() is None or node.showCode is not True:
+                        pass
+                    else:
+                        self.cpp_wnd.append(node.getNodeCode())
+        else:
             self.text_code_wnd.clear()
             for node in self.scene.nodes:
-                node.syntax = current_synatx
+                node.syntax = current_syntax
                 # Don't add Text Code OF Node in these cases !
                 if node.getNodeCode() is None or node.showCode is not True:
                     pass
                 else:
                     self.text_code_wnd.append(node.getNodeCode())
-
-        elif current_synatx == "C++":
-            if header:
-                self.multi_code_wnd.widget(0).clear()
-                imports = self.get_imports(current_synatx, self.scene.user_nodes_wdg.user_nodes_data)
-                for item in imports:
-                    self.multi_code_wnd.widget(0).append(item)
-                self.multi_code_wnd.widget(0).append('')
-                for user_node in self.scene.user_nodes_wdg.user_nodes_data:
-                    self.multi_code_wnd.widget(0).append(user_node[0])
-
-            else:
-                self.multi_code_wnd.widget(1).clear()
-                for node in self.scene.nodes:
-                    node.syntax = current_synatx
-                    # Don't add Text Code OF Node in these cases !
-                    if node.getNodeCode() is None or node.showCode is not True:
-                        pass
-                    else:
-                        self.multi_code_wnd.widget(1).append(node.getNodeCode())
 

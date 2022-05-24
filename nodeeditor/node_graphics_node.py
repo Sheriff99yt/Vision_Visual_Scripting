@@ -278,7 +278,6 @@ class QDMGraphicsNode(QGraphicsItem):
         # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
 
     def highlight_code(self, raw_code):
-
         if self.isSelected():
             code = f""" <pre><p style="font-family: Calibri "><span style="background-color:{self.title_color};" >{raw_code}</span></p></pre> """
         else:

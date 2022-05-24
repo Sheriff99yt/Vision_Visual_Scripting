@@ -74,7 +74,6 @@ class FilesWDG(QWidget):
         if not os.listdir(self.Project_Directory).__contains__(syntax_selector.currentText()):
             dir = self.Project_Directory + f"/{syntax_selector.currentText()}"
             os.makedirs(dir)
-            return dir
 
     def set_project_folder(self):
         Dir = QFileDialog.getExistingDirectory(self, "Select Project Folder", self.Project_Directory)

@@ -32,15 +32,13 @@ class IfStatement(MasterNode):
         self.set_output_label_text(1, "False")
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        condition = self.get_my_input_code(1)
+        true = self.get_other_socket_code(0)
+        false = self.get_other_socket_code(1)
+
         if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-
-            condition = self.get_my_input_code(1)
-
-            true = self.get_other_socket_code(0)
-
-            false = self.get_other_socket_code(1)
-
             if self.isOutputConnected(1) and self.isOutputConnected(0):
                 python_code = f"""
 if {condition}:
@@ -58,15 +56,8 @@ if {condition}:
 
             raw_code = python_code
         elif self.syntax == "C++":
-            self.showCode = not self.isInputConnected(0)
             L_P = "{"
             R_P = "}"
-            condition = self.get_my_input_code(1)
-
-            true = self.get_other_socket_code(0)
-
-            false = self.get_other_socket_code(1)
-
             if self.isOutputConnected(1) and self.isOutputConnected(0):
                 CPP_code = f"""
 if ({condition})
@@ -90,6 +81,7 @@ if ({condition})
 {Indent(true)}
 {R_P}"""
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -104,28 +96,24 @@ class ForLoop(MasterNode):
         super().__init__(scene, inputs=[0, 2], outputs=[0])
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        range = self.get_my_input_code(1)
+        loopCode = self.get_other_socket_code(0)
+
         if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-
-            range = self.get_my_input_code(1)
-
-            loopCode = self.get_other_socket_code(0)
 
             python_code = f"""
 for item in range({range}):
 {Indent(loopCode)}"""
             raw_code = python_code
+
         elif self.syntax == "C++":
-            self.showCode = not self.isInputConnected(0)
-
-            range = self.get_my_input_code(1)
-
-            loopCode = self.get_other_socket_code(0)
-
             CPP_code = f"""
 for (int i=0;i&lt;{range};i++)
 {Indent(loopCode)}"""
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -140,29 +128,21 @@ class ForEachLoop(MasterNode):
         super().__init__(scene, inputs=[0, 5], outputs=[0, 6])
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        list = self.get_my_input_code(1)
+        loopCode = self.get_other_socket_code(0)
+        self.outputs[1].socket_code = 'item'
+
         if self.syntax == "Python":
-
-            self.showCode = not self.isInputConnected(0)
-
-            list = self.get_my_input_code(1)
-
-            loopCode = self.get_other_socket_code(0)
-
-            self.outputs[1].socket_code = 'item'
             python_code = f"""
 for item in {list}:
 {Indent(loopCode)}"""
             raw_code = python_code
+
         elif self.syntax == "C++":
-            self.showCode = not self.isInputConnected(0)
             L_P = "{"
             R_P = "}"
-
-            list = self.get_my_input_code(1)
-
-            loopCode = self.get_other_socket_code(0)
-
-            self.outputs[1].socket_code = 'item'
             CPP_code = f"""
 for (auto item : {list})
 {L_P}
@@ -185,6 +165,7 @@ class And(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
         if self.syntax == "Python":
             A = self.get_my_input_code(0)
             B = self.get_my_input_code(1)
@@ -216,21 +197,18 @@ class GreaterThan(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}&gt;{B})"
-
             raw_code = python_code
 
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}&gt;{B})"
-
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -246,20 +224,16 @@ class LessThan(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}&lt;{B})"
-
             raw_code = python_code
 
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}&lt;{B})"
-
             raw_code = CPP_code
 
         return self.grNode.highlight_code(raw_code)
@@ -277,20 +251,16 @@ class Equal(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}=={B})"
-
             raw_code = python_code
 
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}=={B})"
-
             raw_code = CPP_code
 
         return self.grNode.highlight_code(raw_code)
@@ -309,20 +279,18 @@ class Add(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}+{B})"
-
             raw_code = python_code
+
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}+{B})"
-
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -338,21 +306,18 @@ class Sub(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}+{B})"
-
             raw_code = python_code
 
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}+{B})"
-
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -368,21 +333,18 @@ class Mul(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}*{B})"
-
             raw_code = python_code
 
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}*{B})"
-
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -398,21 +360,18 @@ class Div(MasterNode):
         self.showCode = False
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A}/{B})"
-
             raw_code = python_code
 
         elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             CPP_code = self.outputs[0].socket_code = f"({A}/{B})"
-
             raw_code = CPP_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -428,15 +387,14 @@ class UserInput(MasterNode):
         super().__init__(scene, inputs=[0, 6, 4], outputs=[0])
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        brotherCode = self.get_other_socket_code(0)
+        inputName = self.get_my_input_code(1)
+        if inputName != "" and inputName is not None: inputName += " = "
+        inputCode = self.get_my_input_code(2)
+
         if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-
-            brotherCode = self.get_other_socket_code(0)
-            inputName = self.get_my_input_code(1)
-
-            if inputName != "" and inputName is not None: inputName += " = "
-            inputCode = self.get_my_input_code(2)
-
             python_code = f"""
 {inputName}input("{inputCode}")
 {brotherCode}"""
@@ -444,14 +402,6 @@ class UserInput(MasterNode):
             raw_code = python_code
 
         elif self.syntax == "C++":
-            self.showCode = not self.isInputConnected(0)
-
-            brotherCode = self.get_other_socket_code(0)
-            inputName = self.get_my_input_code(1)
-
-            # if inputName != "" and inputName is not None: inputName += " = "
-            inputCode = self.get_my_input_code(2)
-
             CPP_code = f"""
 cout &lt;&lt; "{inputCode}", cin >> {inputName};
 {brotherCode}"""
@@ -471,23 +421,19 @@ class RawCode(MasterNode):
         super().__init__(scene, inputs=[0, 4], outputs=[0])
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        brotherCode = self.get_other_socket_code(0)
+        inputCode = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-
-            brotherCode = self.get_other_socket_code(0)
-            inputCode = self.get_my_input_code(1)
-
             python_code = f"""
 {inputCode}
 {brotherCode}"""
 
             raw_code = python_code
+
         elif self.syntax == "C++":
-            self.showCode = not self.isInputConnected(0)
-
-            brotherCode = self.get_other_socket_code(0)
-            inputCode = self.get_my_input_code(1)
-
             CPP_code = f"""
 {inputCode}
 {brotherCode}"""
@@ -508,10 +454,12 @@ class Print(MasterNode):
         super().__init__(scene, inputs=[0, 6], outputs=[0])
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        brotherCode = self.get_other_socket_code(0)
+        printCode = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            printCode = self.get_my_input_code(1)
             if self.isInputConnected(1):
                 python_code = f"""
 print({printCode})
@@ -525,10 +473,6 @@ print("{printCode}")
             raw_code = python_code
 
         elif self.syntax == "C++":
-
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            printCode = self.get_my_input_code(1)
             if self.isInputConnected(1):
                 CPP_code = f"""
 cout &lt;&lt; {printCode};
@@ -555,20 +499,18 @@ class Return(MasterNode):
         super().__init__(scene, inputs=[0, 6], outputs=[])
 
     def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        brotherCode = self.get_other_socket_code(0)
+        printCode = self.get_my_input_code(1)
+
         if self.syntax == "Python":
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            printCode = self.get_my_input_code(1)
             python_code = f"""
 return {printCode}
 {brotherCode}"""
             raw_code = python_code
 
         elif self.syntax == "C++":
-
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            printCode = self.get_my_input_code(1)
             CPP_code = f"""
 return {printCode};
 {brotherCode}"""
