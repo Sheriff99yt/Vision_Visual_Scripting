@@ -15,7 +15,7 @@ QLabel{
 
 
 
-QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover,QMdiArea QTabBar QToolButton,QDockWidget,QDockWidget::title,QListView::item:selected,QListView::item::active:selected,QListView::item,QListView::item::active:hover,QMenuBar::item,QPushButton:disabled, QToolButton:disabled,QPushButton, QToolButton,QListView::item:selected,QListView::item::active:selected,QLineEdit,QTextEdit,QDMNodeContentWidget,QDMNodeContentWidget QFrame,QDMNodeContentWidget QTextEdit,QDMNodeContentWidget QLabel,QLabel,QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover,QHeaderView,QTreeView,QTabBar,QStatusBar,QComboBox,QMenu::active,QMenu::item {
+QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover,QMdiArea QTabBar QToolButton,QDockWidget,QDockWidget::title,QListView::item:selected,QListView::item::active:selected,QListView::item,QListView::item::active:hover,QMenuBar::item,QPushButton:disabled, QToolButton:disabled,QPushButton, QToolButton,QListView::item:selected,QListView::item::active:selected,QLineEdit,QTextEdit,QLabel,QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover,QHeaderView,QTreeView,QTabBar,QStatusBar,QComboBox,QMenu::active,QMenu::item {
     color: #282828;}
 QMenu::separator,QMenu::disabled,QMenu::item:disabled{
     color:#282828;}
@@ -94,4 +94,9 @@ QDockWidget::title{padding-top:6px;padding-left:6px;}
 
 
 
-QWidget {font-family: "Calibri"}
+QTextEdit{background-color:#FFFFFF}
+
+
+
+
+QWidget {font-family: "Calibri"; font-size: 16px}

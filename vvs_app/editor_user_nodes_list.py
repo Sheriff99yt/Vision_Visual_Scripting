@@ -29,7 +29,7 @@ class UserNodesList(QTabWidget):
         tab2 = QWidget()
 
         self.addTab(tab1, "Variables")
-        self.addTab(tab2, "Events")
+        self.addTab(tab2, "Functions")
 
         # Create Variables List
         self.VarList = QListWidget()
@@ -163,7 +163,7 @@ class UserNodesList(QTabWidget):
         self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
 
         if user:
-            self.scene.history.storeHistory("Create User Node ", setModified=True)
+            self.scene.history.storeHistory("Created User Node ", setModified=True)
         self.scene.NodeEditor.UpdateTextCode(header=True)
 
     def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
@@ -203,7 +203,7 @@ class UserNodesList(QTabWidget):
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
         self.delete_btn.setShortcut(
-            QKeySequence(f"""Shift+{self.scene.masterRef.global_switches.switches_Dict["Delete"]}"""))
+            QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
         self.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
 
         if item.data(80) == User_Function.node_type:

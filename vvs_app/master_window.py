@@ -45,16 +45,12 @@ class MasterWindow(NodeEditorWindow):
     def initUI(self):
         # self.qss_theme = "qss/nodeeditor-light.qss"
 
-        self.settingsWidget = None
-
         self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Appearance"]["Theme"][0]] # ["Theme"][0]
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.qss_theme)
 
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), self.qss_theme), self.stylesheet_filename)
-
-        self.global_switches.update_font_size(self.global_switches.switches_Dict["Appearance"]["Font Size"])
 
         self.empty_icon = QIcon(".")
 
@@ -298,7 +294,6 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.node_designer_btn)
         self.actions_list["Node Designer Window"] = self.node_designer_btn
 
-
         # Add and connect self.library_btn
         self.library_btn = QAction(QIcon(self.global_switches.get_icon("library.png")), "&Library", self)
         self.library_btn.setIconText("library.png")
@@ -308,15 +303,11 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.library_btn)
         self.actions_list["Library Window"] = self.library_btn
 
-
         # Add Separator
         self.tools_bar.addSeparator()
 
-        # # Add Separator
-        # self.tools_bar.addSeparator()
-
     def onSettingsOpen(self):
-        if self.settingsWidget:
+        if self.__dict__.__contains__("settingsWidget"):
             if self.settingsWidget.isHidden():
                 self.settingsWidget.show()
                 self.settingsBtn.setChecked(True)

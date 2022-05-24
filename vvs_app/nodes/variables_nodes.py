@@ -12,7 +12,7 @@ StringColor = "#70FF10FF"
 
 class FloatVar(MasterNode):
     icon = ""
-    name = "float"
+    name = "user_float"
     category = "VARIABLE"
     sub_category = "VARIABLE"
     node_color = FloatColor
@@ -52,7 +52,7 @@ float {self.name}= {setInput};
 
 class IntegerVar(MasterNode):
     icon = ""
-    name = "integer"
+    name = "user_integer"
     category = "VARIABLE"
     sub_category = "VARIABLE"
     node_color = IntegerColor
@@ -92,7 +92,7 @@ int {self.name}= {setInput};
 
 class BooleanVar(MasterNode):
     icon = ""
-    name = "boolean"
+    name = "user_boolean"
     category = "VARIABLE"
     sub_category = "VARIABLE"
     node_color = BooleanColor
@@ -133,7 +133,7 @@ bool {self.name}= {setInput};
 
 class StringVar(MasterNode):
     icon = ""
-    name = "string"
+    name = "user_string"
     category = "VARIABLE"
     sub_category = "VARIABLE"
     node_color = StringColor
@@ -174,7 +174,7 @@ string {self.name}="{setInput}";
 
 class ListVar(MasterNode):
     icon = ""
-    name = "list"
+    name = "user_list"
     category = "VARIABLE"
     sub_category = "VARIABLE"
     node_color = "#555555"
