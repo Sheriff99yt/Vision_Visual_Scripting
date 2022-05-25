@@ -171,5 +171,5 @@ class SceneClipboard():
         # store history
         self.scene.history.storeHistory("Pasted elements in scene", setModified=True)
 
-        self.scene.NodeEditor.UpdateTextCode()
+        self.scene.node_editor.UpdateTextCode()
         return created_nodes

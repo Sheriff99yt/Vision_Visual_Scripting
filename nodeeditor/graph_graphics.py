@@ -470,9 +470,6 @@ class GraphGraphics(QGraphicsView):
         for grSocket in items: grSocket.isHighlighted = highlighted
         return items
 
-    # def setNodeEditorWidget(self, NodeEditor: None):
-    #     self.NodeEditor = NodeEditor
-
     def deleteSelected(self):
         """Shortcut for safe deleting every object selected in the `Scene`."""
         for item in self.grScene.selectedItems():
@@ -482,7 +479,7 @@ class GraphGraphics(QGraphicsView):
                 item.node.remove()
 
         self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
-        self.grScene.scene.NodeEditor.UpdateTextCode()
+        self.grScene.scene.node_editor.UpdateTextCode()
 
     def debug_modifiers(self, event):
         """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""

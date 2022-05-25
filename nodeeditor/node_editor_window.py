@@ -7,7 +7,6 @@ import os, json
 from PyQt5.QtGui import QImage
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
-# from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from datetime import datetime
 
@@ -18,7 +17,6 @@ from vvs_app.nodes.nodes_configuration import *
 
 
 class NodeEditorWindow(QMainWindow):
-    NodeEditorWidget_class = NodeEditorWidget
 
     """Class representing NodeEditor's Main Window"""
     def __init__(self):
@@ -42,31 +40,12 @@ class NodeEditorWindow(QMainWindow):
 
         self.set_nodes_icons()
 
-        self.initUI()
 
     def set_nodes_icons(self):
         for cls in MasterNode.__subclasses__():
             icon = os.path.split(cls.icon)[-1]
             cls.icon = self.global_switches.get_icon(icon)
 
-    def initUI(self):
-
-        """Set up this ``QMainWindow``. Create :class:`~nodeeditor.node_editor_widget.NodeEditorWidget`, Actions and Menus"""
-        self.createActions()
-        self.create_menus()
-
-        # create node editor widget
-
-        self.central_window = self.__class__.NodeEditorWidget_class(self)
-        self.central_window.scene.addHasBeenModifiedListener(self.setTitle)
-        self.setCentralWidget(self.central_window)
-
-        self.createStatusBar()
-
-        # set window properties
-        # self.setGeometry(200, 200, 800, 600)
-        self.setTitle()
-        self.show()
 
     def sizeHint(self):
         return QSize(800, 600)

@@ -120,7 +120,7 @@ class SceneHistory():
         for callback in self._history_modified_listeners: callback()
         for callback in self._history_restored_listeners: callback()
 
-        self.scene.NodeEditor.UpdateTextCode()
+        self.scene.node_editor.UpdateTextCode()
 
     def storeHistory(self, desc: str, setModified: bool=False):
         """

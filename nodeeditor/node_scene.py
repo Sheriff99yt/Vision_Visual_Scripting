@@ -24,7 +24,7 @@ class InvalidFile(Exception): pass
 
 class NodeScene(Serializable):
     """Class representing NodeEditor's `Scene`"""
-    def __init__(self, masterRef):
+    def __init__(self, masterRef, nodeeditor: None):
         """
         :Instance Attributes:
 
@@ -36,7 +36,7 @@ class NodeScene(Serializable):
             - **scene_height** - height of this `Scene` in pixels
         """
         super().__init__()
-        self.NodeEditor = None
+        self.node_editor = nodeeditor
         self.user_nodes_wdg = None
         self.nodes = []
         self.edges = []
@@ -66,9 +66,6 @@ class NodeScene(Serializable):
 
         self.grScene.itemSelected.connect(self.onItemSelected)
         self.grScene.itemsDeselected.connect(self.onItemsDeselected)
-
-    def setNodeEditorWidget(self, NodeEditor: None):
-        self.NodeEditor = NodeEditor
 
     @property
     def has_been_modified(self):
@@ -134,7 +131,7 @@ class NodeScene(Serializable):
                 # and store history as a last step always
                 self.history.storeHistory("Selection Changed")
 
-        self.NodeEditor.UpdateTextCode()
+        self.node_editor.UpdateTextCode()
         self.user_nodes_wdg.findListItem(self.getSelectedNodes())
 
     def getSelectedNodes(self):
@@ -167,7 +164,7 @@ class NodeScene(Serializable):
             if not silent:
                 self.history.storeHistory("Deselected Everything")
                 for callback in self._items_deselected_listeners: callback()
-        self.NodeEditor.UpdateTextCode()
+        self.node_editor.UpdateTextCode()
 
     def isModified(self) -> bool:
         """Is this `Scene` dirty aka `has been modified` ?
@@ -407,7 +404,7 @@ class NodeScene(Serializable):
 
         return OrderedDict([
             ('id', self.id),
-            ('syntax', self.NodeEditor.syntax_selector.currentText()),
+            ('syntax', self.node_editor.syntax_selector.currentText()),
             ('scene_height', self.scene_height),
             ('scene_height', self.scene_height),
             ('user_nodes', self.serialize_user_nodes()),
@@ -422,7 +419,7 @@ class NodeScene(Serializable):
         if restore_id:
             self.id = data['id']
 
-        self.NodeEditor.syntax_selector.setCurrentText(data['syntax'])
+        self.node_editor.syntax_selector.setCurrentText(data['syntax'])
         print(data['syntax'])
 
         # Create a list of all Existing User Nodes
@@ -517,5 +514,5 @@ class NodeScene(Serializable):
             edge = all_edges.pop()
             edge.remove()
 
-        self.NodeEditor.UpdateTextCode()
+        self.node_editor.UpdateTextCode()
         return True

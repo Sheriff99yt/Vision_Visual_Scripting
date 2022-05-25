@@ -5,7 +5,7 @@ from nodeeditor.node_editor_widget import *
 
 
 
-class User_Function(MasterNode):
+class UserFunction(MasterNode):
     icon = "event.png"
     name = "user_function"
     category = "User_Function"

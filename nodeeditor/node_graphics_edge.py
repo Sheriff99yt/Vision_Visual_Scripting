@@ -11,7 +11,7 @@ from nodeeditor.node_graphics_edge_path import GraphicsEdgePathBezier, GraphicsE
 
 class QDMGraphicsEdge(QGraphicsPathItem):
     """Base class for Graphics Edge"""
-    def __init__(self, edge:'Edge', parent:QWidget=None):
+    def __init__(self, edge: 'Edge', parent: QWidget = None):
         """
         :param edge: reference to :class:`~nodeeditor.node_edge.Edge`
         :type edge: :class:`~nodeeditor.node_edge.Edge`

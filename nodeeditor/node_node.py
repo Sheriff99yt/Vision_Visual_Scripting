@@ -74,20 +74,9 @@ class Node(Serializable):
 
         self.initSockets(inputs, outputs)
 
-        self.return_dataTypes_dict = {"Languages": ["Python", "C++"],
-                                        "mutable": ["", "void"],
-                                          "float": ["-> float", "float"],
-                                        "integer": ["-> integer", "int"],
-                                        "boolean": ["-> boolean", "boolean"],
-                                         "string": ["-> string", "string"],
-                                           "list": ["-> list", "list"],
-                                     "dictionary": ["-> dictionary", "dictionary"],
-                                          "tuple": ["-> tuple", "tuple"]
-                                      }
 
     def get_return(self):
-        index = self.return_dataTypes_dict["Languages"].index(self.syntax)
-        return self.return_dataTypes_dict[self.node_return][index]
+        return self.scene.node_editor.get_node_return(self.syntax, self.node_return)
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
@@ -209,7 +198,7 @@ class Node(Serializable):
         :param new_edge: reference to the changed :class:`~nodeeditor.node_edge.Edge`
         :type new_edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        self.scene.NodeEditor.UpdateTextCode()
+        self.scene.node_editor.UpdateTextCode()
 
     def onInputChanged(self, socket: 'Socket'):
         """Event handling when Node's input Edge has changed. We auto-mark this `Node` to be `Dirty` with all it's
@@ -594,7 +583,7 @@ class Node(Serializable):
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
             self.grNode.name = self.name
-            self.syntax = self.scene.NodeEditor.syntax_selector.currentText()
+            self.syntax = self.scene.node_editor.syntax_selector.currentText()
 
             data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
             data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)

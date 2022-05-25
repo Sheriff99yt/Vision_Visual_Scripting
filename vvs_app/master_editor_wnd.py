@@ -2,9 +2,9 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
+from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_node import Node
 from vvs_app.nodes.nodes_configuration import *
-from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from nodeeditor.graph_graphics import MODE_EDGE_DRAG
 from nodeeditor.utils import dumpException
@@ -13,8 +13,8 @@ DEBUG = False
 DEBUG_CONTEXT = False
 
 
-class MasterEditorWnd(NodeEditorWidget):
-    def __init__(self, masterRef=None):
+class NodeEditorTab(NodeEditorWidget):
+    def __init__(self, masterRef):
         super().__init__(masterRef=masterRef)
         # self.setAttribute(Qt.WA_DeleteOnClose)
 
@@ -127,7 +127,7 @@ class MasterEditorWnd(NodeEditorWidget):
             event.accept()
         else:
             event.ignore()
-        self.scene.NodeEditor.UpdateTextCode()
+        self.scene.node_editor.UpdateTextCode()
 
     def ActiveScene(self):
         return self.scene.masterRef.currentNodeEditor().scene
@@ -250,7 +250,7 @@ class MasterEditorWnd(NodeEditorWidget):
             new_node = get_node_by_type(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_node.setPos(scene_pos.x(), scene_pos.y())
-            self.scene.NodeEditor.UpdateTextCode()
+            self.scene.node_editor.UpdateTextCode()
 
             if DEBUG_CONTEXT: print("Selected node:", new_node)
 

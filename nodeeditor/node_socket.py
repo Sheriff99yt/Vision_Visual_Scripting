@@ -278,7 +278,7 @@ class Socket(Serializable):
             scene_pos = self.grSocket.pos()
             if self.socket_type == 1:
                 userInputWdg = QDoubleSpinBox()
-                userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.valueChanged.connect(self.node.scene.node_editor.UpdateTextCode)
                 userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
                 userInputWdg.setDecimals(6)
                 userInputWdg.setMinimum(float("-inf"))
@@ -289,7 +289,7 @@ class Socket(Serializable):
 
             elif self.socket_type == 2:
                 userInputWdg = QSpinBox()
-                userInputWdg.valueChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.valueChanged.connect(self.node.scene.node_editor.UpdateTextCode)
                 userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
                 userInputWdg.setRange(-1000000000, 1000000000)
                 userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
@@ -298,7 +298,7 @@ class Socket(Serializable):
 
             elif self.socket_type == 3:
                 userInputWdg = QCheckBox()
-                userInputWdg.stateChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.stateChanged.connect(self.node.scene.node_editor.UpdateTextCode)
                 userInputWdg.setFixedSize(self.grSocket.radius * 2, self.grSocket.radius * 2)
                 # userInputWdg.setIconSize(QSize(self.grSocket.radius, self.grSocket.radius))
 
@@ -306,7 +306,7 @@ class Socket(Serializable):
                 userInputWdg = QTextEdit()
                 userInputWdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
                 userInputWdg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-                userInputWdg.textChanged.connect(self.node.scene.NodeEditor.UpdateTextCode)
+                userInputWdg.textChanged.connect(self.node.scene.node_editor.UpdateTextCode)
                 userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
                 userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
                 userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
