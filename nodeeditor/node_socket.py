@@ -14,22 +14,28 @@ from nodeeditor.node_serializable import Serializable
 
 DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
+LEFT_TOP = 1
+LEFT_CENTER = 2
+LEFT_BOTTOM = 3
+RIGHT_TOP = 4
+RIGHT_CENTER = 5
+RIGHT_BOTTOM = 6
 
 # Graphical Socket Classes
 # -*- coding: utf-8 -*-
+
 """
 A module containing Graphics representation of a :class:`~nodeeditor.node_socket.Socket`
 """
 
-
-Socket_Types = {}
-Socket_Types[0] = 'Executable'
-Socket_Types[1] = 'float'
-Socket_Types[3] = 'int'
-Socket_Types[2] = 'bool'
-Socket_Types[4] = 'string'
-Socket_Types[5] = 'list'
-Socket_Types[6] = 'list_item'
+Socket_Types = {'Executable': '',
+                'float': '',
+                'int': '',
+                'bool': '',
+                'string': '',
+                'list': '',
+                'list_item': ''
+                }
 
 SOCKET_COLORS = [
     QColor("#aaFFFFFF"),
@@ -58,6 +64,7 @@ SOCKET_COLORS_CONNECTED = [
     QColor("#aaaaaa"),
     QColor("#aaaaaa")]
 
+
 class QDMGraphicsSocket(QGraphicsItem):
     """Class representing Graphic `Socket` in ``QGraphicsScene``"""
 
@@ -75,11 +82,12 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.isHighlighted = False
 
-        self.radius = 6
+        self.radius = 8
         self.outline_width = 1
+        self.shape = 0
 
-        self.paint = self.myPaint
-
+        # self.paint = self.myPaint
+        self.update_socket_shape(self.socket.node.node_structure)
         self.initAssets()
 
         # shadow = QGraphicsDropShadowEffect()
@@ -145,8 +153,15 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._pen.setWidthF(self.outline_width)
         self._brush = QBrush(self.getSocketColor(self.socket_type))
 
+    def update_socket_shape(self, new_structure=False):
+        if new_structure == 'single value':
+            self.shape = 0
+        elif new_structure == 'array':
+            self.shape = 1
 
-    def myPaint(self, painter, QStyleOptionGraphicsItem, widget=None):
+        self.update()
+
+    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting a circle"""
         painter.setBrush(self._brush)
         painter.setPen(self._pen)
@@ -161,11 +176,9 @@ class QDMGraphicsSocket(QGraphicsItem):
             painter.drawPolygon(QPoint(-self.radius, self.radius), QPoint(self.radius, 0),
                                 QPoint(-self.radius, -self.radius))
         elif self.socket_type == 6:
-            # This is an Object Reference Socket Type
             painter.drawPolygon(QPoint(-self.radius, 0), QPoint(0, self.radius), QPoint(self.radius, 0), QPoint(0, -self.radius))
 
         elif self.socket_type == 5:
-            # This is an Object Reference Socket Type
             painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
             painter.setBrush(QBrush(QColor("#FF101010")))
 
@@ -173,12 +186,19 @@ class QDMGraphicsSocket(QGraphicsItem):
                 painter.drawRect(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
 
         elif self.socket_type == 1 or 2 or 3 or 4:
-            painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
-            painter.setBrush(QBrush(QColor("#FF101010")))
+            if self.shape == 0:
+                painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+                painter.setBrush(QBrush(QColor("#FF101010")))
 
-            if not self.isConnected:
-                painter.drawEllipse(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
+                if not self.isConnected:
+                    painter.drawEllipse(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
 
+            elif self.shape == 1:
+                painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+                painter.setBrush(QBrush(QColor("#FF101010")))
+
+                if not self.isConnected:
+                    painter.drawRect(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
 
     def boundingRect(self) -> QRectF:
         """Defining Qt' bounding rectangle"""
@@ -189,7 +209,6 @@ class QDMGraphicsSocket(QGraphicsItem):
             2 * (self.radius + self.outline_width),
         )
 
-
 # Functional Socket Classes
 
 # -*- coding: utf-8 -*-
@@ -199,16 +218,6 @@ A module containing NodeEditor's class for representing Socket and Socket Positi
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
 
-LEFT_TOP = 1
-LEFT_CENTER = 2
-LEFT_BOTTOM = 3
-RIGHT_TOP = 4
-RIGHT_CENTER = 5
-RIGHT_BOTTOM = 6
-
-
-DEBUG = False
-DEBUG_REMOVE_WARNINGS = False
 
 class Socket(Serializable):
     """Class representing Socket."""
@@ -347,7 +356,9 @@ class Socket(Serializable):
             self.socket_type = new_socket_type
             self.grSocket.changeSocketType()
             return True
-        return False
+        else:
+
+            return False
 
     def setSocketPosition(self):
         """Helper function to set `Graphics Socket` position. Exact socket position is calculated
@@ -463,6 +474,7 @@ class Socket(Serializable):
         self.is_multi_edges = self.determineMultiEdges(data)
         self.changeSocketType(data['socket_type'])
         hashmap[data['id']] = self
+        self.grSocket.update_socket_shape(self.node.node_structure)
 
         if self.is_input and self.userInputWdg:
             self.node.scene.masterRef.set_QWidget_content(self.userInputWdg, data['socket_value'])

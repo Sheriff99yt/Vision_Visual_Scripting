@@ -17,7 +17,7 @@ from nodeeditor.utils import dumpException
 from vvs_app.nodes.default_functions import Print
 from vvs_app.nodes.event_nodes import UserFunction
 from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar
-from vvs_app.nodes.variables_nodes import StringVar, ListVar
+from vvs_app.nodes.variables_nodes import StringVar
 
 
 class NodeEditorWidget(QWidget):
@@ -40,16 +40,22 @@ class NodeEditorWidget(QWidget):
                               'C++': '.CPP',
                               'Rust': '.rs'}
 
-        self.return_dataTypes_dict = {
+        self.return_types = {
                                     "Languages": ["Python", "C++"],
                                     "mutable": ["", "void"],
-                                    "float": ["-> float", "float"],
-                                    "integer": ["-> integer", "int"],
-                                    "boolean": ["-> boolean", "boolean"],
-                                    "string": ["-> string", "string"],
-                                    "list": ["-> list", "list"],
-                                    "dictionary": ["-> dictionary", "dictionary"],
-                                    "tuple": ["-> tuple", "tuple"]
+                                    "float": [" -> float", "float"],
+                                    "integer": [" -> integer", "int"],
+                                    "boolean": [" -> boolean", "boolean"],
+                                    "string": [" -> string", "string"],
+                                    "list": [" -> list", "list"],
+                                    "dictionary": [" -> dictionary", "dictionary"],
+                                    "tuple": [" -> tuple", "tuple"]
+                                      }
+
+        self.structure_types = {
+                                    "Languages": ["Python", "C++"],
+                                    "single value": ["", ""],
+                                    "array": ["DynamicArray()", "list"],
                                       }
 
 
@@ -59,8 +65,12 @@ class NodeEditorWidget(QWidget):
         self.create_widget_window()
 
     def get_node_return(self, syntax, node_return):
-        index = self.return_dataTypes_dict["Languages"].index(syntax)
-        return self.return_dataTypes_dict[node_return][index]
+        index = self.return_types["Languages"].index(syntax)
+        return self.return_types[node_return][index]
+
+    def get_node_structure(self, syntax, node_structure):
+        index = self.structure_types["Languages"].index(syntax)
+        return self.structure_types[node_structure][index]
 
     def create_widget_window(self):
         """
@@ -399,33 +409,28 @@ class NodeEditorWidget(QWidget):
                 IntegerVar.node_type: 'int',
                 BooleanVar.node_type: 'bool',
                 StringVar.node_type: 'string',
+
             }
 
-            used_node_types = []
-            for node in self.scene.nodes:
-                used_node_types.append(node.node_type)
+            used_node_types = [node.node_type for node in self.scene.nodes]
 
             if used_node_types.__contains__(Print.node_type):
                 imports.append(f'#include <iostream>')
 
-            types = []
             for data in self.scene.user_nodes_wdg.user_nodes_data:
-                if data[2] == UserFunction.node_type:
-                    imports.append(f"{self.get_node_return('C++',data[3])} {data[0]}();")
-                else:
-                    imports.append(f'extern {value[data[2]]} {data[0]};')
-
-                if not types.__contains__(data[2]):
-                    types.append(data[2])
-
-
-            for node_type in types:
-                if node_type == StringVar.node_type:
+                if data[2] == StringVar.node_type:
                     imports.append("#include <string>")
-                elif node_type == ListVar.node_type:
-                    imports.append("#include <list>")
+                # elif data[2] == ListVar.node_type:
+                #     imports.append("#include <list>")
 
-            return imports
+                if data[2] == UserFunction.node_type:
+                    imports.append(f"{self.get_node_return(syntax,data[3])} {data[0]}();")
+
+                elif [FloatVar, IntegerVar, BooleanVar, StringVar].__contains__(data[3]):
+                    imports.append(f'extern {value[data[2]]}{self.get_node_return(syntax, data[3])}{data[0]};')
+
+        imports.sort()
+        return imports
 
     def UpdateTextCode(self):
         current_syntax = self.syntax_selector.currentText()

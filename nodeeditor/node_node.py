@@ -23,8 +23,9 @@ class Node(Serializable):
     """
     node_type = None
     node_return = 'mutable'
-
-    def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [], outputs: list = [],
+    node_structure = 'single value'
+    user_node = False
+    def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [0], outputs: list = [0],
                  isSetter=None, node_icon=''):
         """
 
@@ -51,17 +52,15 @@ class Node(Serializable):
         self.scene = scene
 
         # Additional Code
-        self.is_var = False
-        self.is_event = False
         self.is_setter = isSetter
         self.showCode = True
 
-        self.nodeID = None
+        self.node_id = None
         self.syntax = ""
 
         # just to be sure, init these variables
         self.grNode = QDMGraphicsNode(node=self, node_icon=node_icon)
-        # self.grNode.node_icon = QImage(node_icon)
+
         self.initSettings()
 
         self.name = name
@@ -78,9 +77,11 @@ class Node(Serializable):
     def get_return(self):
         return self.scene.node_editor.get_node_return(self.syntax, self.node_return)
 
+    def get_structure(self):
+        return self.scene.node_editor.get_node_structure(self.syntax, self.node_structure)
+
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
-        # print(currentOrder)
         return currentOrder
 
     def __str__(self):
@@ -395,14 +396,7 @@ class Node(Serializable):
 
 
     def getSocketWdgValue(self, input_socket):
-        if input_socket.socket_type == 1 or input_socket.socket_type == 2:
-            return input_socket.userInputWdg.value()
-
-        elif input_socket.socket_type == 3:
-            return input_socket.userInputWdg.isChecked()
-
-        elif input_socket.socket_type == 4 or input_socket.socket_type == 5 or input_socket.socket_type == 6:
-            return input_socket.userInputWdg.toPlainText()
+        return self.scene.masterRef.get_QWidget_content(input_socket.userInputWdg)
 
     def getConnectedInputNode(self, index: int = 0):
         input_socket = self.inputs[index]
@@ -552,8 +546,6 @@ class Node(Serializable):
             outs.append(other_socket.node)
         return outs
 
-
-
     def serialize(self) -> OrderedDict:
         inputs, outputs = [], []
         for socket in self.inputs: inputs.append(socket.serialize())
@@ -561,24 +553,24 @@ class Node(Serializable):
         return OrderedDict([
             ('id', self.id),
             ('name', self.name),
-            ('node_return', self.node_return),
             ('pos_x', self.grNode.scenePos().x()),
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
             ('outputs', outputs),
-            ('is_var', self.is_var),
-            ('is_event', self.is_event),
+            ('user_node', self.user_node),
             ('is_setter', self.is_setter),
+            ('node_return', self.node_return),
+            ('node_structure', self.node_structure),
         ])
 
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
         try:
             if restore_id: self.id = data['id']
             hashmap[data['id']] = self
-            self.is_var = data['is_var']
-            self.is_event = data['is_event']
+            self.user_node = data['user_node']
             self.is_setter = data['is_setter']
             self.node_return = data['node_return']
+            self.node_structure = data['node_structure']
 
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']

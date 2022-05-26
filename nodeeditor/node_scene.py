@@ -165,6 +165,7 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Deselected Everything")
                 for callback in self._items_deselected_listeners: callback()
         self.node_editor.UpdateTextCode()
+        self.user_nodes_wdg.findListItem(self.getSelectedNodes())
 
     def isModified(self) -> bool:
         """Is this `Scene` dirty aka `has been modified` ?
@@ -181,9 +182,6 @@ class NodeScene(Serializable):
         :return: list of ``QGraphicsItems``
         :rtype: list[QGraphicsItem]
         """
-        if not self.grScene.selectedItems():
-            self.user_nodes_wdg.proprietiesWdg.clear()
-
         return self.grScene.selectedItems()
 
     def doDeselectItems(self, silent: bool=False) -> None:
@@ -392,6 +390,7 @@ class NodeScene(Serializable):
                     ('id', item[1]),
                     ('type', item[2]),
                     ('node_return', item[3]),
+                    ('node_structure', item[4]),
                 ])
 
                 user_nodes.append(user_node)
@@ -432,8 +431,11 @@ class NodeScene(Serializable):
         for user_node in data['user_nodes']:
             node_name = user_node['name']
             if not current_user_nodes.__contains__(node_name):
-                self.user_nodes_wdg.create_user_node(type=user_node['type'], name=user_node['name'],
-                                                     node_id=user_node['id'], node_return=user_node['node_return'])
+                self.user_nodes_wdg.create_user_node(type=user_node['type'],
+                                                     name=user_node['name'],
+                                                     node_id=user_node['id'],
+                                                     node_structure=user_node['node_structure'],
+                                                     node_return=user_node['node_return'])
 
         # Create a list of all Stored User Nodes at the History Stamp
         stored_user_nodes = []
@@ -461,7 +463,7 @@ class NodeScene(Serializable):
 
             if not found:
                 try:
-                    if node_data['is_var'] or node_data['is_event']:
+                    if node_data['user_node']:
                         new_node = self.getNodeClassFromData(node_data)(self, node_data['is_setter'])
                     else:
                         new_node = self.getNodeClassFromData(node_data)(self)

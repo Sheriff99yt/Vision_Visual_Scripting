@@ -161,7 +161,7 @@ class And(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3, 3], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
 
     def getNodeCode(self):
@@ -193,7 +193,7 @@ class GreaterThan(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
 
     def getNodeCode(self):
@@ -220,7 +220,7 @@ class LessThan(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
 
     def getNodeCode(self):
@@ -247,7 +247,7 @@ class Equal(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
 
     def getNodeCode(self):

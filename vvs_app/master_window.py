@@ -650,10 +650,10 @@ class MasterWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def before_window_close(self):
-        self.proprietiesWdg.clear()
+        self.proprietiesWdg.clear_properties()
 
     def on_before_save_file(self):
-        self.proprietiesWdg.clear()
+        self.proprietiesWdg.clear_properties()
 
     def new_graph_tab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode

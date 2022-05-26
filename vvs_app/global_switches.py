@@ -97,7 +97,6 @@ class GlobalSwitches:
             os.path.join(os.path.dirname(__file__), self.master_ref.qss_theme), self.master_ref.stylesheet_filename)
 
     def fill_icons_dict(self):
-        # print(self.switches_Dict["Theme"][0])
         for icon in os.listdir(f"""icons/{self.switches_Dict["Appearance"]["Theme"][0]}"""):
             self.icons_dict.append(icon)
 

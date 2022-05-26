@@ -24,12 +24,9 @@ class NodeList(QTreeWidget):
         self.setColumnCount(2)
         self.setColumnWidth(0, 70)
 
-        self.itemClicked.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►",
-                                                                                                          "▼")) if self.currentItem().text(
-            0).__contains__("►") else self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
-        self.itemClicked.connect(
-            lambda: self.currentItem().setExpanded(True) if self.currentItem().text(0).__contains__(
-                "▼") else self.currentItem().setExpanded(False))
+        self.itemClicked.connect(lambda: self.currentItem().setExpanded(True) if not self.currentItem().isExpanded() else self.currentItem().setExpanded(False))
+        self.itemCollapsed.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
+        self.itemExpanded.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►", "▼")))
         self.setExpandsOnDoubleClick(False)
 
         self.addMyFunctions()

@@ -8,13 +8,13 @@ from vvs_app.nodes.default_functions import *
 from vvs_app.nodes.event_nodes import UserFunction
 from vvs_app.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
+from vvs_app.nodes.variables_nodes import StringVar, BooleanVar, IntegerVar, FloatVar
 
 
 class UserNodesList(QTabWidget):
 
     def __init__(self, parent=None, scene: NodeScene = None, propertiesWdg: PropertiesList = None):
         super().__init__(parent)
-        self.all_return_types = ['mutable', 'float', 'integer', 'boolean', 'string', 'list', 'dictionary', 'tuple']
         self.user_nodes_data = []
         self.USER_NODES = {}
 
@@ -79,8 +79,8 @@ class UserNodesList(QTabWidget):
 
         # self.VarList.startDrag.connect()
 
-        self.VarList.itemClicked.connect(lambda: self.list_selection_changed(var=True))
-        self.EventList.itemClicked.connect(lambda: self.list_selection_changed(var=False))
+        self.VarList.itemClicked.connect(lambda: self.list_selection_changed(is_var=True))
+        self.EventList.itemClicked.connect(lambda: self.list_selection_changed(is_var=False))
 
         # self.VarList.itemSelectionChanged.connect(lambda : self.list_selection_changed(var=True))
         # self.EventList.itemSelectionChanged.connect(lambda : self.list_selection_changed(var=False))
@@ -91,10 +91,7 @@ class UserNodesList(QTabWidget):
         id = 0
         while id in self.USER_NODES:
             id = id+1
-            # raise InvalidNodeRegistration(
-            #     "Duplicate User Variable registration of '%s'. There is already %s" % (var_ID, self.USERVARS[var_ID]))
         else:
-            # print(id)
             self.USER_NODES[id] = class_reference
             return id
 
@@ -136,15 +133,17 @@ class UserNodesList(QTabWidget):
             name = self.eventCompoBox.currentText()
             type = self.eventCompoBox.itemData(self.eventCompoBox.currentIndex())
 
-        self.create_user_node(self.autoNodeRename(name), node_id=None, type=type, user=True, node_return='mutable')
+        self.create_user_node(self.autoNodeRename(name), node_id=None, type=type, user=True, node_structure='single value', node_return='mutable')
 
-    def create_user_node(self, name, node_id, type, node_return, user=False):
+    def create_user_node(self, name, node_id, type, node_return, node_structure, user=False):
 
         # Get new Variable type and construct new Variable object
         node = get_node_by_type(type)
         new_node = self.MakeCopyOfClass(node)
+        new_node.user_node = True
         new_node.node_return = node_return
-        node_data = [name, node_id, type, node_return]
+        new_node.node_structure = node_structure
+        node_data = [name, node_id, type, node_return, node_structure]
 
         # Add new copy of Var class Info to Dict of USER_VARS
         new_id = self.set_user_node_Id_now(new_node)
@@ -183,49 +182,84 @@ class UserNodesList(QTabWidget):
 
         item.setData(91, name)
 
-    def list_selection_changed(self, var, *args, **kwargs):
+    def list_selection_changed(self, is_var, *args, **kwargs):
         # Name line edite setup
-        if var:
-            list_ref = self.VarList
+        if is_var:
             item = self.VarList.currentItem()
         else:
-            list_ref = self.EventList
             item = self.EventList.currentItem()
 
-        self.proprietiesWdg.clear()
+        self.proprietiesWdg.clear_properties()
+        self.create_wdg_for_selection(item, is_var)
+
+    def create_wdg_for_selection(self, item, is_var):
+        # Create name widget
         self.node_name_input = QLineEdit()
         self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
         self.node_name_input.setText(f"{item.data(91)}")
-        self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
+        self.node_name_input.returnPressed.connect(lambda: self.update_node_name(is_var))
+        self.proprietiesWdg.create_properties_widget("Node Name", self.node_name_input)
 
-        self.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
+        # Create user_function return type widget
+        if item.data(80) == UserFunction.node_type:
+            self.return_type = QComboBox()
+            return_types = list(self.scene.node_editor.return_types.keys())
+            return_types.remove('Languages')
+            self.return_type.addItems(return_types)
 
+            self.return_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_return)
+            self.return_type.currentIndexChanged.connect(lambda: self.update_node_return(item.data(91), item.data(90)))
+            self.proprietiesWdg.create_properties_widget("Return Type", self.return_type)
+
+        elif [FloatVar.node_type, IntegerVar.node_type, BooleanVar.node_type, StringVar.node_type].__contains__(item.data(80)):
+            self.structure_type = QComboBox()
+            structure_type = list(self.scene.node_editor.structure_types.keys())
+            structure_type.remove('Languages')
+            self.structure_type.addItems(structure_type)
+
+            self.structure_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_structure)
+            self.structure_type.currentIndexChanged.connect(lambda: self.update_node_structure_type(item.data(91), item.data(90)))
+            self.proprietiesWdg.create_properties_widget("Structure Type", self.structure_type)
+
+        # Create user_node Delete button
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
         self.delete_btn.setShortcut(
             QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
-        self.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
+        self.proprietiesWdg.create_properties_widget("Delete", self.delete_btn)
 
-        if item.data(80) == UserFunction.node_type:
-            self.return_type = QComboBox()
-            self.return_type.addItems(self.all_return_types)
-
-            self.return_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_return)
-            self.return_type.currentIndexChanged.connect(lambda: self.update_node_return(item.data(91), item.data(90)))
-
-            self.proprietiesWdg.detailsUpdate("Return Type", self.return_type)
-
-    def update_node_return(self, node_name, node_id):
+        # if not item.data(90) == self.scene.getSelectedItems()[0].node.node_id:
+        #     self.proprietiesWdg.create_order_wdg()
+    def update_node_structure_type(self, node_name, node_id):
+        structure_type = self.structure_type.currentText()
         for item in self.user_nodes_data:
             if item[0] == node_name:
-                item[3] = self.return_type.currentText()
+                item[4] = structure_type
 
         for node in self.scene.nodes:
             if node.name == node_name:
-                node.node_return = self.return_type.currentText()
+                node.node_structure = structure_type
+
+                for socket in node.inputs + node.outputs:
+                    socket.grSocket.update_socket_shape(structure_type)
 
         node_ref = self.get_user_node_by_id(node_id)
-        node_ref.node_return = self.return_type.currentText()
+        node_ref.node_structure = structure_type
+
+        self.scene.node_editor.UpdateTextCode()
+
+    def update_node_return(self, node_name, node_id):
+        return_type = self.return_type.currentText()
+        for item in self.user_nodes_data:
+            if item[0] == node_name:
+                item[3] = return_type
+
+        for node in self.scene.nodes:
+            if node.name == node_name:
+                node.node_return = return_type
+
+        node_ref = self.get_user_node_by_id(node_id)
+        node_ref.node_return = return_type
 
         self.scene.node_editor.UpdateTextCode()
 
@@ -284,8 +318,8 @@ class UserNodesList(QTabWidget):
         except Exception as e:
             dumpException(e)
 
-    def update_node_name(self, var):
-        if var:
+    def update_node_name(self, is_var):
+        if is_var:
             item = self.VarList.currentItem()
         else:
             item = self.EventList.currentItem()
@@ -293,10 +327,11 @@ class UserNodesList(QTabWidget):
         oldName = item.data(91)
         tryName = self.node_name_input.text()
         newName = self.userRename(oldName=oldName, tryName=tryName)
-        if newName == None:
+        if newName is None:
+            print("Wee")
             return
         else:
-          
+
             # get ref to user variable copy
             node_ref = self.get_user_node_by_id(item.data(90))
 
@@ -318,25 +353,28 @@ class UserNodesList(QTabWidget):
     def findListItem(self, selectedNodes: 'Nodes'):
         if selectedNodes != []:
             for item in range(self.VarList.count()):
-                Litem = self.VarList.item(item)
-                if Litem.text() == selectedNodes[0].name:
-                    self.VarList.setCurrentItem(Litem)
-                    self.list_selection_changed(var=True)
+                list_item = self.VarList.item(item)
+                if list_item.text() == selectedNodes[0].name:
+                    self.VarList.setCurrentItem(list_item)
+                    self.list_selection_changed(is_var=True)
                     self.setCurrentIndex(0)
-                    return Litem
+                    return list_item
 
             for item in range(self.EventList.count()):
-                Litem = self.EventList.item(item)
-                if Litem.text() == selectedNodes[0].name:
-                    self.EventList.setCurrentItem(Litem)
-                    self.list_selection_changed(var=False)
+                list_item = self.EventList.item(item)
+                if list_item.text() == selectedNodes[0].name:
+                    self.EventList.setCurrentItem(list_item)
+                    self.list_selection_changed(is_var=False)
                     self.setCurrentIndex(1)
-                    return Litem
+                    return list_item
+
+            self.proprietiesWdg.clear_properties()
+        else:
+            self.proprietiesWdg.clear_properties()
 
 ###################################
     # Data
 ###################################
-
 
     def userRename(self, oldName, tryName: str):
         names = []
@@ -396,7 +434,7 @@ class UserNodesList(QTabWidget):
 
             list_ref.takeItem(list_ref.currentRow())
             list_ref.clearSelection()
-            self.proprietiesWdg.clear()
+            self.proprietiesWdg.clear_properties()
             self.scene.node_editor.UpdateTextCode()
 
             if user:
