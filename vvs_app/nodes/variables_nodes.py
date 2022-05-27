@@ -34,6 +34,7 @@ class FloatVar(MasterNode):
 {self.name}={setInput}
 {brotherCode}"""
                     raw_code = python_code
+
                 elif self.node_structure == 'array':
                     python_code = f"""
 {self.name}={self.get_structure()}
@@ -82,8 +83,8 @@ class IntegerVar(MasterNode):
 int {self.name}= {setInput};
 {brotherCode}"""
                 raw_code = CPP_code
-
             return self.grNode.highlight_code(raw_code)
+
         else:
             self.showCode = False
             getCode = self.outputs[0].socket_code = self.name

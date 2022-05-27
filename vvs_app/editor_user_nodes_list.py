@@ -228,8 +228,6 @@ class UserNodesList(QTabWidget):
             QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
         self.proprietiesWdg.create_properties_widget("Delete", self.delete_btn)
 
-        # if not item.data(90) == self.scene.getSelectedItems()[0].node.node_id:
-        #     self.proprietiesWdg.create_order_wdg()
     def update_node_structure_type(self, node_name, node_id):
         structure_type = self.structure_type.currentText()
         for item in self.user_nodes_data:
@@ -358,6 +356,7 @@ class UserNodesList(QTabWidget):
                     self.VarList.setCurrentItem(list_item)
                     self.list_selection_changed(is_var=True)
                     self.setCurrentIndex(0)
+                    self.proprietiesWdg.create_order_wdg()
                     return list_item
 
             for item in range(self.EventList.count()):
@@ -366,6 +365,8 @@ class UserNodesList(QTabWidget):
                     self.EventList.setCurrentItem(list_item)
                     self.list_selection_changed(is_var=False)
                     self.setCurrentIndex(1)
+                    self.proprietiesWdg.create_order_wdg()
+
                     return list_item
 
             self.proprietiesWdg.clear_properties()
