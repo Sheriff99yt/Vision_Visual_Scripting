@@ -41,44 +41,43 @@ class NodeEditorWidget(QWidget):
                               'Rust': '.rs'}
 
         self.return_types = {
-                                    "Languages": ["Python", "C++"],
-                                    "mutable": ["", "void"],
-                                    "float": [" -> float", "float"],
-                                    "integer": [" -> integer", "int"],
-                                    "boolean": [" -> boolean", "boolean"],
-                                    "string": [" -> string", "string"],
-                                    "list": [" -> list", "list"],
-                                    "dictionary": [" -> dictionary", "dictionary"],
-                                    "tuple": [" -> tuple", "tuple"]
-                                      }
-
-        self.structure_types = {
-                                    "Languages": ["Python", "C++"],
-                                    "single value": ["", ""],
-                                    "array": ["DynamicArray()", "list"],
-                                      }
-
+                            "Languages": ["Python", "C++"],
+                              "mutable": ["", "void", "", ""],
+                                "float": [" -> float", "float", "f", ""],
+                              "integer": [" -> integer", "int", "q", ""],
+                              "boolean": [" -> boolean", "boolean", "B", ""],
+                               "string": [" -> string", "string", "u", ""],
+                                 "list": [" -> list", "list", "", ""],
+                           "dictionary": [" -> dictionary", "dictionary", "", ""],
+                                "tuple": [" -> tuple", "tuple", "", ""]
+                            }
+        # self.structure_types = {
+        #                             "Languages": ["Python", "C++"],
+        #                             "single value": ["", ""],
+        #                             "array": [f"array({},[])", "list"],
+        #                               }
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
 
         self.create_widget_window()
-
-    def get_node_return(self, syntax, node_return):
+    # def structure_types(self, setInput="", get_return="mutable"):
+    #     return {
+    #             "Languages": ["Python", "C++"],
+    #             "single value": ["", ""],
+    #             "array": [f"""array("{self.return_types[get_return][2]}",[{setInput}])""", "list"],
+    #             }
+    def get_node_return(self, syntax, node_return, getting_array_type=0):
         index = self.return_types["Languages"].index(syntax)
-        return self.return_types[node_return][index]
-
-    def get_node_structure(self, syntax, node_structure):
-        index = self.structure_types["Languages"].index(syntax)
-        return self.structure_types[node_structure][index]
-
+        return self.return_types[node_return][index + getting_array_type]
+    # def get_node_structure(self, syntax, node_structure, setInput, get_return):
+    #     index = self.structure_types()["Languages"].index(syntax)
+    #     return self.structure_types(setInput, get_return)[node_structure][index]
     def create_widget_window(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
-
-
         # create graphics view
         self.graph_graphics_view = GraphGraphics(self.scene.grScene, self)
 

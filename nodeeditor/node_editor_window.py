@@ -56,24 +56,6 @@ class NodeEditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")
         self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        # self.nodeeditor.GraphView.scenePosChanged.connect(self.onScenePosChanged)
-
-    def createActions(self):
-        """Create basic `File` and `Edit` actions"""
-
-        self.actNew = QAction('&New Graph', self, statusTip="Create new graph", triggered=self.on_new_graph_tab)
-        self.actOpen = QAction('&Open', self,statusTip="Open file", triggered=self.on_file_open)
-        self.actSetProjectDir = QAction('&Set Project Folder', self, statusTip="Set a Folder For Your Project", triggered=self.files_widget.set_project_folder)
-        self.actSave = QAction('&Save', self, statusTip="Save file", triggered=self.onFileSave)
-        self.actSaveAs = QAction('Save &As...', self, statusTip="Save file as...", triggered=self.on_file_save_as)
-        self.actExit = QAction('E&xit', self, statusTip="Exit application", triggered=self.close)
-        self.actUndo = QAction('&Undo', self, statusTip="Undo last operation", triggered=self.onEditUndo)
-        self.actRedo = QAction('&Redo', statusTip="Redo last operation", triggered=self.onEditRedo)
-        self.actSelectAll = QAction('Select&All', statusTip="Select's All Nodes", triggered=self.selectAllNodes)
-        self.actCut = QAction('Cu&t', statusTip="Cut to clipboard", triggered=self.onEditCut)
-        self.actCopy = QAction('&Copy', statusTip="Copy to clipboard", triggered=self.onEditCopy)
-        self.actPaste = QAction('&Paste', statusTip="Paste from clipboard", triggered=self.onEditPaste)
-        self.actDelete = QAction('&Delete', statusTip="Delete selected items", triggered=self.onEditDelete)
 
     def create_menus(self):
         """Create Menus for `File` and `Edit`"""
@@ -83,27 +65,26 @@ class NodeEditorWindow(QMainWindow):
     def createFileMenu(self):
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('&File')
-        self.fileMenu.addAction(self.actNew)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.actOpen)
-        self.fileMenu.addAction(self.actSetProjectDir)
-        self.fileMenu.addAction(self.actSave)
-        self.fileMenu.addAction(self.actSaveAs)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.actExit)
+        for i in self.actions_creation_dict["File Menu"]:
+            if i.__contains__("addSeparator"):
+                self.fileMenu.addSeparator()
+            else:
+                mylist = self.actions_creation_dict["File Menu"][i]
+                act = QAction(mylist[3], parent=self, statusTip=mylist[1], triggered=mylist[2])
+                self.fileMenu.addAction(act)
+                self.actions_creation_dict["File Menu"][i][0] = act
 
     def createEditMenu(self):
         menubar = self.menuBar()
         self.editMenu = menubar.addMenu('&Edit')
-        self.editMenu.addAction(self.actUndo)
-        self.editMenu.addAction(self.actRedo)
-        self.editMenu.addSeparator()
-        self.editMenu.addAction(self.actSelectAll)
-        self.editMenu.addAction(self.actCut)
-        self.editMenu.addAction(self.actCopy)
-        self.editMenu.addAction(self.actPaste)
-        self.editMenu.addSeparator()
-        self.editMenu.addAction(self.actDelete)
+        for i in self.actions_creation_dict["Edit Menu"]:
+            if i.__contains__("addSeparator"):
+                self.editMenu.addSeparator()
+            else:
+                mylist = self.actions_creation_dict["Edit Menu"][i]
+                act = QAction(mylist[3], parent=self, statusTip=mylist[1], triggered=mylist[2])
+                self.editMenu.addAction(act)
+                self.actions_creation_dict["Edit Menu"][i][0] = act
 
     def selectAllNodes(self):
         return self.currentNodeEditor().select_all_nodes()

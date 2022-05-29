@@ -52,7 +52,7 @@ def {self.name}(){self.get_return()}:
             elif self.syntax == "C++":
 
                 cpp_code = f"""
-{self.name}()
+{self.name}();
 {brotherCode}"""
                 raw_code = cpp_code
             return self.grNode.highlight_code(raw_code)

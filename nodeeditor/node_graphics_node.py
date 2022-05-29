@@ -227,41 +227,21 @@ class QDMGraphicsNode(QGraphicsItem):
             self.height
         ).normalized()
 
-    def init_sockets_label(self, socket):
-        socket_label = QGraphicsTextItem(self)
-        socket_label.hide()
-        socket_label.setDefaultTextColor(self._title_color)
-        socket_label.setFont(self._title_font)
-        socket.socket_label = socket_label
-        self.update_socket_label(socket)
-
     def set_input_label_text(self, index, text):
-        socket = self.node.inputs[index]
-        if socket.socket_label:
+        if self.node.inputs[index]:
+            socket = self.node.inputs[index]
             socket.socket_label.setPlainText(text)
-            self.update_socket_label(socket)
+            socket.update_label()
         else:
             print("Trying to access an input socket_label that doesn't exist")
 
     def set_output_label_text(self, index, text):
-        socket = self.node.outputs[index]
-        if socket.socket_label:
+        if self.node.outputs[index]:
+            socket = self.node.outputs[index]
             socket.socket_label.setPlainText(text)
-            self.update_socket_label(socket)
+            socket.update_label()
         else:
             print("Trying to access an output socket_label that doesn't exist")
-
-    def update_socket_label(self, socket):
-        socket_label = socket.socket_label
-
-        if socket:
-            socket_label.adjustSize()
-            tw = socket_label.textWidth()
-
-            if self.node.outputs.__contains__(socket):
-                socket_label.setPos(socket.grSocket.pos().x() + socket.grSocket.radius, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
-            else:
-                socket_label.setPos(socket.grSocket.pos().x() - socket.grSocket.radius - tw, socket.grSocket.pos().y() - socket.grSocket.radius * 2)
 
     def init_name(self):
         """Set up the title Graphics representation: font, color, position, etc."""

@@ -22,7 +22,6 @@ class GlobalSwitches:
                                               "Font Size": 16,
                                               "Grid Size": 30
                                           },
-
                                       "System":
                                           {
                                               "AutoSave Steps": 30,
@@ -30,7 +29,6 @@ class GlobalSwitches:
                                               "Always Save Before Closing": True,
                                               "Save New Project Folder On Close": False
                                           },
-
                                       "Key Mapping":
                                           {
                                               "New Graph": "Ctrl+N",
@@ -42,13 +40,22 @@ class GlobalSwitches:
 
                                               "Undo": "Ctrl+Z",
                                               "Redo": "Ctrl+Shift+Z",
+                                              "Select All": "Ctrl+A",
                                               "Cut": "Ctrl+X",
                                               "Copy": "Ctrl+C",
                                               "Paste": "Ctrl+V",
                                               "Delete": "Del",
 
-                                              "Settings Window": "Ctrl+Shift+S",
-                                              "Select All": "Ctrl+A"
+                                              "Close": "Q",
+                                              "Close All": "Shift+Q",
+                                              "Tile": "T",
+                                              "Next": "Shift+Tab",
+                                              "Previous": "Ctrl+Shift+Tab",
+
+                                              "Settings Window": "S",
+                                              "Node Editor Window": "N",
+                                              "Node Designer Window": "D",
+                                              "Library Window": "L"
                                           }
                                       }
 

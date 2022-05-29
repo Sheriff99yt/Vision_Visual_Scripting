@@ -84,10 +84,9 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.radius = 8
         self.outline_width = 1
-        self.shape = 0
 
         # self.paint = self.myPaint
-        self.update_socket_shape(self.socket.node.node_structure)
+        self.update_socket_structure()
         self.initAssets()
 
         # shadow = QGraphicsDropShadowEffect()
@@ -153,7 +152,8 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._pen.setWidthF(self.outline_width)
         self._brush = QBrush(self.getSocketColor(self.socket_type))
 
-    def update_socket_shape(self, new_structure=False):
+    def update_socket_structure(self):
+        new_structure = self.socket.node.node_structure
         if new_structure == 'single value':
             self.shape = 0
         elif new_structure == 'array':
@@ -254,11 +254,13 @@ class Socket(Serializable):
         """
         super().__init__()
 
+        self.userInputWdg = None
         self.node = node
         self.socket_code = self.node.name
         self.position = position
         self.index = index
         self.socket_type = socket_type
+        self.original_socket_type = socket_type
         self.count_on_this_node_side = count_on_this_node_side
         self.is_multi_edges = multi_edges
         self.is_input = is_input
@@ -272,8 +274,27 @@ class Socket(Serializable):
 
         self.socketEdges = []
 
-        self.userInputWdg = self.SocketInputs()
-        self.socket_label = None
+        self.init_socket_input()
+
+        self.init_socket_label()
+
+    def __str__(self):
+        return "<Socket #%d %s %s..%s>" % (
+            self.index, "ME" if self.is_multi_edges else "SE", hex(id(self))[2:5], hex(id(self))[-3:])
+
+    def init_socket_label(self):
+        self.socket_label = QGraphicsTextItem(self.node.grNode)
+        self.socket_label.setFont(QFont('Calibri', 16))
+        self.socket_label.hide()
+
+    def update_label(self):
+        self.socket_label.adjustSize()
+        tw = self.socket_label.textWidth()
+
+        if self.node.outputs.__contains__(self):
+            self.socket_label.setPos(self.grSocket.pos().x() + self.grSocket.radius, self.grSocket.pos().y() - self.grSocket.radius * 2)
+        else:
+            self.socket_label.setPos(self.grSocket.pos().x() - self.grSocket.radius - tw, self.grSocket.pos().y() - self.grSocket.radius * 2)
 
     def getSocketCode(self):
         if self.socket_type == 0:
@@ -281,44 +302,56 @@ class Socket(Serializable):
         else:
             return self.socket_code
 
-    def SocketInputs(self):
+    def init_socket_input(self):
+
+        if self.socket_type == 0:
+            return
         if self.is_input:
+            structure_type = self.node.node_structure
+
+            if self.userInputWdg:
+                self.userInputWdg.deleteLater()
+
             userInputWdg = None
             scene_pos = self.grSocket.pos()
-            if self.socket_type == 1:
-                userInputWdg = QDoubleSpinBox()
-                userInputWdg.valueChanged.connect(self.node.scene.node_editor.UpdateTextCode)
-                userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
-                userInputWdg.setDecimals(6)
-                userInputWdg.setMinimum(float("-inf"))
-                userInputWdg.setMaximum(float("inf"))
-                userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
-                userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
-                userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
+            print('Socket >>', self.node.node_structure)
 
-            elif self.socket_type == 2:
-                userInputWdg = QSpinBox()
-                userInputWdg.valueChanged.connect(self.node.scene.node_editor.UpdateTextCode)
-                userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
-                userInputWdg.setRange(-1000000000, 1000000000)
-                userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
-                userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
-                userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
-
-            elif self.socket_type == 3:
-                userInputWdg = QCheckBox()
-                userInputWdg.stateChanged.connect(self.node.scene.node_editor.UpdateTextCode)
-                userInputWdg.setFixedSize(self.grSocket.radius * 2, self.grSocket.radius * 2)
-                # userInputWdg.setIconSize(QSize(self.grSocket.radius, self.grSocket.radius))
-
-            elif [4, 5, 6].__contains__(self.socket_type):
+            if structure_type == 'array' or [4, 5, 6].__contains__(self.socket_type):
                 userInputWdg = QTextEdit()
                 userInputWdg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
                 userInputWdg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
                 userInputWdg.textChanged.connect(self.node.scene.node_editor.UpdateTextCode)
                 userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
                 userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
-                userInputWdg.setFont(QFont("Roboto", self.grSocket.radius))
+                userInputWdg.setFont(QFont("Calibri", self.grSocket.radius))
+
+            elif structure_type == 'single value':
+                if self.socket_type == 1:
+                    userInputWdg = QDoubleSpinBox()
+                    userInputWdg.valueChanged.connect(self.node.scene.node_editor.UpdateTextCode)
+                    userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                    userInputWdg.setDecimals(6)
+                    userInputWdg.setMinimum(float("-inf"))
+                    userInputWdg.setMaximum(float("inf"))
+                    userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
+                    userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
+                    userInputWdg.setFont(QFont("Calibri", self.grSocket.radius))
+
+                elif self.socket_type == 2:
+                    userInputWdg = QSpinBox()
+                    userInputWdg.valueChanged.connect(self.node.scene.node_editor.UpdateTextCode)
+                    userInputWdg.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                    userInputWdg.setRange(-1000000000, 1000000000)
+                    userInputWdg.setFixedWidth(self.node.grNode.width - self.grSocket.radius * 6)
+                    userInputWdg.setMaximumHeight(self.grSocket.radius * 2)
+                    userInputWdg.setFont(QFont("Calibri", self.grSocket.radius))
+
+                elif self.socket_type == 3:
+                    userInputWdg = QCheckBox()
+                    userInputWdg.stateChanged.connect(self.node.scene.node_editor.UpdateTextCode)
+                    userInputWdg.setFixedSize(self.grSocket.radius * 2, self.grSocket.radius * 2)
+                    # userInputWdg.setIconSize(QSize(self.grSocket.radius, self.grSocket.radius))
+
 
             if userInputWdg:
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
@@ -327,14 +360,9 @@ class Socket(Serializable):
 
                 # if selected_theme == night:
                 userInputWdg.setStyleSheet("background-color: #555555; border-width: 1px; border-style: solid; border-color: transparent; color: white")
+                self.userInputWdg = userInputWdg
 
             return userInputWdg
-
-
-    def __str__(self):
-        return "<Socket #%d %s %s..%s>" % (
-            self.index, "ME" if self.is_multi_edges else "SE", hex(id(self))[2:5], hex(id(self))[-3:]
-        )
 
     def delete(self):
         """Delete this `Socket` from graphics scene for sure"""
@@ -360,10 +388,15 @@ class Socket(Serializable):
 
             return False
 
+    def restoreSocketType(self):
+        if not self.socket_type == self.original_socket_type:
+            self.socket_type = self.original_socket_type
+            self.grSocket.changeSocketType()
+
     def setSocketPosition(self):
         """Helper function to set `Graphics Socket` position. Exact socket position is calculated
         inside :class:`~nodeeditor.node_node.Node`."""
-        self.grSocket.setPos(*self.node.getSocketPosition(self.index, self.position, self.count_on_this_node_side,self.grSocket.radius))
+        self.grSocket.setPos(*self.node.getSocketPosition(self.index, self.position, self.count_on_this_node_side, self.grSocket.radius))
 
     def getSocketPosition(self):
         """
@@ -474,7 +507,8 @@ class Socket(Serializable):
         self.is_multi_edges = self.determineMultiEdges(data)
         self.changeSocketType(data['socket_type'])
         hashmap[data['id']] = self
-        self.grSocket.update_socket_shape(self.node.node_structure)
+        self.grSocket.update_socket_structure()
+        self.init_socket_input()
 
         if self.is_input and self.userInputWdg:
             self.node.scene.masterRef.set_QWidget_content(self.userInputWdg, data['socket_value'])

@@ -23,7 +23,6 @@ class UserNodesList(QTabWidget):
         self.InitUI()
 
     def InitUI(self):
-
         # Add QTabWidget and add Both Variables Tab and Events Tab
         tab1 = QWidget()
         tab2 = QWidget()
@@ -104,7 +103,6 @@ class UserNodesList(QTabWidget):
     def MakeCopyOfClass(self, node):
         class NewNode(node):
             pass
-
         return NewNode
 
     def InitList(self):
@@ -213,9 +211,9 @@ class UserNodesList(QTabWidget):
 
         elif [FloatVar.node_type, IntegerVar.node_type, BooleanVar.node_type, StringVar.node_type].__contains__(item.data(80)):
             self.structure_type = QComboBox()
-            structure_type = list(self.scene.node_editor.structure_types.keys())
-            structure_type.remove('Languages')
-            self.structure_type.addItems(structure_type)
+            # structure_type = list(self.scene.node_editor.structure_types().keys())
+            # structure_type.remove('Languages')
+            self.structure_type.addItems(["single value", "array"])
 
             self.structure_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_structure)
             self.structure_type.currentIndexChanged.connect(lambda: self.update_node_structure_type(item.data(91), item.data(90)))
@@ -230,6 +228,9 @@ class UserNodesList(QTabWidget):
 
     def update_node_structure_type(self, node_name, node_id):
         structure_type = self.structure_type.currentText()
+        node_ref = self.get_user_node_by_id(node_id)
+        node_ref.node_structure = structure_type
+
         for item in self.user_nodes_data:
             if item[0] == node_name:
                 item[4] = structure_type
@@ -239,10 +240,8 @@ class UserNodesList(QTabWidget):
                 node.node_structure = structure_type
 
                 for socket in node.inputs + node.outputs:
-                    socket.grSocket.update_socket_shape(structure_type)
-
-        node_ref = self.get_user_node_by_id(node_id)
-        node_ref.node_structure = structure_type
+                    socket.grSocket.update_socket_structure()
+                    socket.init_socket_input()
 
         self.scene.node_editor.UpdateTextCode()
 
@@ -326,7 +325,6 @@ class UserNodesList(QTabWidget):
         tryName = self.node_name_input.text()
         newName = self.userRename(oldName=oldName, tryName=tryName)
         if newName is None:
-            print("Wee")
             return
         else:
 

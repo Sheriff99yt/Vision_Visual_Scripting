@@ -274,18 +274,17 @@ class MasterWindow(NodeEditorWindow):
         self.settingsBtn.triggered.connect(self.onSettingsOpen)
         self.settingsBtn.setShortcut(QKeySequence(self.global_switches.switches_Dict["Key Mapping"]["Settings Window"]))
         self.tools_bar.addAction(self.settingsBtn)
-        self.actions_list["Settings Window"] = self.settingsBtn
+        self.actions_creation_dict["UI"]["Settings Window"] = [self.settingsBtn]
 
         # Add Separator
         self.tools_bar.addSeparator()
 
-        # Add and connect self.node_editor_btn
         self.node_editor_btn = QAction(QIcon(self.global_switches.get_icon("edit.png")), "&Node Editor", self)
         self.node_editor_btn.setIconText("edit.png")
         self.node_editor_btn.setCheckable(True)
         self.node_editor_btn.triggered.connect(self.activate_editor_mode)
         self.tools_bar.addAction(self.node_editor_btn)
-        self.actions_list["Node Editor Window"] = self.node_editor_btn
+        self.actions_creation_dict["UI"]["Node Editor Window"] = [self.node_editor_btn]
 
         # Add and connect self.node_designer_btn
         self.node_designer_btn = QAction(QIcon(self.global_switches.get_icon("node design.png")), "&Node Designer", self)
@@ -294,7 +293,7 @@ class MasterWindow(NodeEditorWindow):
         self.node_designer_btn.setCheckable(True)
         self.node_designer_btn.triggered.connect(self.activate_designer_mode)
         self.tools_bar.addAction(self.node_designer_btn)
-        self.actions_list["Node Designer Window"] = self.node_designer_btn
+        self.actions_creation_dict["UI"]["Node Designer Window"] = [self.node_designer_btn]
 
         # Add and connect self.library_btn
         self.library_btn = QAction(QIcon(self.global_switches.get_icon("library.png")), "&Library", self)
@@ -303,7 +302,7 @@ class MasterWindow(NodeEditorWindow):
         self.library_btn.triggered.connect(self.activate_library_mode)
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
-        self.actions_list["Library Window"] = self.library_btn
+        self.actions_creation_dict["UI"]["Library Window"] = [self.library_btn]
 
         # Add Separator
         self.tools_bar.addSeparator()
@@ -339,42 +338,64 @@ class MasterWindow(NodeEditorWindow):
             sys.exit(0)
 
     def createActions(self):
-        super().createActions()
-
-        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.graphs_parent_wdg.closeActiveSubWindow)
-        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.graphs_parent_wdg.closeAllSubWindows)
-        self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.graphs_parent_wdg.tileSubWindows)
-        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows", triggered=self.graphs_parent_wdg.cascadeSubWindows)
-        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild, statusTip="Move the focus to the next window", triggered=self.graphs_parent_wdg.activateNextSubWindow)
-        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild, statusTip="Move the focus to the previous window", triggered=self.graphs_parent_wdg.activatePreviousSubWindow)
-
+        self.actions_creation_dict = \
+            {
+                "File Menu":
+                    {
+                        "New Graph": [None, "Create new graph", self.on_new_graph_tab, '&New Graph'],
+                        "addSeparator 1": [],
+                        "Open": [None, "Open file", self.on_file_open, '&Open'],
+                        "Set Project Location": [None, "Set a Folder For Your Project", self.files_widget.set_project_folder, '&Set Project Location'],
+                        "Save": [None, "Save file", self.onFileSave, '&Save'],
+                        "Save As": [None, "Save file as...", self.on_file_save_as, 'Save &As...'],
+                        "addSeparator 2": [],
+                        "Exit": [None, "Exit application", self.close, 'E&xit']
+                    }
+                ,
+                "Edit Menu":
+                    {
+                        "Undo": [None, "Undo last operation", self.onEditUndo, '&Undo'],
+                        "Redo": [None, "Redo last operation", self.onEditRedo, "&Redo"],
+                        "addSeparator 1": [],
+                        "Select All": [None, "Select's All Nodes", self.selectAllNodes, 'Select&All'],
+                        "Cut": [None, "Cut to clipboard", self.onEditCut, 'Cu&t'],
+                        "Copy": [None, "Copy to clipboard", self.onEditCopy, '&Copy'],
+                        "Paste": [None, "Paste from clipboard", self.onEditPaste, '&Paste'],
+                        "addSeparator 2": [],
+                        "Delete": [None, "Delete selected items", self.onEditDelete, "&Delete"]
+                    }
+                ,
+                "Node Editor menu":
+                    {
+                        "Close": [None, "Close the active window", self.graphs_parent_wdg.closeActiveSubWindow, "Cl&ose"],
+                        "Close All": [None, "Close all the windows", self.graphs_parent_wdg.closeAllSubWindows, "Close &All"],
+                        "addSeparator 2": [],
+                        "Tile": [None, "Tile the windows", self.graphs_parent_wdg.tileSubWindows, "&Tile"],
+                        "addSeparator 3": [],
+                        "Next": [None, "Move the focus to the next window", self.graphs_parent_wdg.activateNextSubWindow, "Ne&xt"],
+                        "Previous": [None, "Move the focus to the previous window", self.graphs_parent_wdg.activatePreviousSubWindow, "Pre&vious"]
+                    }
+                ,
+                "Help":
+                    {
+                        "About": [None, "Show the application's About box", self.about, "&About"],
+                        "Doc": [None, "Program Documentation", self.open_doc, "&Documentation"]
+                    }
+                ,
+                "UI":
+                    {}
+            }
         self.actSeparator = QAction(self)
         self.actSeparator.setSeparator(True)
 
-        self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
-        self.actDoc = QAction("&Documentation", self, triggered=self.open_doc)
-
-        self.actions_list = {"New Graph": self.actNew,
-                             "Open": self.actOpen,
-                             "Set Project Location": self.actSetProjectDir,
-                             "Save": self.actSave,
-                             "Save As": self.actSaveAs,
-                             "Exit": self.actExit,
-
-                             "Undo": self.actUndo,
-                             "Redo": self.actRedo,
-                             "Cut": self.actCut,
-                             "Copy": self.actCopy,
-                             "Paste": self.actPaste,
-                             "Delete": self.actDelete,
-                             "Select All": self.actSelectAll,
-                             }
-
     def set_actions_shortcuts(self):
         shortcuts = self.global_switches.switches_Dict["Key Mapping"]
-        for act in self.actions_list:
-            if shortcuts.__contains__(act):
-                self.actions_list[act].setShortcut(shortcuts[act])
+        for menu in self.actions_creation_dict:
+            for act in self.actions_creation_dict[menu]:
+                menu_vals = self.actions_creation_dict[menu]
+                if not act.__contains__("addSeparator"):
+                    if shortcuts.__contains__(act):
+                        menu_vals[act][0].setShortcut(shortcuts[act])
 
     def open_doc(self):
         subprocess.Popen('hh.exe "VVS-Help.chm"')
@@ -445,54 +466,45 @@ class MasterWindow(NodeEditorWindow):
         self.update_window_menu()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
-        self.helpMenu.addAction(self.actDoc)
-        self.helpMenu.addAction(self.actAbout)
+
+        for i in self.actions_creation_dict["Help"]:
+            if i.__contains__("addSeparator"):
+                self.helpMenu.addSeparator()
+            else:
+                mylist = self.actions_creation_dict["Help"][i]
+                act = QAction(mylist[3], parent=self, statusTip=mylist[1], triggered=mylist[2])
+                self.helpMenu.addAction(act)
+                self.actions_creation_dict["Help"][i][0] = act
 
         self.editMenu.aboutToShow.connect(self.update_edit_menu)
 
     def update_menus(self):
-        # print("update Menus")
         active = self.currentNodeEditor()
         hasMdiChild = (active is not None)
 
-        # Update File Menu
-        self.actSave.setEnabled(hasMdiChild)
-        self.actSaveAs.setEnabled(hasMdiChild)
-
-        # Update Node Editor Menu
-        self.actSelectAll.setEnabled(hasMdiChild)
-        self.actClose.setEnabled(hasMdiChild)
-        self.actCloseAll.setEnabled(hasMdiChild)
-        self.actTile.setEnabled(hasMdiChild)
-        self.actCascade.setEnabled(hasMdiChild)
-        self.actNext.setEnabled(hasMdiChild)
-        self.actPrevious.setEnabled(hasMdiChild)
-        self.actSeparator.setVisible(hasMdiChild)
+        Switchs = {"File Menu": ["Save", "Save As"], "Edit Menu": ["Paste", "Select All"], "Node Editor menu": ["Close", "Close All", "Tile", "Next", "Previous"]}
+        for menu in Switchs:
+            for act_name in Switchs[menu]:
+                self.actions_creation_dict[menu][act_name][0].setEnabled(hasMdiChild)
 
         # Update Edit Menu
         self.update_edit_menu()
 
     def update_edit_menu(self):
         try:
-            # print("update Edit Menu")
             active = self.currentNodeEditor()
             hasMdiChild = (active is not None)
 
-            self.actPaste.setEnabled(hasMdiChild)
-
-            self.actCut.setEnabled(hasMdiChild and active.hasSelectedItems())
-            self.actSelectAll.setEnabled(hasMdiChild)
-            self.actCopy.setEnabled(hasMdiChild and active.hasSelectedItems())
-            self.actDelete.setEnabled(hasMdiChild and active.hasSelectedItems())
-
-            self.actUndo.setEnabled(hasMdiChild and active.canUndo())
-            self.actRedo.setEnabled(hasMdiChild and active.canRedo())
+            self.actions_creation_dict["Edit Menu"]["Cut"][0].setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actions_creation_dict["Edit Menu"]["Copy"][0].setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actions_creation_dict["Edit Menu"]["Delete"][0].setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actions_creation_dict["Edit Menu"]["Undo"][0].setEnabled(hasMdiChild and active.canUndo())
+            self.actions_creation_dict["Edit Menu"]["Redo"][0].setEnabled(hasMdiChild and active.canRedo())
 
         except Exception as e:
             dumpException(e)
 
     def update_window_menu(self):
-
         self.toolbar_library = self.library_menu.addAction("Libraries Window")
         self.toolbar_library.setCheckable(True)
         self.toolbar_library.triggered.connect(self.update_libraries_wnd)
@@ -520,16 +532,23 @@ class MasterWindow(NodeEditorWindow):
 
         self.node_editor_menu.addSeparator()
 
-        self.node_editor_menu.addAction(self.actClose)
-        self.node_editor_menu.addAction(self.actCloseAll)
-        self.node_editor_menu.addSeparator()
-        self.node_editor_menu.addAction(self.actTile)
-        # self.windowMenu.addAction(self.actCascade)
-        self.node_editor_menu.addSeparator()
-        self.node_editor_menu.addAction(self.actNext)
-        self.node_editor_menu.addAction(self.actPrevious)
-        self.node_editor_menu.addAction(self.actSeparator)
-
+        for i in self.actions_creation_dict["Node Editor menu"]:
+            if i.__contains__("addSeparator"):
+                self.node_editor_menu.addSeparator()
+            else:
+                mylist = self.actions_creation_dict["Node Editor menu"][i]
+                act = QAction(mylist[3], parent=self, statusTip=mylist[1], triggered=mylist[2])
+                self.node_editor_menu.addAction(act)
+                self.actions_creation_dict["Node Editor menu"][i][0] = act
+        # self.node_editor_menu.addAction(self.actClose)
+        # self.node_editor_menu.addAction(self.actCloseAll)
+        # self.node_editor_menu.addSeparator()
+        # self.node_editor_menu.addAction(self.actTile)
+        # # self.windowMenu.addAction(self.actCascade)
+        # self.node_editor_menu.addSeparator()
+        # self.node_editor_menu.addAction(self.actNext)
+        # self.node_editor_menu.addAction(self.actPrevious)
+        # self.node_editor_menu.addAction(self.actSeparator)
         windows = self.graphs_parent_wdg.subWindowList()
         self.actSeparator.setVisible(len(windows) != 0)
 
@@ -752,6 +771,7 @@ class MasterWindow(NodeEditorWindow):
         elif [QRadioButton, QCheckBox].__contains__(type(widget)):
             widget.setChecked(new_value)
         elif [QComboBox].__contains__(type(widget)):
+            widget.clear()
             widget.addItems(new_value)
         else:
             print(widget, "Widget Not Supported")

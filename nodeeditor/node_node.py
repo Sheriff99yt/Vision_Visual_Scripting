@@ -74,11 +74,12 @@ class Node(Serializable):
         self.initSockets(inputs, outputs)
 
 
-    def get_return(self):
-        return self.scene.node_editor.get_node_return(self.syntax, self.node_return)
+    def get_return(self, getting_array_type=0):
+        if getting_array_type: getting_array_type = 2
+        return self.scene.node_editor.get_node_return(self.syntax, self.node_return, getting_array_type)
 
-    def get_structure(self):
-        return self.scene.node_editor.get_node_structure(self.syntax, self.node_structure)
+    # def get_structure(self, setInput, get_return):
+    #     return self.scene.node_editor.get_node_structure(self.syntax, self.node_structure, setInput, get_return)
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
@@ -171,7 +172,6 @@ class Node(Serializable):
 
             counter += 1
             self.inputs.append(socket)
-            self.grNode.init_sockets_label(socket)
 
         counter = 0
         for item in outputs:
@@ -184,7 +184,6 @@ class Node(Serializable):
 
             counter += 1
             self.outputs.append(socket)
-            self.grNode.init_sockets_label(socket)
 
         self.grNode.AutoResizeGrNode()
 
@@ -571,7 +570,7 @@ class Node(Serializable):
             self.is_setter = data['is_setter']
             self.node_return = data['node_return']
             self.node_structure = data['node_structure']
-
+            print('Node_Structure >>', self.node_structure)
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
             self.grNode.name = self.name

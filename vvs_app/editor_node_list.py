@@ -24,12 +24,14 @@ class NodeList(QTreeWidget):
         self.setColumnCount(2)
         self.setColumnWidth(0, 70)
 
+        self.addMyFunctions()
+
+        self.expandAll()
+
         self.itemClicked.connect(lambda: self.currentItem().setExpanded(True) if not self.currentItem().isExpanded() else self.currentItem().setExpanded(False))
         self.itemCollapsed.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("▼", "►")))
         self.itemExpanded.connect(lambda: self.currentItem().setText(0, self.currentItem().text(0).replace("►", "▼")))
         self.setExpandsOnDoubleClick(False)
-
-        self.addMyFunctions()
 
     def addMyFunctions(self):
         self.clear()
@@ -42,12 +44,12 @@ class NodeList(QTreeWidget):
             self.addMyItem(node.name, node.icon, node)
 
     def init_primary_content(self):
-        self.categories = {"► Process": None, "► Logic": None, "► Math": None, "► Input": None, "► Output": None}
+        self.categories = {"▼ Process": None, "▼ Logic": None, "▼ Math": None, "▼ Input": None, "▼ Output": None}
         for category in list(self.categories.keys()):
             item = QTreeWidgetItem(self, [category])
             item.setFont(0, QFont("Arial", 9))
             item.setSizeHint(1, QSize(18, 18))
-            self.categories[category.replace("► ", "")] = item
+            self.categories[category.replace("▼ ", "")] = item
             del self.categories[category]
 
     def addMyItem(self, name, icon=None, node=None):

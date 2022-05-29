@@ -1,20 +1,18 @@
-#
 # # inProgress
-#     - A list type combobox
 #
 # # urgent
-#     - B c++ code
-#     - B C++ includes
-#     - B Add light Ui Modes
+#     - B c++ code / C++ includes
+#
+# # ToDos
+#     - B enabling input in the terminal / Adding windows cmd and running the python interpreter
+#
+# # Done
+#     - A list type combobox
 #     - A Graph background color
 #     - Missing Icons
 #     - Splash Screen
-#
-# # ToDos
-#     - S save all graphs & close all graphs Qactions
-#     - B enableing input in the termenal
-#
-# # Done
+#     - B Add light Ui Modes
+#     - S save all graphs & close all graphs QActions
 #     - A Deleting Vars and Events.
 #     - S functions category open and close indicators.
 #     - S functions categories (Tree Widget).

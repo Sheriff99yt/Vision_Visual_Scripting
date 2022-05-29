@@ -5,7 +5,7 @@ A module containing all code for working with Clipboard
 from collections import OrderedDict
 from nodeeditor.node_graphics_edge import QDMGraphicsEdge
 from nodeeditor.node_edge import Edge
-
+from nodeeditor.node_graphics_node import QDMGraphicsNode
 
 DEBUG = False
 DEBUG_PASTING = False
@@ -40,7 +40,7 @@ class SceneClipboard():
 
         # sort edges and nodes
         for item in self.scene.grScene.selectedItems():
-            if hasattr(item, 'node'):
+            if isinstance(item, QDMGraphicsNode):
                 sel_nodes.append(item.node.serialize())
                 for socket in (item.node.inputs + item.node.outputs):
                     sel_sockets[socket.id] = socket
@@ -50,7 +50,7 @@ class SceneClipboard():
 
         # debug
         if DEBUG:
-            print("  NODES\n      ", sel_nodes)
+            print("  NODES\n      ", sel_nodessel_nodes)
             print("  EDGES\n      ", sel_edges)
             print("  SOCKETS\n     ", sel_sockets)
 
@@ -139,7 +139,7 @@ class SceneClipboard():
                 new_node = self.scene.getNodeClassFromData(node_data)(self.scene, node_data['is_setter'])
             else:
                 new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
-
+            print(new_node)
             new_node.deserialize(data=node_data, hashmap=hashmap, restore_id=False, *args, **kwargs)
             created_nodes.append(new_node)
 

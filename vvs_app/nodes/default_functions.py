@@ -125,7 +125,7 @@ class ForEachLoop(MasterNode):
     node_color = "#905050FF"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[0, 5], outputs=[0, 6])
+        super().__init__(scene, inputs=[0, 6], outputs=[0, 6])
 
     def getNodeCode(self):
         raw_code = "Empty"
