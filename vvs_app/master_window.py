@@ -323,7 +323,7 @@ class MasterWindow(NodeEditorWindow):
             self.settingsBtn.setChecked(True)
 
             self.settingsWidget.setWindowTitle("Settings")
-            self.settingsWidget.setGeometry(300, 150, 1200, 800)
+            self.settingsWidget.setGeometry(300, 150, 500, 500)
 
     def closeEvent(self, event):
         self.graphs_parent_wdg.closeAllSubWindows()
@@ -365,7 +365,7 @@ class MasterWindow(NodeEditorWindow):
                         "Delete": [None, "Delete selected items", self.onEditDelete, "&Delete"]
                     }
                 ,
-                "Node Editor menu":
+                "Node Editor Menu":
                     {
                         "Close": [None, "Close the active window", self.graphs_parent_wdg.closeActiveSubWindow, "Cl&ose"],
                         "Close All": [None, "Close all the windows", self.graphs_parent_wdg.closeAllSubWindows, "Close &All"],
@@ -482,7 +482,7 @@ class MasterWindow(NodeEditorWindow):
         active = self.currentNodeEditor()
         hasMdiChild = (active is not None)
 
-        Switchs = {"File Menu": ["Save", "Save As"], "Edit Menu": ["Paste", "Select All"], "Node Editor menu": ["Close", "Close All", "Tile", "Next", "Previous"]}
+        Switchs = {"File Menu": ["Save", "Save As"], "Edit Menu": ["Paste", "Select All"], "Node Editor Menu": ["Close", "Close All", "Tile", "Next", "Previous"]}
         for menu in Switchs:
             for act_name in Switchs[menu]:
                 self.actions_creation_dict[menu][act_name][0].setEnabled(hasMdiChild)
@@ -532,14 +532,14 @@ class MasterWindow(NodeEditorWindow):
 
         self.node_editor_menu.addSeparator()
 
-        for i in self.actions_creation_dict["Node Editor menu"]:
+        for i in self.actions_creation_dict["Node Editor Menu"]:
             if i.__contains__("addSeparator"):
                 self.node_editor_menu.addSeparator()
             else:
-                mylist = self.actions_creation_dict["Node Editor menu"][i]
+                mylist = self.actions_creation_dict["Node Editor Menu"][i]
                 act = QAction(mylist[3], parent=self, statusTip=mylist[1], triggered=mylist[2])
                 self.node_editor_menu.addAction(act)
-                self.actions_creation_dict["Node Editor menu"][i][0] = act
+                self.actions_creation_dict["Node Editor Menu"][i][0] = act
         # self.node_editor_menu.addAction(self.actClose)
         # self.node_editor_menu.addAction(self.actCloseAll)
         # self.node_editor_menu.addSeparator()

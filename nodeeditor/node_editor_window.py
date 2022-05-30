@@ -40,12 +40,10 @@ class NodeEditorWindow(QMainWindow):
 
         self.set_nodes_icons()
 
-
     def set_nodes_icons(self):
         for cls in MasterNode.__subclasses__():
             icon = os.path.split(cls.icon)[-1]
             cls.icon = self.global_switches.get_icon(icon)
-
 
     def sizeHint(self):
         return QSize(800, 600)

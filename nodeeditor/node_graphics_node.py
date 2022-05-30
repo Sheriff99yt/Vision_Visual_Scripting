@@ -91,8 +91,6 @@ class QDMGraphicsNode(QGraphicsItem):
             icon = os.path.split(self.node.icon)[-1]
             self.node_icon = QImage(self.node.scene.masterRef.global_switches.get_icon(icon))
 
-            # text_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Text")
-            # self.node.scene.masterRef.global_switches.themes_colors[current_theme][text_color_index]
             if text_color != "":
                 self.name_item.setDefaultTextColor(QColor(text_color))
 

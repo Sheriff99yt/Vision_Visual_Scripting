@@ -63,19 +63,14 @@ def edge_cannot_connect_input_and_output_of_same_node(input: 'Socket', output:'S
 def edge_cannot_connect_input_and_output_of_different_type(input: 'Socket', output: 'Socket') -> bool:
     """Edge is invalid if it connects sockets with different colors"""
 
-
-    if (input.socket_type == 6 and output.socket_type == 0) or (input.socket_type == 0 and output.socket_type == 6):
-        print("Connecting WildCard with Action Event")
+    if (input.socket_type != 0 and output.socket_type == 0) or (input.socket_type == 0 and output.socket_type != 0):
+        print("Trying to connect an action to a value")
         return False
 
-    if input.socket_type == 6 or output.socket_type == 6:
-        return True
-
-    if input.grSocket.shape != output.grSocket.shape:
-        return False
-
-    if input.socket_type != output.socket_type:
-        print("Connecting sockets with different Types")
-        return False
+    elif input.socket_type != output.socket_type:
+        if not(input.socket_type == 6 or output.socket_type == 6):
+            if not(input.grSocket.shape == 1 and output.socket_type == 5) or not(output.grSocket.shape == 1 and input.socket_type == 5):
+                print("Trying to connect an different values")
+                return False
 
     return True

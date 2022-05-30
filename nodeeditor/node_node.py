@@ -570,7 +570,7 @@ class Node(Serializable):
             self.is_setter = data['is_setter']
             self.node_return = data['node_return']
             self.node_structure = data['node_structure']
-            print('Node_Structure >>', self.node_structure)
+
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
             self.grNode.name = self.name

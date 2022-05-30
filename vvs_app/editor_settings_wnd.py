@@ -6,12 +6,6 @@ from vvs_app.QRoundPB import QRoundProgressBar
 
 
 class SettingsWidget(QWidget):
-    def set_current_wdg(self):
-        current_item = self.settingsTree.currentItem().data(256, 6)
-        self.holderWdg.setCurrentWidget(current_item)
-        self.fill()
-        self.settingsTree.currentItem().data(256, 10).setText("")
-
     def __init__(self, masterRef, parent=None):
         super().__init__(parent)
 
@@ -36,6 +30,16 @@ class SettingsWidget(QWidget):
         self.settingsTree.setMaximumWidth(250)
         self.settingsTree.setMinimumWidth(150)
         self.settingsSplitter.addWidget(self.settingsTree)
+        self.settingsTree.setRootIsDecorated(False)
+
+        current_theme = self.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0]
+        searchBar = QTreeWidgetItem(self.settingsTree)
+        searchBar.setIcon(0, QIcon(f"""icons/{current_theme}/search.png"""))
+        searchBar.setDisabled(True)
+        self.searchwdg = QLineEdit()
+        searchBar.treeWidget().setItemWidget(searchBar, 0, self.searchwdg)
+        self.searchwdg.editingFinished.connect(self.main_search)
+        self.searchwdg.setContentsMargins(5, 5, 5, 5)
 
         self.holderWdg = QStackedWidget()
         self.settingsSplitter.addWidget(self.holderWdg)
@@ -46,8 +50,27 @@ class SettingsWidget(QWidget):
 
         self.settingsTree.clicked.connect(self.set_current_wdg)
 
-        self.settingsTree.setCurrentItem(self.settingsTree.topLevelItem(0))
-        self.set_current_wdg()
+        # print(self.settingsTree.topLevelItem(1))
+        self.settingsTree.currentItemChanged.connect(self.set_current_wdg)
+        self.settingsTree.setCurrentItem(self.settingsTree.topLevelItem(1))
+
+    def set_current_wdg(self):
+        current_item = self.settingsTree.currentItem().data(256, 6)
+        self.holderWdg.setCurrentWidget(current_item)
+        self.fill()
+        self.settingsTree.currentItem().data(256, 10).setText("")
+
+    def main_search(self):
+        if self.searchwdg.text() != "":
+            for window in self.settings_Widgets:
+                for option in self.settings_Widgets[window]:
+                    if option == self.searchwdg.text():
+                        self.settingsTree.setCurrentItem(self.settingsTree.findItems(window, Qt.MatchExactly)[0])
+                        if window != "Key Mapping":
+                            self.settings_Widgets[window][option].parent().parent().setCurrentItem(self.settings_Widgets[window][option].parent().parent().findItems(option, Qt.MatchExactly)[0])
+                        return
+
+            self.show_short_message(wdg=self.searchwdg, color="red")
 
     def init_settings_window_default_ui(self, wdg, name):
         self.v_layout = QVBoxLayout()
@@ -61,12 +84,13 @@ class SettingsWidget(QWidget):
         self.spacer1.setMinimumHeight(40)
         self.v_layout.addWidget(self.spacer1)
 
-        self.Grid_Layout = QGridLayout()
-        self.v_layout.addLayout(self.Grid_Layout)
+        self.Grid_Layout = QTreeWidget()
+        self.v_layout.addWidget(self.Grid_Layout)
+        self.Grid_Layout.setContentsMargins(0, 0, 0, 0)
 
-        self.spacer2 = QWidget()
-        # self.spacer2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.v_layout.addWidget(self.spacer2)
+        # self.spacer2 = QWidget()
+        # # self.spacer2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.v_layout.addWidget(self.spacer2)
 
         name_item = QTreeWidgetItem([name])
         name_item.setData(256, 6, wdg)
@@ -114,18 +138,24 @@ class SettingsWidget(QWidget):
         self.appearance_wdg = QWidget()
 
         self.init_settings_window_default_ui(self.appearance_wdg, "Appearance")
-        self.spacer2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.appearance_settings_list = {"Theme": QComboBox(), "Font Size": QSpinBox(), "Grid Size": QSpinBox()}
 
-        for item in self.appearance_settings_list:
-            lbl = QLabel(item)
-            self.Grid_Layout.addWidget(lbl, list(self.appearance_settings_list.keys()).index(item), 0, Qt.AlignRight)
+        self.Grid_Layout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.Grid_Layout.header().hide()
+        self.Grid_Layout.setRootIsDecorated(False)
+        self.Grid_Layout.setColumnCount(3)
+        self.Grid_Layout.setColumnWidth(0, 150)
+        self.Grid_Layout.setColumnWidth(1, 150)
 
-            variable = self.appearance_settings_list[item]
-            self.Grid_Layout.addWidget(variable, list(self.appearance_settings_list.keys()).index(item), 1, 1, 10, Qt.AlignLeft)
-            variable.setMinimumWidth(70)
-            self.settings_Widgets["Appearance"][item] = variable
+        for item in self.appearance_settings_list:
+            Tree_Item = QTreeWidgetItem(self.Grid_Layout, [item])
+            Tree_Item.setSizeHint(0, QSize(6, 6))
+            value_holder = self.appearance_settings_list[item]
+            Tree_Item.treeWidget().setItemWidget(Tree_Item, 1, value_holder)
+            value_holder.setMinimumWidth(70)
+
+            self.settings_Widgets["Appearance"][item] = value_holder
 
     def Appearance(self):
         # Apply Theme change
@@ -152,7 +182,6 @@ class SettingsWidget(QWidget):
         self.system_wdg = QWidget()
 
         self.init_settings_window_default_ui(self.system_wdg, "System")
-        self.spacer2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Content
         self.system_settings_list = {"AutoSave Steps": QSpinBox(),
@@ -160,17 +189,25 @@ class SettingsWidget(QWidget):
                                      "Always Save Before Closing": QRadioButton(),
                                      "Save New Project Folder On Close": QRadioButton()}
 
-        for item in self.system_settings_list:
-            lbl = QLabel(item)
-            self.Grid_Layout.addWidget(lbl, list(self.system_settings_list.keys()).index(item), 0, Qt.AlignRight)
+        self.Grid_Layout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.Grid_Layout.header().hide()
+        self.Grid_Layout.setRootIsDecorated(False)
+        self.Grid_Layout.setColumnCount(3)
+        self.Grid_Layout.setColumnWidth(0, 250)
+        self.Grid_Layout.setColumnWidth(1, 150)
+        self.Grid_Layout.setColumnWidth(1, 1)
 
-            variable = self.system_settings_list[item]
-            self.Grid_Layout.addWidget(variable, list(self.system_settings_list.keys()).index(item), 1, 1, 10,
-                                       Qt.AlignLeft)
-            variable.setMinimumWidth(120)
-            if type(variable) == QDoubleSpinBox:
-                variable.setMaximum(100000.000)
-            self.settings_Widgets["System"][item] = variable
+        for item in self.system_settings_list:
+            Tree_Item = QTreeWidgetItem(self.Grid_Layout, [item])
+
+            value_holder = self.system_settings_list[item]
+            Tree_Item.treeWidget().setItemWidget(Tree_Item, 1, value_holder)
+            value_holder.setMinimumWidth(70)
+
+            if type(value_holder) == QDoubleSpinBox:
+                value_holder.setMaximum(100000.000)
+
+            self.settings_Widgets["System"][item] = value_holder
 
     def System(self):
         # Apply System change
@@ -179,7 +216,7 @@ class SettingsWidget(QWidget):
                 window.widget().scene.history.Edits_Counter = 0
 
     def init_key_mapping_wdg(self):
-        self.key_mapping_wdg = QScrollArea()
+        self.key_mapping_wdg = QWidget()
 
         self.init_settings_window_default_ui(self.key_mapping_wdg, "Key Mapping")
 
@@ -199,39 +236,38 @@ class SettingsWidget(QWidget):
                                                "Copy",
                                                "Paste",
                                                "Delete"],
-                                          "Node Editor menu":
-                                               ["Close",
-                                                "Close All",
-                                                "Tile",
-                                                "Next",
-                                                "Previous"],
-                                          "UI":
-                                               ["Settings Window",
-                                                "Node Editor Window",
-                                                "Node Designer Window",
-                                                "Library Window"]}
+                                          "Node Editor Menu":
+                                              ["Close",
+                                               "Close All",
+                                               "Tile",
+                                               "Next",
+                                               "Previous"],
+                                          "Tool Bar":
+                                              ["Settings Window",
+                                               "Node Editor Window",
+                                               "Node Designer Window",
+                                               "Library Window"]}
 
-        Tree_Widget = QTreeWidget()
-        Tree_Widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.Grid_Layout.addWidget(Tree_Widget, 0, 0, 1, 10, Qt.AlignLeft)
-        Tree_Widget.header().hide()
-        Tree_Widget.setRootIsDecorated(False)
-        Tree_Widget.setColumnCount(2)
-        Tree_Widget.setColumnWidth(0, 150)
-        Tree_Widget.setMinimumWidth(500)
+        self.Grid_Layout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.Grid_Layout.header().hide()
+        self.Grid_Layout.setRootIsDecorated(False)
+        self.Grid_Layout.setColumnCount(2)
+        self.Grid_Layout.setColumnWidth(0, 150)
+
 
         for item in self.Key_Mapping_settings_list:
-            Menus = QTreeWidgetItem(Tree_Widget, [item])
+            Menus = QTreeWidgetItem(self.Grid_Layout, [item])
             Menus.setFirstColumnSpanned(True)
             for action in self.Key_Mapping_settings_list[item]:
                 Tree_Item = QTreeWidgetItem(Menus, [action])
 
                 KeySequence = QKeySequenceEdit()
+                KeySequence.setStat = setStat
+                KeySequence.__init__ = QSEnewinit(KeySequence)
+
                 Tree_Item.treeWidget().setItemWidget(Tree_Item, 1, KeySequence)
                 KeySequence.setMaximumWidth(150)
 
-                KeySequence.setStat = setStat
-                KeySequence.__init__ = QSEnewinit(KeySequence)
                 self.settings_Widgets["Key Mapping"][action] = KeySequence
 
     def Key_Mapping(self):
@@ -265,7 +301,8 @@ class SettingsWidget(QWidget):
         current_window_name = self.settingsTree.currentItem().data(0, 0)
 
         if reset:
-            self.masterRef.global_switches.switches_Dict[current_window_name] = self.masterRef.global_switches.Default_switches_Dict[current_window_name]
+            self.masterRef.global_switches.switches_Dict[current_window_name] = \
+            self.masterRef.global_switches.Default_switches_Dict[current_window_name]
             self.fill()
 
         current_settings = self.get_current_settings()
@@ -274,28 +311,34 @@ class SettingsWidget(QWidget):
 
             self.__getattribute__(current_window_name.replace(" ", "_"))()
 
-            if not reset: self.show_shor_message("Applied")
+            if not reset: self.show_short_message("Applied", self.settingsTree.currentItem().data(256, 10))
             self.masterRef.global_switches.save_settings_to_file()
         else:
-            self.show_shor_message("No Changed")
+            self.show_short_message("No Changed", self.settingsTree.currentItem().data(256, 10))
 
     def fill(self):
         current_window_name = self.settingsTree.currentItem().data(0, 0)
 
         for i in list(self.settings_Widgets[current_window_name].keys()):
-            self.masterRef.set_QWidget_content(self.settings_Widgets[current_window_name][i], self.masterRef.global_switches.switches_Dict[current_window_name][i])
+            self.masterRef.set_QWidget_content(self.settings_Widgets[current_window_name][i],
+                                               self.masterRef.global_switches.switches_Dict[current_window_name][i])
 
     def closeEvent(self, event):
         self.masterRef.settingsBtn.setChecked(False)
         self.hide()
 
-    def show_shor_message(self, text):
-        lbl = self.settingsTree.currentItem().data(256, 10)
-        lbl.setText(text)
+    def show_short_message(self, text="", wdg=None, color=False):
         timer = QTimer()
         timer.start(2000)
-        timer.timeout.connect(lambda: lbl.setText(""))
         timer.timeout.connect(lambda: timer.stop())
+        if wdg :
+            if text != "":
+                wdg.setText(text)
+                timer.timeout.connect(lambda: wdg.setText(""))
+
+            if color:
+                wdg.setStyleSheet(f"background-color: {color}")
+                timer.timeout.connect(lambda: wdg.setStyleSheet("background-color: transparent"))
 
     # Reset btn
     def reset_fun(self):
@@ -325,14 +368,14 @@ class SettingsWidget(QWidget):
         timer_button.start(15)
         progress.show()
 
-    def button_released(self,  progress, timer_button):
+    def button_released(self, progress, timer_button):
         timer_button.stop()
         progress.setValue(0)
         self.progress_counter = 1
-        self.show_shor_message("Reset Done")
+        self.show_short_message("Reset Done", self.settingsTree.currentItem().data(256, 10))
         progress.hide()
 
-    def button_event_check(self,  progress, timer_button):
+    def button_event_check(self, progress, timer_button):
         if self.progress_counter == 100:
             timer_button.stop()
             self.apply_or_reset(True)
@@ -342,6 +385,7 @@ class SettingsWidget(QWidget):
 
 def QSEnewinit(self, *__args):
     self.keySequenceChanged.connect(lambda: self.setStat(self))
+
 
 def setStat(self):
     self.setWindowModified(False)

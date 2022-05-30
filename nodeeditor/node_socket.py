@@ -33,8 +33,8 @@ Socket_Types = {'Executable': '',
                 'int': '',
                 'bool': '',
                 'string': '',
-                'list': '',
-                'list_item': ''
+                'array': '',
+                'wildcard': ''
                 }
 
 SOCKET_COLORS = [
@@ -80,13 +80,14 @@ class QDMGraphicsSocket(QGraphicsItem):
         self.hovered = None
         self.socket = socket
 
+        self.shape = 0
+
         self.isHighlighted = False
 
         self.radius = 8
         self.outline_width = 1
 
         # self.paint = self.myPaint
-        self.update_socket_structure()
         self.initAssets()
 
         # shadow = QGraphicsDropShadowEffect()
@@ -100,8 +101,10 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
-        current_theme = self.socket.node.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0]
         self.hovered = True
+        self._brush = QBrush(self.getHoveredSocketColor(self.socket.original_socket_type))
+
+        current_theme = self.socket.node.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0]
         text_color_index = self.socket.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Text")
         self.socket.socket_label.setDefaultTextColor(QColor(self.socket.node.scene.masterRef.global_switches.themes_colors[current_theme][text_color_index]))
         self.socket.socket_label.show()
@@ -112,12 +115,21 @@ class QDMGraphicsSocket(QGraphicsItem):
         self.hovered = False
         self.update()
         self.socket.socket_label.hide()
+        self._brush = QBrush(self.getSocketColor(self.socket.original_socket_type))
 
     @property
     def socket_type(self):
         return self.socket.socket_type
 
     def getSocketColor(self, key):
+        """Returns the ``QColor`` for this ``key``"""
+        if type(key) == int:
+            return SOCKET_COLORS[key]
+        elif type(key) == str:
+            return QColor(key)
+        return Qt.transparent
+
+    def get_original_socket_color(self, key):
         """Returns the ``QColor`` for this ``key``"""
         if type(key) == int:
             return SOCKET_COLORS[key]
@@ -135,7 +147,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def changeSocketType(self):
         """Change the Socket Type"""
-        self._current_color = self.getSocketColor(self.socket_type)
+        self._current_color = self.getSocketColor(self.socket.original_socket_type)
         self._brush = QBrush(self._current_color)
         # print("Socket changed to:", self._color_background.getRgbF())
         self.update()
@@ -152,25 +164,10 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._pen.setWidthF(self.outline_width)
         self._brush = QBrush(self.getSocketColor(self.socket_type))
 
-    def update_socket_structure(self):
-        new_structure = self.socket.node.node_structure
-        if new_structure == 'single value':
-            self.shape = 0
-        elif new_structure == 'array':
-            self.shape = 1
-
-        self.update()
-
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting a circle"""
         painter.setBrush(self._brush)
         painter.setPen(self._pen)
-
-        if self.hovered or self.isConnected:
-            painter.setBrush(self.getHoveredSocketColor(self.socket_type))
-
-        else:
-            painter.setBrush(self._brush)
 
         if self.socket_type == 0:
             painter.drawPolygon(QPoint(-self.radius, self.radius), QPoint(self.radius, 0),
@@ -180,25 +177,17 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         elif self.socket_type == 5:
             painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
-            painter.setBrush(QBrush(QColor("#FF101010")))
 
             if not self.isConnected:
+                painter.setBrush(QBrush(QColor("#FF101010")))
                 painter.drawRect(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
 
         elif self.socket_type == 1 or 2 or 3 or 4:
-            if self.shape == 0:
-                painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+            painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+
+            if not self.isConnected:
                 painter.setBrush(QBrush(QColor("#FF101010")))
-
-                if not self.isConnected:
-                    painter.drawEllipse(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
-
-            elif self.shape == 1:
-                painter.drawRect(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
-                painter.setBrush(QBrush(QColor("#FF101010")))
-
-                if not self.isConnected:
-                    painter.drawRect(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
+                painter.drawEllipse(-self.radius // 2, -self.radius // 2, self.radius, self.radius)
 
     def boundingRect(self) -> QRectF:
         """Defining Qt' bounding rectangle"""
@@ -314,7 +303,6 @@ class Socket(Serializable):
 
             userInputWdg = None
             scene_pos = self.grSocket.pos()
-            print('Socket >>', self.node.node_structure)
 
             if structure_type == 'array' or [4, 5, 6].__contains__(self.socket_type):
                 userInputWdg = QTextEdit()
@@ -507,7 +495,6 @@ class Socket(Serializable):
         self.is_multi_edges = self.determineMultiEdges(data)
         self.changeSocketType(data['socket_type'])
         hashmap[data['id']] = self
-        self.grSocket.update_socket_structure()
         self.init_socket_input()
 
         if self.is_input and self.userInputWdg:

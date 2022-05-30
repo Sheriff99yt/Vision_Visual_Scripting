@@ -50,7 +50,7 @@ class SceneClipboard():
 
         # debug
         if DEBUG:
-            print("  NODES\n      ", sel_nodessel_nodes)
+            print("  NODES\n      ", sel_nodes)
             print("  EDGES\n      ", sel_edges)
             print("  SOCKETS\n     ", sel_sockets)
 
@@ -139,7 +139,7 @@ class SceneClipboard():
                 new_node = self.scene.getNodeClassFromData(node_data)(self.scene, node_data['is_setter'])
             else:
                 new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
-            print(new_node)
+
             new_node.deserialize(data=node_data, hashmap=hashmap, restore_id=False, *args, **kwargs)
             created_nodes.append(new_node)
 
