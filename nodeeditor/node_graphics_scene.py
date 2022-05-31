@@ -55,7 +55,7 @@ class NodeGraphicsScene(QGraphicsScene):
 
     def update_background_color(self, background_color:str="555555", grid_lines_color:str="555555"):
         if self.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0] == "Dark":
-            background_color = "393939"
+            background_color = "404040"
             grid_lines_color = "292929"
         elif self.scene.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0] == "Light":
             background_color = "e0e0e0"

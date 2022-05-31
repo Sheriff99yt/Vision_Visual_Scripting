@@ -22,7 +22,7 @@ class Splash(QWidget):
         self.setLayout(lo)
 
         Logo = QLabel()
-        pixmap = QPixmap("icons/Dark/VVS_White_Splash.png")
+        pixmap = QPixmap("icons/Dark/VVS_White2.png")
         Logo.setPixmap(pixmap)
         lo.addWidget(Logo)
 

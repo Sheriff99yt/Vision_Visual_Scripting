@@ -148,7 +148,7 @@ class UserNodesList(QTabWidget):
         new_node.nodeID = node_data[1] = new_id
         new_node.name = name
 
-        # Save new Var to list of vars with [Type, ID, Name, Value]
+        # Save new Var to list of vars with [name ,node_id ,type ,node_return ,node_structure]
         self.user_nodes_data.append(node_data)
 
         if new_node.node_type == UserFunction.node_type:

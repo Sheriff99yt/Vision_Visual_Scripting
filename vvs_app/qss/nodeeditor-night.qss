@@ -2,7 +2,7 @@
 QTextEdit,QMdiArea QTabBar QToolButton,QPushButton:pressed, QToolButton:pressed, QComboBox:hover, QComboBox:focus, QToolBar, QHeaderView::section, QHeaderView, QDialog, QMainWindow, QSplitter, QStatusBar, QMainWindow::separator,QMenuBar ,QListView::item:selected,QListView::item::active:selected{
     background-color:#282828}
 QMdiArea QTabBar::tab:top:selected,QPushButton:hover, QToolButton:hover,QPushButton:disabled, QToolButton:disabled,QFrame,QTabBar,QStatusBar,QMenu::active,QMenu::item:selected,QMenuBar::item:selected,QMenuBar::item:pressed,QLineEdit,QListView {
-    background-color:#565656}
+    background-color:#404040}
 QDockWidget::title,QPushButton, QToolButton:checked,QComboBox::drop-down,QComboBox QAbstractItemView,QComboBox,QPushButton,QToolButton,QMenu,QMenu::item,QMenuBar::item{
     background-color: #1F1F1F;}
 QMdiArea QTabBar::tab:top:!selected:hover,QListView::item:hover{
@@ -26,7 +26,7 @@ QMenu::separator,QMenu::disabled,QMenu::item:disabled{
 QGraphicsView{
     selection-background-color:#FFFFFF}
 QComboBox {
-    selection-background-color: #565656;}
+    selection-background-color: #404040;}
 
 
 

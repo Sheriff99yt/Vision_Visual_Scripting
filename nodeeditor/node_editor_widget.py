@@ -352,10 +352,11 @@ class NodeEditorWidget(QWidget):
         output = output.decode('UTF-8')
         error = error.decode('UTF-8')
 
-        colorStyle = f''' style=" Font-size:12px ; color: #FF3333;" '''
-        code = f""" <pre><p style="font-family: Roboto "><span {colorStyle} >{error}</span></p></pre> """
+        colorStyle = f'''  '''
+        code = f""" <pre><p style="font-family: Roboto "><span style=" Font-size:12px ; color: #FF3333;">{error}</span></p></pre> """
+        code_2 = f""" <pre><p style="font-family: Roboto "><span style=" Font-size:12px ; color: #FFFFFF;">{output}</span></p></pre> """
 
-        self.code_output.append(output)
+        self.code_output.append(code_2)
         self.code_output.append(code)
 
     def get_project_directory(self):
@@ -399,7 +400,8 @@ class NodeEditorWidget(QWidget):
 
     def get_imports(self):
         syntax = self.syntax_selector.currentText()
-
+        if not self.scene.user_nodes_wdg:return []
+        user_data = self.scene.user_nodes_wdg.user_nodes_data
         imports = []
         if syntax == "C++":
 
@@ -416,7 +418,7 @@ class NodeEditorWidget(QWidget):
             if used_node_types.__contains__(Print.node_type):
                 imports.append(f'#include <iostream>')
 
-            for data in self.scene.user_nodes_wdg.user_nodes_data:
+            for data in user_data:
                 if data[2] == StringVar.node_type:
                     imports.append("#include <string>")
                 # elif data[2] == ListVar.node_type:
@@ -428,15 +430,21 @@ class NodeEditorWidget(QWidget):
                 elif [FloatVar, IntegerVar, BooleanVar, StringVar].__contains__(data[3]):
                     imports.append(f'extern {value[data[2]]}{self.get_node_return(syntax, data[3])}{data[0]};')
 
+        elif syntax == 'Python':
+            for item in user_data:
+                if item[4] == 'array' and not imports.__contains__('from array import array'):
+                    imports.append('from array import array')
+
+
         imports.sort()
         return imports
 
     def UpdateTextCode(self):
         current_syntax = self.syntax_selector.currentText()
+        imports = self.get_imports()
 
         if current_syntax == "C++":
             self.header_wnd.clear()
-            imports = self.get_imports()
             for item in imports:
                 self.header_wnd.append(item)
             self.header_wnd.append('')
@@ -453,6 +461,11 @@ class NodeEditorWidget(QWidget):
 
         else:
             self.text_code_wnd.clear()
+
+            for item in imports:
+                self.text_code_wnd.append(item)
+            self.text_code_wnd.append('')
+
             for node in self.scene.nodes:
                 node.syntax = current_syntax
 

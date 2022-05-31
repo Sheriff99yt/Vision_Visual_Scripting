@@ -123,10 +123,12 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap("icons/Dark/VVS_White2.png" if self.global_switches.switches_Dict["Appearance"]['Theme'][0] == 'Dark' else "icons/light/VVS_White2.png")
+        w_image = QPixmap(f"icons/{self.global_switches.switches_Dict['Appearance']['Theme'][0]}/VVS_White1.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
+        welcome_image.setScaledContents(True)
+
         self.brows_btn = QPushButton("Brows..")
 
         Elayout.addWidget(welcome_image)
@@ -617,7 +619,6 @@ class MasterWindow(NodeEditorWindow):
             self.switch_display(Welcome=True)
 
         # Handel buttons State
-
         self.node_editor_menu.setEnabled(False)
         self.library_menu.setEnabled(True)
 
@@ -679,7 +680,6 @@ class MasterWindow(NodeEditorWindow):
         if not self.graphs_parent_wdg.subWindowList():
             self.switch_display(Editor=True)
 
-
         node_editor = NodeEditorTab(masterRef=self)
 
         VEL = UserNodesList(scene=node_editor.scene, propertiesWdg=self.proprietiesWdg)
@@ -687,9 +687,6 @@ class MasterWindow(NodeEditorWindow):
         self.VEStackedWdg.setCurrentWidget(VEL)
 
         node_editor.scene.user_nodes_wdg = VEL
-
-        # node_editor.scene.masterRef = self
-        # node_editor.scene.history.masterRef = self
 
         subwnd = QMdiSubWindow()
         subwnd.setAttribute(Qt.WA_DeleteOnClose, True)
@@ -710,7 +707,6 @@ class MasterWindow(NodeEditorWindow):
         return subwnd
 
     def on_sub_wnd_close(self, widget, event):
-
         existing = self.findMdiChild(widget.filename)
         self.graphs_parent_wdg.setActiveSubWindow(existing)
 
@@ -719,11 +715,9 @@ class MasterWindow(NodeEditorWindow):
             self.delete_user_nodes_wgd(widget.scene.user_nodes_wdg)
             if (len(self.graphs_parent_wdg.subWindowList())-1) == 0:
                 self.switch_display(Welcome=True)
-
             else:
                 self.switch_display(Editor=True)
             self.before_window_close()
-
         else:
             event.ignore()
 

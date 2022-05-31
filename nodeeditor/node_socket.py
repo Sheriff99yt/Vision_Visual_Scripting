@@ -89,6 +89,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         # self.paint = self.myPaint
         self.initAssets()
+        self._brush = QBrush(self.getSocketColor(self.socket.original_socket_type))
 
         # shadow = QGraphicsDropShadowEffect()
         # shadow.setXOffset(-2)
@@ -145,7 +146,7 @@ class QDMGraphicsSocket(QGraphicsItem):
             return QColor(key)
         return Qt.transparent
 
-    def changeSocketType(self):
+    def changeGrSocketType(self):
         """Change the Socket Type"""
         self._current_color = self.getSocketColor(self.socket.original_socket_type)
         self._brush = QBrush(self._current_color)
@@ -248,7 +249,7 @@ class Socket(Serializable):
         self.socket_code = self.node.name
         self.position = position
         self.index = index
-        self.socket_type = socket_type
+        self.socket_type = 5 if self.node.node_structure == 'array' and socket_type != 0 else socket_type
         self.original_socket_type = socket_type
         self.count_on_this_node_side = count_on_this_node_side
         self.is_multi_edges = multi_edges
@@ -266,6 +267,7 @@ class Socket(Serializable):
         self.init_socket_input()
 
         self.init_socket_label()
+
 
     def __str__(self):
         return "<Socket #%d %s %s..%s>" % (
@@ -369,17 +371,17 @@ class Socket(Serializable):
         :rtype: ``bool``
         """
         if self.socket_type != new_socket_type:
+            print(self.node.inputs + self.node.outputs)
             self.socket_type = new_socket_type
-            self.grSocket.changeSocketType()
+            self.grSocket.changeGrSocketType()
             return True
         else:
-
             return False
 
     def restoreSocketType(self):
         if not self.socket_type == self.original_socket_type:
             self.socket_type = self.original_socket_type
-            self.grSocket.changeSocketType()
+            self.grSocket.changeGrSocketType()
 
     def setSocketPosition(self):
         """Helper function to set `Graphics Socket` position. Exact socket position is calculated
