@@ -6,9 +6,9 @@ from nodeeditor.node_scene import NodeScene
 from vvs_app.editor_properties_list import PropertiesList
 from vvs_app.nodes.default_functions import *
 from vvs_app.nodes.event_nodes import UserFunction
-from vvs_app.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
+from vvs_app.nodes.nodes_configuration import VARIABLES, get_class_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
-from vvs_app.nodes.variables_nodes import StringVar, BooleanVar, IntegerVar, FloatVar
+from vvs_app.nodes.variables_nodes import UserVar
 
 
 class UserNodesList(QTabWidget):
@@ -31,8 +31,8 @@ class UserNodesList(QTabWidget):
         self.addTab(tab2, "Functions")
 
         # Create Variables List
-        self.VarList = QListWidget()
-        self.EventList = QListWidget()
+        self.var_list = QListWidget()
+        self.function_list = QListWidget()
 
         # Create Variables and Events WNDs layout
         self.varLayout = QVBoxLayout()
@@ -51,35 +51,35 @@ class UserNodesList(QTabWidget):
         self.varHlayout = QHBoxLayout()
         self.varCompoBox.setMinimumHeight(28)
         self.varAddBtn.setMinimumHeight(28)
-        self.VarList.setIconSize(QSize(28, 28))
+        self.var_list.setIconSize(QSize(28, 28))
         self.varHlayout.setContentsMargins(2, 2, 2, 2)
         self.varHlayout.addWidget(self.varCompoBox)
         self.varHlayout.addWidget(self.varAddBtn)
         self.varLayout.addLayout(self.varHlayout)
-        self.varLayout.addWidget(self.VarList)
-        self.VarList.setDragEnabled(True)
+        self.varLayout.addWidget(self.var_list)
+        self.var_list.setDragEnabled(True)
 
         # Setup CompoBox and add Button For Vars
-        self.eventCompoBox = QComboBox()
-        self.eventAddBtn = QPushButton("Add Event")
+        self.function_compo_box = QComboBox()
+        self.event_add_btn = QPushButton("Add Function")
         self.eventHlayout = QHBoxLayout()
-        self.eventCompoBox.setMinimumHeight(28)
-        self.eventAddBtn.setMinimumHeight(28)
-        self.EventList.setIconSize(QSize(28, 28))
+        self.function_compo_box.setMinimumHeight(28)
+        self.event_add_btn.setMinimumHeight(28)
+        self.function_list.setIconSize(QSize(28, 28))
         self.eventHlayout.setContentsMargins(2, 2, 2, 2)
-        self.eventHlayout.addWidget(self.eventCompoBox)
-        self.eventHlayout.addWidget(self.eventAddBtn)
+        self.eventHlayout.addWidget(self.function_compo_box)
+        self.eventHlayout.addWidget(self.event_add_btn)
         self.eventLayout.addLayout(self.eventHlayout)
-        self.eventLayout.addWidget(self.EventList)
-        self.EventList.setDragEnabled(True)
+        self.eventLayout.addWidget(self.function_list)
+        self.function_list.setDragEnabled(True)
 
-        self.VarList.startDrag = self.VarStartDrag
-        self.EventList.startDrag = self.EventStartDrag
+        self.var_list.startDrag = self.VarStartDrag
+        self.function_list.startDrag = self.EventStartDrag
 
         # self.VarList.startDrag.connect()
 
-        self.VarList.itemClicked.connect(lambda: self.list_selection_changed(is_var=True))
-        self.EventList.itemClicked.connect(lambda: self.list_selection_changed(is_var=False))
+        self.var_list.itemClicked.connect(lambda: self.list_selection_changed(is_var=True))
+        self.function_list.itemClicked.connect(lambda: self.list_selection_changed(is_var=False))
 
         # self.VarList.itemSelectionChanged.connect(lambda : self.list_selection_changed(var=True))
         # self.EventList.itemSelectionChanged.connect(lambda : self.list_selection_changed(var=False))
@@ -109,52 +109,62 @@ class UserNodesList(QTabWidget):
         Events = list(EVENTS.keys())
         Events.sort()
         for node_type in Events:
-            node = get_node_by_type(node_type)
-            self.eventCompoBox.addItem(node.name, userData=node.node_type)
+            node = get_class_by_type(node_type)
+            self.function_compo_box.addItem(node.name, userData=node.node_type)
 
-        Vars = list(VARIABLES.keys())
-        Vars.sort()
-        for node_type in Vars:
-            node = get_node_by_type(node_type)
-            self.varCompoBox.addItem(node.name, userData=node.node_type)
+
+        self.varCompoBox.addItem('float', userData=UserVar.node_type)
+        self.varCompoBox.addItem('integer', userData=UserVar.node_type)
+        self.varCompoBox.addItem('boolean', userData=UserVar.node_type)
+        self.varCompoBox.addItem('string', userData=UserVar.node_type)
 
         # self.loadVars(self.userData.LoadData())
         self.varAddBtn.clicked.connect(lambda: self.add_new_node(var=True))
-        self.eventAddBtn.clicked.connect(lambda: self.add_new_node(var=False))
+        self.event_add_btn.clicked.connect(lambda: self.add_new_node(var=False))
 
     def add_new_node(self, var):
         if var:
-            name = self.varCompoBox.currentText()
+            usage = self.varCompoBox.currentText()
             type = self.varCompoBox.itemData(self.varCompoBox.currentIndex())
-
+            node_name = f'user_{usage}'
         else:
-            name = self.eventCompoBox.currentText()
-            type = self.eventCompoBox.itemData(self.eventCompoBox.currentIndex())
+            node_name = 'function'
+            type = self.function_compo_box.itemData(self.function_compo_box.currentIndex())
+            usage = 'user_function'
 
-        self.create_user_node(self.autoNodeRename(name), node_id=None, type=type, user=True, node_structure='single value', node_return='mutable')
+        self.create_user_node(self.autoNodeRename(node_name), node_id=None, type=type, user=True, node_usage=usage, node_structure='single value', node_return='mutable')
 
-    def create_user_node(self, name, node_id, type, node_return, node_structure, user=False):
+    def create_user_node(self, name, node_id, type, node_return, node_structure, node_usage, user=False):
+        if type == UserVar.node_type:
+            node = UserVar
+        elif type == UserFunction.node_type:
+            node = UserFunction
 
         # Get new Variable type and construct new Variable object
-        node = get_node_by_type(type)
+        node = get_class_by_type(type)
         new_node = self.MakeCopyOfClass(node)
-        new_node.user_node = True
         new_node.node_return = node_return
         new_node.node_structure = node_structure
-        node_data = [name, node_id, type, node_return, node_structure]
+        new_node.node_usage = node_usage
+        node_data = {'node_name':name,
+                     'node_id':node_id,
+                     'node_usage':node_usage,
+                     'node_type':type,
+                     'node_return':node_return,
+                     'node_structure':node_structure}
 
         # Add new copy of Var class Info to Dict of USER_VARS
         new_id = self.set_user_node_Id_now(new_node)
-        new_node.nodeID = node_data[1] = new_id
+        new_node.nodeID = node_data['node_id'] = new_id
         new_node.name = name
 
         # Save new Var to list of vars with [name ,node_id ,type ,node_return ,node_structure]
         self.user_nodes_data.append(node_data)
 
-        if new_node.node_type == UserFunction.node_type:
-            A_list = self.EventList
+        if type == UserFunction.node_type:
+            A_list = self.function_list
         else:
-            A_list = self.VarList
+            A_list = self.var_list
 
         # Add new QListItem to the UI List using Init Data
         self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
@@ -183,9 +193,9 @@ class UserNodesList(QTabWidget):
     def list_selection_changed(self, is_var, *args, **kwargs):
         # Name line edite setup
         if is_var:
-            item = self.VarList.currentItem()
+            item = self.var_list.currentItem()
         else:
-            item = self.EventList.currentItem()
+            item = self.function_list.currentItem()
 
         self.proprietiesWdg.clear_properties()
         self.create_wdg_for_selection(item, is_var)
@@ -209,7 +219,7 @@ class UserNodesList(QTabWidget):
             self.return_type.currentIndexChanged.connect(lambda: self.update_node_return(item.data(91), item.data(90)))
             self.proprietiesWdg.create_properties_widget("Return Type", self.return_type)
 
-        elif [FloatVar.node_type, IntegerVar.node_type, BooleanVar.node_type, StringVar.node_type].__contains__(item.data(80)):
+        elif UserVar.node_type == item.data(80):
             self.structure_type = QComboBox()
 
             self.structure_type.addItems(["single value", "array"])
@@ -231,8 +241,8 @@ class UserNodesList(QTabWidget):
         node_ref.node_structure = structure_type
 
         for item in self.user_nodes_data:
-            if item[0] == node_name:
-                item[4] = structure_type
+            if item['node_name'] == node_name:
+                item['node_structure'] = structure_type
 
         for node in self.scene.nodes:
             if node.name == node_name:
@@ -263,7 +273,7 @@ class UserNodesList(QTabWidget):
     def VarStartDrag(self, *args, **kwargs):
         try:
             self.list_selection_changed(True)
-            item = self.VarList.currentItem()
+            item = self.var_list.currentItem()
             var_ID = item.data(90)
 
             pixmap = QPixmap(item.data(Qt.UserRole))
@@ -291,7 +301,7 @@ class UserNodesList(QTabWidget):
     def EventStartDrag(self, *args, **kwargs):
         try:
             self.list_selection_changed(False)
-            item = self.EventList.currentItem()
+            item = self.function_list.currentItem()
             event_ID = item.data(90)
             pixmap = QPixmap(item.data(Qt.UserRole))
             itemData = QByteArray()
@@ -317,9 +327,9 @@ class UserNodesList(QTabWidget):
 
     def update_node_name(self, is_var):
         if is_var:
-            item = self.VarList.currentItem()
+            item = self.var_list.currentItem()
         else:
-            item = self.EventList.currentItem()
+            item = self.function_list.currentItem()
 
         oldName = item.data(91)
         tryName = self.node_name_input.text()
@@ -348,19 +358,19 @@ class UserNodesList(QTabWidget):
 
     def findListItem(self, selectedNodes: 'Nodes'):
         if selectedNodes != []:
-            for item in range(self.VarList.count()):
-                list_item = self.VarList.item(item)
+            for item in range(self.var_list.count()):
+                list_item = self.var_list.item(item)
                 if list_item.text() == selectedNodes[0].name:
-                    self.VarList.setCurrentItem(list_item)
+                    self.var_list.setCurrentItem(list_item)
                     self.list_selection_changed(is_var=True)
                     self.setCurrentIndex(0)
                     self.proprietiesWdg.create_order_wdg()
                     return list_item
 
-            for item in range(self.EventList.count()):
-                list_item = self.EventList.item(item)
+            for item in range(self.function_list.count()):
+                list_item = self.function_list.item(item)
                 if list_item.text() == selectedNodes[0].name:
-                    self.EventList.setCurrentItem(list_item)
+                    self.function_list.setCurrentItem(list_item)
                     self.list_selection_changed(is_var=False)
                     self.setCurrentIndex(1)
                     self.proprietiesWdg.create_order_wdg()
@@ -378,14 +388,14 @@ class UserNodesList(QTabWidget):
     def userRename(self, oldName, tryName: str):
         names = []
         for item in self.user_nodes_data:
-            names.append(item[0])
+            names.append(item['node_name'])
 
         if names.__contains__(tryName):
             return None
         else:
             for item in self.user_nodes_data:
-                if item[0] == oldName:
-                    item[0] = tryName
+                if item['node_name'] == oldName:
+                    item['node_name'] = tryName
                     return tryName
 
     def autoNodeRename(self, name: 'Node'):
@@ -395,7 +405,7 @@ class UserNodesList(QTabWidget):
         # does a variable already has this name ?
         names = []
         for item in self.user_nodes_data:
-            names.append(item[0])
+            names.append(item['node_name'])
         # print(names)
         while names.__contains__(newName):
             x += 1
@@ -406,19 +416,19 @@ class UserNodesList(QTabWidget):
 
     def delete_node(self, item_name, user=False):
         item_ref = None
-        if self.VarList.findItems(item_name, Qt.MatchExactly):
-            list_ref = self.VarList
-            item_ref = self.VarList.findItems(item_name, Qt.MatchExactly)[0]
+        if self.var_list.findItems(item_name, Qt.MatchExactly):
+            list_ref = self.var_list
+            item_ref = self.var_list.findItems(item_name, Qt.MatchExactly)[0]
         else:
-            list_ref = self.EventList
-            item_ref = self.EventList.findItems(item_name, Qt.MatchExactly)[0]
+            list_ref = self.function_list
+            item_ref = self.function_list.findItems(item_name, Qt.MatchExactly)[0]
 
         if item_ref:
 
             self.USER_NODES.pop(item_ref.data(90))
             selected = []
             for item in self.user_nodes_data:
-                if item[0] == item_name:
+                if item['node_name'] == item_name:
                     self.user_nodes_data.remove(item)
 
             for node in self.scene.nodes:

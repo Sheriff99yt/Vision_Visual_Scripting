@@ -42,7 +42,7 @@ class NodeEditorTab(NodeEditorWidget):
         if 'node_type' not in data:
             return Node
         else:
-            return get_node_by_type(data['node_type'])
+            return get_class_by_type(data['node_type'])
 
     def onHistoryRestored(self):
         pass
@@ -116,7 +116,7 @@ class NodeEditorTab(NodeEditorWidget):
                 if isEvent or is_var:
                     self.varSelectMenu(event, is_var)
                 else:
-                    node = get_node_by_type(self.node_type)(self.scene)
+                    node = get_class_by_type(self.node_type)(self.scene)
                     node.setPos(self.scene_position.x(), self.scene_position.y())
                     self.scene.history.storeHistory("Created Node %s" % node.__class__.__name__)
 
@@ -247,7 +247,7 @@ class NodeEditorTab(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_node = get_node_by_type(action.data())(self.scene)
+            new_node = get_class_by_type(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_node.setPos(scene_pos.x(), scene_pos.y())
             self.scene.node_editor.UpdateTextCode()

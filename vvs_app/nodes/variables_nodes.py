@@ -4,213 +4,77 @@ from vvs_app.nodes.default_functions import FontSize, FontFamily
 from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
 
-FloatColor = "#7000FF10"
-IntegerColor = "#aa0070FF"
-BooleanColor = "#aaFF1010"
-StringColor = "#70FF10FF"
+Variable_Colors = {'float': "#7000FF10",
+                   'integer': "#aa0070FF",
+                   'boolean': "#aaFF1010",
+                   'string': "#70FF10FF"}
 
+Numpy_Vars = {'float': "'f'",
+              'integer': "'i'",
+              'boolean': "'?'",
+              'string': "'S'"}
 
-class FloatVar(MasterNode):
+class UserVar(MasterNode):
     icon = ""
-    name = "user_float"
+    name = "user_variable"
     category = "VARIABLE"
     sub_category = "VARIABLE"
-    node_color = FloatColor
 
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[1]) if not isSetter else super().__init__(scene, inputs=[0, 1], outputs=[0, 1])
-        self.is_setter = isSetter
-        self.node_return = "float"
 
-    def getNodeCode(self):
-        raw_code = "Empty"
-        if self.is_setter:
-            self.outputs[1].socket_code = self.name
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            setInput = self.get_my_input_code(1)
-            if self.syntax == "Python":
-                if self.node_structure == 'single value':
-                    python_code = f"""
-{self.name} = {setInput}
-{brotherCode}"""
-                    raw_code = python_code
-
-                elif self.node_structure == 'array':
-                    python_code = f"""
-{self.name} = numpy.array('f',[{setInput}])
-{brotherCode}"""
-                    raw_code = python_code
-
-            elif self.syntax == "C++":
-                if self.node_structure == 'single value':
-                    CPP_code = f"""
-float {self.name} = {setInput};
-{brotherCode}"""
-                    raw_code = CPP_code
-                elif self.node_structure == 'array':
-                    L_P = "{"
-                    R_P = "}"
-                    CPP_code = f"""
-list &lt; float &gt; {self.name}({L_P}{setInput}{R_P});
-{brotherCode}"""
-                    raw_code = CPP_code
-            return self.grNode.highlight_code(raw_code)
+    def __init__(self, scene, isSetter, node_usage=None):
+        if not self.node_usage: self.node_usage = node_usage
+        if isSetter:
+            super().__init__(scene, inputs=[0, self.node_usage], outputs=[0, self.node_usage])
+            self.getNodeCode = self.get_setter_code
         else:
-            self.showCode = False
-            getCode = self.outputs[0].socket_code = self.name
-            return getCode
+            super().__init__(scene, inputs=[], outputs=[self.node_usage])
+            self.getNodeCode = self.get_getter_code
 
-
-class IntegerVar(MasterNode):
-    icon = ""
-    name = "user_integer"
-    category = "VARIABLE"
-    sub_category = "VARIABLE"
-    node_color = IntegerColor
-
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[2]) if not isSetter else super().__init__(scene, inputs=[0, 2], outputs=[0, 2])
         self.is_setter = isSetter
-        self.node_return = "integer"
+        self.node_color = Variable_Colors[self.node_usage]
+        self.set_node_color(self.node_color)
 
-    def getNodeCode(self):
+
+    def get_setter_code(self):
+        self.outputs[1].socket_code = self.name
+        self.showCode = not self.isInputConnected(0)
+        brother_code = self.get_other_socket_code(0)
+        input_1_code = self.get_my_input_code(1)
         raw_code = "Empty"
-        if self.is_setter:
-            self.outputs[1].socket_code = self.name
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            setInput = self.get_my_input_code(1)
-            if self.syntax == "Python":
-                if self.node_structure == 'single value':
-                    python_code = f"""
-{self.name} = {setInput}
-{brotherCode}"""
-                    raw_code = python_code
+        if self.node_usage == 'string':
+            input_1_code = f'"{input_1_code}"'
 
-                elif self.node_structure == 'array':
-                    python_code = f"""
-{self.name} = numpy.array('i',[{setInput}])
-{brotherCode}"""
-                    raw_code = python_code
-            elif self.syntax == "C++":
-                if self.node_structure == 'single value':
-                    CPP_code = f"""
-int {self.name} = {setInput};
-{brotherCode}"""
-                    raw_code = CPP_code
-                elif self.node_structure == 'array':
-                    L_P = "{"
-                    R_P = "}"
-                    CPP_code = f"""
-list &lt; int &gt; {self.name}({L_P}{setInput}{R_P});
-{brotherCode}"""
-                    raw_code = CPP_code
-            return self.grNode.highlight_code(raw_code)
+        if self.syntax == "Python":
+            if self.node_structure == 'single value':
+                python_code = f"""
+{self.name} = {input_1_code}
+{brother_code}"""
+                raw_code = python_code
 
-        else:
-            self.showCode = False
-            getCode = self.outputs[0].socket_code = self.name
-            return getCode
+            elif self.node_structure == 'array':
+                python_code = f"""
+{self.name} = numpy.array({Numpy_Vars[self.node_usage]},[{input_1_code}])
+{brother_code}"""
+                raw_code = python_code
 
+        elif self.syntax == "C++":
+            if self.node_structure == 'single value':
+                CPP_code = f"""
+{self.node_usage} {self.name} = {input_1_code};
+{brother_code}"""
+                raw_code = CPP_code
 
-class BooleanVar(MasterNode):
-    icon = ""
-    name = "user_boolean"
-    category = "VARIABLE"
-    sub_category = "VARIABLE"
-    node_color = BooleanColor
+            elif self.node_structure == 'array':
+                L_P = "{"
+                R_P = "}"
+                CPP_code = f"""
+list &lt; {self.node_usage} &gt; {self.name}({L_P}{input_1_code}{R_P});
+{brother_code}"""
+                raw_code = CPP_code
 
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[3]) if not isSetter else super().__init__(scene, inputs=[0, 3], outputs=[0, 3])
-        self.is_setter = isSetter
-        self.node_return = "boolean"
+        return self.grNode.highlight_code(raw_code)
 
-    def getNodeCode(self):
-        raw_code = "Empty"
-        if self.is_setter:
-            self.outputs[1].socket_code = self.name
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            setInput = self.get_my_input_code(1)
-            if self.syntax == "Python":
-                if self.node_structure == 'single value':
-                    python_code = f"""
-{self.name} = {setInput}
-{brotherCode}"""
-                    raw_code = python_code
-
-                elif self.node_structure == 'array':
-                    python_code = f"""
-{self.name} = numpy.array('?',[{setInput}])
-{brotherCode}"""
-                    raw_code = python_code
-            elif self.syntax == "C++":
-                if self.node_structure == 'single value':
-                    CPP_code = f"""
-bool {self.name} = {setInput};
-{brotherCode}"""
-                    raw_code = CPP_code
-                elif self.node_structure == 'array':
-                    L_P = "{"
-                    R_P = "}"
-                    CPP_code = f"""
-list &lt; bool &gt; {self.name} = {L_P}{setInput}{R_P};
-{brotherCode}"""
-                    raw_code = CPP_code
-            return self.grNode.highlight_code(raw_code)
-        else:
-            self.showCode = False
-            getCode = self.outputs[0].socket_code = self.name
-            return getCode
-
-
-class StringVar(MasterNode):
-    icon = ""
-    name = "user_string"
-    category = "VARIABLE"
-    sub_category = "VARIABLE"
-    node_color = StringColor
-
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[4]) if not isSetter else super().__init__(scene, inputs=[0, 4], outputs=[0, 4])
-        self.is_setter = isSetter
-        self.node_return = "string"
-
-    def getNodeCode(self):
-        raw_code = "Empty"
-        if self.is_setter:
-            self.outputs[1].socket_code = self.name
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            setInput = f"{chr(34)}{self.get_my_input_code(1)}{chr(34)}"
-            if self.syntax == "Python":
-                if self.node_structure == 'single value':
-                    python_code = f"""
-{self.name} = {setInput}
-{brotherCode}"""
-                    raw_code = python_code
-                elif self.node_structure == 'array':
-                    python_code = f"""
-{self.name} = numpy.array('S',[{setInput}])
-{brotherCode}"""
-                    raw_code = python_code
-            elif self.syntax == "C++":
-                if self.node_structure == 'single value':
-                    CPP_code = f"""
-string {self.name} = {setInput};
-{brotherCode}"""
-                    raw_code = CPP_code
-                elif self.node_structure == 'array':
-                    L_P = "{"
-                    R_P = "}"
-                    CPP_code = f"""
-list &lt;string&gt; {self.name} = {L_P}{setInput}{R_P};
-{brotherCode}"""
-                    raw_code = CPP_code
-
-            return self.grNode.highlight_code(raw_code)
-        else:
-            self.showCode = False
-            getCode = self.outputs[0].socket_code = self.name
-            return getCode
+    def get_getter_code(self):
+        self.showCode = False
+        getCode = self.outputs[0].socket_code = self.name
+        return getCode

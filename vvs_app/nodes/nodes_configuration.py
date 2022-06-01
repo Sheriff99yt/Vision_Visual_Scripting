@@ -44,7 +44,7 @@ def register_Node(Node_Class):
 
 ######################
 
-def get_node_by_type(node_type):
+def get_class_by_type(node_type):
     NODES = {**FUNCTIONS, **VARIABLES, **EVENTS}
     if node_type not in NODES:
         raise NodeTypeNotRegistered("node_type '%d' is not registered" % node_type)

@@ -15,7 +15,6 @@ class UserFunction(MasterNode):
     def __init__(self, scene, isSetter):
         super().__init__(scene, inputs=[], outputs=[0]) if isSetter else super().__init__(scene, inputs=[0], outputs=[0])
         self.is_setter = isSetter
-        self.user_node = True
 
     def getNodeCode(self):
         raw_code = "Empty"

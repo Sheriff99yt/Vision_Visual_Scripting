@@ -382,19 +382,9 @@ class NodeScene(Serializable):
 
     def serialize_user_nodes(self):
         # Serialize all item in UserVarsData
-        user_nodes = []
         if self.user_nodes_wdg:
-            for item in self.user_nodes_wdg.user_nodes_data:
-                user_node = OrderedDict([
-                    ('name', item[0]),
-                    ('id', item[1]),
-                    ('type', item[2]),
-                    ('node_return', item[3]),
-                    ('node_structure', item[4]),
-                ])
-
-                user_nodes.append(user_node)
-        return user_nodes
+            data = self.user_nodes_wdg.user_nodes_data
+            return data
 
     def serialize(self) -> OrderedDict:
         nodes, edges = [], []
@@ -424,23 +414,22 @@ class NodeScene(Serializable):
         # Create a list of all Existing User Nodes
         current_user_nodes = []
         for node_data in self.user_nodes_wdg.user_nodes_data:
-            node_name = node_data[0]
+            node_name = node_data['node_name']
             current_user_nodes.append(node_name)
 
         # If the Node Doesn't Exist Then Create It !
         for user_node in data['user_nodes']:
-            node_name = user_node['name']
+            node_name = user_node['node_name']
             if not current_user_nodes.__contains__(node_name):
-                self.user_nodes_wdg.create_user_node(type=user_node['type'],
-                                                     name=user_node['name'],
-                                                     node_id=user_node['id'],
+                self.user_nodes_wdg.create_user_node(type=user_node['node_type'],
+                                                     name=user_node['node_name'],
+                                                     node_id=user_node['node_id'],
                                                      node_structure=user_node['node_structure'],
+                                                     node_usage=user_node['node_usage'],
                                                      node_return=user_node['node_return'])
 
         # Create a list of all Stored User Nodes at the History Stamp
-        stored_user_nodes = []
-        for node_date in data['user_nodes']:
-            stored_user_nodes.append(node_date['name'])
+        stored_user_nodes = [node_data['node_name'] for node_data in data['user_nodes']]
 
         # If the Node Doesn't Exist in the History stamp then Delete IT
         for user_node in current_user_nodes:
@@ -463,8 +452,8 @@ class NodeScene(Serializable):
 
             if not found:
                 try:
-                    if node_data['user_node']:
-                        new_node = self.getNodeClassFromData(node_data)(self, node_data['is_setter'])
+                    if node_data['node_usage']:
+                        new_node = self.getNodeClassFromData(node_data)(self, node_data['is_setter'], node_data['node_usage'])
                     else:
                         new_node = self.getNodeClassFromData(node_data)(self)
 

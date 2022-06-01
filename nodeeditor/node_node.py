@@ -24,7 +24,11 @@ class Node(Serializable):
     node_type = None
     node_return = 'mutable'
     node_structure = 'single value'
-    user_node = False
+    node_usage = False
+    name = "NodeNode"
+    icon = ''
+    node_color = '#222222'
+
     def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [0], outputs: list = [0],
                  isSetter=None, node_icon=''):
         """
@@ -555,7 +559,7 @@ class Node(Serializable):
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
             ('outputs', outputs),
-            ('user_node', self.user_node),
+            ('node_usage', self.node_usage),
             ('is_setter', self.is_setter),
             ('node_return', self.node_return),
             ('node_structure', self.node_structure),
@@ -565,7 +569,7 @@ class Node(Serializable):
         try:
             if restore_id: self.id = data['id']
             hashmap[data['id']] = self
-            self.user_node = data['user_node']
+            self.node_usage = data['node_usage']
             self.is_setter = data['is_setter']
             self.node_return = data['node_return']
             self.node_structure = data['node_structure']

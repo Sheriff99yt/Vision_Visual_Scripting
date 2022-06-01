@@ -28,13 +28,13 @@ RIGHT_BOTTOM = 6
 A module containing Graphics representation of a :class:`~nodeeditor.node_socket.Socket`
 """
 
-Socket_Types = {'Executable': '',
-                'float': '',
-                'int': '',
-                'bool': '',
-                'string': '',
-                'array': '',
-                'wildcard': ''
+Socket_Types = {'executable': 0,
+                'float': 1,
+                'integer': 2,
+                'boolean': 3,
+                'string': 4,
+                'array': 5,
+                'wildcard': 6
                 }
 
 SOCKET_COLORS = [
@@ -249,8 +249,15 @@ class Socket(Serializable):
         self.socket_code = self.node.name
         self.position = position
         self.index = index
-        self.socket_type = 5 if self.node.node_structure == 'array' and socket_type != 0 else socket_type
-        self.original_socket_type = socket_type
+
+        if type(socket_type) == str:
+            self.socket_type = Socket_Types[socket_type]
+            self.original_socket_type = Socket_Types[socket_type]
+
+        elif type(socket_type) == int:
+            self.socket_type = 5 if self.node.node_structure == 'array' and socket_type != 0 else socket_type
+            self.original_socket_type = socket_type
+
         self.count_on_this_node_side = count_on_this_node_side
         self.is_multi_edges = multi_edges
         self.is_input = is_input
@@ -370,8 +377,9 @@ class Socket(Serializable):
         :return: Returns ``True`` if the socket type was actually changed
         :rtype: ``bool``
         """
+
         if self.socket_type != new_socket_type:
-            print(self.node.inputs + self.node.outputs)
+
             self.socket_type = new_socket_type
             self.grSocket.changeGrSocketType()
             return True
@@ -489,6 +497,7 @@ class Socket(Serializable):
             ('multi_edges', self.is_multi_edges),
             ('position', self.position),
             ('socket_type', self.socket_type),
+            ('original_socket_type', self.original_socket_type),
             ('socket_value', self.get_wdg_value()),
         ])
 

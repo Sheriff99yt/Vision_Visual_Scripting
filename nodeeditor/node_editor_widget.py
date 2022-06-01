@@ -16,8 +16,7 @@ from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
 from vvs_app.nodes.default_functions import Print
 from vvs_app.nodes.event_nodes import UserFunction
-from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar
-from vvs_app.nodes.variables_nodes import StringVar
+from vvs_app.nodes.variables_nodes import UserVar
 
 
 class NodeEditorWidget(QWidget):
@@ -400,37 +399,27 @@ class NodeEditorWidget(QWidget):
         if not self.scene.user_nodes_wdg:return imports
         user_data = self.scene.user_nodes_wdg.user_nodes_data
 
-        used_node_types = [node[2] for node in user_data]
-        used_node_structure = [item[4] for item in user_data]
+        used_node_types = [node['node_type'] for node in user_data]
+        used_node_structure = [item['node_structure'] for item in user_data]
 
         if syntax == "C++":
-
-            value = {
-                FloatVar.node_type: 'float',
-                IntegerVar.node_type: 'int',
-                BooleanVar.node_type: 'bool',
-                StringVar.node_type: 'string',
-
-            }
-
 
             if used_node_types.__contains__(Print.node_type):
                 imports.append(f'#include <iostream>')
 
-            if used_node_types.__contains__(StringVar.node_type):
+            if used_node_types.__contains__('string'):
                 imports.append("#include <string>")
 
             for data in user_data:
-                print(data[4])
 
-                if data[2] == UserFunction.node_type:
-                    imports.append(f"{self.get_node_return(syntax,data[3])} {data[0]}();")
+                if data['node_type'] == UserFunction.node_type:
+                    imports.append(f"{self.get_node_return(syntax,data['node_return'])} {data['node_name']}();")
 
-                elif [FloatVar.node_type, IntegerVar.node_type, BooleanVar.node_type, StringVar.node_type].__contains__(data[2]):
-                    if data[4] == 'single value':
-                        imports.append(f'extern {value[data[2]]} {data[0]};')
-                    elif data[4] == 'array':
-                        imports.append(f'extern list &lt; {value[data[2]]} &gt; {data[0]};')
+                elif data['node_type'] == UserVar.node_type:
+                    if data['node_structure'] == 'single value':
+                        imports.append(f'extern {data["node_usage"]} {data["node_name"]};')
+                    elif data['node_structure'] == 'array':
+                        imports.append(f'extern list &lt; {data["node_usage"]} &gt; {data["node_name"]};')
 
         elif syntax == 'Python':
             if used_node_structure.__contains__('array'):

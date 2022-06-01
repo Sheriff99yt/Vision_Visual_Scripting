@@ -6,10 +6,10 @@ from nodeeditor.node_node import Node
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException
 
+
 class MasterNode(Node):
     name = "MasterNode"
     icon = ''
-    node_color = '#555555'
     def __init__(self, scene, inputs, outputs):
         super().__init__(scene, self.name, inputs, outputs, node_icon=self.icon)
         self.set_node_color(self.node_color)

@@ -135,8 +135,9 @@ class SceneClipboard():
         self.scene.doDeselectItems()
 
         for node_data in data['nodes']:
-            if node_data['user_node']:
-                new_node = self.scene.getNodeClassFromData(node_data)(self.scene, node_data['is_setter'])
+
+            if node_data['node_usage']:
+                new_node = self.scene.getNodeClassFromData(node_data)(self.scene, node_data['is_setter'], node_data['node_usage'])
             else:
                 new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
 
