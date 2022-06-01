@@ -211,8 +211,7 @@ class UserNodesList(QTabWidget):
 
         elif [FloatVar.node_type, IntegerVar.node_type, BooleanVar.node_type, StringVar.node_type].__contains__(item.data(80)):
             self.structure_type = QComboBox()
-            # structure_type = list(self.scene.node_editor.structure_types().keys())
-            # structure_type.remove('Languages')
+
             self.structure_type.addItems(["single value", "array"])
 
             self.structure_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_structure)

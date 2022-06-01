@@ -43,19 +43,14 @@ class NodeEditorWidget(QWidget):
         self.return_types = {
                             "Languages": ["Python", "C++"],
                               "mutable": ["", "void", "", ""],
-                                "float": [" -> float", "float", "f", ""],
-                              "integer": [" -> integer", "int", "q", ""],
-                              "boolean": [" -> boolean", "boolean", "B", ""],
-                               "string": [" -> string", "string", "u", ""],
-                                 "list": [" -> list", "list", "", ""],
-                           "dictionary": [" -> dictionary", "dictionary", "", ""],
-                                "tuple": [" -> tuple", "tuple", "", ""]
+                                "float": [" -> float", "float"],
+                              "integer": [" -> integer", "int"],
+                              "boolean": [" -> boolean", "boolean"],
+                               "string": [" -> string", "string"],
+                                 "list": [" -> list", "list"],
+                           "dictionary": [" -> dictionary", "dictionary"],
+                                "tuple": [" -> tuple", "tuple"]
                             }
-        # self.structure_types = {
-        #                             "Languages": ["Python", "C++"],
-        #                             "single value": ["", ""],
-        #                             "array": [f"array({},[])", "list"],
-        #                               }
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
@@ -67,9 +62,9 @@ class NodeEditorWidget(QWidget):
     #             "single value": ["", ""],
     #             "array": [f"""array("{self.return_types[get_return][2]}",[{setInput}])""", "list"],
     #             }
-    def get_node_return(self, syntax, node_return, getting_array_type=0):
+    def get_node_return(self, syntax, node_return):
         index = self.return_types["Languages"].index(syntax)
-        return self.return_types[node_return][index + getting_array_type]
+        return self.return_types[node_return][index]
     # def get_node_structure(self, syntax, node_structure, setInput, get_return):
     #     index = self.structure_types()["Languages"].index(syntax)
     #     return self.structure_types(setInput, get_return)[node_structure][index]
@@ -364,21 +359,22 @@ class NodeEditorWidget(QWidget):
 
     def get_save_directory(self):
         data = []
+        current_syntax = self.syntax_selector.currentText()
         self.scene.masterRef.files_widget.get_scripts_dir(self.syntax_selector)
 
-        if self.syntax_selector.currentText() == 'C++':
+        if current_syntax == 'C++':
             Ex = '.h'
-            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            directory = self.get_project_directory() + f"/{current_syntax}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.header_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
 
-            Ex = self.files_extensions[f'{self.syntax_selector.currentText()}']
-            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            Ex = self.files_extensions[current_syntax]
+            directory = self.get_project_directory() + f"/{current_syntax}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.cpp_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
 
         else:
-            Ex = self.files_extensions[f'{self.syntax_selector.currentText()}']
+            Ex = self.files_extensions[current_syntax]
             directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.text_code_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
@@ -400,9 +396,13 @@ class NodeEditorWidget(QWidget):
 
     def get_imports(self):
         syntax = self.syntax_selector.currentText()
-        if not self.scene.user_nodes_wdg:return []
-        user_data = self.scene.user_nodes_wdg.user_nodes_data
         imports = []
+        if not self.scene.user_nodes_wdg:return imports
+        user_data = self.scene.user_nodes_wdg.user_nodes_data
+
+        used_node_types = [node[2] for node in user_data]
+        used_node_structure = [item[4] for item in user_data]
+
         if syntax == "C++":
 
             value = {
@@ -413,28 +413,28 @@ class NodeEditorWidget(QWidget):
 
             }
 
-            used_node_types = [node.node_type for node in self.scene.nodes]
 
             if used_node_types.__contains__(Print.node_type):
                 imports.append(f'#include <iostream>')
 
+            if used_node_types.__contains__(StringVar.node_type):
+                imports.append("#include <string>")
+
             for data in user_data:
-                if data[2] == StringVar.node_type:
-                    imports.append("#include <string>")
-                # elif data[2] == ListVar.node_type:
-                #     imports.append("#include <list>")
+                print(data[4])
 
                 if data[2] == UserFunction.node_type:
                     imports.append(f"{self.get_node_return(syntax,data[3])} {data[0]}();")
 
-                elif [FloatVar, IntegerVar, BooleanVar, StringVar].__contains__(data[3]):
-                    imports.append(f'extern {value[data[2]]}{self.get_node_return(syntax, data[3])}{data[0]};')
+                elif [FloatVar.node_type, IntegerVar.node_type, BooleanVar.node_type, StringVar.node_type].__contains__(data[2]):
+                    if data[4] == 'single value':
+                        imports.append(f'extern {value[data[2]]} {data[0]};')
+                    elif data[4] == 'array':
+                        imports.append(f'extern list &lt; {value[data[2]]} &gt; {data[0]};')
 
         elif syntax == 'Python':
-            for item in user_data:
-                if item[4] == 'array' and not imports.__contains__('from array import array'):
-                    imports.append('from array import array')
-
+            if used_node_structure.__contains__('array'):
+                imports.append(f'import numpy')
 
         imports.sort()
         return imports

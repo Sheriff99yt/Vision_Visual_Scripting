@@ -8,7 +8,6 @@ from qtpy.QtWidgets import QApplication
 from vvs_app.master_window import MasterWindow
 
 # This Import Is Important for Node Registration.. (Do not remove !!!)
-from vvs_app.nodes import *
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "", ".."))
 
 class Splash(QWidget):

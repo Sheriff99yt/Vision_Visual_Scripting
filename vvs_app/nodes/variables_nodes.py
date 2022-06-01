@@ -38,7 +38,7 @@ class FloatVar(MasterNode):
 
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = numpy.array('f',[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
 
@@ -52,7 +52,7 @@ float {self.name} = {setInput};
                     L_P = "{"
                     R_P = "}"
                     CPP_code = f"""
-list &lt;float&gt; {self.name} = {L_P}{setInput}{R_P};
+list &lt; float &gt; {self.name}({L_P}{setInput}{R_P});
 {brotherCode}"""
                     raw_code = CPP_code
             return self.grNode.highlight_code(raw_code)
@@ -90,7 +90,7 @@ class IntegerVar(MasterNode):
 
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = numpy.array('i',[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
             elif self.syntax == "C++":
@@ -103,7 +103,7 @@ int {self.name} = {setInput};
                     L_P = "{"
                     R_P = "}"
                     CPP_code = f"""
-list &lt;int&gt; {self.name} = {L_P}{setInput}{R_P};
+list &lt; int &gt; {self.name}({L_P}{setInput}{R_P});
 {brotherCode}"""
                     raw_code = CPP_code
             return self.grNode.highlight_code(raw_code)
@@ -142,7 +142,7 @@ class BooleanVar(MasterNode):
 
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = numpy.array('?',[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
             elif self.syntax == "C++":
@@ -155,7 +155,7 @@ bool {self.name} = {setInput};
                     L_P = "{"
                     R_P = "}"
                     CPP_code = f"""
-list &lt;bool&gt; {self.name} = {L_P}{setInput}{R_P};
+list &lt; bool &gt; {self.name} = {L_P}{setInput}{R_P};
 {brotherCode}"""
                     raw_code = CPP_code
             return self.grNode.highlight_code(raw_code)
@@ -192,7 +192,7 @@ class StringVar(MasterNode):
                     raw_code = python_code
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = numpy.array('S',[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
             elif self.syntax == "C++":
