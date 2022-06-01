@@ -106,12 +106,7 @@ class UserNodesList(QTabWidget):
         return NewNode
 
     def InitList(self):
-        Events = list(EVENTS.keys())
-        Events.sort()
-        for node_type in Events:
-            node = get_class_by_type(node_type)
-            self.function_compo_box.addItem(node.name, userData=node.node_type)
-
+        self.function_compo_box.addItem('function', userData=UserFunction.node_type)
 
         self.varCompoBox.addItem('float', userData=UserVar.node_type)
         self.varCompoBox.addItem('integer', userData=UserVar.node_type)
@@ -128,9 +123,9 @@ class UserNodesList(QTabWidget):
             type = self.varCompoBox.itemData(self.varCompoBox.currentIndex())
             node_name = f'user_{usage}'
         else:
-            node_name = 'function'
+            node_name = 'user_function'
             type = self.function_compo_box.itemData(self.function_compo_box.currentIndex())
-            usage = 'user_function'
+            usage = 'function'
 
         self.create_user_node(self.autoNodeRename(node_name), node_id=None, type=type, user=True, node_usage=usage, node_structure='single value', node_return='mutable')
 
