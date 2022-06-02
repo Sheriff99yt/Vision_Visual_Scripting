@@ -10,9 +10,10 @@ from nodeeditor.utils import dumpException
 class MasterNode(Node):
     name = "MasterNode"
     icon = ''
+
     def __init__(self, scene, inputs, outputs):
         super().__init__(scene, self.name, inputs, outputs, node_icon=self.icon)
-        self.set_node_color(self.node_color)
+        pass
 
     def serialize(self):
         res = super().serialize()

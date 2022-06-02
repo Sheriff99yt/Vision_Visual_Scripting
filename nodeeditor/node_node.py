@@ -16,6 +16,13 @@ from vvs_app.nodes.nodes_configuration import register_Node
 
 DEBUG = False
 
+Variable_Colors = {'float': "#7000FF10",
+                   'integer': "#aa0070FF",
+                   'boolean': "#aaFF1010",
+                   'string': "#70FF10FF",
+                   'function': "#90FF1010"}
+
+
 
 class Node(Serializable):
     """
@@ -28,6 +35,7 @@ class Node(Serializable):
     name = "NodeNode"
     icon = ''
     node_color = '#222222'
+
 
     def __init__(self, scene: 'Scene', name: str = "Undefined Node", inputs: list = [0], outputs: list = [0],
                  isSetter=None, node_icon=''):
@@ -77,8 +85,13 @@ class Node(Serializable):
 
         self.initSockets(inputs, outputs)
 
+        if self.node_usage:
+            self.node_color = Variable_Colors[self.node_usage]
 
-    def get_return(self, getting_array_type=0):
+        self.set_node_color(self.node_color)
+
+
+    def get_return(self):
         return self.scene.node_editor.get_node_return(self.syntax, self.node_return)
 
     # def get_structure(self, setInput, get_return):
@@ -396,9 +409,12 @@ class Node(Serializable):
 
         return other_socket.getSocketCode()
 
-
     def getSocketWdgValue(self, input_socket):
-        return self.scene.masterRef.get_QWidget_content(input_socket.userInputWdg)
+        value = self.scene.masterRef.get_QWidget_content(input_socket.userInputWdg)
+        if self.syntax == 'Rust' and type(value) == bool:
+            return str(value).lower()
+
+        return value
 
     def getConnectedInputNode(self, index: int = 0):
         input_socket = self.inputs[index]

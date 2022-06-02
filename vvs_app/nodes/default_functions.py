@@ -9,6 +9,9 @@ FontFamily = "Roboto"
 mathOperators = "#70307030"
 logicOperators = "#30000050"
 
+L_P = "{"
+R_P = "}"
+
 
 def Indent(String):
     return indent(String, '     ')
@@ -22,14 +25,8 @@ class IfStatement(MasterNode):
     node_color = "#90FF5733"
     def __init__(self, scene):
         super().__init__(scene, inputs=[0, 3], outputs=[0, 0])
-
-        # self.icon = self.scene.masterRef.global_switches.get_icon("if.png")
-
-        self.set_input_label_text(0, "Action")
-        self.set_input_label_text(1, "Condition")
-
-        self.set_output_label_text(0, "True")
-        self.set_output_label_text(1, "False")
+        self.set_input_label_text(0, "Action"),                 self.set_output_label_text(0, "True")
+        self.set_input_label_text(1, "Condition"),              self.set_output_label_text(1, "False")
 
     def getNodeCode(self):
         raw_code = "Empty"
@@ -37,50 +34,51 @@ class IfStatement(MasterNode):
         condition = self.get_my_input_code(1)
         true = self.get_other_socket_code(0)
         false = self.get_other_socket_code(1)
-
         if self.syntax == "Python":
-            if self.isOutputConnected(1) and self.isOutputConnected(0):
-                python_code = f"""
-if {condition}:
-{Indent(true)}
+            else_code = ''
+            if self.isOutputConnected(1):
+                else_code = f"""
 else:
 {Indent(false)}"""
-            elif self.isOutputConnected(1) and self.isOutputConnected(0) is False:
-                python_code = f"""
-if not {condition}:
-{Indent(false)}"""
-            else:
-                python_code = f"""
+            python_code = f"""
 if {condition}:
-{Indent(true)}"""
+{Indent(true)}
+{else_code}"""
 
             raw_code = python_code
         elif self.syntax == "C++":
-            L_P = "{"
-            R_P = "}"
-            if self.isOutputConnected(1) and self.isOutputConnected(0):
-                CPP_code = f"""
-if ({condition})
-{L_P}
-{Indent(true)}
-{R_P}
+            else_code = ''
+            if self.isOutputConnected(1):
+                else_code = f"""
 else
 {L_P}
 {Indent(false)}
 {R_P}"""
-            elif self.isOutputConnected(1) and self.isOutputConnected(0) is False:
-                CPP_code = f"""
-if (not {condition})
-{L_P}
-{Indent(false)}
-{R_P}"""
-            else:
-                CPP_code = f"""
+
+            CPP_code = f"""
 if ({condition})
 {L_P}
 {Indent(true)}
-{R_P}"""
+{R_P}
+{else_code}"""
+
             raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            else_code = ''
+            if self.isOutputConnected(1):
+                else_code = f"""
+else {L_P}
+{Indent(false)}
+{R_P}"""
+
+            Rust_code = f"""
+if {condition} {L_P}
+{Indent(true)}
+{R_P}
+{else_code}"""
+
+            raw_code = Rust_code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -114,6 +112,13 @@ for (int i=0;i&lt;{range};i++)
 {Indent(loopCode)}"""
             raw_code = CPP_code
 
+        elif self.syntax == "Rust":
+            Rust_code = f"""
+for index in 0..{range} {L_P}
+{Indent(loopCode)}
+{R_P}"""
+            raw_code = Rust_code
+
         return self.grNode.highlight_code(raw_code)
 
 
@@ -130,25 +135,30 @@ class ForEachLoop(MasterNode):
     def getNodeCode(self):
         raw_code = "Empty"
         self.showCode = not self.isInputConnected(0)
-        list = self.get_my_input_code(1)
+        array = self.get_my_input_code(1)
         loopCode = self.get_other_socket_code(0)
-        self.outputs[1].socket_code = 'item'
+        self.outputs[1].socket_code = item_name = 'item'
 
         if self.syntax == "Python":
             python_code = f"""
-for item in {list}:
+for {item_name} in {array}:
 {Indent(loopCode)}"""
             raw_code = python_code
 
         elif self.syntax == "C++":
-            L_P = "{"
-            R_P = "}"
             CPP_code = f"""
-for (auto item : {list})
+for (auto {item_name} : {array})
 {L_P}
 {Indent(loopCode)}
 {R_P}"""
             raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            Rust_code = f"""
+for {item_name} in {array} {L_P}
+{Indent(loopCode)}
+{R_P}"""
+            raw_code = Rust_code
         return self.grNode.highlight_code(raw_code)
 
 
@@ -166,21 +176,15 @@ class And(MasterNode):
 
     def getNodeCode(self):
         raw_code = "Empty"
+        A = self.get_my_input_code(0)
+        B = self.get_my_input_code(1)
         if self.syntax == "Python":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
             python_code = self.outputs[0].socket_code = f"({A} and {B})"
-
             raw_code = python_code
 
-        elif self.syntax == "C++":
-            A = self.get_my_input_code(0)
-            B = self.get_my_input_code(1)
-
-            CPP_code = self.outputs[0].socket_code = f"({A} && {B})"
-
-            raw_code = CPP_code
+        elif ["C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A} && {B})"
+            raw_code = code
 
         return raw_code
 
@@ -201,13 +205,9 @@ class GreaterThan(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}&gt;{B})"
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}&gt;{B})"
-            raw_code = CPP_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}&gt;{B})"
+            raw_code = code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -228,13 +228,9 @@ class LessThan(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}&lt;{B})"
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}&lt;{B})"
-            raw_code = CPP_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}&lt;{B})"
+            raw_code = code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -255,13 +251,9 @@ class Equal(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}=={B})"
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}=={B})"
-            raw_code = CPP_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}=={B})"
+            raw_code = code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -283,13 +275,9 @@ class Add(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}+{B})"
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}+{B})"
-            raw_code = CPP_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}+{B})"
+            raw_code = code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -310,13 +298,9 @@ class Sub(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}+{B})"
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}+{B})"
-            raw_code = CPP_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}-{B})"
+            raw_code = code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -337,13 +321,9 @@ class Mul(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}*{B})"
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}*{B})"
-            raw_code = CPP_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}*{B})"
+            raw_code = code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -364,13 +344,10 @@ class Div(MasterNode):
         A = self.get_my_input_code(0)
         B = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = self.outputs[0].socket_code = f"({A}/{B})"
-            raw_code = python_code
+        if ["Python", "C++", "Rust"].__contains__(self.syntax):
+            code = self.outputs[0].socket_code = f"({A}/{B})"
+            raw_code = code
 
-        elif self.syntax == "C++":
-            CPP_code = self.outputs[0].socket_code = f"({A}/{B})"
-            raw_code = CPP_code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -391,22 +368,37 @@ class UserInput(MasterNode):
         self.showCode = not self.isInputConnected(0)
         brotherCode = self.get_other_socket_code(0)
         inputName = self.get_my_input_code(1)
-        if inputName != "" and inputName is not None: inputName += " = "
         inputCode = self.get_my_input_code(2)
+
+        equal = " = "
+        rr = f'println!("{inputCode}");'
+        if inputName == "" or inputName is None:
+            equal = ''
+        if inputCode == "" or inputCode is None:
+            rr = ''
+
 
         if self.syntax == "Python":
             python_code = f"""
-{inputName}input("{inputCode}")
+{inputName}{equal}input("{inputCode}")
 {brotherCode}"""
 
             raw_code = python_code
 
         elif self.syntax == "C++":
             CPP_code = f"""
-cout &lt;&lt; "{inputCode}", cin >> {inputName};
+cout &lt;&lt; "{inputCode}", cin >> {equal}{inputName};
 {brotherCode}"""
 
             raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            rust_code = f"""
+{rr}
+stdin().read_line(&mut {inputName}).unwrap();
+{brotherCode}"""
+
+            raw_code = rust_code
         return self.grNode.highlight_code(raw_code)
 
 
@@ -459,31 +451,25 @@ class Print(MasterNode):
         brotherCode = self.get_other_socket_code(0)
         printCode = self.get_my_input_code(1)
 
+        if not self.isInputConnected(1): printCode = f'"{printCode}"'
         if self.syntax == "Python":
-            if self.isInputConnected(1):
-                python_code = f"""
+            python_code = f"""
 print({printCode})
-{brotherCode}"""
-
-            else:
-                python_code = f"""
-print("{printCode}")
 {brotherCode}"""
 
             raw_code = python_code
 
         elif self.syntax == "C++":
-            if self.isInputConnected(1):
-                CPP_code = f"""
+            CPP_code = f"""
 cout &lt;&lt; {printCode};
 {brotherCode}"""
-
-            else:
-                CPP_code = f"""
-cout &lt;&lt; "{printCode}";
-{brotherCode}"""
-
             raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            rust_code = f"""
+println!({printCode});
+{brotherCode}"""
+            raw_code = rust_code
 
         return self.grNode.highlight_code(raw_code)
 
@@ -502,19 +488,25 @@ class Return(MasterNode):
         raw_code = "Empty"
         self.showCode = not self.isInputConnected(0)
         brotherCode = self.get_other_socket_code(0)
-        printCode = self.get_my_input_code(1)
+        return_code = self.get_my_input_code(1)
 
         if self.syntax == "Python":
             python_code = f"""
-return {printCode}
+return {return_code}
 {brotherCode}"""
             raw_code = python_code
 
         elif self.syntax == "C++":
             CPP_code = f"""
-return {printCode};
+return {return_code};
 {brotherCode}"""
             raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            rust_code = f"""
+return {return_code};
+{brotherCode}"""
+            raw_code = rust_code
         return self.grNode.highlight_code(raw_code)
 
 

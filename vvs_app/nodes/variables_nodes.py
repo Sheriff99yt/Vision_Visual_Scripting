@@ -4,15 +4,16 @@ from vvs_app.nodes.default_functions import FontSize, FontFamily
 from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
 
-Variable_Colors = {'float': "#7000FF10",
-                   'integer': "#aa0070FF",
-                   'boolean': "#aaFF1010",
-                   'string': "#70FF10FF"}
 
 Numpy_Vars = {'float': "'f'",
               'integer': "'i'",
               'boolean': "'?'",
               'string': "'S'"}
+
+Rust_Vars = {'float': "f32",
+             'integer': "i32",
+             'boolean': "bool",
+             'string': "String"}
 
 class UserVar(MasterNode):
     icon = ""
@@ -31,8 +32,6 @@ class UserVar(MasterNode):
             self.getNodeCode = self.get_getter_code
 
         self.is_setter = isSetter
-        self.node_color = Variable_Colors[self.node_usage]
-        self.set_node_color(self.node_color)
 
 
     def get_setter_code(self):
@@ -41,6 +40,9 @@ class UserVar(MasterNode):
         brother_code = self.get_other_socket_code(0)
         input_1_code = self.get_my_input_code(1)
         raw_code = "Empty"
+        L_P = "{"
+        R_P = "}"
+
         if self.node_usage == 'string':
             input_1_code = f'"{input_1_code}"'
 
@@ -65,12 +67,23 @@ class UserVar(MasterNode):
                 raw_code = CPP_code
 
             elif self.node_structure == 'array':
-                L_P = "{"
-                R_P = "}"
                 CPP_code = f"""
-list &lt; {self.node_usage} &gt; {self.name}({L_P}{input_1_code}{R_P});
+list &lt;{self.node_usage}&gt; {self.name}({L_P}{input_1_code}{R_P});
 {brother_code}"""
                 raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            if self.node_structure == 'single value':
+                rust_code = f"""
+let {self.name} = {input_1_code};
+{brother_code}"""
+                raw_code = rust_code
+
+            elif self.node_structure == 'array':
+                rust_code = f"""
+let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = vec![{input_1_code}];
+{brother_code}"""
+                raw_code = rust_code
 
         return self.grNode.highlight_code(raw_code)
 

@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import *
 from nodeeditor.node_scene import NodeScene
 from vvs_app.editor_properties_list import PropertiesList
 from vvs_app.nodes.default_functions import *
-from vvs_app.nodes.event_nodes import UserFunction
+from vvs_app.nodes.user_functions_nodes import UserFunction
 from vvs_app.nodes.nodes_configuration import VARIABLES, get_class_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 from vvs_app.nodes.variables_nodes import UserVar
@@ -252,9 +252,9 @@ class UserNodesList(QTabWidget):
 
     def update_node_return(self, node_name, node_id):
         return_type = self.return_type.currentText()
-        for item in self.user_nodes_data:
-            if item[0] == node_name:
-                item[3] = return_type
+        for data in self.user_nodes_data:
+            if data['node_name'] == node_name:
+                data['node_return'] = return_type
 
         for node in self.scene.nodes:
             if node.name == node_name:

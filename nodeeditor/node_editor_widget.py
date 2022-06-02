@@ -15,7 +15,7 @@ from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
 from vvs_app.nodes.default_functions import Print
-from vvs_app.nodes.event_nodes import UserFunction
+from vvs_app.nodes.user_functions_nodes import UserFunction
 from vvs_app.nodes.variables_nodes import UserVar
 
 
@@ -40,15 +40,15 @@ class NodeEditorWidget(QWidget):
                               'Rust': '.rs'}
 
         self.return_types = {
-                            "Languages": ["Python", "C++"],
-                              "mutable": ["", "void", "", ""],
-                                "float": [" -> float", "float"],
-                              "integer": [" -> integer", "int"],
-                              "boolean": [" -> boolean", "boolean"],
-                               "string": [" -> string", "string"],
-                                 "list": [" -> list", "list"],
-                           "dictionary": [" -> dictionary", "dictionary"],
-                                "tuple": [" -> tuple", "tuple"]
+                            "Languages": ["Python", "C++", "Rust"],
+                              "mutable": ["", "void", ""],
+                                "float": [" -> float", "float", " -> float"],
+                              "integer": [" -> integer", "int", " -> integer"],
+                              "boolean": [" -> boolean", "boolean", " -> boolean"],
+                               "string": [" -> string", "string", " -> string"],
+                                 "list": [" -> list", "list", " -> list"],
+                           "dictionary": [" -> dictionary", "dictionary", " -> dictionary"],
+                                "tuple": [" -> tuple", "tuple", " -> tuple"]
                             }
 
         # crate graphics scene
@@ -381,8 +381,17 @@ class NodeEditorWidget(QWidget):
         return data
 
     def CopyTextCode(self):
-        self.text_code_wnd.selectAll()
-        self.text_code_wnd.copy()
+        if self.syntax_selector.currentText() == "C++":
+            if self.multi_code_wnd.currentWidget() == self.header_wnd:
+                self.header_wnd.selectAll()
+                self.header_wnd.copy()
+            elif self.multi_code_wnd.currentWidget() == self.cpp_wnd:
+                self.cpp_wnd.selectAll()
+                self.cpp_wnd.copy()
+        else:
+            self.text_code_wnd.selectAll()
+            self.text_code_wnd.copy()
+
         self.update_text_code_files()
 
     def syntax_changed(self):
