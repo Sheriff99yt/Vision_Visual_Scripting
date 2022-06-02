@@ -4,7 +4,6 @@ from vvs_app.master_node import MasterNode
 from nodeeditor.node_editor_widget import *
 
 
-
 class UserFunction(MasterNode):
     icon = "event.png"
     name = "user_function"
@@ -12,7 +11,8 @@ class UserFunction(MasterNode):
     sub_category = "User_Function"
     node_usage = 'function'
 
-    def __init__(self, scene, isSetter):
+    def __init__(self, scene, isSetter, node_usage='function'):
+        if not self.node_usage: self.node_usage = node_usage
         if isSetter:
             super().__init__(scene, inputs=[], outputs=[0])
             self.getNodeCode = self.write_function

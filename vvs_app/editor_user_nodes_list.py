@@ -246,7 +246,6 @@ class UserNodesList(QTabWidget):
                 for socket in node.inputs + node.outputs:
                     if socket.socket_type != 0:
                         socket.changeSocketType(5 if structure_type == 'array' else socket.original_socket_type)
-                        socket.init_socket_input()
 
         self.scene.node_editor.UpdateTextCode()
 

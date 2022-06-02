@@ -44,7 +44,7 @@ class NodeList(QTreeWidget):
             self.addMyItem(node.name, node.icon, node)
 
     def init_primary_content(self):
-        self.categories = {"▼ Process": None, "▼ Logic": None, "▼ Math": None, "▼ Input": None, "▼ Output": None}
+        self.categories = {"▼ Process": None, "▼ Logic": None, "▼ Math": None, "▼ Input": None, "▼ Output": None, "▼ List Operator": None}
         for category in list(self.categories.keys()):
             item = QTreeWidgetItem(self, [category])
             item.setFont(0, QFont("Arial", 9))

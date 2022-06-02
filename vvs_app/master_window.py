@@ -752,7 +752,7 @@ class MasterWindow(NodeEditorWindow):
             widget.addItems(content_list)
             return content_list
         else:
-            print(widget, "Widget Not Supported")
+            print(widget, "Widget Not Supported << Get")
             return None
 
     def set_QWidget_content(self, widget, new_value):
@@ -768,7 +768,7 @@ class MasterWindow(NodeEditorWindow):
             widget.clear()
             widget.addItems(new_value)
         else:
-            print(widget, "Widget Not Supported")
+            print(widget, "Widget Not Supported << Set")
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",

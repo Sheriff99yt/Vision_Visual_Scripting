@@ -168,13 +168,11 @@ class Node(Serializable):
         """
 
         if reset:
-            # clear old sockets
-            if hasattr(self, 'inputs') and hasattr(self, 'outputs'):
-                # remove grSockets from scene
-                for socket in (self.inputs + self.outputs):
-                    self.scene.grScene.removeItem(socket.grSocket)
-                self.inputs = []
-                self.outputs = []
+            # remove grSockets from scene
+            for socket in (self.inputs + self.outputs):
+                self.remove_socket(socket)
+            self.inputs = []
+            self.outputs = []
 
         # create new sockets
         counter = 0
@@ -203,6 +201,17 @@ class Node(Serializable):
 
         self.grNode.AutoResizeGrNode()
 
+    def remove_socket(self, socket):
+        parent = None
+        if self.inputs.__contains__(socket):
+            parent = self.inputs
+        elif self.outputs.__contains__(socket):
+            parent = self.outputs
+
+        if parent:
+            parent.remove(socket)
+        socket.userInputWdg.deleteLater()
+        self.scene.grScene.removeItem(socket.grSocket)
 
     def updateSockets(self):
         pass
@@ -353,6 +362,7 @@ class Node(Serializable):
     #
 
     def getChildrenNodes(self) -> 'List[Node]':
+
         """
         Retreive all first-level children connected to this `Node` `Outputs`
 
@@ -366,6 +376,15 @@ class Node(Serializable):
                 other_node = edge.getOtherSocket(self.outputs[ix]).node
                 other_nodes.append(other_node)
         return other_nodes
+
+    def input_node(self, index):
+        if index < len(self.inputs):
+            return None
+
+        edge = self.inputs[index].socketEdges[0]
+        other_socket = edge.getOtherSocket(self.outputs[index])
+        print(other_socket.node)
+        return other_socket.node
 
     def get_other_socket_code(self, index: int = 0):
         """
@@ -395,7 +414,7 @@ class Node(Serializable):
     def get_my_input_code(self, index: int = 0):
         if not self.inputs or index > len(self.inputs)-1:
             print("Trying to call from Node Input socket while Node has no input socket")
-            return None
+            return ''
 
         input_socket = self.inputs[index]
         if len(input_socket.socketEdges) == 0:
@@ -407,13 +426,16 @@ class Node(Serializable):
         if other_socket is None:
             return self.getSocketWdgValue(input_socket)
 
+        if other_socket.getSocketCode() == None: return ''
         return other_socket.getSocketCode()
 
-    def getSocketWdgValue(self, input_socket):
-        value = self.scene.masterRef.get_QWidget_content(input_socket.userInputWdg)
+    def getSocketWdgValue(self, socket):
+        value = self.scene.masterRef.get_QWidget_content(socket.userInputWdg)
         if self.syntax == 'Rust' and type(value) == bool:
             return str(value).lower()
 
+        if value == None:
+            return ''
         return value
 
     def getConnectedInputNode(self, index: int = 0):

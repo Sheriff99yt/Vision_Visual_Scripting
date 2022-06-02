@@ -466,6 +466,8 @@ cout &lt;&lt; {printCode};
             raw_code = CPP_code
 
         elif self.syntax == "Rust":
+            connected = self.isInputConnected(1)
+            if connected: printCode = '"{:?}", ' + printCode
             rust_code = f"""
 println!({printCode});
 {brotherCode}"""
@@ -508,6 +510,37 @@ return {return_code};
 {brotherCode}"""
             raw_code = rust_code
         return self.grNode.highlight_code(raw_code)
+
+
+# List Operators
+class MakeList(MasterNode):
+    icon = ""
+    name = "Make List"
+    category = "FUNCTION"
+    sub_category = "List Operator"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=['wildcard', 'wildcard', 'wildcard', 'wildcard'], outputs=['array'])
+
+    def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = False
+        return_code = ''
+        for socket in self.inputs:
+            socket_code = self.get_my_input_code(socket.index)
+
+            if socket_code != '':
+                socket_code = socket_code + ', '
+            return_code = return_code + socket_code
+
+        if return_code.endswith(', '):
+            return_code = return_code[:-2]
+
+        code = f'{return_code}'
+        raw_code = code
+        self.outputs[0].socket_code = code
+        return self.grNode.highlight_code(raw_code)
+
 
 
 # Khyria Efforts
