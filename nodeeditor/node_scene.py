@@ -409,7 +409,6 @@ class NodeScene(Serializable):
             self.id = data['id']
 
         self.node_editor.syntax_selector.setCurrentText(data['syntax'])
-        print(data['syntax'])
 
         # Create a list of all Existing User Nodes
         current_user_nodes = []

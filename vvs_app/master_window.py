@@ -38,6 +38,49 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
 DEBUG = False
 
+class Splash(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet("background-color: transparent")
+        self.setAttribute(Qt.WA_TranslucentBackground, on=True)
+        self.setWindowFlag(Qt.FramelessWindowHint)
+
+        lo = QVBoxLayout()
+        self.setLayout(lo)
+
+        Logo = QLabel()
+        pixmap = QPixmap("icons/Dark/VVS_White2.png")
+        Logo.setPixmap(pixmap)
+        lo.addWidget(Logo)
+
+        self.Loading_Label = QLabel("Loading")
+        self.Loading_Label.setStyleSheet("font: 20px; color: white") # font-family: Calibri;
+        lo.addWidget(self.Loading_Label)
+
+        self.timer = QTimer()
+
+    def mousePressEvent(self, event):
+        self.oldPosition = event.globalPos()
+
+    def mouseMoveEvent(self, event):
+        delta = QPoint(event.globalPos() - self.oldPosition)
+        self.move(self.x() + delta.x(), self.y() + delta.y())
+        self.oldPosition = event.globalPos()
+
+    def run(self, Main):
+        self.show()
+        self.timer.start(300)
+        self.times = 0
+        self.timer.timeout.connect(lambda: self.run_timeout(Main))
+
+    def run_timeout(self, Main):
+        if self.times >= 3:
+            Main.showMaximized()
+            self.close()
+            self.timer.stop()
+        else:
+            self.times += 1
+            self.Loading_Label.setText(self.Loading_Label.text() + " .")
 
 class MasterWindow(NodeEditorWindow):
     def __init__(self):

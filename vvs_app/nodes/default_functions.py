@@ -16,6 +16,7 @@ R_P = "}"
 def Indent(String):
     return indent(String, '     ')
 
+
 # Process
 class IfStatement(MasterNode):
     icon = "if.png"
@@ -109,7 +110,9 @@ for item in range({range}):
         elif self.syntax == "C++":
             CPP_code = f"""
 for (int i=0;i&lt;{range};i++)
-{Indent(loopCode)}"""
+{L_P}
+{Indent(loopCode)}
+{R_P}"""
             raw_code = CPP_code
 
         elif self.syntax == "Rust":
@@ -155,7 +158,7 @@ for (auto {item_name} : {array})
 
         elif self.syntax == "Rust":
             Rust_code = f"""
-for {item_name} in {array} {L_P}
+for {item_name} in &{array} {L_P}
 {Indent(loopCode)}
 {R_P}"""
             raw_code = Rust_code
@@ -267,7 +270,7 @@ class Add(MasterNode):
     node_color = mathOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[1])
+        super().__init__(scene, inputs=[6, 6], outputs=[6])
         self.showCode = False
 
     def getNodeCode(self):
@@ -290,7 +293,7 @@ class Sub(MasterNode):
     node_color = mathOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[1])
+        super().__init__(scene, inputs=[6, 6], outputs=[6])
         self.showCode = False
 
     def getNodeCode(self):
@@ -313,7 +316,7 @@ class Mul(MasterNode):
     node_color = mathOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[1])
+        super().__init__(scene, inputs=[6, 6], outputs=[6])
         self.showCode = False
 
     def getNodeCode(self):
@@ -336,7 +339,7 @@ class Div(MasterNode):
     node_color = mathOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[1])
+        super().__init__(scene, inputs=[6, 6], outputs=[6])
         self.showCode = False
 
     def getNodeCode(self):
@@ -418,19 +421,11 @@ class RawCode(MasterNode):
         brotherCode = self.get_other_socket_code(0)
         inputCode = self.get_my_input_code(1)
 
-        if self.syntax == "Python":
-            python_code = f"""
+        code = f"""
 {inputCode}
 {brotherCode}"""
 
-            raw_code = python_code
-
-        elif self.syntax == "C++":
-            CPP_code = f"""
-{inputCode}
-{brotherCode}"""
-
-            raw_code = CPP_code
+        raw_code = code
         return self.grNode.highlight_code(raw_code)
 
 
@@ -489,25 +484,24 @@ class Return(MasterNode):
     def getNodeCode(self):
         raw_code = "Empty"
         self.showCode = not self.isInputConnected(0)
-        brotherCode = self.get_other_socket_code(0)
         return_code = self.get_my_input_code(1)
 
         if self.syntax == "Python":
             python_code = f"""
 return {return_code}
-{brotherCode}"""
+"""
             raw_code = python_code
 
         elif self.syntax == "C++":
             CPP_code = f"""
 return {return_code};
-{brotherCode}"""
+"""
             raw_code = CPP_code
 
         elif self.syntax == "Rust":
             rust_code = f"""
 return {return_code};
-{brotherCode}"""
+"""
             raw_code = rust_code
         return self.grNode.highlight_code(raw_code)
 

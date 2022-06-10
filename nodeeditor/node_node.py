@@ -94,9 +94,6 @@ class Node(Serializable):
     def get_return(self):
         return self.scene.node_editor.get_node_return(self.syntax, self.node_return)
 
-    # def get_structure(self, setInput, get_return):
-    #     return self.scene.node_editor.get_node_structure(self.syntax, self.node_structure, setInput, get_return)
-
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
         return currentOrder
@@ -552,7 +549,6 @@ class Node(Serializable):
         except Exception as e:
             dumpException(e)
             return None
-
 
     def getInputs(self, index: int = 0) -> 'List[Node]':
         """

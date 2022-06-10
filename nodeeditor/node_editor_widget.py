@@ -44,29 +44,22 @@ class NodeEditorWidget(QWidget):
                               "mutable": ["", "void", ""],
                                 "float": [" -> float", "float", " -> float"],
                               "integer": [" -> integer", "int", " -> integer"],
-                              "boolean": [" -> boolean", "boolean", " -> boolean"],
+                              "boolean": [" -> boolean", "bool", " -> boolean"],
                                "string": [" -> string", "string", " -> string"],
                                  "list": [" -> list", "list", " -> list"],
                            "dictionary": [" -> dictionary", "dictionary", " -> dictionary"],
                                 "tuple": [" -> tuple", "tuple", " -> tuple"]
-                            }
+                             }
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
 
         self.create_widget_window()
-    # def structure_types(self, setInput="", get_return="mutable"):
-    #     return {
-    #             "Languages": ["Python", "C++"],
-    #             "single value": ["", ""],
-    #             "array": [f"""array("{self.return_types[get_return][2]}",[{setInput}])""", "list"],
-    #             }
+
     def get_node_return(self, syntax, node_return):
         index = self.return_types["Languages"].index(syntax)
         return self.return_types[node_return][index]
-    # def get_node_structure(self, syntax, node_structure, setInput, get_return):
-    #     index = self.structure_types()["Languages"].index(syntax)
-    #     return self.structure_types(setInput, get_return)[node_structure][index]
+
     def create_widget_window(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
@@ -410,6 +403,7 @@ class NodeEditorWidget(QWidget):
 
         used_node_types = [node['node_type'] for node in user_data]
         used_node_structure = [item['node_structure'] for item in user_data]
+        current_syntax = self.return_types["Languages"].index(syntax)
 
         if syntax == "C++":
 
@@ -426,9 +420,9 @@ class NodeEditorWidget(QWidget):
 
                 elif data['node_type'] == UserVar.node_type:
                     if data['node_structure'] == 'single value':
-                        imports.append(f'extern {data["node_usage"]} {data["node_name"]};')
+                        imports.append(f'extern {self.return_types[data["node_usage"]][current_syntax]} {data["node_name"]};')
                     elif data['node_structure'] == 'array':
-                        imports.append(f'extern list &lt; {data["node_usage"]} &gt; {data["node_name"]};')
+                        imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
 
         elif syntax == 'Python':
             if used_node_structure.__contains__('array'):

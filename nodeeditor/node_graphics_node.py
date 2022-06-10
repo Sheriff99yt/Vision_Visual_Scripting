@@ -113,7 +113,6 @@ class QDMGraphicsNode(QGraphicsItem):
         self.title_horizontal_padding = self.title_height
         self.title_vertical_padding = 8
 
-
     def AutoResizeGrNode(self):
         socketsHeight = 0
         if len(self.node.inputs) > len(self.node.outputs):

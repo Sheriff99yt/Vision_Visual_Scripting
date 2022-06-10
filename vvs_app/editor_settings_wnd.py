@@ -252,8 +252,7 @@ class SettingsWidget(QWidget):
         self.Grid_Layout.header().hide()
         self.Grid_Layout.setRootIsDecorated(False)
         self.Grid_Layout.setColumnCount(2)
-        self.Grid_Layout.setColumnWidth(0, 150)
-
+        self.Grid_Layout.setColumnWidth(0, 250)
 
         for item in self.Key_Mapping_settings_list:
             Menus = QTreeWidgetItem(self.Grid_Layout, [item])

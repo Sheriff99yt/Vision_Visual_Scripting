@@ -13,14 +13,13 @@ Numpy_Vars = {'float': "'f'",
 Rust_Vars = {'float': "f32",
              'integer': "i32",
              'boolean': "bool",
-             'string': "String"}
+             'string': "&str"}
 
 class UserVar(MasterNode):
     icon = ""
     name = "user_variable"
     category = "VARIABLE"
     sub_category = "VARIABLE"
-
 
     def __init__(self, scene, isSetter, node_usage=None):
         if not self.node_usage: self.node_usage = node_usage
@@ -32,7 +31,6 @@ class UserVar(MasterNode):
             self.getNodeCode = self.get_getter_code
 
         self.is_setter = isSetter
-
 
     def get_setter_code(self):
         self.outputs[1].socket_code = self.name
@@ -67,13 +65,12 @@ class UserVar(MasterNode):
                     python_code = f"""
 {self.name} = {other_node.name}
 {brother_code}"""
-
                 raw_code = python_code
 
         elif self.syntax == "C++":
             if self.node_structure == 'single value':
                 CPP_code = f"""
-{self.node_usage} {self.name} = {input_1_code};
+{self.scene.node_editor.return_types[self.node_usage][self.scene.node_editor.return_types["Languages"].index(self.syntax)]} {self.name} = {input_1_code};
 {brother_code}"""
                 raw_code = CPP_code
 
@@ -83,12 +80,10 @@ class UserVar(MasterNode):
                     CPP_code = f"""
 list &lt;{self.node_usage}&gt; {self.name}({L_P}{input_1_code}{R_P});
 {brother_code}"""
-
                 elif isinstance(other_node, UserVar):
                     CPP_code = f"""
 list &lt;{self.node_usage}&gt; {self.name} = {other_node.name};
 {brother_code}"""
-
                 raw_code = CPP_code
 
 # Rust Array Code
@@ -109,7 +104,6 @@ let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = vec![{input_1_code}];
                     rust_code = f"""
 let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = {other_node.name}
 {brother_code}"""
-
                 raw_code = rust_code
 
         return self.grNode.highlight_code(raw_code)

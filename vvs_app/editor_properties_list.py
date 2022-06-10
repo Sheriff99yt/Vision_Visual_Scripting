@@ -5,7 +5,7 @@ from qtpy.QtWidgets import *
 
 
 class PropertiesList(QScrollArea):
-    def __init__(self, parent=None, master_ref =None):
+    def __init__(self, parent=None, master_ref=None):
         super().__init__(parent)
         self.setWidgetResizable(True)
         self.master_ref = master_ref
