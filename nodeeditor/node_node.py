@@ -5,10 +5,10 @@ A module containing NodeEditor's class for representing `Node`.
 import socket
 from collections import OrderedDict
 
-from PyQt5.QtWidgets import *
+from PyQt6.QtWidgets import *
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
-from PyQt5.QtGui import QColor, QBrush, QIcon, QImage
+from PyQt6.QtGui import QColor, QBrush, QIcon, QImage
 from nodeeditor.node_serializable import Serializable
 from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
 from nodeeditor.utils import dumpException, pp

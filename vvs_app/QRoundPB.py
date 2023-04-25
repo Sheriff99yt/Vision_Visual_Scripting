@@ -27,11 +27,11 @@
 import operator
 from enum import Enum
 
-from PyQt5.QtCore import pyqtSlot, QPointF, Qt, QRectF
-from PyQt5.QtGui import (QPalette, QConicalGradient, QGradient, QRadialGradient,
+from PyQt6.QtCore import pyqtSlot, QPointF, Qt, QRectF
+from PyQt6.QtGui import (QPalette, QConicalGradient, QGradient, QRadialGradient,
                          QFontMetricsF, QFont, QPainter, QPen, QPainterPath, QImage,
                          QPaintEvent)
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget
 
 
 class QRoundProgressBar(QWidget):

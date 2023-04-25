@@ -2,7 +2,7 @@
 """
 A module containing the Edge Dragging functionality
 """
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView
+from PyQt6.QtWidgets import QGraphicsItem, QGraphicsView
 
 from nodeeditor.node_socket import QDMGraphicsSocket
 from nodeeditor.node_edge import EDGE_TYPE_DEFAULT

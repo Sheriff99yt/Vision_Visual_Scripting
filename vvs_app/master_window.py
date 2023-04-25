@@ -123,7 +123,7 @@ class MasterWindow(NodeEditorWindow):
         self.setCentralWidget(self.stackedDisplay)
 
         self.windowMapper = QSignalMapper(self)
-        self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+        # self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
         # Create Welcome Screen and allow user to set the project Directory
         self.create_welcome_screen()
@@ -816,5 +816,5 @@ class MasterWindow(NodeEditorWindow):
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",
                           "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
+                          "document interface applications using PyQt6 and NodeEditor. For more information visit: "
                           "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")

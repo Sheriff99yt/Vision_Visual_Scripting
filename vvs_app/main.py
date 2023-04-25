@@ -1,9 +1,9 @@
 import ctypes
 import os
 import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 from qtpy.QtWidgets import QApplication
 from vvs_app.master_window import MasterWindow, Splash
 

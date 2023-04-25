@@ -1,6 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 
 from nodeeditor.node_scene import NodeScene
 from vvs_app.editor_properties_list import PropertiesList
@@ -198,7 +198,7 @@ class UserNodesList(QTabWidget):
     def create_wdg_for_selection(self, item, is_var):
         # Create name widget
         self.node_name_input = QLineEdit()
-        self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
+        # self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
         self.node_name_input.setText(f"{item.data(91)}")
         self.node_name_input.returnPressed.connect(lambda: self.update_node_name(is_var))
         self.proprietiesWdg.create_properties_widget("Node Name", self.node_name_input)

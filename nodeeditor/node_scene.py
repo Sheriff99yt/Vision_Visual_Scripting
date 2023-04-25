@@ -5,7 +5,7 @@ A module containing the representation of the NodeEditor's Scene
 import os, sys, json
 from collections import OrderedDict
 
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.utils import dumpException, pp

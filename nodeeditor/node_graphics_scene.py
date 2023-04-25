@@ -111,13 +111,13 @@ class NodeGraphicsScene(QGraphicsScene):
         # draw the lines
         painter.setPen(self._pen_light)
         try:
-            painter.drawLines(*lines_light)  # supporting PyQt5
+            painter.drawLines(*lines_light)  # supporting PyQt6
         except TypeError:
             painter.drawLines(lines_light)  # supporting PySide2
 
         painter.setPen(self._pen_dark)
         try:
-            painter.drawLines(*lines_dark)  # supporting PyQt5
+            painter.drawLines(*lines_dark)  # supporting PyQt6
         except TypeError:
             painter.drawLines(lines_dark)  # supporting PySide2
 

@@ -4,7 +4,7 @@ A module containing Graphics representation of :class:`~nodeeditor.node_node.Nod
 """
 import os
 
-from PyQt5.QtGui import QIcon, QImage
+from PyQt6.QtGui import QIcon, QImage
 from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem, QGraphicsDropShadowEffect
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 from qtpy.QtCore import Qt, QRectF

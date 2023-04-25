@@ -8,7 +8,7 @@ The following rules and guidelines are used throughout the nodeeditor package:
 ## File naming guidelines
 
 * files in the nodeeditor package start with ```node_```
-* files containing graphical representation (PyQt5 overridden classes) start with ```node_graphics_```
+* files containing graphical representation (PyQt6 overridden classes) start with ```node_graphics_```
 * files for window/widget start with ```node_editor_```
 
 ## Coding guidelines

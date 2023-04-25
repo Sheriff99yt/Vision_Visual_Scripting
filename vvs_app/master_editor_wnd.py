@@ -107,8 +107,8 @@ class NodeEditorTab(NodeEditorWidget):
                 is_var = True
 
 
-            mouse_position = event.pos()
-            self.scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
+            mouse_position = event.position()
+            self.scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position.toPoint())
 
             if DEBUG: print("GOT DROP: [%d] '%s'" % (self.node_type, text), "mouse:", mouse_position, "scene:", self.scene_position)
 
@@ -146,7 +146,7 @@ class NodeEditorTab(NodeEditorWidget):
 
         cancel = context_menu.addAction("Cancel")
 
-        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+        action = context_menu.exec_(self.mapToGlobal(event.position().toPoint()))
 
         if action is cancel or action is None:
             return
@@ -190,7 +190,7 @@ class NodeEditorTab(NodeEditorWidget):
         copy = context_menu.addAction("Copy")
         cut = context_menu.addAction("Cut")
         delete = context_menu.addAction("Delete")
-        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+        action = context_menu.exec_(self.mapToGlobal(event.position().toPoint()))
 
         selected = None
         item = self.scene.getItemAt(event.pos())
@@ -215,7 +215,7 @@ class NodeEditorTab(NodeEditorWidget):
         bezierAct = context_menu.addAction("Bezier Edge")
         directAct = context_menu.addAction("Direct Edge")
         squareAct = context_menu.addAction("Square Edge")
-        action = context_menu.exec_(self.mapToGlobal(event.pos()))
+        action = context_menu.exec_(self.mapToGlobal(event.position().toPoint()))
 
         selected = None
         item = self.scene.getItemAt(event.pos())

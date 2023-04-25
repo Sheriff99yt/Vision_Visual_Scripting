@@ -108,7 +108,7 @@ class GraphGraphics(QGraphicsView):
     def initUI(self):
         """Set up this ``QGraphicsView``"""
         self.setRenderHints(
-            QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
+            QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
 
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
@@ -123,7 +123,8 @@ class GraphGraphics(QGraphicsView):
 
     def isSnappingEnabled(self, event: 'QInputEvent' = None) -> bool:
         """Returns ``True`` if snapping is currently enabled"""
-        return EDGE_SNAPPING and (event.modifiers() & Qt.CTRL) if event else True
+        return EDGE_SNAPPING and (event.modifiers() & Qt.ControlModifier) if event else True
+        # return True
 
     def resetMode(self):
         """Helper function to re-set the grView's State Machine state to the default"""
@@ -201,7 +202,7 @@ class GraphGraphics(QGraphicsView):
             for edge in self.grScene.scene.edges: print("\t", edge, "\n\t\tgrEdge:",
                                                         edge.grEdge if edge.grEdge is not None else None)
 
-            if event.modifiers() & Qt.CTRL:
+            if event.modifiers() & Qt.ControlModifier:
                 print("  Graphic Items in GraphicScene:")
                 for item in self.grScene.items():
                     print('    ', item)
@@ -211,17 +212,17 @@ class GraphGraphics(QGraphicsView):
             return
 
         # faking events for enable MMB dragging the scene
-        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(releaseEvent)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+        fakeEvent = QMouseEvent(event.type(), event.localPos(),
                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
 
     def middleMouseButtonRelease(self, event: QMouseEvent):
         """When Middle mouse button was released"""
-        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
         super().mouseReleaseEvent(fakeEvent)
         self.setDragMode(QGraphicsView.RubberBandDrag)
@@ -241,7 +242,7 @@ class GraphGraphics(QGraphicsView):
         if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
             if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
+                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.scenePosition(),
                                         Qt.LeftButton, event.buttons() | Qt.LeftButton,
                                         event.modifiers() | Qt.ControlModifier)
                 super().mousePressEvent(fakeEvent)
@@ -252,7 +253,7 @@ class GraphGraphics(QGraphicsView):
             item = self.snapping.getSnappedSocketItem(event)
 
         if isinstance(item, QDMGraphicsSocket):
-            if self.mode == MODE_READY and event.modifiers() & Qt.CTRL:
+            if self.mode == MODE_READY and event.modifiers() & Qt.ControlModifier:
                 socket = item.socket
                 if socket.hasAnyEdge():
                     self.mode = MODE_EDGES_REROUTING
@@ -271,7 +272,7 @@ class GraphGraphics(QGraphicsView):
         if item is None:
             if event.modifiers() & Qt.ControlModifier:
                 self.mode = MODE_EDGE_CUT
-                fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+                fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
                                         Qt.LeftButton, Qt.NoButton, event.modifiers())
                 super().mouseReleaseEvent(fakeEvent)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
@@ -292,7 +293,7 @@ class GraphGraphics(QGraphicsView):
             if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
                 if event.modifiers() & Qt.ShiftModifier:
                     event.ignore()
-                    fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                    fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                             Qt.LeftButton, Qt.NoButton,
                                             event.modifiers() | Qt.ControlModifier)
                     super().mouseReleaseEvent(fakeEvent)

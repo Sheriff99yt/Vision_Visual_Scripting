@@ -1,6 +1,6 @@
 import time
 from functools import partial
-from PyQt5 import *
+from PyQt6 import *
 from vvs_app.master_window import *
 from vvs_app.QRoundPB import QRoundProgressBar
 
@@ -114,7 +114,7 @@ class SettingsWidget(QWidget):
         name_item.setData(256, 10, self.message)
 
         self.spacer3 = QWidget()
-        self.spacer3.setMinimumWidth(QSizePolicy.Expanding)
+        # self.spacer3.setMinimumWidth(QSizePolicy.Expanding)
         self.h_layout.addWidget(self.spacer3)
 
         self.apply_close_btn = QPushButton("Save & Close")

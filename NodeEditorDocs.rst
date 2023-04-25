@@ -9,7 +9,7 @@ Welcome to PyQtNodeEditor
     :alt: Documentation Status
 
 
-This package was created from the Node Editor written in PyQt5. The intention was to create a tutorial series
+This package was created from the Node Editor written in PyQt6. The intention was to create a tutorial series
 describing the path to create a reusable nodeeditor which can be used in different projects.
 The tutorials are published on youtube for free. The full list of tutorials can be located here:
 https://www.blenderfreak.com/tutorials/node-editor-tutorial-series/
@@ -27,7 +27,7 @@ Requirements
 ------------
 
 - Python 3.x
-- PyQt5 or PySide2 (using wrapper QtPy)
+- PyQt6 or PySide2 (using wrapper QtPy)
 
 Installation
 ------------

@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QBrush, QColor
+from PyQt6.QtGui import QBrush, QColor
 
 from vvs_app.nodes.default_functions import FontSize, FontFamily, MakeList
 from vvs_app.nodes.nodes_configuration import *
