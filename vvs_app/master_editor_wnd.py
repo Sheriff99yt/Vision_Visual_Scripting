@@ -2,12 +2,12 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
-from nodeeditor.node_editor_widget import NodeEditorWidget
-from nodeeditor.node_node import Node
-from vvs_app.nodes.nodes_configuration import *
-from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
-from nodeeditor.graph_graphics import MODE_EDGE_DRAG
-from nodeeditor.utils import dumpException
+from node_editor_widget import NodeEditorWidget
+from node_node import Node
+from nodes.nodes_configuration import *
+from node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
+from graph_graphics import MODE_EDGE_DRAG
+from utils import dumpException
 
 DEBUG = False
 DEBUG_CONTEXT = False

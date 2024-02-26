@@ -6,30 +6,30 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 
-from nodeeditor.utils import loadStylesheets
-from nodeeditor.node_editor_window import NodeEditorWindow
-from vvs_app.editor_settings_wnd import SettingsWidget
-from vvs_app.master_editor_wnd import NodeEditorTab
-from vvs_app.master_designer_wnd import MasterDesignerWnd
-from vvs_app.editor_node_list import NodeList
-from vvs_app.editor_files_wdg import FilesWDG
-from vvs_app.editor_user_nodes_list import UserNodesList
-from vvs_app.editor_properties_list import PropertiesList
-from vvs_app.global_switches import *
+from utils import loadStylesheets
+from node_editor_window import NodeEditorWindow
+from editor_settings_wnd import SettingsWidget
+from master_editor_wnd import NodeEditorTab
+from master_designer_wnd import MasterDesignerWnd
+from editor_node_list import NodeList
+from editor_files_wdg import FilesWDG
+from editor_user_nodes_list import UserNodesList
+from editor_properties_list import PropertiesList
+from global_switches import *
 
-from nodeeditor.utils import dumpException
-# from vvs_app.nodes_configuration import FUNCTIONS
+from utils import dumpException
+# from nodes_configuration import FUNCTIONS
 
 # Enabling edge validators
-from nodeeditor.node_edge import Edge
-from nodeeditor.node_edge_validators import (
+from node_edge import Edge
+from node_edge_validators import (
     edge_cannot_connect_two_outputs_or_two_inputs,
     edge_cannot_connect_input_and_output_of_same_node
 )
 
 # Edge.registerEdgeValidator(edge_validator_debug)
-from vvs_app.master_node import MasterNode
-from vvs_app.nodes.nodes_configuration import register_Node
+from master_node import MasterNode
+from nodes.nodes_configuration import register_Node
 
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
@@ -49,7 +49,7 @@ class Splash(QWidget):
         self.setLayout(lo)
 
         Logo = QLabel()
-        pixmap = QPixmap("icons/Dark/VVS_White2.png")
+        pixmap = QPixmap("vvs_app/icons/Dark/VVS_White2.png")
         Logo.setPixmap(pixmap)
         lo.addWidget(Logo)
 
@@ -166,7 +166,7 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap(f"icons/{self.global_switches.switches_Dict['Appearance']['Theme'][0]}/VVS_White1.png")
+        w_image = QPixmap(f"vvs_app/icons/{self.global_switches.switches_Dict['Appearance']['Theme'][0]}/VVS_White1.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
@@ -230,7 +230,7 @@ class MasterWindow(NodeEditorWindow):
         search_bar_layout.addWidget(self.search_btn)
 
         self.search_btn.setMaximumSize(30, 30)
-        self.search_btn.setIcon(QIcon("icons/Light/search.png"))
+        self.search_btn.setIcon(QIcon("vvs_app/icons/Light/search.png"))
         self.search_line_edit.setMinimumHeight(30)
 
         topVlayout.addLayout(search_bar_layout)

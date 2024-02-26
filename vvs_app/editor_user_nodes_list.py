@@ -2,13 +2,13 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from nodeeditor.node_scene import NodeScene
-from vvs_app.editor_properties_list import PropertiesList
-from vvs_app.nodes.default_functions import *
-from vvs_app.nodes.user_functions_nodes import UserFunction
-from vvs_app.nodes.nodes_configuration import VARIABLES, get_class_by_type, LISTBOX_MIMETYPE
-from nodeeditor.utils import dumpException
-from vvs_app.nodes.variables_nodes import UserVar
+from node_scene import NodeScene
+from editor_properties_list import PropertiesList
+from nodes.default_functions import *
+from nodes.user_functions_nodes import UserFunction
+from nodes.nodes_configuration import VARIABLES, get_class_by_type, LISTBOX_MIMETYPE
+from utils import dumpException
+from nodes.variables_nodes import UserVar
 
 
 class UserNodesList(QTabWidget):

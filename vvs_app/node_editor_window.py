@@ -7,13 +7,13 @@ import os, json
 from PyQt5.QtGui import QImage
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
-from nodeeditor.node_editor_widget import NodeEditorWidget
+from node_editor_widget import NodeEditorWidget
 from datetime import datetime
 
-from vvs_app.editor_files_wdg import FilesWDG
-from vvs_app.global_switches import GlobalSwitches
-from vvs_app.master_node import MasterNode
-from vvs_app.nodes.nodes_configuration import *
+from editor_files_wdg import FilesWDG
+from global_switches import GlobalSwitches
+from master_node import MasterNode
+from nodes.nodes_configuration import *
 
 
 class NodeEditorWindow(QMainWindow):

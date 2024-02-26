@@ -10,7 +10,7 @@ from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
 from collections import OrderedDict
-from nodeeditor.node_serializable import Serializable
+from node_serializable import Serializable
 
 DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
@@ -206,7 +206,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 A module containing NodeEditor's class for representing Socket and Socket Position Constants.
 """
 from collections import OrderedDict
-from nodeeditor.node_serializable import Serializable
+from node_serializable import Serializable
 
 
 class Socket(Serializable):

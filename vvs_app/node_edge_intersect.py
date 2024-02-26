@@ -5,7 +5,7 @@ it will intersect that edge.
 """
 from qtpy.QtWidgets import QGraphicsView
 from qtpy.QtCore import QRectF
-from nodeeditor.node_edge import Edge
+from node_edge import Edge
 
 
 class EdgeIntersect:

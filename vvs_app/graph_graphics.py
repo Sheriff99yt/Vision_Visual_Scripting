@@ -8,14 +8,14 @@ from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 from qtpy.QtGui import *
 
-from nodeeditor.node_socket import QDMGraphicsSocket
-from nodeeditor.node_graphics_edge import QDMGraphicsEdge
-from nodeeditor.node_edge_dragging import EdgeDragging
-from nodeeditor.node_edge_rerouting import EdgeRerouting
-from nodeeditor.node_edge_intersect import EdgeIntersect
-from nodeeditor.node_edge_snapping import EdgeSnapping
-from nodeeditor.node_graphics_cutline import QDMCutLine
-from nodeeditor.utils import dumpException, pp
+from node_socket import QDMGraphicsSocket
+from node_graphics_edge import QDMGraphicsEdge
+from node_edge_dragging import EdgeDragging
+from node_edge_rerouting import EdgeRerouting
+from node_edge_intersect import EdgeIntersect
+from node_edge_snapping import EdgeSnapping
+from node_graphics_cutline import QDMCutLine
+from utils import dumpException, pp
 
 
 MODE_READY = 1  #: Mode representing ready state

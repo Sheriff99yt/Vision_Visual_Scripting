@@ -9,14 +9,14 @@ from qtpy.QtCore import *
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 
-from nodeeditor.graph_graphics import GraphGraphics
-from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
-from nodeeditor.node_node import Node
-from nodeeditor.node_scene import NodeScene, InvalidFile
-from nodeeditor.utils import dumpException
-from vvs_app.nodes.default_functions import Print
-from vvs_app.nodes.user_functions_nodes import UserFunction
-from vvs_app.nodes.variables_nodes import UserVar
+from graph_graphics import GraphGraphics
+from node_edge import Edge, EDGE_TYPE_BEZIER
+from node_node import Node
+from node_scene import NodeScene, InvalidFile
+from utils import dumpException
+from nodes.default_functions import Print
+from nodes.user_functions_nodes import UserFunction
+from nodes.variables_nodes import UserVar
 
 
 class NodeEditorWidget(QWidget):

@@ -25,7 +25,7 @@ Here is an example how you can register the Edge Validator callbacks:
 
 .. code-block:: python
 
-    from nodeeditor.node_edge_validators import *
+    from node_edge_validators import *
 
     Edge.registerEdgeValidator(edge_validator_debug)
     Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)

@@ -7,12 +7,12 @@ from collections import OrderedDict
 
 from PyQt5.QtWidgets import *
 
-from nodeeditor.node_graphics_node import QDMGraphicsNode
+from node_graphics_node import QDMGraphicsNode
 from PyQt5.QtGui import QColor, QBrush, QIcon, QImage
-from nodeeditor.node_serializable import Serializable
-from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
-from nodeeditor.utils import dumpException, pp
-from vvs_app.nodes.nodes_configuration import register_Node
+from node_serializable import Serializable
+from node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
+from utils import dumpException, pp
+from nodes.nodes_configuration import register_Node
 
 DEBUG = False
 

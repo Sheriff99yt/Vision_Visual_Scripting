@@ -1,4 +1,4 @@
-from nodeeditor.node_editor_widget import NodeEditorWidget
+from node_editor_widget import NodeEditorWidget
 
 DEBUG = False
 DEBUG_CONTEXT = False

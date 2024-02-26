@@ -7,14 +7,14 @@ from collections import OrderedDict
 
 from PyQt5.QtCore import Qt
 
-from nodeeditor.node_graphics_node import QDMGraphicsNode
-from nodeeditor.utils import dumpException, pp
-from nodeeditor.node_serializable import Serializable
-from nodeeditor.node_graphics_scene import NodeGraphicsScene
-from nodeeditor.node_node import Node
-from nodeeditor.node_edge import Edge
-from nodeeditor.node_scene_history import SceneHistory
-from nodeeditor.node_scene_clipboard import SceneClipboard
+from node_graphics_node import QDMGraphicsNode
+from utils import dumpException, pp
+from node_serializable import Serializable
+from node_graphics_scene import NodeGraphicsScene
+from node_node import Node
+from node_edge import Edge
+from node_scene_history import SceneHistory
+from node_scene_clipboard import SceneClipboard
 
 DEBUG_REMOVE_WARNINGS = False
 

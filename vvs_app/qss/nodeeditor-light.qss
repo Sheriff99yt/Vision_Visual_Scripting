@@ -80,15 +80,15 @@ QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea 
     border:1px solid #E0E0E0;
     border-bottom:0}
 
-QMdiArea QTabBar QToolButton::left-arrow{image:url(":icons/light/arrow_left.png")}
-QMdiArea QTabBar QToolButton::right-arrow{image:url(":icons/light/arrow_right.png")}
-QMdiArea QTabBar::close-button:selected{image:url("icons/light/sub.png");origin:border;subcontrol-origin:border;subcontrol-position:right bottom}
-QMdiArea QTabBar::close-button:!selected{image:url("icons/light/sub.png")}
-QMdiArea QTabBar::close-button{image:url("icons/light/sub.png")}
-QMdiArea QTabBar::close-button:hover{image:url("icons/light/close.png")}
+QMdiArea QTabBar QToolButton::left-arrow{image:url(":vvs_app/icons/light/arrow_left.png")}
+QMdiArea QTabBar QToolButton::right-arrow{image:url(":vvs_app/icons/light/arrow_right.png")}
+QMdiArea QTabBar::close-button:selected{image:url("vvs_app/icons/light/sub.png");origin:border;subcontrol-origin:border;subcontrol-position:right bottom}
+QMdiArea QTabBar::close-button:!selected{image:url("vvs_app/icons/light/sub.png")}
+QMdiArea QTabBar::close-button{image:url("vvs_app/icons/light/sub.png")}
+QMdiArea QTabBar::close-button:hover{image:url("vvs_app/icons/light/close.png")}
 
 
-QDockWidget{font-weight:normal;titlebar-close-icon:url(":icons/light/close.png");titlebar-normal-icon:url(":icons/light/sub.png")}
+QDockWidget{font-weight:normal;titlebar-close-icon:url(":vvs_app/icons/light/close.png");titlebar-normal-icon:url(":vvs_app/icons/light/sub.png")}
 QDockWidget::title{padding-top:6px;padding-left:6px;}
 
 

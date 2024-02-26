@@ -1,7 +1,7 @@
 from qtpy.QtGui import *
 
-from vvs_app.nodes.nodes_configuration import *
-from vvs_app.master_node import MasterNode
+from nodes.nodes_configuration import *
+from master_node import MasterNode
 from textwrap import *
 
 FontSize = 14

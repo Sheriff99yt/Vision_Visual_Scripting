@@ -1,8 +1,8 @@
 from PyQt5.QtGui import QBrush, QColor
 
-from vvs_app.nodes.default_functions import FontSize, FontFamily, MakeList
-from vvs_app.nodes.nodes_configuration import *
-from vvs_app.master_node import MasterNode
+from nodes.default_functions import FontSize, FontFamily, MakeList
+from nodes.nodes_configuration import *
+from master_node import MasterNode
 
 
 Numpy_Vars = {'float': "'f'",

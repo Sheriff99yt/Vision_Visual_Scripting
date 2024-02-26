@@ -6,8 +6,8 @@ import math
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 from qtpy.QtGui import *
-from nodeeditor.utils import dumpException
-from nodeeditor.graph_graphics import STATE_STRING, DEBUG_STATE
+from utils import dumpException
+from graph_graphics import STATE_STRING, DEBUG_STATE
 
 
 class NodeGraphicsScene(QGraphicsScene):

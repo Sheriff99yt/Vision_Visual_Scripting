@@ -3,10 +3,10 @@
 A module containing NodeEditor's class for representing Edge and Edge Type Constants.
 """
 from collections import OrderedDict
-from nodeeditor.node_graphics_edge import QDMGraphicsEdge
-from nodeeditor.node_serializable import Serializable
-from nodeeditor.utils import dumpException
-from nodeeditor.node_edge_validators import *
+from node_graphics_edge import QDMGraphicsEdge
+from node_serializable import Serializable
+from utils import dumpException
+from node_edge_validators import *
 
 EDGE_TYPE_DIRECT = 1  #:
 EDGE_TYPE_BEZIER = 2  #:
@@ -319,7 +319,7 @@ class Edge(Serializable):
 # You can register edge validators wherever you want, even here...
 # However if you do use overridden Edge, you should call registerEdgeValidator on that overridden class
 #
-# from nodeeditor.node_edge_validators import *
+# from node_edge_validators import *
 # Edge.registerEdgeValidator(edge_validator_debug)
 # Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 # Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)

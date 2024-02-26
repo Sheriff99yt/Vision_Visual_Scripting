@@ -11,7 +11,7 @@ application start with calling this:
 
 .. code-block:: python
 
-    from nodeeditor.node_edge_validators import *
+    from node_edge_validators import *
 
     Edge.registerEdgeValidator(edge_validator_debug)
     Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
@@ -21,7 +21,7 @@ application start with calling this:
 
 """
 
-from nodeeditor.node_socket import *
+from node_socket import *
 
 DEBUG = False
 

@@ -1,7 +1,7 @@
-from vvs_app.nodes.default_functions import Indent, FontFamily, FontSize
-from vvs_app.nodes.nodes_configuration import *
-from vvs_app.master_node import MasterNode
-from nodeeditor.node_editor_widget import *
+from nodes.default_functions import Indent, FontFamily, FontSize
+from nodes.nodes_configuration import *
+from master_node import MasterNode
+from node_editor_widget import *
 
 
 class UserFunction(MasterNode):

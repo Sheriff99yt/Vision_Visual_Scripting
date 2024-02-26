@@ -4,9 +4,9 @@ A module containing the Edge Dragging functionality
 """
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView
 
-from nodeeditor.node_socket import QDMGraphicsSocket
-from nodeeditor.node_edge import EDGE_TYPE_DEFAULT
-from nodeeditor.utils import dumpException
+from node_socket import QDMGraphicsSocket
+from node_edge import EDGE_TYPE_DEFAULT
+from utils import dumpException
 
 DEBUG = False
 

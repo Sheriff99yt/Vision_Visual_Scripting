@@ -1,8 +1,8 @@
 import time
 from functools import partial
 from PyQt5 import *
-from vvs_app.master_window import *
-from vvs_app.QRoundPB import QRoundProgressBar
+from master_window import *
+from QRoundPB import QRoundProgressBar
 
 
 class SettingsWidget(QWidget):
@@ -34,7 +34,7 @@ class SettingsWidget(QWidget):
 
         current_theme = self.masterRef.global_switches.switches_Dict["Appearance"]["Theme"][0]
         searchBar = QTreeWidgetItem(self.settingsTree)
-        searchBar.setIcon(0, QIcon(f"""icons/{current_theme}/search.png"""))
+        searchBar.setIcon(0, QIcon(f"""vvs_app/icons/{current_theme}/search.png"""))
         searchBar.setDisabled(True)
         self.searchwdg = QLineEdit()
         searchBar.treeWidget().setItemWidget(searchBar, 0, self.searchwdg)

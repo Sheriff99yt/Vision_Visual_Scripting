@@ -1,4 +1,4 @@
-from vvs_app.master_window import *
+from master_window import *
 
 
 class FilesWDG(QWidget):
