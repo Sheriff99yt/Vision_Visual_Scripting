@@ -1,6 +1,12 @@
 This software started as a university graduation project aimed to create an all in one software that allows anyone to just hop in and start programing using visual modular code blocks (nodes), kind of like ((  Unreal Engines Blueprint Graph System )).. It enables the code to be translated from the Visual Scripting graph into any programming language syntax the user selects.
 
 ---------------------
+Simple use case..
+
+[Vvs Showcase-1.webm](https://github.com/Sheriff99yt/Vision_Visual_Scripting/assets/56188682/57f3fdca-cc0b-4c85-ba58-9ca3d5445f50)
+
+
+---------------------
 
 Steps to Run Vision Visual Scripting
 
